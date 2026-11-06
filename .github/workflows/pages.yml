@@ -22,8 +22,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - run: python -m pip install numpy
-      - run: command -v ffmpeg && command -v clang
+      - run: python -m pip install numpy imageio-ffmpeg
+      - name: Install audio binary
+        run: |
+          mkdir -p .bin
+          python -c "import imageio_ffmpeg,os,pathlib; os.symlink(imageio_ffmpeg.get_ffmpeg_exe(), '.bin/ffmpeg'); open(os.environ['GITHUB_PATH'],'a').write(str(pathlib.Path('.bin').resolve())+'\n')"
+          command -v clang
       - run: python3 assemble.py
       - run: python3 scripts/synthesize-soundtrack.py && python3 scripts/synthesize-modes.py
       - run: cp public/assets/* _site/assets/
