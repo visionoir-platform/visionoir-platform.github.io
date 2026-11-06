@@ -1,0 +1,21 @@
+{
+  "title": "AFTERIMAGE / 140",
+  "bpm": 140,
+  "duration_seconds": 109.71428571428571,
+  "bars": 64,
+  "sample_rate": 44100,
+  "peak_dbfs": -1.3000000000000014,
+  "rms_dbfs": -11.517130294327627,
+  "mp3_bytes": 2635009,
+  "composition": "Original deterministic synthesis. No external samples.",
+  "artist": "Flavio Giorgio Guarini (VISIONOIR)",
+  "album_artist": "Flavio Giorgio Guarini (VISIONOIR)",
+  "composer": "Flavio Giorgio Guarini (VISIONOIR)",
+  "producer": "Flavio Giorgio Guarini (VISIONOIR)",
+  "copyright": "© 2026 Flavio Giorgio Guarini",
+  "rights_claimant": "Flavio Giorgio Guarini",
+  "alias": "VISIONOIR",
+  "license": "All rights reserved; listening within the Visionoir site only. Any other use requires prior written permission.",
+  "license_url": "/assets/AUDIO-LICENSE.txt",
+  "permissions_contact": "visionoir.platform@gmail.com"
+}
