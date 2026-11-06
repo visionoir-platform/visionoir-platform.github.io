@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install numpy
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg clang
+      - run: command -v ffmpeg && command -v clang
       - run: python3 assemble.py
       - run: python3 scripts/synthesize-soundtrack.py && python3 scripts/synthesize-modes.py
       - run: cp public/assets/* _site/assets/
