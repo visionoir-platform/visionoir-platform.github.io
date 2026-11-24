@@ -12,7 +12,13 @@ if (configNode) initialize(JSON.parse(configNode.textContent));
 function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   const q = selector => document.querySelector(selector);
   const base = import.meta.env.BASE_URL;
-  const audio = createAudioEngine({enabledTracks});
+  const audio = createAudioEngine({
+    enabledTracks,
+    onMediaAction(action) {
+      audioInteracted = true;
+      persistSilence(action === 'pause' || mute);
+    },
+  });
   const sceneContainer = q('#logo-scene');
   const sceneHome = sceneContainer.parentNode;
   const languageControl = q('.languages');

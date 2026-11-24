@@ -38,6 +38,7 @@ jobs:
           python scripts/synthesize-soundtrack.py
           python scripts/synthesize-modes.py
           python scripts/synthesize-premium.py --track all
+          python scripts/analyze-studio-audio.py
       - run: npm ci
       - run: node --test tests/locales.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
       - name: Build localized pages

@@ -11,7 +11,7 @@ paths = [
     "index.html", "package.json", "package-lock.json", "vite.config.js",
     ".gitignore", "README.md", "AUDIO-PREMIUM.md", "ASSETS.md",
     ".github/workflows/pages.yml", "tests/locales.test.mjs",
-    "scripts/localize.mjs", "scripts/deploy-pages.py", "scripts/synthesize-modes.py", "scripts/synthesize-soundtrack.py",
+    "scripts/localize.mjs", "scripts/deploy-pages.py", "scripts/analyze-studio-audio.py", "scripts/synthesize-modes.py", "scripts/synthesize-soundtrack.py",
     "scripts/synthesize-premium.py", "scripts/audio-premium-requirements.txt",
     "public/favicon.svg", "tools/editor-visionoir.html",
 ]
