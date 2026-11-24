@@ -2,6 +2,7 @@ import './style.css';
 import { localePath, names, resolveLocale } from './locales.js';
 import { money, updateMetadata, contact } from './site.js';
 import { approximateCountry, storageValue } from './geo.js';
+import { trackAccents } from './palette.js';
 import { createAudioEngine } from './audio.js';
 
 const configNode = document.getElementById('site-config');
@@ -23,6 +24,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   let manualRevision = 0;
   let navigationRevision = 0;
   let scene;
+  let trail;
   let mute = storageValue(silentKey)==='1';
   let volume = 23;
   let motion = storageValue('visionoir-motion') !== 'off' && !reduced.matches;
@@ -69,10 +71,12 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     for (const button of document.querySelectorAll('[data-track]')) {
       button.setAttribute('aria-pressed',String(button.dataset.track===mode));
     }
-    scene?.setMode(mode==='afterimage'?'acid':mode);
+    html.style.setProperty('--track-accent',trackAccents[mode]);
+    scene?.setMode(mode);
     scene?.setMotion(motion);
     scene?.setAudioEnabled?.(!mute && audio.isPlaying);
     html.classList.toggle('reduced-motion',!motion);
+    trail?.setEnabled(motion && !reduced.matches);
   }
   function applyLanguage(next, dict, explicit) {
     lang = next;
@@ -254,6 +258,20 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     setTimeout(()=>URL.revokeObjectURL(url),1000);
   };
 
+  let loadingTrail = false;
+  function startTrail(event) {
+    if (loadingTrail || !motion || reduced.matches || (event.type==='pointermove' && event.pointerType==='touch')) return;
+    loadingTrail=true;
+    import('./trail.js').then(({mountTrail})=>{
+      trail=mountTrail();
+      trail.setEnabled(motion && !reduced.matches);
+      trail.start?.(event);
+      window.removeEventListener('pointermove',startTrail);
+      window.removeEventListener('touchstart',startTrail);
+    }).catch(()=>{loadingTrail=false;});
+  }
+  window.addEventListener('pointermove',startTrail,{passive:true});
+  window.addEventListener('touchstart',startTrail,{passive:true});
   html.classList.add('enhanced');
   q('#geo-disclosure').hidden=!geoEndpoint;
   syncControls();

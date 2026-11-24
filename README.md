@@ -11,8 +11,10 @@ Static Vite and Three.js site with localized HTML, same-document language change
 
 ## Maintenance
 
+- Open `tools/editor-visionoir.html` locally to edit catalogue text with labelled controls. Open a locale file, edit and save a copy, then replace the intended catalogue and rebuild. Build-time configuration, images, URLs and source changes remain in the source workflow.
 - Copy and metadata live in `src/locales/<language>.txt`, with one `key|value` per line. `src/locales/it.txt` is the schema. Base languages must cover every key. Regional variants override the fields that differ. Rebuild to update HTML, JSON and sitemap.
 - Add a language in `src/locales.js`, give it a catalogue, and validate the build. Review script/font behavior and direction before publication. Rumantsch Grischun needs an independent language review.
+- The background and silver trail remain neutral across all languages. Adjust the six synchronized UI/scene accent colors in `src/palette.js`.
 - Services and EUR amounts live in `src/site.js`. Track titles and timing are in `src/tracks.js`; add the playable asset, a licence and sourcing entry, and choose a matching visual mode in `src/scene.js`.
 - The neutral URL selects language with explicit preferences first, then approximate country and device preferences. Set `VISIONOIR_GEO_ENDPOINT=""` to disable GeoIP at build time. The production default is Country.is, with a 420 ms deadline and only the country code stored for six hours.
 - Publish through the existing GitHub Pages Actions workflow. From the private working tree, `python3 scripts/prepare-pages.py /absolute/new/staging-dir` creates only the intended public files. The GitHub source tree builds all static pages and regenerates the six tracks.

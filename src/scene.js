@@ -1,3 +1,4 @@
+import { trackAccents } from './palette.js';
 import * as THREE from 'three';
 
 const BANDS = ['bass', 'mid', 'high', 'level'];
@@ -195,11 +196,12 @@ export async function initScene(container, getAudioData = () => ({})) {
     face: new THREE.Color(face), edge: new THREE.Color(edgeColor), rim: new THREE.Color(rimColor), line: new THREE.Color(line), roughness, exposure, environment, scale, light,
   });
   const palettes = {
-    chrome: makePalette('#c5c5c5', '#c0c0c0', '#f1f1f1', '#7e7e7e', .19, 1.25, 2.4, 1, 1.6),
-    acid: makePalette('#dfdfdf', '#8f8f8f', '#ededed', '#dedede', .22, 1.15, 2.1, 1.04, 2.5),
-    noir: makePalette('#393939', '#7c7c7c', '#e3e3e3', '#b2b2b2', .13, 1.25, 3.2, .97, 3),
-    alloy: makePalette('#c2c2c2', '#959595', '#d4d4d4', '#a1a1a1', .24, 1.2, 2.5, 1, 2.1),
-    aura: makePalette('#d7d7d7', '#b0b0b0', '#e0e0e0', '#b4b4b4', .17, 1.2, 2.7, 1.015, 1.9),
+    chrome: makePalette('#c5c5c5', '#c0c0c0', trackAccents.chrome, trackAccents.chrome, .19, 1.25, 2.4, 1, 1.6),
+    acid: makePalette('#dfdfdf', '#8f8f8f', trackAccents.acid, trackAccents.acid, .22, 1.15, 2.1, 1.04, 2.5),
+    noir: makePalette('#393939', '#7c7c7c', trackAccents.noir, trackAccents.noir, .13, 1.25, 3.2, .97, 3),
+    alloy: makePalette('#c2c2c2', '#959595', trackAccents.alloy, trackAccents.alloy, .24, 1.2, 2.5, 1, 2.1),
+    afterimage: makePalette('#b7b7b7', '#777777', trackAccents.afterimage, trackAccents.afterimage, .2, 1.18, 2.6, 1.026, 2.6),
+    aura: makePalette('#d7d7d7', '#b0b0b0', trackAccents.aura, trackAccents.aura, .17, 1.2, 2.7, 1.015, 1.9),
   };
   let targetX = 0, targetY = 0, pointerX = 0, pointerY = 0, lastTime = 0, elapsed = 0;
   let needsRender = true, wasWarped = false, width = 0, height = 0;
@@ -296,7 +298,7 @@ export async function initScene(container, getAudioData = () => ({})) {
       warpActive ||= warpAudio[band] > .0001;
     }
     for (const name of MODES) {
-      const target = name === mode ? 1 : 0;
+      const target = name === (mode==='afterimage'?'acid':mode) ? 1 : 0;
       modeWeights[name] = motion ? modeWeights[name] + (target - modeWeights[name]) * (1 - Math.exp(-dt * 6)) : target;
     }
     if (warpActive || wasWarped) {

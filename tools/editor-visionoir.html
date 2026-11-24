@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>VISIONOIR — Editor locale dei testi</title>
+<style>
+:root{color-scheme:dark;--bg:#0d0d0d;--panel:#171717;--line:#3c3c3c;--text:#efefef;--muted:#b2b2b2;--acid:#ededed;--error:#c2c2c2}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}button,input,textarea,a{touch-action:manipulation}button:disabled{cursor:not-allowed;opacity:.45}button,input,textarea{border:1px solid var(--line);border-radius:8px}button{background:#252525;color:var(--text);min-height:46px;padding:10px 17px}button:hover:not(:disabled){border-color:var(--acid)}button.primary{background:var(--acid);color:#151515;border-color:var(--acid);font-weight:650}button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--acid);outline-offset:3px}a{color:var(--acid)}header{padding:32px max(24px,calc((100vw - 1160px)/2));border-bottom:1px solid var(--line)}.brand{letter-spacing:.19em;font-weight:800;font-size:14px}.eyebrow{color:var(--acid);font-size:12px;letter-spacing:.1em;text-transform:uppercase}h1{font-size:clamp(28px,4vw,44px);line-height:1.15;font-weight:550;letter-spacing:-.04em;margin:16px 0}header p{max-width:760px;color:var(--muted);margin:0}main{max-width:1208px;margin:auto;padding:24px}.toolbar{position:sticky;top:0;z-index:2;background:var(--bg);padding:16px 0;border-bottom:1px solid var(--line)}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.file-name{color:var(--muted);font-size:13px;margin:12px 0 0;overflow-wrap:anywhere}.search-row{display:grid;grid-template-columns:minmax(160px,1fr) auto;gap:16px;align-items:end;margin-top:18px}.search-label{font-size:13px;color:var(--muted);display:grid;gap:6px}.search-label input{width:100%;min-height:46px;background:#181818;padding:10px 13px;color:var(--text)}#count{font-size:12px;color:var(--muted);padding-bottom:10px}.notice{padding:16px 18px;background:#212121;border:1px solid #525252;border-radius:8px;margin:20px 0;color:#dadada;font-size:14px}.notice.error{background:#1c1c1c;border-color:#575757;color:var(--error)}.notice:empty{display:none}.welcome{padding:40px 24px;background:var(--panel);border:1px dashed var(--line);border-radius:12px;margin-top:24px}.welcome h2{margin:0 0 10px;font-size:24px;font-weight:550}.welcome p{color:var(--muted);max-width:760px}.welcome ol{padding-left:24px;color:var(--muted)}.welcome li{margin:8px 0}.section{margin:34px 0}.section h2{font-size:19px;font-weight:550;margin:0 0 18px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:10px;min-width:0}.field.is-changed{border-color:#7c7c7c}.field.is-invalid{border-color:#797979}.field label{display:block;font-weight:550;font-size:14px;margin-bottom:9px}.field textarea{display:block;width:100%;min-height:82px;background:#111111;color:var(--text);padding:12px;line-height:1.55;resize:vertical;overflow-wrap:anywhere;white-space:pre-wrap}.field textarea[aria-invalid=true]{border-color:#7f7f7f}.field-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;color:var(--muted);font-size:11px}.field-footer button{min-height:32px;padding:4px 8px;font-size:12px;background:transparent}.field-error{color:var(--error);font-size:12px;margin:8px 0 0}.field-error:empty{display:none}.field[hidden],.section[hidden],[hidden]{display:none!important}.help{margin:36px 0 16px;border-top:1px solid var(--line);padding-top:22px;color:var(--muted);font-size:13px}.help summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--text);font-size:15px}.help p{max-width:850px}.empty{margin:30px 0;color:var(--muted)}footer{max-width:1208px;margin:auto;padding:10px 24px 36px;color:var(--muted);font-size:12px}.skip{position:fixed;left:12px;top:-100px;z-index:9;background:var(--acid);color:#0e0e0e;padding:10px 15px}.skip:focus{top:12px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:700px){header{padding:25px 18px}main{padding:12px 18px}.toolbar{position:static}.field-grid{grid-template-columns:1fr}.search-row{grid-template-columns:1fr;gap:4px}.actions button{flex:1 1 140px}.field{padding:14px}.welcome{padding:25px 18px}footer{padding-left:18px;padding-right:18px}}
+</style>
+</head>
+<body>
+<a href="#editor" class="skip">Vai ai testi</a>
+<header><div class="brand">VISIONOIR</div><p class="eyebrow">Strumento locale · Testi del sito</p><h1>I tuoi testi, sotto controllo.</h1><p>Apri un catalogo, modifica i campi e salva una copia. Questo editor funziona sul tuo dispositivo e non invia file o contenuti in rete.</p></header>
+<main>
+<section class="toolbar" aria-label="File e ricerca">
+<div class="actions"><button id="open" class="primary" type="button">Apri un catalogo .txt</button><button id="save" type="button" disabled>Salva una copia .txt</button><button id="reset" type="button" disabled>Ripristina tutti i testi</button></div>
+<input id="file" type="file" accept=".txt,text/plain" class="sr-only" tabindex="-1" aria-label="Scegli il catalogo dei testi">
+<p id="file-name" class="file-name">Nessun catalogo aperto.</p>
+<div class="search-row" id="search-row" hidden><label class="search-label" for="search">Cerca una sezione, un campo o un testo<input id="search" type="search" placeholder="Per esempio: titolo, contatti, privacy…" autocomplete="off"></label><span id="count" aria-live="polite"></span></div>
+</section>
+<div id="notice" class="notice" role="status" aria-live="polite"></div>
+<section id="welcome" class="welcome"><h2>Modifica senza toccare il codice.</h2><p>Puoi aprire uno dei cataloghi del sito, come <strong>it.txt</strong>, <strong>en.txt</strong> o un’altra lingua. L’editor mostra ogni testo in un campo con un nome comprensibile.</p><ol><li>Apri il catalogo della lingua che vuoi aggiornare.</li><li>Modifica i testi. Il testo può andare a capo sullo schermo, ma ogni campo deve contenere una sola riga effettiva.</li><li>Salva la copia e riaprila per controllare le modifiche.</li></ol><p>Per aggiornare il sito pubblico, la copia dovrà essere integrata nel progetto e inclusa in una nuova build e pubblicazione.</p></section>
+<div id="editor" tabindex="-1" aria-label="Campi del catalogo"></div>
+<p id="empty" class="empty" hidden>Nessun campo corrisponde alla ricerca.</p>
+<details class="help" open><summary>Come funziona il salvataggio</summary><p><strong>«Salva una copia .txt» avvia un download</strong> con il nome del catalogo aperto. Il browser potrebbe aggiungere un numero se esiste già un file con lo stesso nome. L’originale non viene sovrascritto automaticamente. Per verificare la copia, riaprila con «Apri un catalogo .txt» e controlla i campi modificati.</p><p>Le modifiche restano in questa finestra finché non esporti il file. Non c’è salvataggio automatico, archivio delle versioni o sincronizzazione. Chiudere la finestra senza salvare può far perdere le modifiche.</p><p><strong>Questo strumento modifica solo i testi di un catalogo.</strong> Non modifica immagini, collegamenti di destinazione, struttura o impostazioni del sito. Non traduce automaticamente e non pubblica: la copia va consegnata a chi gestisce il progetto, oppure integrata nella cartella dei cataloghi prima della build e della pubblicazione. Il salvataggio qui non aggiorna il sito online.</p><p>Il formato viene controllato all’apertura e prima del download. Chiavi duplicate, campi vuoti e interruzioni di riga nei testi bloccano il salvataggio. I nomi interni dei campi e il loro ordine restano invariati.</p></details>
+</main><footer>Editor locale VISIONOIR · Nessun account, importazione esterna o invio automatico.</footer>
+<script>
+'use strict';
+const SECTIONS = {
+ 'SEO e navigazione': ['title','description','skip','nav','menu','language','languageError','experience','services','studio','contact'],
+ 'Apertura e scena immersiva': ['heroFirst','heroAccent','heroCopy','start','logo','labTitle','labCopy','scene','exit'],
+ 'Audio e movimento': ['sound','pause','mute','unmute','volume','audio','track','loading','audioBlocked','audioError','audioUnsupported','motionOff','motionOn','chrome','acid','noir','alloy','aura'],
+ 'Servizi e prezzi': ['servicesTitle','servicesCopy','brandName','brandCopy','contentName','contentCopy','soundName','soundCopy','retainerName','retainerCopy','experienceName','experienceCopy','month','prices','choose'],
+ 'Esplorazioni e metodo': ['works','workCopy','workAlt','method','methodCopy'],
+ 'Studio e persone': ['studioTitle','studioCopy','flavio','maria','instagram'],
+ 'Contatti e richiesta di progetto': ['contactTitle','contactCopy','name','email','service','undecided','message','formNote','prepare','invalidName','invalidEmail','invalidMessage','briefTitle','send','copy','download','copied','copyError','close'],
+ 'Domande frequenti': ['faq','ideaQ','ideaA','remoteQ','remoteA','aiQ','aiA','deliveryQ','deliveryA'],
+ 'Privacy, crediti e licenze': ['privacy','privacyCopy','credits','logoCredit','musicCredit','rights','license','privacyGeo','creditsNew']
+};
+const LABELS = {
+ title:'Titolo della pagina nel browser',description:'Descrizione del sito',skip:'Collegamento per saltare al contenuto',nav:'Nome accessibile della navigazione',menu:'Pulsante del menu',language:'Selettore della lingua',languageError:'Errore di caricamento della lingua',experience:'Voce menu: esperienza',services:'Voce menu: servizi',studio:'Voce menu: studio',contact:'Voce menu: contatti',
+ heroFirst:'Titolo iniziale — prima parte',heroAccent:'Titolo iniziale — parte in evidenza',heroCopy:'Presentazione iniziale',start:'Pulsante principale di contatto',logo:'Descrizione accessibile del logo',labTitle:'Titolo dell’esperienza interattiva',labCopy:'Spiegazione dell’esperienza interattiva',scene:'Pulsante per entrare nella scena',exit:'Pulsante per uscire dalla scena',
+ sound:'Pulsante di avvio del suono',pause:'Pulsante di pausa',mute:'Pulsante per silenziare',unmute:'Pulsante per riattivare il suono',volume:'Controllo del volume',audio:'Nome dei controlli audio',track:'Selettore della traccia',loading:'Messaggio durante il caricamento audio',audioBlocked:'Invito ad avviare l’audio',audioError:'Errore di caricamento della traccia',audioUnsupported:'Messaggio per browser senza audio interattivo',motionOff:'Pulsante per ridurre il movimento',motionOn:'Pulsante per attivare il movimento',chrome:'Nome dell’atmosfera Cromo',acid:'Nome dell’atmosfera Acid',noir:'Nome dell’atmosfera Noir',alloy:'Nome dell’atmosfera Lega',aura:'Nome dell’atmosfera Aura',
+ servicesTitle:'Titolo della sezione servizi',servicesCopy:'Introduzione ai servizi',brandName:'Nome del servizio Brand Sprint',brandCopy:'Descrizione del Brand Sprint',contentName:'Nome del servizio AI Content Kit',contentCopy:'Descrizione dell’AI Content Kit',soundName:'Nome del Sound / Visual Pack',soundCopy:'Descrizione del Sound / Visual Pack',retainerName:'Nome della direzione continuativa',retainerCopy:'Descrizione della direzione continuativa',experienceName:'Nome del servizio esperienza o campagna',experienceCopy:'Descrizione dell’esperienza o campagna',month:'Indicazione della periodicità mensile',prices:'Nota sui prezzi e sul preventivo',choose:'Pulsante di scelta del servizio',
+ works:'Titolo della sezione esplorazioni',workCopy:'Presentazione dei progetti dimostrativi',workAlt:'Descrizione accessibile dell’immagine Studio X',method:'Titolo del metodo di lavoro',methodCopy:'Descrizione del metodo di lavoro',studioTitle:'Titolo della sezione studio',studioCopy:'Presentazione dello studio',flavio:'Ruolo di Flavio Giorgio Guarini',maria:'Ruolo di Maria Bellini',instagram:'Invito a seguire Instagram',
+ contactTitle:'Titolo della sezione contatti',contactCopy:'Introduzione al contatto',name:'Etichetta del campo nome',email:'Etichetta del campo email',service:'Etichetta del campo servizio',undecided:'Opzione: servizio da definire',message:'Etichetta del campo idea',formNote:'Spiegazione del modulo e dell’invio',prepare:'Pulsante per preparare il brief',invalidName:'Errore: nome mancante',invalidEmail:'Errore: email non valida',invalidMessage:'Errore: idea troppo breve',briefTitle:'Titolo del riepilogo del brief',send:'Pulsante per aprire l’email',copy:'Pulsante per copiare il brief',download:'Pulsante per scaricare il brief',copied:'Conferma della copia del brief',copyError:'Aiuto quando la copia non riesce',close:'Pulsante di chiusura',
+ faq:'Titolo delle domande frequenti',ideaQ:'Domanda: partire da un’idea',ideaA:'Risposta: partire da un’idea',remoteQ:'Domanda: lavorare da remoto',remoteA:'Risposta: lavorare da remoto',aiQ:'Domanda: uso dell’intelligenza artificiale',aiA:'Risposta: uso dell’intelligenza artificiale',deliveryQ:'Domanda: materiali consegnati',deliveryA:'Risposta: materiali consegnati',
+ privacy:'Titolo della privacy',privacyCopy:'Informativa sul trattamento dei dati',credits:'Titolo dei crediti e delle licenze',logoCredit:'Credito del logo',musicCredit:'Credito della musica',rights:'Nota sui diritti dei materiali',license:'Nome del collegamento alla licenza audio',privacyGeo:'Informativa sulla lingua automatica',creditsNew:'Credito della nuova musica'
+};
+function valueError(value) {
+ if (!value.trim()) return 'Inserisci un testo: il campo non può essere vuoto.';
+ if (/[\r\n\u2028\u2029]/u.test(value)) return 'Usa una sola riga: sostituisci gli a capo con spazi.';
+ if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value)) return 'Il testo contiene un carattere di controllo non valido.';
+ return '';
+}
+function parseCatalogue(text) {
+ const normalized = text.replace(/^\uFEFF/u,'').replace(/\r\n/g,'\n');
+ const lines = normalized.split('\n'); const seen = new Set(); const records=[];
+ if (lines.at(-1)==='') lines.pop();
+ if (!lines.length) throw new Error('Il catalogo è vuoto. Scegli un file di testi del sito.');
+ lines.forEach((line,index)=>{
+  const separator=line.indexOf('|');
+  if(separator<1) throw new Error(`Riga ${index+1}: formato del catalogo non valido. Apri un catalogo del sito senza righe aggiuntive.`);
+  const key=line.slice(0,separator),value=line.slice(separator+1);
+  if(!/^[A-Za-z][A-Za-z0-9_-]*$/.test(key)) throw new Error(`Riga ${index+1}: il nome interno del campo non è valido.`);
+  if(seen.has(key)) throw new Error(`Riga ${index+1}: un campo è presente due volte. Il catalogo non è stato aperto.`);
+  const error=valueError(value);if(error)throw new Error(`Riga ${index+1}: ${error}`);
+  seen.add(key);records.push({key,value,original:value,saved:value});
+ });
+ return records;
+}
+function serializeCatalogue(records) {
+ const seen=new Set();
+ for(const record of records){if(seen.has(record.key))throw new Error('Il catalogo contiene un campo duplicato.');seen.add(record.key);const error=valueError(record.value);if(error)throw new Error(error);}
+ if(!records.length)throw new Error('Apri prima un catalogo.');
+ return records.map(record=>`${record.key}|${record.value}`).join('\n')+'\n';
+}
+const $=id=>document.getElementById(id);
+let records=[],filename='',pending=false,busy=false;
+const fieldNodes=new Map();
+function notify(message,error=false){$('notice').textContent=message;$('notice').classList.toggle('error',error);$('notice').setAttribute('role',error?'alert':'status');}
+function labelFor(key){return LABELS[key]||key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[-_]/g,' ');}
+function status(){
+ const changed=records.filter(record=>record.value!==record.saved).length;
+ const invalid=records.filter(record=>valueError(record.value)).length;pending=changed>0;
+ $('file-name').textContent=filename?`${filename} · ${records.length} campi · ${changed} ${changed===1?'modifica da esportare':'modifiche da esportare'}${invalid?` · ${invalid} ${invalid===1?'campo da correggere':'campi da correggere'}`:''}`:'Nessun catalogo aperto.';
+ $('save').disabled=!records.length||invalid>0||busy;$('reset').disabled=!records.some(record=>record.value!==record.original)||busy;
+ $('open').disabled=busy;document.title=(pending?'● ':'')+'VISIONOIR — Editor locale dei testi';
+}
+function updateField(record){
+ const node=fieldNodes.get(record.key),error=valueError(record.value);
+ node.card.classList.toggle('is-changed',record.value!==record.saved);node.card.classList.toggle('is-invalid',!!error);
+ node.textarea.setAttribute('aria-invalid',error?'true':'false');node.error.textContent=error;
+ node.count.textContent=`${[...record.value].length} caratteri`;node.reset.disabled=record.value===record.original;
+}
+function filterFields(){
+ const query=$('search').value.toLocaleLowerCase().trim();let shown=0;
+ document.querySelectorAll('.section').forEach(section=>{let sectionCount=0;section.querySelectorAll('.field').forEach(card=>{const record=records.find(item=>item.key===card.dataset.key);const searchable=`${section.dataset.title} ${labelFor(record.key)} ${record.value}`.toLocaleLowerCase();card.hidden=!!query&&!searchable.includes(query);if(!card.hidden){shown++;sectionCount++;}});section.hidden=!sectionCount;});
+ $('count').textContent=`${shown} di ${records.length} campi visibili`;$('empty').hidden=shown>0||!records.length;
+}
+function render(){
+ $('editor').replaceChildren();fieldNodes.clear();
+ const assigned=new Set();const groups=Object.entries(SECTIONS).map(([title,keys])=>[title,records.filter(record=>keys.includes(record.key))]);
+ groups.forEach(([,items])=>items.forEach(record=>assigned.add(record.key)));
+ const additional=records.filter(record=>!assigned.has(record.key));if(additional.length)groups.push(['Altri testi del catalogo',additional]);
+ for(const[title,items]of groups){
+  if(!items.length)continue;const section=document.createElement('section');section.className='section';section.dataset.title=title;
+  const heading=document.createElement('h2');heading.textContent=title;section.append(heading);
+  const grid=document.createElement('div');grid.className='field-grid';section.append(grid);
+  for(const record of items){
+   const card=document.createElement('article');card.className='field';card.dataset.key=record.key;
+   const label=document.createElement('label');label.htmlFor='field-'+record.key;label.textContent=labelFor(record.key);
+   const textarea=document.createElement('textarea');textarea.id='field-'+record.key;textarea.value=record.value;textarea.rows=record.value.length>160?4:2;textarea.spellcheck=true;textarea.setAttribute('aria-describedby','error-'+record.key);textarea.dir='auto';
+   const footer=document.createElement('div');footer.className='field-footer';const count=document.createElement('span');const reset=document.createElement('button');reset.type='button';reset.textContent='Ripristina';reset.setAttribute('aria-label','Ripristina: '+labelFor(record.key));footer.append(count,reset);
+   const error=document.createElement('p');error.className='field-error';error.id='error-'+record.key;
+   card.append(label,textarea,footer,error);grid.append(card);fieldNodes.set(record.key,{card,textarea,error,count,reset});
+   textarea.addEventListener('input',()=>{record.value=textarea.value;updateField(record);status();});
+   reset.addEventListener('click',()=>{record.value=record.original;textarea.value=record.value;updateField(record);status();textarea.focus();});updateField(record);
+  }
+  $('editor').append(section);
+ }
+ $('welcome').hidden=true;$('search-row').hidden=false;$('search').value='';filterFields();status();
+}
+async function openFile(file){
+ if(!file)return;
+ if(!/\.txt$/i.test(file.name)){notify('Scegli un catalogo con estensione .txt.',true);return;}
+ if(file.size>1024*1024){notify('Il file supera 1 MB. Scegli un catalogo dei testi del sito.',true);return;}
+ if(pending&&!window.confirm('Ci sono modifiche non esportate. Aprire un altro catalogo le scarterà. Vuoi continuare?'))return;
+ busy=true;status();
+ try{
+  const bytes=await file.arrayBuffer();let text;
+  try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{throw new Error('Il file non è un testo UTF-8 valido. Apri un catalogo originale del sito.');}
+  const next=parseCatalogue(text);records=next;filename=file.name;pending=false;render();
+  notify(`Catalogo aperto: ${filename}. Puoi modificare i campi qui sotto.`);
+ }catch(error){notify(error.message||'Non è stato possibile aprire il catalogo.',true);}
+ finally{busy=false;status();$('file').value='';}
+}
+function save(){
+ if(!records.length||busy)return;
+ try{
+  const text=serializeCatalogue(records),url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+  const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+  records.forEach(record=>{record.saved=record.value;updateField(record);});status();
+  notify(`Download avviato: ${filename}. Riapri la copia scaricata per verificare i testi. Il sito online non è stato modificato.`);
+ }catch(error){notify('Salvataggio bloccato. '+error.message,true);const first=records.find(record=>valueError(record.value));if(first){$('search').value='';filterFields();fieldNodes.get(first.key).textarea.focus();}}
+}
+$('open').addEventListener('click',()=>$('file').click());$('file').addEventListener('change',event=>openFile(event.target.files[0]));
+$('save').addEventListener('click',save);$('search').addEventListener('input',filterFields);
+$('reset').addEventListener('click',()=>{if(!window.confirm('Ripristinare tutti i testi ai valori del file aperto? Le modifiche fatte in questa finestra verranno annullate.'))return;records.forEach(record=>{record.value=record.original;const node=fieldNodes.get(record.key);node.textarea.value=record.value;updateField(record);});status();filterFields();notify('Testi ripristinati ai valori del catalogo aperto.');});
+window.addEventListener('beforeunload',event=>{if(pending){event.preventDefault();event.returnValue='';}});
+document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='s'){event.preventDefault();save();}});
+</script>
+</body>
+</html>

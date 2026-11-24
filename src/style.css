@@ -157,7 +157,7 @@ dialog h2{font-size:2rem}
 @media(max-height:480px) and (orientation:landscape){.player-options{flex-basis:auto}.topbar{position:relative}}
 @media(min-width:1800px){:root{--space:max(6rem,calc((100vw - 1620px) / 2))}}
 
-/* Silver and glass are the only accents; the contrast survives without filters. */
+/* Silver surfaces carry the active track’s accent. */
 :root{--highlight:#f3f3f3;--paper:#f2f2f2;--bg:#0a0a0a;--muted:#b4b4b4;--line:#383838}
 .intro{background:radial-gradient(ellipse at 75% 50%,#292929 0,transparent 58%),linear-gradient(155deg,#151515,transparent 59%)}
 .intro em{color:#f0f0f0;text-shadow:0 8px 36px #ffffff14}
@@ -171,3 +171,18 @@ dialog h2{font-size:2rem}
 .error{color:#242424;font-weight:700}
 .player{background:#161616f5}
 @supports(backdrop-filter:blur(16px)){.topbar,.player{backdrop-filter:blur(16px)}}
+
+:root{--track-accent:#a7d1ff}
+.intro em,.kicker,.social .arrow,.faq-section summary::after{color:var(--track-accent)}
+.contact-section .kicker{color:#383838}
+.intro{background:radial-gradient(ellipse at 75% 52%,color-mix(in srgb,var(--track-accent) 14%,#151515),transparent 59%),linear-gradient(155deg,#151515,transparent 59%)}
+.intro .cta,.player #sound-toggle{border-color:var(--track-accent);background:linear-gradient(158deg,#fff 6%,var(--track-accent) 84%)}
+.track-card[aria-pressed=true]{border-color:var(--track-accent);background:color-mix(in srgb,var(--track-accent) 12%,#151515)}
+.track-card[aria-pressed=true] i{background:var(--track-accent);box-shadow:0 0 12px var(--track-accent)}
+.volume input{accent-color:var(--track-accent)}
+.metal-trail{position:fixed;inset:0;inline-size:100%;block-size:100%;z-index:6;pointer-events:none;contain:strict}
+.metal-trail[data-active=false]{visibility:hidden}
+.immersive .metal-trail{z-index:8}
+.immersive .player{z-index:9}
+@media(prefers-reduced-motion:reduce){.metal-trail{display:none}}
+.reduced-motion .metal-trail{display:none}
