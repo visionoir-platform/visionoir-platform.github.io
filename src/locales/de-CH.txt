@@ -4,3 +4,4 @@ close|Schliessen
 ideaQ|Kann ich auch mit einer blossen Idee starten?
 deliveryA|Die in der Offerte vereinbarten Materialien und Hinweise zu ihrer Nutzung. Formate, Zeitplan und Bedingungen legen wir gemeinsam fest.
 privacyCopy|Die Website verwendet kein Werbetracking. Das Briefing wird auf deinem Gerät vorbereitet und erreicht VISIONOIR nur, wenn du es absendest. Der Hostinganbieter kann technische Verbindungsdaten gemäss seinen eigenen Bedingungen verarbeiten.
+packXCopy|Die Idee bestimmt die Form. Eine Zusammenarbeit nach Mass, die das künstlerische Potenzial des Projekts voll entfaltet.

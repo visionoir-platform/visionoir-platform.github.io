@@ -98,3 +98,7 @@ rights|Flavio Giorgio Guarini、Maria Bellini 与 VISIONOIR 保留各自贡献�
 license|音频许可
 privacyGeo|自动语言服务可用时，会根据网络连接返回大致所在国家。本站仅临时保存国家代码。
 creditsNew|新曲目为 VISIONOIR 以原创声音合成方式制作。
+packXName|Pack X
+packXCopy|让想法决定形式。量身定制的合作，让项目的艺术构想得到充分实现。
+packXPrice|按项目报价
+packXChoose|分享你的想法

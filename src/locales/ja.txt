@@ -98,3 +98,7 @@ rights|各制作物の権利は、それぞれFlavio Giorgio Guarini、Maria Bel
 license|音楽ライセンス
 privacyGeo|自動言語選択サービスが利用可能な場合、そのサービスは接続情報を受け取り、おおよその国を返します。このサイトが一時保存するのは国コードのみです。
 creditsNew|VISIONOIRのために、独自の音響合成で制作した新しい音楽。
+packXName|Pack X
+packXCopy|アイデアが形を決める。プロジェクトの芸術的な可能性を最大限に引き出す、オーダーメイドのコラボレーションです。
+packXPrice|個別見積もり
+packXChoose|アイデアを聞かせる

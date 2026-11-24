@@ -1,2 +1,3 @@
 prices|Prix indicatifs en EUR. Le périmètre, les délais, les révisions et le traitement fiscal sont définis dans l’offre.
 deliveryA|Les éléments convenus dans l’offre et les indications pour les utiliser. Les formats, les délais et les conditions sont définis ensemble.
+packXCopy|L’idée donne la forme. Une collaboration sur mesure pour déployer tout le potentiel artistique du projet.

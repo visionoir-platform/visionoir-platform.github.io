@@ -36,3 +36,7 @@ privacyCopy|O site não usa rastreamento publicitário. O briefing é preparado 
 logoCredit|Logotipo original concebido e realizado por Maria Bellini.
 rights|Direitos reservados a Flavio Giorgio Guarini, Maria Bellini e VISIONOIR pelas respectivas contribuições. Para reutilizar os elementos, solicite autorização.
 privacyGeo|Quando disponível, o serviço de idioma automático recebe a conexão e retorna o país aproximado. O site armazena temporariamente apenas o código do país.
+packXName|Pack X
+packXCopy|A ideia dá forma ao projeto. Uma colaboração sob medida para realizar todo o seu potencial artístico.
+packXPrice|Orçamento personalizado
+packXChoose|Proponha sua ideia

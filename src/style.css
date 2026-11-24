@@ -186,3 +186,13 @@ dialog h2{font-size:2rem}
 .immersive .player{z-index:9}
 @media(prefers-reduced-motion:reduce){.metal-trail{display:none}}
 .reduced-motion .metal-trail{display:none}
+.service-card-custom{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:linear-gradient(145deg,#252525,#131313 58%,#252525);
+}
+.service-card-custom::before{
+ content:"X";position:absolute;z-index:-1;inset-inline-end:.04em;inset-block-end:-.25em;
+ color:#ffffff0c;font:700 clamp(8rem,18vw,17rem)/1 var(--body);pointer-events:none;
+}
+.service-card-custom h3,.service-card-custom .underlink{color:var(--track-accent)}
+.service-end strong{font-size:1.12rem}

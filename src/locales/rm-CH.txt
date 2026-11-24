@@ -98,3 +98,7 @@ rights|Ils dretgs restan reservads a Flavio Giorgio Guarini, Maria Bellini e VIS
 license|Licenza d’audio
 privacyGeo|Sch’il servetsch per tscherner automaticamain la lingua è disponibel, retschaiva el la connexiun e returna il pajais approximativ. La pagina d’internet arcuna temporarmain mo il code dal pajais.
 creditsNew|Nova musica producida per VISIONOIR cun sintesa sonora originala.
+packXName|Pack X
+packXCopy|L’idea determinescha la furma. Ina collavuraziun fatga sin mesira per sviluppar l’entir potenzial artistic dal project.
+packXPrice|Pretsch tenor project
+packXChoose|Propona tia idea

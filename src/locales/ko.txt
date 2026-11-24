@@ -98,3 +98,7 @@ rights|Flavio Giorgio Guarini, Maria Bellini, VISIONOIR는 각자 담당한 부�
 license|음악 라이선스
 privacyGeo|자동 언어 선택 서비스를 이용할 수 있는 경우, 해당 서비스는 접속 정보를 받아 대략적인 국가 정보를 반환합니다. 사이트는 국가 코드만 임시로 저장합니다.
 creditsNew|VISIONOIR를 위해 독자적인 사운드 합성으로 제작한 새로운 음악.
+packXName|Pack X
+packXCopy|아이디어가 형태를 결정합니다. 프로젝트의 예술적 가능성을 끝까지 펼치는 맞춤형 협업입니다.
+packXPrice|프로젝트별 견적
+packXChoose|아이디어 제안하기

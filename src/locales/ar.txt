@@ -98,3 +98,7 @@ rights|الحقوق محفوظة لـ Flavio Giorgio Guarini وMaria Bellini وV
 license|ترخيص الصوت
 privacyGeo|عند توفر خدمة اللغة التلقائية، تستخدم الاتصال لتحديد البلد التقريبي. يخزن الموقع رمز البلد فقط بصورة مؤقتة.
 creditsNew|أُنتجت الموسيقى الجديدة بتوليف صوتي أصلي لصالح VISIONOIR.
+packXName|Pack X
+packXCopy|الفكرة تحدد الشكل. تعاون مصمم خصيصًا لإطلاق كامل الإمكانات الفنية للمشروع.
+packXPrice|يُحدّد حسب المشروع
+packXChoose|اقترح فكرتك

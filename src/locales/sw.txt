@@ -98,3 +98,7 @@ rights|Haki zimehifadhiwa kwa Flavio Giorgio Guarini, Maria Bellini na VISIONOIR
 license|Leseni ya sauti
 privacyGeo|Ikipatikana, huduma ya kuchagua lugha kiotomatiki hupokea muunganisho na kurudisha nchi inayokadiriwa. Tovuti huhifadhi kwa muda msimbo wa nchi pekee.
 creditsNew|Muziki mpya uliotayarishwa kwa VISIONOIR kwa kuunda sauti asili kwa usanisi.
+packXName|Pack X
+packXCopy|Wazo linaongoza muundo. Ushirikiano unaolingana na mradi ili kufikia uwezo wake wote wa kisanaa.
+packXPrice|Bei kwa kila mradi
+packXChoose|Pendekeza wazo lako

@@ -2,7 +2,7 @@ import { localePath, names, site } from './locales.js';
 import { tracks } from './tracks.js';
 
 export const contact = 'visionoir.platform@gmail.com';
-export const servicePrices = { brand:450, content:350, sound:250, retainer:600, experience:1200 };
+export const servicePrices = { brand:450, content:350, sound:250, retainer:600, experience:1200, packX:null };
 export const escape = value => String(value).replace(/[&<>"']/g, ch => ({
   '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
 })[ch]);
@@ -57,10 +57,10 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </section>
  <section class="section service-section" id="servizi">
   <div class="section-copy">${t('services','p','class="kicker"')}${t('servicesTitle','h2')}${t('servicesCopy','p')}</div>
-  <div class="services-grid">${Object.entries(servicePrices).map(([id,price])=>`<article class="service-card">
+  <div class="services-grid">${Object.entries(servicePrices).map(([id,price])=>`<article class="service-card${id==='packX'?' service-card-custom':''}">
    ${t(id+'Name','h3')}${t(id+'Copy','p')}
-   <div class="service-end"><div><bdi data-price="${price}">${money(lang,price)}</bdi>${id==='retainer'?t('month','small'):''}</div>
-   <a class="underlink" href="#contatto" data-service="${id}">${t('choose')}${arrow}</a></div>
+   <div class="service-end"><div>${price===null ? t('packXPrice','strong') : `<bdi data-price="${price}">${money(lang,price)}</bdi>`}${id==='retainer'?t('month','small'):''}</div>
+   <a class="underlink" href="#contatto" data-service="${id}">${t(id==='packX'?'packXChoose':'choose')}${arrow}</a></div>
   </article>`).join('')}</div>
   ${t('prices','p','class="fine"')}
  </section>

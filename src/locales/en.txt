@@ -98,3 +98,7 @@ rights|Rights reserved to Flavio Giorgio Guarini, Maria Bellini and VISIONOIR fo
 license|Audio licence
 privacyGeo|When available, the automatic language service uses the connection to return an approximate country. This site temporarily stores only the country code.
 creditsNew|New music produced with original sound synthesis for VISIONOIR.
+packXName|Pack X
+packXCopy|The idea takes the lead. A bespoke collaboration that gives the project’s artistic ambition room to reach its full potential.
+packXPrice|Quoted per project
+packXChoose|Pitch your idea

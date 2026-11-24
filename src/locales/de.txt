@@ -98,3 +98,7 @@ rights|Die Rechte an den jeweiligen Beiträgen bleiben Flavio Giorgio Guarini, M
 license|Audiolizenz
 privacyGeo|Sofern verfügbar, empfängt der Dienst zur automatischen Sprachwahl die Verbindung und gibt das ungefähre Land zurück. Die Website speichert vorübergehend nur den Ländercode.
 creditsNew|Neue Musik mit eigens entwickelter Klangsynthese für VISIONOIR produziert.
+packXName|Pack X
+packXCopy|Die Idee bestimmt die Form. Eine Zusammenarbeit nach Maß, die den künstlerischen Anspruch des Projekts voll zur Geltung bringt.
+packXPrice|Auf Anfrage
+packXChoose|Erzähl uns deine Idee
