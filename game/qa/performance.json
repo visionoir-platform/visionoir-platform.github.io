@@ -417,38 +417,46 @@
   },
   "method": "Same-origin local release builds. Real Canvas world-frame fill and independent rAF timestamps. Temporary local progress fixture unlocks sampled stages. Stage 0 repeated after zones 1 and 2. JS heap via CDP; no forced collection.",
   "retention": {
-    "method": "Separate 10-cycle test, sampled after returning to menu. Forced garbage collection via CDP at cycles 1,4,7,10. Measures JS/DOM only.",
+    "method": "Separate 10-cycle test, sampled after returning to menu. Wait predicates return booleans to avoid retaining ElementHandles. Forced garbage collection via CDP at cycles 1,4,7,10. Measures JS/DOM only.",
     "samples": [
       {
         "cycle": 1,
-        "jsHeapUsedMiB": 2.72,
-        "nodes": 399,
+        "jsHeapUsedMiB": 2.7,
+        "nodes": 314,
         "documents": 2,
         "liveDocumentElements": 65
       },
       {
         "cycle": 4,
-        "jsHeapUsedMiB": 2.96,
-        "nodes": 639,
+        "jsHeapUsedMiB": 2.95,
+        "nodes": 314,
         "documents": 2,
         "liveDocumentElements": 65
       },
       {
         "cycle": 7,
-        "jsHeapUsedMiB": 3.04,
-        "nodes": 879,
+        "jsHeapUsedMiB": 3.02,
+        "nodes": 314,
         "documents": 2,
         "liveDocumentElements": 65
       },
       {
         "cycle": 10,
-        "jsHeapUsedMiB": 3.08,
-        "nodes": 1119,
+        "jsHeapUsedMiB": 3.05,
+        "nodes": 314,
         "documents": 2,
         "liveDocumentElements": 65
       }
     ]
   },
   "buildEntry": "unseen-qdctnA7d.js",
-  "cssEntry": "unseen-DSR9IWJl.css"
+  "cssEntry": "unseen-DSR9IWJl.css",
+  "heapCaveat": "Heap/node counters in the timing pass include Playwright-observed elements without forced collection. Use the separate retention block for DOM retention.",
+  "mobileLabelFollowup": {
+    "css": "ellipsis",
+    "accessibleLabel": "Trasformazione",
+    "leftWithin": true,
+    "rightWithin": true,
+    "cssEntry": "unseen-V8dOBssJ.css"
+  }
 }
