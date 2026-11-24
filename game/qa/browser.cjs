@@ -4,6 +4,24 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const base=process.env.UNSEEN_TEST_URL||'http://127.0.0.1:4197',proof=process.env.UNSEEN_QA_DIR||'/tmp/unseen-browser-proof';
 fs.mkdirSync(proof,{recursive:true});
 const engineName=process.argv[2]||'chromium',engine={chromium,webkit,firefox}[engineName];
+async function confirmWithGamepad(page,expectedScreen){
+  await page.evaluate(async()=>{
+    const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
+    const button={pressed:false};
+    const pad={connected:true,axes:[0,0],buttons:[button]};
+    const previous=Object.getOwnPropertyDescriptor(navigator,'getGamepads');
+    Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>[pad]});
+    try{
+      await new Promise(resolve=>setTimeout(resolve,180));
+      button.pressed=true;await frame();await frame();
+      button.pressed=false;await frame();await frame();
+    }finally{
+      if(previous)Object.defineProperty(navigator,'getGamepads',previous);
+      else delete navigator.getGamepads;
+    }
+  });
+  await page.waitForSelector('#screen[data-page="'+expectedScreen+'"]',{timeout:4000});
+}
 async function run(){
   const browser=await engine.launch({headless:true,...(process.env.BROWSER_BIN?{executablePath:process.env.BROWSER_BIN}:{}),timeout:18000});
   try{
@@ -23,8 +41,9 @@ async function run(){
     await page.click('#home');await page.waitForSelector('a#unseen-door');
     await page.locator('a#unseen-door').click();await page.waitForSelector('[data-act=start]');
     assert(page.url().includes('/unseen/?lang=it'));assert.equal(await page.locator('html').getAttribute('lang'),'it');
-    await page.screenshot({path:path.join(proof,engineName+'-title-mobile.png')});await click('start');
-    await click('story');await click('hero-2');await click('launch');await click('scene-skip');await click('scene-skip');
+    await page.screenshot({path:path.join(proof,engineName+'-title-mobile.png')});
+    await confirmWithGamepad(page,'menu');await confirmWithGamepad(page,'heroes');
+    await click('hero-2');await click('launch');await click('scene-skip');await click('scene-skip');
     await page.waitForSelector('#telemetry b');let s=await page.locator('#telemetry').innerText();
     if(phone){
       const box=await page.locator('[data-input=right]').boundingBox();assert(box?.width>=30&&box?.height>=30);
