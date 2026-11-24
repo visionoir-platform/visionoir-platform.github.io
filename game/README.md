@@ -18,3 +18,5 @@ Dalla radice, eseguire `npm ci`, `npm run build` e `npm run preview -- --host 12
 ## Distribuzione
 
 Crediti e condizioni d’uso sono in CREDITS.md e LICENSE.md. Consultare i termini del provider prima di cambiare la destinazione del sito o aggiungere transazioni. La copia statica è portabile mantenendo la radice del dominio e il percorso /unseen/. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)
+
+Per un futuro uso commerciale con transazioni, la medesima cartella statica dist può essere servita sul progetto Netlify esistente previa verifica del relativo piano e della destinazione. Il piano Free è documentato con limiti rigidi. Il gioco qui distribuito è gratuito e autonomo. [Piani Netlify](https://www.netlify.com/pricing/)

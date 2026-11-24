@@ -2,6 +2,7 @@ import './style.css';
 import { names,matchLocale } from '../../src/locales.js';
 import { STAGES,HEROES,BOSSES,createRun,step,groundAt,canEnter,sanitizeProgress,finishRun,rankOf } from '../engine/index.js';
 import { playCinematic } from '../art/cinematic.js';
+import { createCadence } from './cadence.js';
 import { checkpointOf,restoreCheckpoint } from './checkpoint.js';
 import { createRenderer } from '../art/render.js';
 import { heroLine,objectiveLine,bossLine } from './narrative.js';
@@ -34,6 +35,7 @@ let siteLang;try{siteLang=localStorage.getItem('visionoir-language');}catch{}
 const available=Object.keys(names);
 let lang=matchLocale(new URLSearchParams(location.search).get('lang'),available)||matchLocale(siteLang,available)||navigator.languages.map(l=>matchLocale(l,available)).find(Boolean)||'it';
 let dict={},localeToken=0,page='title',pageSource='menu',storyCards=[],sceneIndex=0,sceneNext,sceneTitle='',sceneArt=0,active=false;
+const cadence=createCadence();
 let hudAt=0;
 let run=null,portalReturn=null,lab=null,renderer=null,renderPromise=null,audio,gameHasFocus=false,prevStamp=0,lastHud='',musicTimer=0,revision=0;
 let sceneKind=null,sceneBoss=0;
@@ -112,7 +114,7 @@ function startRun(id,existing=null){
   if(existing)run.cores=[...progress.cores];
   else if(loadMark){restoreCheckpoint(run,savedMark,groundAt);loadMark=false;}
   audio?.special(run.stage.special?id-13:0);audio?.transform(run.player.super,hero);audio?.setIntensity(.2);
-  prevStamp=0;lastHud='';go('play',{track:mode==='time'?37:mode==='rush'?38:run.stage.track});
+  cadence.reset();prevStamp=0;lastHud='';go('play',{track:mode==='time'?37:mode==='rush'?38:run.stage.track});
 }
 function pauseRun(){
   if(page!=='play')return;clearTimeout(musicTimer);audio?.pause();go('pause');
@@ -289,10 +291,11 @@ function eventAudio(e){
 function gameFrame(stamp){
   const keys=input.poll(stamp);
   if(page==='play'&&run&&renderer){
-    const events=step(run,keys,prevStamp?(stamp-prevStamp)/1000:0);prevStamp=stamp;
+    const delta=prevStamp?stamp-prevStamp:0;
+    const events=step(run,keys,delta/1000);prevStamp=stamp;
     for(const e of events){eventAudio(e);if(page!=='play')break;if(e.type==='portal' && !portalReturn){portalReturn=run;stageIntro(e.stage,false);break;}}
     if(page==='play'){
-      renderer.draw(run);
+      if(cadence.shouldPaint(stamp,delta))renderer.draw(run);
       if(run.status!=='playing'){
         if(run.status==='won'){progress=finishRun(progress,run);if(savedMark?.stage===run.stageId&&run.mode==='story')savedMark=null;saveProgress();}
         audio?.transform(false);audio?.special(0);go('result',{track:run.status!=='won'?33:run.stage.special?32:30});
