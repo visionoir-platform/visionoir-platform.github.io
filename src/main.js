@@ -81,7 +81,6 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   function applyLanguage(next, dict, explicit) {
     lang = next;
     dictionary = dict;
-    q('#unseen-door').href = base + 'unseen/?lang=' + encodeURIComponent(next);
     updateMetadata(lang,dict,explicit);
     for (const node of document.querySelectorAll('[data-text]')) node.textContent=dict[node.dataset.text];
     for (const node of document.querySelectorAll('[data-label]')) node.setAttribute('aria-label',dict[node.dataset.label]);
@@ -145,7 +144,11 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     audio.pause();
     scene?.setMotion(false);
     html.classList.add('entering-unseen');
-    setTimeout(() => location.assign(door.href), motion ? 190 : 0);
+    setTimeout(() => {
+      // This history entry belongs to this visit. A shared address starts at the footer.
+      history.pushState({ visionoirFooter: location.pathname }, '', base + 'unseen/?lang=' + encodeURIComponent(lang));
+      location.reload();
+    }, motion ? 190 : 0);
   });
   window.addEventListener('pageshow', event => {
     html.classList.remove('entering-unseen');

@@ -1,10 +1,10 @@
 # The Unseen Protocol
 
-La pagina di gioco è `/unseen/`. Nel footer del sito, la parola «unseen.» apre il gioco nella lingua corrente. Il menu offre Storia, Continua, Contro il tempo, Mappa della città, Archivio, Opzioni e Crediti. La sequenza dei boss si sblocca terminando Protocol X. La Luna si apre dopo i sette nuclei e il completamento della fortezza con Vela.
+Nel footer di VISIONOIR, attivare «unseen.» nello slogan «We design the unseen.» per aprire il gioco nella lingua corrente. L’ingresso vale per quella voce della cronologia e sopravvive al ricaricamento. Aprire un indirizzo di gioco copiato riporta al footer. Il menu offre Storia, Continua, Contro il tempo, Mappa della città, Archivio, Opzioni e Crediti. La sequenza dei boss si sblocca terminando Protocol X. La Luna si apre dopo i sette nuclei e il completamento della fortezza con Vela.
 
 ## Avvio e modifiche
 
-Dalla radice, eseguire `npm ci`, `npm run build` e `npm run preview -- --host 127.0.0.1`. Aprire l’indirizzo stampato con il percorso `/unseen/?lang=it`. L’hosting serve file statici. Il sito e il gioco hanno documenti, cicli di rendering e player distinti.
+Dalla radice, eseguire `npm ci`, `npm run build` e `npm run preview -- --host 127.0.0.1`. Aprire l’indirizzo stampato con il percorso `/it/`, scendere al footer e selezionare «unseen.». L’hosting serve file statici. Il sito e il gioco hanno documenti, cicli di rendering e player distinti.
 
 - Livelli e boss sono definiti in `game/engine/content.js`. Le unità fisiche e le entrate sono descritte in `game/engine/README.md`.
 - I cataloghi modificabili sono in `game/ui/locales`. Conservare le colonne e i nomi propri, quindi ricostruire. I 19 dizionari statici sono generati da `game/ui/catalogs.mjs`.

@@ -11,7 +11,11 @@ async function run(){
     const page=await ctx.newPage(),errors=[],missing=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
     page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)missing.push([r.status(),r.url()]);});
     const click=id=>page.locator('button[data-act="'+id+'"]').click({timeout:10000});
-    await page.goto(base+'/it/',{waitUntil:'domcontentloaded'});
+    await page.goto(base+'/unseen/?lang=it');
+    await page.waitForURL(base+'/it/#unseen-door');
+    assert.equal(await page.locator('[data-act=start]').count(),0);
+    assert(!requests.some(u=>u.includes('/unseen/audio/')||u.includes('/unseen/art/')));
+    requests.length=0;
     assert.equal(await page.locator('.service-grid article, [data-price]').count()>0,true);
     assert.equal(await page.locator('a#unseen-door').textContent(),'unseen.');
     assert(!requests.some(u=>u.includes('/unseen/')));
@@ -47,7 +51,7 @@ async function run(){
     for(const [w,h] of [[360,760],[768,1024],[1024,768],[844,390],[1440,900],[1920,1080]]){
       await page.setViewportSize({width:w,height:h});const overflow=await page.evaluate(()=>({width:document.documentElement.scrollWidth,bad:[...document.querySelectorAll('body *')].filter(n=>n.getBoundingClientRect().right>innerWidth+1||n.getBoundingClientRect().left< -1).map(n=>[n.tagName,n.className,n.id,Math.round(n.getBoundingClientRect().width)]).slice(0,20)}));assert(overflow.width<=w+1,'overflow '+w+' '+JSON.stringify(overflow));
     }
-    await page.goto(base+'/unseen/?lang=it');await page.waitForSelector('[data-act=start]');await page.setViewportSize({width:1440,height:900});await page.screenshot({path:path.join(proof,engineName+'-title-desktop.png')});
+    await page.reload();await page.waitForSelector('[data-act=start]');await page.setViewportSize({width:1440,height:900});await page.screenshot({path:path.join(proof,engineName+'-title-desktop.png')});
     for(const l of await page.locator('#lang option').evaluateAll(nodes=>nodes.map(n=>n.value))){await page.locator('#lang').selectOption(l);await page.waitForFunction(l=>document.documentElement.lang===l,l);}
     assert.equal(errors.length,0,JSON.stringify(errors));assert.equal(missing.length,0,JSON.stringify(missing));
     console.log(JSON.stringify({engine:engineName,version:browser.version(),locales:19,scoreScreens:3,pageErrors:errors,missing}));

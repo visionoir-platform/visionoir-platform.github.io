@@ -56,8 +56,7 @@ function fx(id){if(!active||!audio)return;void audio.sfx(id).catch(()=>{});}
 const home=document.querySelector('#home');
 function returnToStudio(event){
   if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-  let prior;try{prior=new URL(document.referrer);}catch{return;}
-  if(prior.origin!==location.origin || !['/','/'+lang.toLowerCase()+'/'].includes(prior.pathname) || history.length<2)return;
+  if(!['/','/'+lang.toLowerCase()+'/'].includes(history.state?.visionoirFooter) || history.length<2)return;
   event.preventDefault();audio?.stop();history.back();
 }
 document.addEventListener('click',e=>{if(e.target.closest('#home,.back-site'))returnToStudio(e);});
@@ -72,7 +71,7 @@ async function language(next,initial=false){
   const data=await res.json();if(serial!==localeToken)return;
   lang=next;dict=data;updateLocaleChrome();effectNames={};
   if(page==='lab')await loadEffectNames();
-  if(!initial){const url=new URL(location.href);url.searchParams.set('lang',lang);history.replaceState(null,'',url);try{localStorage.setItem('visionoir-language',lang);}catch{}}
+  if(!initial){const url=new URL(location.href);url.searchParams.set('lang',lang);history.replaceState(history.state,'',url);try{localStorage.setItem('visionoir-language',lang);}catch{}}
   if(serial===localeToken)render(true);
 }
 async function loadEffectNames(){
@@ -315,7 +314,7 @@ function gameFrame(stamp){
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(page==='play')pauseRun();else audio?.pause();}});
 window.addEventListener('pagehide',()=>{input.clear();audio?.stop();});
 async function boot(){
-  const moduleUrl='/unseen/audio/engine.js';
+  const moduleUrl=new URL('/unseen/audio/engine.js', window.location.origin).href;
   const module=await import(/* @vite-ignore */ moduleUrl);
   audio=module.createGameAudio();applySettings();await language(lang,true);void audio.load().catch(()=>{});
   if(import.meta.env.DEV && ['127.0.0.1','localhost','[::1]'].includes(location.hostname) && new URLSearchParams(location.search).get('qa')==='1'){
@@ -323,4 +322,10 @@ async function boot(){
   }
   requestAnimationFrame(gameFrame);
 }
-boot().catch(()=>{root.innerHTML='<a class="back-site" href="/">← VISIONOIR</a>';notify('The Unseen Protocol · '+(t('error')==='error'?'Caricamento non riuscito':t('error')));});
+const developmentPreview = import.meta.env.DEV && ['127.0.0.1','localhost','[::1]'].includes(location.hostname);
+if (typeof history.state?.visionoirFooter === 'string' || developmentPreview) {
+  boot().catch(()=>{root.innerHTML='<a class="back-site" href="/">← VISIONOIR</a>';notify('The Unseen Protocol · '+(t('error')==='error'?'Caricamento non riuscito':t('error')));});
+} else {
+  document.querySelector('#console').hidden = true;
+  location.replace('/'+lang.toLowerCase()+'/#unseen-door');
+}

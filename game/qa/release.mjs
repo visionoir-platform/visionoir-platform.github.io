@@ -38,6 +38,8 @@ for(const [l,rows] of Object.entries(all)){
   const soundNames=await data('unseen/audio/names/'+l+'.json');assert.equal(Object.keys(soundNames).length,fx.length);for(const e of fx)assert(soundNames[e.id]);
 }
 const cover=await text('unseen/index.html');assert(cover.includes('The Unseen Protocol') && cover.includes(bundles[0]));
+assert(cover.includes('name="robots" content="noindex, nofollow"'));
+assert(!(await text('sitemap.xml')).includes('/unseen/'));
 const reference=JSON.parse(await readFile(new URL('../research/sound-reference.json',import.meta.url),'utf8'));
 assert.equal(reference.files.length,118);
 console.log(JSON.stringify({profile:art.profile,stageCount:STAGES.length,campaignBosses:16,guardians:7,music:music.length,effects:fx.length,artwork:art.files.length,languages:Object.keys(all).length,catalogKeys:Object.keys(all.it).length,bundleBytes:(await stat(resolve(dist,'assets',bundles[0]))).size}));
