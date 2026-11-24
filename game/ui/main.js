@@ -265,8 +265,16 @@ const input=createInput({settings,playing:()=>gameHasFocus,onPause:pauseRun,chan
     const nodes=[...document.querySelectorAll('button:not(:disabled),a[href],select,input:not([type=file])')].filter(n=>n.getClientRects().length);
     if(!nodes.length)return;
     const i=nodes.indexOf(document.activeElement);
-    if(action==='select'){(nodes[i]||nodes[0]).click();return;}
-    const next=i<0?0:(i+(action==='prev'?-1:1)+nodes.length)%nodes.length;nodes[next].focus();
+    if(i<0){
+      // Each screen takes focus when it opens. Start the controller inside that screen.
+      const controls=nodes.filter(n=>root.contains(n));
+      const first=controls.find(n=>n.classList.contains('primary'))
+        ||controls.find(n=>n.tagName==='BUTTON'&&n.dataset.act!=='back')||controls[0]||nodes[0];
+      if(action==='select')first.click();else first.focus();
+      return;
+    }
+    if(action==='select'){nodes[i].click();return;}
+    nodes[(i+(action==='prev'?-1:1)+nodes.length)%nodes.length].focus();
   }});
 window.addEventListener('keydown',event=>{
   if(event.code==='Escape'&&!event.defaultPrevented&&page!=='play'&&event.target.tagName!=='SELECT'){event.preventDefault();back();}
