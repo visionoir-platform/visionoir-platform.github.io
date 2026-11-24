@@ -1,0 +1,23 @@
+{
+  "browser": "firefox",
+  "version": "159.0",
+  "scene": {
+    "label": "logo",
+    "renderState": "webgl",
+    "renderPixelRatio": "1.00"
+  },
+  "framesDiffer": true,
+  "frameSHA256": [
+    "e876fa4e7848877768ff24d070d7cd202b6f6ce764b9c309f52bb28dc3d7d667",
+    "a4b9d0b2b9f284f9067ad9690c610c8f507dc9338ea18281df57f971e5cec016"
+  ],
+  "locales": 19,
+  "pointer": true,
+  "scroll": true,
+  "trailFades": true,
+  "packX": true,
+  "acid": true,
+  "audioPlayPause": true,
+  "ordinaryGameRequests": 0,
+  "errors": []
+}

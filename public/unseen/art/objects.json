@@ -1,0 +1,52 @@
+{
+ "rows": [
+  "ring",
+  "secret",
+  "portal",
+  "shield",
+  "spring",
+  "checkpoint",
+  "breakable",
+  "terminal",
+  "battery",
+  "spike",
+  "core",
+  "exit",
+  "block",
+  "crawler",
+  "drone",
+  "turret",
+  "wisp",
+  "sentry",
+  "eel",
+  "pulse",
+  "shard",
+  "beam",
+  "mine",
+  "disc",
+  "friendly",
+  "spark",
+  "shock",
+  "rain",
+  "smoke",
+  "drift",
+  "debris",
+  "transform",
+  "telekinesis",
+  "splash",
+  "fire",
+  "boost",
+  "collect",
+  "larpking"
+ ],
+ "file": "objects.png",
+ "frameCount": 6,
+ "frame": [
+  40,
+  40
+ ],
+ "pivot": [
+  20,
+  35
+ ]
+}

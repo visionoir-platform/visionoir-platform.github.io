@@ -1,0 +1,24 @@
+{
+  "browser": "chromium",
+  "version": "158.0.8127.38",
+  "scene": {
+    "label": "logo",
+    "renderState": "webgl",
+    "renderPixelRatio": "1.00"
+  },
+  "framesDiffer": true,
+  "frameSHA256": [
+    "e3dade708d0bed75862d3a748bef61bd46d8138f3082e5e783592d9c2eaa35dc",
+    "777011db2be908d227e3e6fce0d8333817029306776d318299038ddee40f82d5"
+  ],
+  "locales": 19,
+  "pointer": true,
+  "scroll": true,
+  "trailFades": true,
+  "packX": true,
+  "acid": true,
+  "audioPlayPause": true,
+  "ordinaryGameRequests": 0,
+  "errors": [],
+  "mobileTouchScroll": 481
+}

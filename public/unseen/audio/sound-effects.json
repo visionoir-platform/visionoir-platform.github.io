@@ -1,0 +1,2362 @@
+[
+  {
+    "id": "jump",
+    "recipe": "fe7b956fe24ba549d45e81c3b8cf2520684cf59776bb1c3dd07e6fda1fceaf90",
+    "title": "Jump",
+    "category": "movement",
+    "file": "/unseen/audio/fx-jump.m4a",
+    "duration": 0.155,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "jump"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "land",
+    "recipe": "33b80e5a5e2f4b0aa39524d088ed018ed059c37f389f9b17ef6d135313f77b5c",
+    "title": "Land",
+    "category": "movement",
+    "file": "/unseen/audio/fx-land.m4a",
+    "duration": 0.11,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "land"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "step-metal",
+    "recipe": "8a229262f384ad3fbfbb5324b42efe3d63aa8558a00086207833571ee766189a",
+    "title": "Step Metal",
+    "category": "movement",
+    "file": "/unseen/audio/fx-step-metal.m4a",
+    "duration": 0.065,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "step-metal"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "skid",
+    "recipe": "c37b1a956597473b3280a962df3710cc489a01b3a01572da506b4cfa295d90ec",
+    "title": "Skid",
+    "category": "movement",
+    "file": "/unseen/audio/fx-skid.m4a",
+    "duration": 0.19,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "skid"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "roll",
+    "recipe": "86fde1477c7182483e129607cd05cc72dc7f70372eb299e24483ab4f1c6ebf78",
+    "title": "Roll",
+    "category": "movement",
+    "file": "/unseen/audio/fx-roll.m4a",
+    "duration": 0.16,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "roll"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "charge-dash",
+    "recipe": "3f4590489584b8ff256a7f6c23c2ea7825f5489bc33b716364d9fb8fa61d3825",
+    "title": "Charge Dash",
+    "category": "movement",
+    "file": "/unseen/audio/fx-charge-dash.m4a",
+    "duration": 0.34,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "charge-dash"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "dash-release",
+    "recipe": "5242d5d1f7be643c8c23287ce331f4833d01fe533c10c1d6d6d5f9868828e0d7",
+    "title": "Dash Release",
+    "category": "movement",
+    "file": "/unseen/audio/fx-dash-release.m4a",
+    "duration": 0.268,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "dash-release"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "spring",
+    "recipe": "c3e685610dfc16e14af4752c56f5bc6f01998416e690ac2b524976d6984e7e63",
+    "title": "Spring",
+    "category": "movement",
+    "file": "/unseen/audio/fx-spring.m4a",
+    "duration": 0.21,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "spring"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "rail-grind",
+    "recipe": "37cf85d64ccdef8016de5ec43346cbc7d22fd205b2e7cd29f1c469c2c340a928",
+    "title": "Rail Grind",
+    "category": "movement",
+    "file": "/unseen/audio/fx-rail-grind.m4a",
+    "duration": 0.27,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "rail-grind"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "wall-grip",
+    "recipe": "a1c9806f6af5ce77071efd9f4f23aa78ccf13816e73a4c113f008a9f83f9c0e4",
+    "title": "Wall Grip",
+    "category": "movement",
+    "file": "/unseen/audio/fx-wall-grip.m4a",
+    "duration": 0.144,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "wall-grip"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "wall-kick",
+    "recipe": "83fe9f07ab3068ee56ef567e726e5e6d1b0099460ef75eb173b5002db10f4884",
+    "title": "Wall Kick",
+    "category": "movement",
+    "file": "/unseen/audio/fx-wall-kick.m4a",
+    "duration": 0.181,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "wall-kick"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "glide",
+    "recipe": "222d8c4398e4510eb16b104999558112949ffd1499c5416cee51bc628d0f0550",
+    "title": "Glide",
+    "category": "movement",
+    "file": "/unseen/audio/fx-glide.m4a",
+    "duration": 0.286,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "glide"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "dive",
+    "recipe": "4ac379295ab42b99ac95674c9834644c0a82dddf81b977ba02c26603b1fad5bc",
+    "title": "Dive",
+    "category": "movement",
+    "file": "/unseen/audio/fx-dive.m4a",
+    "duration": 0.244,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "dive"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "water-entry",
+    "recipe": "becd82251b5c31fa65ad22334bae5e8f5596f8238e077749ff9d40dac42056e0",
+    "title": "Water Entry",
+    "category": "movement",
+    "file": "/unseen/audio/fx-water-entry.m4a",
+    "duration": 0.222,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "water-entry"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "swim-stroke",
+    "recipe": "cae0d023722a0774d7567cbd2132ae37e217b3aceb8aab00aa386b0be0822d91",
+    "title": "Swim Stroke",
+    "category": "movement",
+    "file": "/unseen/audio/fx-swim-stroke.m4a",
+    "duration": 0.169,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "swim-stroke"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boost-pad",
+    "recipe": "ef054701844af8e38514fb078386ba98505577afbad49c3fc70d70a4104e34e7",
+    "title": "Boost Pad",
+    "category": "movement",
+    "file": "/unseen/audio/fx-boost-pad.m4a",
+    "duration": 0.265,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boost-pad"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "loop-apex",
+    "recipe": "4cd84c46fce4e219c8d67aec4fea635828d3eced540f9a56511508e334ac2ca4",
+    "title": "Loop Apex",
+    "category": "movement",
+    "file": "/unseen/audio/fx-loop-apex.m4a",
+    "duration": 0.196,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "loop-apex"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "fast-step",
+    "recipe": "4d62620175e5428510a1572187c4fb278b93dadd6a4fa028a866cfed388495fb",
+    "title": "Fast Step",
+    "category": "movement",
+    "file": "/unseen/audio/fx-fast-step.m4a",
+    "duration": 0.087,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "fast-step"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "ring",
+    "recipe": "756f390169b73c7e92375d9f8f9c137508389325b7aa3daa8a124f2f877c5587",
+    "title": "Ring",
+    "category": "collect",
+    "file": "/unseen/audio/fx-ring.m4a",
+    "duration": 0.245,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "ring"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "ring-chain",
+    "recipe": "bb5695149b969c22ed5643b7ec4c87aa09b83d940bf0e2bd88750b854b662cbd",
+    "title": "Ring Chain",
+    "category": "collect",
+    "file": "/unseen/audio/fx-ring-chain.m4a",
+    "duration": 0.278,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "ring-chain"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "cache-found",
+    "recipe": "c926a32582a23d18bcdbad374bc78002c83ce60ef2fadb892c07e8a83f76d3ac",
+    "title": "Cache Found",
+    "category": "collect",
+    "file": "/unseen/audio/fx-cache-found.m4a",
+    "duration": 0.322,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "cache-found"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "core-spark",
+    "recipe": "7c2fe968967a591a7016044b43ab38cbea1b0444d9a4ab6c4ccbb8a9c6878f7b",
+    "title": "Core Spark",
+    "category": "collect",
+    "file": "/unseen/audio/fx-core-spark.m4a",
+    "duration": 0.324,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "core-spark"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "checkpoint",
+    "recipe": "d56e74a1479658a9d2b67d700c2aa1ebaeb1f3aab1c32ffe670a2f528ce81806",
+    "title": "Checkpoint",
+    "category": "collect",
+    "file": "/unseen/audio/fx-checkpoint.m4a",
+    "duration": 0.467,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "checkpoint"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "shield-gain",
+    "recipe": "fe51cd0a0992d53dc97cd2eec115eba597d9aa2a143a9cbe2fa5b4073bdfe19b",
+    "title": "Shield Gain",
+    "category": "collect",
+    "file": "/unseen/audio/fx-shield-gain.m4a",
+    "duration": 0.314,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "shield-gain"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "extra-life",
+    "recipe": "fcc7b0855259c50d7e3ea97bea5d01c7fa52bc9aeadafa0add17471f0973d1a4",
+    "title": "Extra Life",
+    "category": "collect",
+    "file": "/unseen/audio/fx-extra-life.m4a",
+    "duration": 0.47,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "extra-life"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "score-tick",
+    "recipe": "c929e230c7149610f8801ce4d7609bd95ce8599f548afeafe5b1487efd14c002",
+    "title": "Score Tick",
+    "category": "collect",
+    "file": "/unseen/audio/fx-score-tick.m4a",
+    "duration": 0.05,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "score-tick"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "bonus-key",
+    "recipe": "5e372c985c0bb54ad37055e4952a87a366c749f1f10d74499c720fab86a5cc8f",
+    "title": "Bonus Key",
+    "category": "collect",
+    "file": "/unseen/audio/fx-bonus-key.m4a",
+    "duration": 0.294,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "bonus-key"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "secret-route",
+    "recipe": "dcf4a39836915d2fb47acc9a548fec0782a5673e5cfef049159d815de895db3f",
+    "title": "Secret Route",
+    "category": "collect",
+    "file": "/unseen/audio/fx-secret-route.m4a",
+    "duration": 0.417,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "secret-route"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "record",
+    "recipe": "7715a88ea48e6ad842132805150ecdc6ccb0e90e694db6079de146239b2c27da",
+    "title": "Record",
+    "category": "collect",
+    "file": "/unseen/audio/fx-record.m4a",
+    "duration": 0.46,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "record"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "victory",
+    "recipe": "f7acedb529bf9b5fe8f8792c141f14d0454740f7916a19eeaaa729b47abdfd4a",
+    "title": "Victory",
+    "category": "collect",
+    "file": "/unseen/audio/fx-victory.m4a",
+    "duration": 0.502,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "victory"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "hit",
+    "recipe": "49dfdd5663e87f37e05995243e8c2ae1ec43ebf33936643d5d1b5f71542ef282",
+    "title": "Hit",
+    "category": "combat",
+    "file": "/unseen/audio/fx-hit.m4a",
+    "duration": 0.148,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "hit"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "shield-break",
+    "recipe": "beb701dd13397c4d29d209eb75a41c0f8a34fc997b165402538dad78b8fd2017",
+    "title": "Shield Break",
+    "category": "combat",
+    "file": "/unseen/audio/fx-shield-break.m4a",
+    "duration": 0.202,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "shield-break"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "punch",
+    "recipe": "8c016155b6114ddc986cf6dae5100fff250b3ec3d36e777ea9c4bcd66dcf0693",
+    "title": "Punch",
+    "category": "combat",
+    "file": "/unseen/audio/fx-punch.m4a",
+    "duration": 0.153,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "punch"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "combo-kick",
+    "recipe": "862375a5a00ad9f8a3c4dbca2c2d9a45ec389f9f81f59e6ed32de3ce49790308",
+    "title": "Combo Kick",
+    "category": "combat",
+    "file": "/unseen/audio/fx-combo-kick.m4a",
+    "duration": 0.221,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "combo-kick"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "slam",
+    "recipe": "54b4cb0d0ff55029adad0dc4596d9b3ee608b1394ee839603a486bbc354724f8",
+    "title": "Slam",
+    "category": "combat",
+    "file": "/unseen/audio/fx-slam.m4a",
+    "duration": 0.273,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "slam"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "parry",
+    "recipe": "932a21d284761c2c499ea5d159ebe41076d14e882db79ee32b6c2a920b65405f",
+    "title": "Parry",
+    "category": "combat",
+    "file": "/unseen/audio/fx-parry.m4a",
+    "duration": 0.22,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "parry"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "spin-hit",
+    "recipe": "acad7caf62b943b24ff80519f85849db7a96ec2adfe0a31878cdf32a77d2f839",
+    "title": "Spin Hit",
+    "category": "combat",
+    "file": "/unseen/audio/fx-spin-hit.m4a",
+    "duration": 0.144,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "spin-hit"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "projectile",
+    "recipe": "e1586925d95d7845146c53d71a37131068301dbae218c89104460b5aa64429f5",
+    "title": "Projectile",
+    "category": "combat",
+    "file": "/unseen/audio/fx-projectile.m4a",
+    "duration": 0.154,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "projectile"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "ricochet",
+    "recipe": "51adbed8c830897c756a7ccfc1854abe08641a0c9b2897f4479a1d33162d0b2a",
+    "title": "Ricochet",
+    "category": "combat",
+    "file": "/unseen/audio/fx-ricochet.m4a",
+    "duration": 0.211,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "ricochet"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "invulnerable",
+    "recipe": "af564d8eaa21c1ca5cda0cb5999b51ecba96729f9390ba626bdb90bd5bc2f4a6",
+    "title": "Invulnerable",
+    "category": "combat",
+    "file": "/unseen/audio/fx-invulnerable.m4a",
+    "duration": 0.245,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "invulnerable"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "knockback",
+    "recipe": "731dbea871e4f8cccf42b8dc7eddd01c24f13da16482d0fd9b465a48e91e75f4",
+    "title": "Knockback",
+    "category": "combat",
+    "file": "/unseen/audio/fx-knockback.m4a",
+    "duration": 0.172,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "knockback"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "defeat",
+    "recipe": "01b868b20db5df6831e482473d5d1554bfa5e9534eb915eac96be49e274f4675",
+    "title": "Defeat",
+    "category": "combat",
+    "file": "/unseen/audio/fx-defeat.m4a",
+    "duration": 0.56,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "defeat"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "respawn",
+    "recipe": "8833571f412e01e35e73f053b6f66166d30a7a451564228165ab61129c93baa5",
+    "title": "Respawn",
+    "category": "combat",
+    "file": "/unseen/audio/fx-respawn.m4a",
+    "duration": 0.447,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "respawn"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "combo-finish",
+    "recipe": "670eb6c710dc8064686d6c9c82aa9f911d1fe027d28fd07ba215cc03dcb14e5e",
+    "title": "Combo Finish",
+    "category": "combat",
+    "file": "/unseen/audio/fx-combo-finish.m4a",
+    "duration": 0.265,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "combo-finish"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "velocity-coil",
+    "recipe": "3b6052cb90827286e938b9062250a6b3859dcb4b0f3e31c5179acf0d45b29de9",
+    "title": "Velocity Coil",
+    "category": "ability",
+    "file": "/unseen/audio/fx-velocity-coil.m4a",
+    "duration": 0.235,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "velocity-coil"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "velocity-air-step",
+    "recipe": "00981966bbd24b66e2e9fb0178e8a4624a43a2b0636387ae1a28de37210c14f2",
+    "title": "Velocity Air Step",
+    "category": "ability",
+    "file": "/unseen/audio/fx-velocity-air-step.m4a",
+    "duration": 0.153,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "velocity-air-step"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "velocity-rail-flare",
+    "recipe": "76984e74cd4effbe91880d401db739c7e5faf2d11c1f17279d711a8b8afdcf03",
+    "title": "Velocity Rail Flare",
+    "category": "ability",
+    "file": "/unseen/audio/fx-velocity-rail-flare.m4a",
+    "duration": 0.217,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "velocity-rail-flare"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "velocity-overrun",
+    "recipe": "9e22f96b7d74181930fe11231026fb397be830cfbe85cd4866c134137170ebd8",
+    "title": "Velocity Overrun",
+    "category": "ability",
+    "file": "/unseen/audio/fx-velocity-overrun.m4a",
+    "duration": 0.26,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "velocity-overrun"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "noir-blink",
+    "recipe": "54c3a423ce55294a67bcfda2bf6b70a7aafbf1458c68494a6c9efcb4d4c2e803",
+    "title": "Noir Blink",
+    "category": "ability",
+    "file": "/unseen/audio/fx-noir-blink.m4a",
+    "duration": 0.147,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "noir-blink"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "noir-stasis",
+    "recipe": "75d18a4760601a625ba64d70a216822e5c8fadf42f9663a7ae8c6f17ac094351",
+    "title": "Noir Stasis",
+    "category": "ability",
+    "file": "/unseen/audio/fx-noir-stasis.m4a",
+    "duration": 0.351,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "noir-stasis"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "noir-hover",
+    "recipe": "aae8abb3fbf278287c5e54dd6902405ea1412603e5629e6be72a834a1c501918",
+    "title": "Noir Hover",
+    "category": "ability",
+    "file": "/unseen/audio/fx-noir-hover.m4a",
+    "duration": 0.26,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "noir-hover"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "noir-lance",
+    "recipe": "47617e903fbe77375a0481baa8c1df908ce44203b81e366cf3abfb696367b6c4",
+    "title": "Noir Lance",
+    "category": "ability",
+    "file": "/unseen/audio/fx-noir-lance.m4a",
+    "duration": 0.252,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "noir-lance"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "aura-lift",
+    "recipe": "d2e696b0e7a7830d3eed16753324c02132ac8df65b4aa41fe3914dc7338c2d89",
+    "title": "Aura Lift",
+    "category": "ability",
+    "file": "/unseen/audio/fx-aura-lift.m4a",
+    "duration": 0.327,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "aura-lift"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "aura-grip",
+    "recipe": "bc84536408b6e7aee0668034f03dcb19e2acd570be1c3b642d1232f2f49078ea",
+    "title": "Aura Grip",
+    "category": "ability",
+    "file": "/unseen/audio/fx-aura-grip.m4a",
+    "duration": 0.249,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "aura-grip"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "aura-throw",
+    "recipe": "aa8e9cb5c86f75f058455c4eb2b2c2c1cda3cb5e05ba01b6b3a309344e1ef3e1",
+    "title": "Aura Throw",
+    "category": "ability",
+    "file": "/unseen/audio/fx-aura-throw.m4a",
+    "duration": 0.289,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "aura-throw"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "aura-phase",
+    "recipe": "41d33fbc77a0c47f04f2d8a960ec80afca184452cc0938dc3bcad6a4d3c8c74c",
+    "title": "Aura Phase",
+    "category": "ability",
+    "file": "/unseen/audio/fx-aura-phase.m4a",
+    "duration": 0.296,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "aura-phase"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crimson-hook",
+    "recipe": "5680d092a5ab7dba6e085efe29274adb11195720e12ea7a9fd83bc7b86c6d677",
+    "title": "Crimson Hook",
+    "category": "ability",
+    "file": "/unseen/audio/fx-crimson-hook.m4a",
+    "duration": 0.155,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crimson-hook"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crimson-breach",
+    "recipe": "8ed47bceb5f05255afc60250c80f257e2d8f700ff571bb938d26137611f0bbd0",
+    "title": "Crimson Breach",
+    "category": "ability",
+    "file": "/unseen/audio/fx-crimson-breach.m4a",
+    "duration": 0.249,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crimson-breach"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crimson-glide",
+    "recipe": "71407f295d273eb729dbeb25d8937dc215723fac5ff1ac303b1abdf1174cdda2",
+    "title": "Crimson Glide",
+    "category": "ability",
+    "file": "/unseen/audio/fx-crimson-glide.m4a",
+    "duration": 0.245,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crimson-glide"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crimson-fault",
+    "recipe": "470d799d64a76936e9b810bcbdd210ff899b9a7ce367181068b47a33dc4e0eab",
+    "title": "Crimson Fault",
+    "category": "ability",
+    "file": "/unseen/audio/fx-crimson-fault.m4a",
+    "duration": 0.332,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crimson-fault"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "amber-flight",
+    "recipe": "fe34d0c7c8fdcdb736b66efe928bcf23cb3b3cd4d175f0ed74bc435f283ca68a",
+    "title": "Amber Flight",
+    "category": "ability",
+    "file": "/unseen/audio/fx-amber-flight.m4a",
+    "duration": 0.316,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "amber-flight"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "amber-compute",
+    "recipe": "4330a88d550b5bee46eccdc717f5fb10027c23f7c5516a0febce32e774f46762",
+    "title": "Amber Compute",
+    "category": "ability",
+    "file": "/unseen/audio/fx-amber-compute.m4a",
+    "duration": 0.281,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "amber-compute"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "amber-beacon",
+    "recipe": "83350eb184f2f1c71e18f221cfe872c358020deb9392cdbbb19c7fbc82372b01",
+    "title": "Amber Beacon",
+    "category": "ability",
+    "file": "/unseen/audio/fx-amber-beacon.m4a",
+    "duration": 0.324,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "amber-beacon"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "amber-turbine",
+    "recipe": "5a5c10ab4fa7f1676d741ab84068a79c989393325ea158c1125356bf271d5f27",
+    "title": "Amber Turbine",
+    "category": "ability",
+    "file": "/unseen/audio/fx-amber-turbine.m4a",
+    "duration": 0.297,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "amber-turbine"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "transform",
+    "recipe": "90ce8916f86737448742cd96dc88a020f539f664395b09920b615928b014f12d",
+    "title": "Transform",
+    "category": "energy",
+    "file": "/unseen/audio/fx-transform.m4a",
+    "duration": 0.526,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "transform"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "transform-end",
+    "recipe": "094ffe16c915e46f28a3e54dc31db4aa857559df54484bfdbb0b8dedde182132",
+    "title": "Transform End",
+    "category": "energy",
+    "file": "/unseen/audio/fx-transform-end.m4a",
+    "duration": 0.337,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "transform-end"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "super-chrome",
+    "recipe": "ad5d3ea30723f9b30475b0a03ac9c37ff5594bdadbfefddd7c1dbbae279c771d",
+    "title": "Super Chrome",
+    "category": "energy",
+    "file": "/unseen/audio/fx-super-chrome.m4a",
+    "duration": 0.396,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "super-chrome"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "super-obsidian",
+    "recipe": "306809d90f7299185b38f6c3cc7f395f5841fe9148b1267ccd0fac5f633489ec",
+    "title": "Super Obsidian",
+    "category": "energy",
+    "file": "/unseen/audio/fx-super-obsidian.m4a",
+    "duration": 0.405,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "super-obsidian"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "super-quantum",
+    "recipe": "3bf0660729cb1d89b8f5a6c26f20b0a6bafdd9ed487405a0ffe639083f1b5b5a",
+    "title": "Super Quantum",
+    "category": "energy",
+    "file": "/unseen/audio/fx-super-quantum.m4a",
+    "duration": 0.399,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "super-quantum"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "super-crimson",
+    "recipe": "926a0398d69aef925d8438f426cae803e372c5eb673b309c1dd01e415d6ba3c9",
+    "title": "Super Crimson",
+    "category": "energy",
+    "file": "/unseen/audio/fx-super-crimson.m4a",
+    "duration": 0.43,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "super-crimson"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "super-solar",
+    "recipe": "f04f7436d5e6d602286f9f6e506b8d16c5f108748dfe8ecbf0508e26e114a64a",
+    "title": "Super Solar",
+    "category": "energy",
+    "file": "/unseen/audio/fx-super-solar.m4a",
+    "duration": 0.326,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "super-solar"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "energy-low",
+    "recipe": "0cd2faed1603c518ebe6802f4871859e19b759b924509fd60c4cdf24b72e8fb0",
+    "title": "Energy Low",
+    "category": "energy",
+    "file": "/unseen/audio/fx-energy-low.m4a",
+    "duration": 0.285,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "energy-low"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "energy-drain",
+    "recipe": "897203adef589e26060ed13fe35420bbfb98a7bc70c97cbde5216cdb465103c3",
+    "title": "Energy Drain",
+    "category": "energy",
+    "file": "/unseen/audio/fx-energy-drain.m4a",
+    "duration": 0.286,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "energy-drain"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "energy-full",
+    "recipe": "196191fdc7711f07f622d88caa1424d65c7fce72a32de74384a8d1421954c5f7",
+    "title": "Energy Full",
+    "category": "energy",
+    "file": "/unseen/audio/fx-energy-full.m4a",
+    "duration": 0.406,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "energy-full"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "enemy-wake",
+    "recipe": "41798204a1ee6a98be2cfe8890b172777a1b082768c7adcb4728e61f6c8f14c8",
+    "title": "Enemy Wake",
+    "category": "machine",
+    "file": "/unseen/audio/fx-enemy-wake.m4a",
+    "duration": 0.238,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "enemy-wake"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "drone-wing",
+    "recipe": "7eedd6c42a8ed0ea3ad0aa5b83437f56975c54013ea130d2404d701c2f5ed757",
+    "title": "Drone Wing",
+    "category": "machine",
+    "file": "/unseen/audio/fx-drone-wing.m4a",
+    "duration": 0.247,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "drone-wing"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "turret-lock",
+    "recipe": "b411e12567974285f6e3266f1e68bf79fb30f954fec35479ce59fefc164b15c6",
+    "title": "Turret Lock",
+    "category": "machine",
+    "file": "/unseen/audio/fx-turret-lock.m4a",
+    "duration": 0.245,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "turret-lock"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "turret-fire",
+    "recipe": "01eef66ec213b894e18f4042b5ad395c28e20e5744bae76a66917754bb5444a4",
+    "title": "Turret Fire",
+    "category": "machine",
+    "file": "/unseen/audio/fx-turret-fire.m4a",
+    "duration": 0.2,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "turret-fire"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crawler-tread",
+    "recipe": "ce68c361fc185610a0853ab6d1f4fe7465d7926589f5af70d4682e76176adb9e",
+    "title": "Crawler Tread",
+    "category": "machine",
+    "file": "/unseen/audio/fx-crawler-tread.m4a",
+    "duration": 0.163,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crawler-tread"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "press-warn",
+    "recipe": "e8b938b4511bece63694e418dbecf85e6247e01bdeeb61de3306f7f503e83201",
+    "title": "Press Warn",
+    "category": "machine",
+    "file": "/unseen/audio/fx-press-warn.m4a",
+    "duration": 0.294,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "press-warn"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "press-strike",
+    "recipe": "79f4ec668c67929156699c53d1e2c561e978703d2f6a706e14cae020879c37d3",
+    "title": "Press Strike",
+    "category": "machine",
+    "file": "/unseen/audio/fx-press-strike.m4a",
+    "duration": 0.255,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "press-strike"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-enter",
+    "recipe": "4f969aa931dc45aa1cce0a4ab711a51d49be5df29d2c085f2834b0cdaa35d8e3",
+    "title": "Boss Enter",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-enter.m4a",
+    "duration": 0.452,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-enter"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-telegraph",
+    "recipe": "b00406b6686d425e994f147f8e2d6264a2030552eca4d81a71092841d99926b4",
+    "title": "Boss Telegraph",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-telegraph.m4a",
+    "duration": 0.258,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-telegraph"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-volley",
+    "recipe": "5d9821c41291e6bc85d9361111a8c59ff6b8b08c0c232efd2438dd717ce1680e",
+    "title": "Boss Volley",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-volley.m4a",
+    "duration": 0.275,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-volley"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-exposed",
+    "recipe": "fdffff02c25e75ee446b62295153ef426e6db7abe62b4c9297c876fb3f19540a",
+    "title": "Boss Exposed",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-exposed.m4a",
+    "duration": 0.287,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-exposed"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-hit",
+    "recipe": "8b4ab97d36f67010a61a68228604d516674c089cc181ae40d930a49b8a28d703",
+    "title": "Boss Hit",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-hit.m4a",
+    "duration": 0.176,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-hit"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-phase",
+    "recipe": "d29a4f69c3ac8cfe1f0ec1d416615c8b3cc28141b281dc08a0cd7a68bce46a66",
+    "title": "Boss Phase",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-phase.m4a",
+    "duration": 0.477,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-phase"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "boss-fall",
+    "recipe": "46446d21f03fdbcc26a0eaf461ee3beebdff3901397941db572cf93c634cba52",
+    "title": "Boss Fall",
+    "category": "machine",
+    "file": "/unseen/audio/fx-boss-fall.m4a",
+    "duration": 0.569,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "boss-fall"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "core-reactor",
+    "recipe": "1425c81487ef0d8f4b981b01db414c773818c299e204032a1a870554b4be84f7",
+    "title": "Core Reactor",
+    "category": "machine",
+    "file": "/unseen/audio/fx-core-reactor.m4a",
+    "duration": 0.433,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "core-reactor"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "guardian-call",
+    "recipe": "1728d8babbef1360283921efb74bba7fa4a130b3757d95ab1a673f93d2ced7b8",
+    "title": "Guardian Call",
+    "category": "machine",
+    "file": "/unseen/audio/fx-guardian-call.m4a",
+    "duration": 0.409,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "guardian-call"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "door-open",
+    "recipe": "f026b7ea2c1f13e7c1071f32831fafdb4d5f570ad5583e0699aa3807e8c8f67e",
+    "title": "Door Open",
+    "category": "world",
+    "file": "/unseen/audio/fx-door-open.m4a",
+    "duration": 0.338,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "door-open"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "door-close",
+    "recipe": "fd2eff44b2530e6e8a602216cea5f19dc15a2839f1ba0c3ef5c0ea677d0d7a9f",
+    "title": "Door Close",
+    "category": "world",
+    "file": "/unseen/audio/fx-door-close.m4a",
+    "duration": 0.351,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "door-close"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "portal-in",
+    "recipe": "d4ce074361bff8c9fd905cd9a80ea54b171260feaf32112f98e0f8169886094f",
+    "title": "Portal In",
+    "category": "world",
+    "file": "/unseen/audio/fx-portal-in.m4a",
+    "duration": 0.441,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "portal-in"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "portal-out",
+    "recipe": "3d1e1a613369dc342b9a9e0e36993672f60497a834c43aa167dbb4b328bc3bcb",
+    "title": "Portal Out",
+    "category": "world",
+    "file": "/unseen/audio/fx-portal-out.m4a",
+    "duration": 0.311,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "portal-out"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "lift-rise",
+    "recipe": "f5ef0cbf844829a6f42dd1a5c4a8a033cb8b56d8311d908082575272a577fe7a",
+    "title": "Lift Rise",
+    "category": "world",
+    "file": "/unseen/audio/fx-lift-rise.m4a",
+    "duration": 0.346,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "lift-rise"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "ice-crack",
+    "recipe": "7509be1d3bf0d6a1786cc689ebe6b84f671c25c88dcbdf6ea5d23eef182c9194",
+    "title": "Ice Crack",
+    "category": "world",
+    "file": "/unseen/audio/fx-ice-crack.m4a",
+    "duration": 0.168,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "ice-crack"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "geyser",
+    "recipe": "3cebae4bb9e8d787f642d77cb50902895d850fd31484e06b01318de6fa6689f7",
+    "title": "Geyser",
+    "category": "world",
+    "file": "/unseen/audio/fx-geyser.m4a",
+    "duration": 0.31,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "geyser"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "rain-impact",
+    "recipe": "cea07b088ae49cac26cc6e014ca458c85b11e445ce712d343a8746ddbb60ec2c",
+    "title": "Rain Impact",
+    "category": "world",
+    "file": "/unseen/audio/fx-rain-impact.m4a",
+    "duration": 0.153,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "rain-impact"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "low-gravity",
+    "recipe": "638b68b5b8693f2af69d2218c522cfc5e88551cf72ffbdda0889d26f1f5f289e",
+    "title": "Low Gravity",
+    "category": "world",
+    "file": "/unseen/audio/fx-low-gravity.m4a",
+    "duration": 0.315,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "low-gravity"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "bumper",
+    "recipe": "8075b7946f91811a133c458722aba8a77c6e9b100a408f66dbc76a8642c98511",
+    "title": "Bumper",
+    "category": "world",
+    "file": "/unseen/audio/fx-bumper.m4a",
+    "duration": 0.153,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "bumper"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "power-switch",
+    "recipe": "e82cc005cdcac09502fe45a1b425fd31aec80e44cf9fa0d8721d3f1f0dcdb1d5",
+    "title": "Power Switch",
+    "category": "world",
+    "file": "/unseen/audio/fx-power-switch.m4a",
+    "duration": 0.208,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "power-switch"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "crumble",
+    "recipe": "2c66fcf7adbb8ea92cbe20d174b1c206cb2fdb3e809ad9cb38e9c7b6a286feca",
+    "title": "Crumble",
+    "category": "world",
+    "file": "/unseen/audio/fx-crumble.m4a",
+    "duration": 0.269,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "crumble"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "menu-select",
+    "recipe": "6b3f2bf68b619923d67fa1ad617ba05401d00cb6ae295f7319b73b9ef1b89812",
+    "title": "Menu Select",
+    "category": "interface",
+    "file": "/unseen/audio/fx-menu-select.m4a",
+    "duration": 0.165,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "menu-select"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "menu-move",
+    "recipe": "0670bbf064bd56636031f4236645a08e69339eaa601e46578865a8eea86117c1",
+    "title": "Menu Move",
+    "category": "interface",
+    "file": "/unseen/audio/fx-menu-move.m4a",
+    "duration": 0.043,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "menu-move"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "menu-back",
+    "recipe": "a4d6c3348887886d21a96f2a919d930ae9272f16ec3994d46bf151898b2403bf",
+    "title": "Menu Back",
+    "category": "interface",
+    "file": "/unseen/audio/fx-menu-back.m4a",
+    "duration": 0.157,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "menu-back"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "menu-error",
+    "recipe": "7d3591dc600868de3780bb869e7e28887f1defc3a3d3c2eda0adfd1ccc931f85",
+    "title": "Menu Error",
+    "category": "interface",
+    "file": "/unseen/audio/fx-menu-error.m4a",
+    "duration": 0.232,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "menu-error"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "pause",
+    "recipe": "420f6a3a8431b8ca48db2c559c83739011ec460a278ec1b6a0972a6e063ec161",
+    "title": "Pause",
+    "category": "interface",
+    "file": "/unseen/audio/fx-pause.m4a",
+    "duration": 0.208,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "pause"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "resume",
+    "recipe": "0ca530e5289c4abd90206b5574e000de8ce13c7e5b4438eb5cc837e701748be9",
+    "title": "Resume",
+    "category": "interface",
+    "file": "/unseen/audio/fx-resume.m4a",
+    "duration": 0.202,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "resume"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "menu-tab",
+    "recipe": "b5c8e03100f8d9d5fcb3e559034068add31d55b9fe2da2ed9c0f026f58c48cd7",
+    "title": "Menu Tab",
+    "category": "interface",
+    "file": "/unseen/audio/fx-menu-tab.m4a",
+    "duration": 0.103,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "menu-tab"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "save",
+    "recipe": "518b676469498b31a4b4890c992c7b6fea795d5f5a2961d42288f22db509c6bf",
+    "title": "Save",
+    "category": "interface",
+    "file": "/unseen/audio/fx-save.m4a",
+    "duration": 0.242,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "save"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "load",
+    "recipe": "a92359290f7c0c3fbb342dc7cb04c3040d59a289b72defb12305052cce242dfd",
+    "title": "Load",
+    "category": "interface",
+    "file": "/unseen/audio/fx-load.m4a",
+    "duration": 0.247,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "load"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "countdown",
+    "recipe": "1ea41ae02320ef6d7677e126936c5492306c09eadcba45c8031e8b05669a659b",
+    "title": "Countdown",
+    "category": "interface",
+    "file": "/unseen/audio/fx-countdown.m4a",
+    "duration": 0.09,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "countdown"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "signal-open",
+    "recipe": "4f3fcd38367c483e84999a33ae013d9bc02b162f55b5ee1fea8ceb6a43d1057b",
+    "title": "Signal Open",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-signal-open.m4a",
+    "duration": 0.278,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "signal-open"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "transmission",
+    "recipe": "56e07774101f44b43482b1891881b8699913ea33cd0db8ca2e5d702ea8b17815",
+    "title": "Transmission",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-transmission.m4a",
+    "duration": 0.299,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "transmission"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "signal-close",
+    "recipe": "a071c1505b991a33238397857edb0905184c8fe31e1a6e07313be4535f80494c",
+    "title": "Signal Close",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-signal-close.m4a",
+    "duration": 0.175,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "signal-close"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "vision",
+    "recipe": "97477bf682ce34ca0e5b6a01be108cdff12007d98117aabe1147ace9d2211fe3",
+    "title": "Vision",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-vision.m4a",
+    "duration": 0.476,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "vision"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "revelation",
+    "recipe": "7e52b86d70e61f149be03aaa1521ffba03d4394e1da869f5314323cab5b4b89e",
+    "title": "Revelation",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-revelation.m4a",
+    "duration": 0.573,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "revelation"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  },
+  {
+    "id": "after-credits",
+    "recipe": "3d80c5fa21d38bf1c0c3352d1f5f57fdf40c33aea152e005996ec75985c9737e",
+    "title": "After Credits",
+    "category": "narrative",
+    "file": "/unseen/audio/fx-after-credits.m4a",
+    "duration": 0.839,
+    "bpm": null,
+    "key": null,
+    "loop": null,
+    "scenes": [
+      "after-credits"
+    ],
+    "stems": [],
+    "provenance": "Authored event score and deterministic synthesized transients. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "encoded QA in audio-qa.json"
+  }
+]

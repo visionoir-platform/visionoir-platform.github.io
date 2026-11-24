@@ -1,0 +1,33 @@
+name: Check Unseen Protocol
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  original:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: python -m pip install Pillow -r scripts/audio-premium-requirements.txt imageio-ffmpeg
+      - name: Rebuild studio audio used by the website
+        run: |
+          mkdir -p .bin
+          python -c "import imageio_ffmpeg,os; os.symlink(imageio_ffmpeg.get_ffmpeg_exe(), '.bin/ffmpeg')"
+          export PATH="$PWD/.bin:$PATH"
+          python scripts/synthesize-soundtrack.py
+          python scripts/synthesize-modes.py
+          python scripts/synthesize-premium.py --track all
+      - run: python game/art/check.py
+      - run: node --test tests/locales.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
+      - run: npm run build
+        env:
+          VISIONOIR_ALL_TRACKS: '1'
+          VISIONOIR_ALL_LOCALES: '1'
+      - run: node game/qa/release.mjs

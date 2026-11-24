@@ -111,7 +111,9 @@ export function mountTrail() {
     if (event.pointerType!=='touch') { touch=null; mark(event.clientX,event.clientY,'pointer'); }
   },{passive:true});
   for (const type of ['touchstart','touchmove']) window.addEventListener(type,onTouch,{passive:true});
-  window.addEventListener('touchcancel',()=>{touch=null;},{passive:true});
+  for (const type of ['touchend','touchcancel']) window.addEventListener(type,()=>{touch=null;},{passive:true});
+  window.addEventListener('pointercancel',event=>{ if (event.pointerType!=='touch') reset(); },{passive:true});
+  window.visualViewport?.addEventListener('resize',resize,{passive:true});
   window.addEventListener('scroll',()=>{
     const position=window.scrollY;
     const delta=position-lastScroll;

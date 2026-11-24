@@ -1,0 +1,119 @@
+# id | it | es | de | fr | pt-PT | ru | uk | pl | ar | sw | rm-CH | zh-Hans | ja | ko
+jump|Salto|Salto|Sprung|Saut|Salto|Прыжок|Стрибок|Skok|قفزة|Kuruka|Sigl|跳跃|ジャンプ|점프
+land|Atterraggio|Aterrizaje|Landung|Atterrissage|Aterragem|Приземление|Приземлення|Lądowanie|هبوط|Kutua|Atterrament|落地|着地|착지
+step-metal|Passo sul metallo|Paso sobre metal|Schritt auf Metall|Pas sur le métal|Passo sobre metal|Шаг по металлу|Крок по металу|Krok po metalu|خطوة على المعدن|Hatua juu ya chuma|Pass sin metal|金属脚步|金属の足音|금속 발소리
+skid|Frenata|Derrape|Rutschbremse|Dérapage|Derrapagem|Торможение|Гальмування|Poślizg|انزلاق الكبح|Kuteleza kwa breki|Franada|急刹滑行|急ブレーキ|급제동
+roll|Rotolamento|Rodada|Rolle|Roulade|Rolamento|Перекат|Перекат|Przetoczenie|تدحرج|Kubingirika|Rudlar|翻滚|ローリング|구르기
+charge-dash|Carica dello scatto|Carga de impulso|Sprint aufladen|Charge de ruée|Carregar impulso|Заряд рывка|Заряд ривка|Ładowanie zrywu|شحن الاندفاع|Kuchaji msukumo|Chargiar il spurt|冲刺蓄力|ダッシュチャージ|돌진 충전
+dash-release|Rilascio dello scatto|Liberación de impulso|Sprint auslösen|Départ en ruée|Libertar impulso|Старт рывка|Початок ривка|Uwolnienie zrywu|إطلاق الاندفاع|Kuachia msukumo|Liberar il spurt|释放冲刺|ダッシュ発動|돌진 발동
+spring|Molla|Muelle|Sprungfeder|Ressort|Mola|Пружина|Пружина|Sprężyna|نابض|Springi|Penna da siglir|弹簧|バネ|스프링
+rail-grind|Scivolata su rotaia|Deslizamiento por raíl|Schienengleiten|Glissade sur rail|Deslize no carril|Скольжение по рельсу|Ковзання по рейці|Ślizg po szynie|انزلاق على السكة|Kuteleza kwenye reli|Glischnar sin la rodaglia|轨道滑行|レールグラインド|레일 그라인드
+wall-grip|Presa sulla parete|Agarre a la pared|Wandgriff|Prise au mur|Agarrar a parede|Захват стены|Хват за стіну|Chwyt ściany|تعلّق بالجدار|Kushika ukuta|Sa tegnair vi da la paraid|抓墙|壁つかまり|벽 잡기
+wall-kick|Salto dalla parete|Salto de pared|Wandsprung|Rebond mural|Salto na parede|Прыжок от стены|Стрибок від стіни|Odbicie od ściany|قفزة عن الجدار|Kuruka kutoka ukutani|Sigl davent da la paraid|蹬墙跳|壁蹴り|벽 차기
+glide|Planata|Planeo|Gleitflug|Vol plané|Voo planado|Планирование|Планерування|Szybowanie|تحليق انسيابي|Kupaa bila msukumo|Planar|滑翔|滑空|활공
+dive|Picchiata|Picado|Sturzflug|Piqué|Voo picado|Пикирование|Пікірування|Pikowanie|انقضاض|Kupiga mbizi|Sgular a precipitaziun|俯冲|急降下|급강하
+water-entry|Tuffo in acqua|Entrada en el agua|Eintauchen|Entrée dans l’eau|Entrada na água|Вход в воду|Вхід у воду|Wejście do wody|دخول الماء|Kuingia majini|Entrar en l’aua|入水|入水|입수
+swim-stroke|Bracciata|Brazada|Schwimmzug|Mouvement de nage|Braçada|Гребок|Гребок|Ruch pływacki|ضربة سباحة|Pigo la kuogelea|Moviment da nudar|划水|水かき|헤엄치기
+boost-pad|Pedana accelerante|Plataforma de impulso|Beschleunigerplatte|Plaque d’accélération|Plataforma de impulso|Панель ускорения|Панель прискорення|Pole przyspieszenia|منصة تسريع|Jukwaa la kasi|Platta d’acceleraziun|加速板|加速パネル|가속 발판
+loop-apex|Culmine del giro|Cima del bucle|Scheitel des Loopings|Sommet du looping|Topo do looping|Вершина петли|Вершина петлі|Szczyt pętli|قمة الحلقة|Kilele cha kitanzi|Culmain da la storta|回环顶点|ループ頂点|루프 정점
+fast-step|Passo veloce|Paso rápido|Schneller Schritt|Pas rapide|Passo rápido|Быстрый шаг|Швидкий крок|Szybki krok|خطوة سريعة|Hatua ya haraka|Pass svelt|疾跑脚步|駆け足|빠른 발걸음
+ring|Anello|Anillo|Ring|Anneau|Anel|Кольцо|Кільце|Pierścień|حلقة|Pete|Anè|能量环|リング|링
+ring-chain|Serie di anelli|Cadena de anillos|Ringserie|Série d’anneaux|Sequência de anéis|Цепочка колец|Ланцюжок кілець|Seria pierścieni|سلسلة الحلقات|Msururu wa pete|Seria d’anels|连续拾环|連続リング|링 연속 획득
+cache-found|Scorta scoperta|Alijo descubierto|Versteck entdeckt|Réserve découverte|Reserva descoberta|Тайник найден|Схованку знайдено|Odnaleziony schowek|اكتشاف مخبأ|Hifadhi imepatikana|Deposit chattà|发现储藏点|隠し物資発見|숨은 보급품 발견
+core-spark|Scintilla del nucleo|Chispa del núcleo|Kernfunke|Étincelle du noyau|Faísca do núcleo|Искра ядра|Іскра ядра|Iskra rdzenia|شرارة النواة|Cheche ya kiini|Sbrinzla dal nuschegl|核心火花|コアの火花|코어 불꽃
+checkpoint|Checkpoint|Punto de control|Kontrollpunkt|Point de contrôle|Ponto de controlo|Контрольная точка|Контрольна точка|Punkt kontrolny|نقطة حفظ|Sehemu ya ukaguzi|Punct da controlla|检查点|チェックポイント|체크포인트
+shield-gain|Scudo acquisito|Escudo obtenido|Schild erhalten|Bouclier obtenu|Escudo obtido|Щит получен|Щит отримано|Zdobycie tarczy|اكتساب الدرع|Ngao imepatikana|Scut survegnì|获得护盾|シールド獲得|보호막 획득
+extra-life|Vita extra|Vida extra|Extraleben|Vie supplémentaire|Vida extra|Дополнительная жизнь|Додаткове життя|Dodatkowe życie|حياة إضافية|Uhai wa ziada|Vita supplementara|额外生命|残機追加|추가 생명
+score-tick|Scatto del punteggio|Incremento de puntos|Punktezähler|Décompte des points|Contagem de pontos|Отсчёт очков|Відлік очок|Naliczanie punktów|عدّ النقاط|Kuhesabu pointi|Dumbrar ils puncts|分数跳动|スコア加算|점수 집계
+bonus-key|Chiave bonus|Llave de bonificación|Bonusschlüssel|Clé bonus|Chave de bónus|Бонусный ключ|Бонусний ключ|Klucz premiowy|مفتاح المكافأة|Ufunguo wa bonasi|Clav da bonus|奖励钥匙|ボーナスキー|보너스 열쇠
+secret-route|Percorso segreto|Ruta secreta|Geheimpfad|Passage secret|Percurso secreto|Тайный путь|Таємний шлях|Ukryta trasa|مسار سري|Njia ya siri|Via secreta|秘密路线|隠しルート|비밀 경로
+record|Nuovo record|Nuevo récord|Neuer Rekord|Nouveau record|Novo recorde|Новый рекорд|Новий рекорд|Nowy rekord|رقم قياسي جديد|Rekodi mpya|Nov record|新纪录|新記録|신기록
+victory|Vittoria|Victoria|Sieg|Victoire|Vitória|Победа|Перемога|Zwycięstwo|انتصار|Ushindi|Victoria|胜利|勝利|승리
+hit|Colpo subito|Impacto recibido|Treffer erlitten|Coup reçu|Golpe recebido|Получен удар|Отримано удар|Otrzymanie ciosu|تلقّي ضربة|Kupigwa|Culp survegnì|受到攻击|被弾|피격
+shield-break|Scudo infranto|Rotura de escudo|Schildbruch|Rupture du bouclier|Escudo partido|Щит разбит|Щит розбито|Rozbicie tarczy|تحطم الدرع|Ngao imevunjika|Scut rut|护盾破裂|シールド破壊|보호막 파괴
+punch|Pugno|Puñetazo|Faustschlag|Coup de poing|Murro|Удар кулаком|Удар кулаком|Cios pięścią|لكمة|Ngumi|Culp da pugn|拳击|パンチ|주먹 공격
+combo-kick|Calcio in combo|Patada en cadena|Kombotritt|Coup de pied enchaîné|Pontapé em sequência|Удар ногой в серии|Удар ногою в серії|Kopnięcie w serii|ركلة متتالية|Teke la mfululizo|Culp da pe en seria|连招踢击|連続キック|연계 발차기
+slam|Schianto a terra|Golpe contra el suelo|Bodenschlag|Impact au sol|Impacto no chão|Удар о землю|Удар об землю|Uderzenie w ziemię|ضربة أرضية|Pigo la ardhi|Culp sin il terren|重砸地面|地面への強打|지면 강타
+parry|Parata|Desvío|Parade|Parade|Deflexão|Парирование|Парирування|Parowanie|صدّ|Kuzuia pigo|Parada|招架|パリィ|받아치기
+spin-hit|Colpo rotante|Golpe giratorio|Drehtreffer|Attaque tournoyante|Golpe giratório|Удар с вращением|Удар з обертанням|Cios obrotowy|ضربة دوّارة|Pigo la kuzunguka|Culp en rotaziun|旋转打击|回転攻撃|회전 타격
+projectile|Proiettile|Proyectil|Geschoss|Projectile|Projétil|Снаряд|Снаряд|Pocisk|مقذوف|Kombora|Projectil|能量弹|飛び道具|발사체
+ricochet|Rimbalzo|Rebote|Abpraller|Ricochet|Ricochete|Рикошет|Рикошет|Rykoszet|ارتداد|Mdundo wa kombora|Rebattida|弹射|跳弾|도탄
+invulnerable|Invulnerabilità|Invulnerabilidad|Unverwundbarkeit|Invulnérabilité|Invulnerabilidade|Неуязвимость|Невразливість|Niewrażliwość|حصانة|Kinga kamili|Invulnerabladad|无敌状态|無敵状態|무적 상태
+knockback|Contraccolpo|Retroceso|Rückstoß|Recul|Recuo|Отбрасывание|Відкидання|Odrzut|دفع للخلف|Kusukumwa nyuma|Recul|击退|ノックバック|밀려남
+defeat|Sconfitta|Derrota|Niederlage|Défaite|Derrota|Поражение|Поразка|Porażka|هزيمة|Kushindwa|Terrada|落败|敗北|패배
+respawn|Rientro in gioco|Reaparición|Wiedereinstieg|Réapparition|Reaparecimento|Возрождение|Відродження|Odrodzenie|عودة إلى اللعب|Kurudi mchezoni|Return en il gieu|重生|リスポーン|부활
+combo-finish|Chiusura della combo|Remate de combo|Komboabschluss|Fin de l’enchaînement|Remate da sequência|Конец комбинации|Завершення комбінації|Zakończenie kombinacji|ختام سلسلة الضربات|Hitimisho la mfululizo|Fin da la seria|连招终结|コンボフィニッシュ|연계 마무리
+velocity-coil|Spira di velocità|Espiral veloz|Geschwindigkeitsspirale|Spirale de vitesse|Espiral de velocidade|Спираль скорости|Спіраль швидкості|Spirala prędkości|لولب السرعة|Kizingo cha kasi|Spirala da sveltezza|疾速旋卷|加速スピン|가속 회전
+velocity-air-step|Scatto aereo|Paso aéreo|Luftschritt|Pas aérien|Passo aéreo|Воздушный шаг|Повітряний крок|Krok w powietrzu|خطوة هوائية|Hatua ya angani|Pass en l’aria|空中踏步|空中ステップ|공중 스텝
+velocity-rail-flare|Scintilla sulla rotaia|Destello en el raíl|Schienenfunken|Éclat sur rail|Faísca no carril|Искра на рельсе|Іскра на рейці|Iskra na szynie|وميض السكة|Cheche ya reli|Sbrinzla sin la rodaglia|轨道闪光|レールの閃光|레일 섬광
+velocity-overrun|Slancio oltre il limite|Impulso extremo|Überschub|Élan extrême|Impulso extremo|Предельный разгон|Граничний розгін|Skrajne przyspieszenie|تسارع فائق|Msukumo wa kasi|Spurt maximal|超限加速|限界加速|한계 가속
+noir-blink|Balzo d’ombra|Salto de sombra|Schattensprung|Saut d’ombre|Salto de sombra|Теневой скачок|Тіньовий стрибок|Skok cienia|قفزة الظل|Mruko wa kivuli|Sigl da sumbriva|暗影闪移|影の瞬間移動|그림자 점멸
+noir-stasis|Stasi oscura|Estasis oscura|Dunkle Stase|Stase obscure|Estase sombria|Тёмный стазис|Темний стазис|Mroczna staza|ركود الظلام|Kufungia kwa giza|Stasa stgira|暗影静滞|闇の静止|암흑 정지
+noir-hover|Sospensione oscura|Suspensión oscura|Schattenschweben|Sustentation obscure|Flutuação sombria|Теневое парение|Тіньове ширяння|Lewitacja cienia|تحويم الظل|Kuelea kivulini|Levitaziun stgira|暗影悬浮|影のホバー|그림자 부유
+noir-lance|Lancia d’ombra|Lanza sombría|Schattenlanze|Lance d’ombre|Lança sombria|Теневое копьё|Тіньовий спис|Włócznia cienia|رمح الظل|Mkuki wa kivuli|Lantscha da sumbriva|暗影长矛|影の槍|그림자 창
+aura-lift|Sollevamento psichico|Elevación psíquica|Psi-Anhebung|Élévation psychique|Elevação psíquica|Психический подъём|Психічне підняття|Psychiczne uniesienie|رفع ذهني|Kuinua kwa akili|Auza psichica|念力抬升|念動リフト|염력 상승
+aura-grip|Presa telecinetica|Agarre telequinético|Telekinesegriff|Prise télékinétique|Agarre telecinético|Телекинетический захват|Телекінетичний захват|Chwyt telekinetyczny|قبضة التحريك الذهني|Mshiko wa kiakili|Tegnair cun telechinesa|念力抓取|念動グリップ|염력 잡기
+aura-throw|Lancio telecinetico|Lanzamiento telequinético|Telekinesewurf|Projection télékinétique|Lançamento telecinético|Телекинетический бросок|Телекінетичний кидок|Rzut telekinetyczny|رمية ذهنية|Mrusho wa kiakili|Bittar cun telechinesa|念力投掷|念動スロー|염력 투척
+aura-phase|Passaggio di fase|Cambio de fase|Phasenwechsel|Changement de phase|Mudança de fase|Фазовый переход|Фазовий перехід|Przejście fazowe|تحوّل طوري|Mpito wa awamu|Midada da fasa|相位穿越|位相移動|위상 이동
+crimson-hook|Gancio cremisi|Gancho carmesí|Karmesinhaken|Crochet cramoisi|Gancho carmesim|Багровый крюк|Багряний гак|Karmazynowy hak|خطاف قرمزي|Ndoano nyekundu|Crutsch cotschen|绯红钩击|深紅のフック|진홍 갈고리
+crimson-breach|Breccia cremisi|Brecha carmesí|Karmesindurchbruch|Brèche cramoisie|Brecha carmesim|Багровый пробой|Багряний пролом|Karmazynowy wyłom|اختراق قرمزي|Upenyo mwekundu|Ruptura cotschna|绯红破障|深紅の突破|진홍 돌파
+crimson-glide|Planata cremisi|Planeo carmesí|Karmesingleiten|Vol plané cramoisi|Voo planado carmesim|Багровое планирование|Багряне планерування|Karmazynowy lot ślizgowy|تحليق قرمزي|Mpao mwekundu|Planar cotschen|绯红滑翔|深紅の滑空|진홍 활공
+crimson-fault|Frattura sismica|Fractura sísmica|Erdriss|Faille sismique|Fratura sísmica|Сейсмический разлом|Сейсмічний розлом|Szczelina sejsmiczna|تصدع زلزالي|Mpasuko wa ardhi|Sfessa seismica|地裂冲击|地割れ衝撃|지반 균열
+amber-flight|Volo d’ambra|Vuelo de ámbar|Bernsteinflug|Vol d’ambre|Voo de âmbar|Янтарный полёт|Бурштиновий політ|Bursztynowy lot|طيران كهرماني|Safari ya kaharabu|Sgol d’ambra|琥珀飞行|琥珀の飛行|호박빛 비행
+amber-compute|Calcolo del circuito|Cálculo del circuito|Schaltkreisberechnung|Calcul du circuit|Cálculo do circuito|Вычисление контура|Обчислення контуру|Obliczenie obwodu|حساب الدارة|Hesabu ya saketi|Quint dal circuit|回路运算|回路演算|회로 연산
+amber-beacon|Faro d’ambra|Baliza de ámbar|Bernsteinbake|Balise d’ambre|Baliza de âmbar|Янтарный маяк|Бурштиновий маяк|Bursztynowy sygnał|منارة كهرمانية|Mnara wa kaharabu|Fanal d’ambra|琥珀信标|琥珀のビーコン|호박빛 신호기
+amber-turbine|Turbina d’ambra|Turbina de ámbar|Bernsteinturbine|Turbine d’ambre|Turbina de âmbar|Янтарная турбина|Бурштинова турбіна|Bursztynowa turbina|توربين كهرماني|Turbini ya kaharabu|Turbina d’ambra|琥珀涡轮|琥珀のタービン|호박빛 터빈
+transform|Trasformazione|Transformación|Verwandlung|Transformation|Transformação|Трансформация|Перетворення|Przemiana|تحوّل|Kubadilika umbo|Transfurmaziun|变身|変身|변신
+transform-end|Ritorno alla forma base|Retorno a la forma base|Rückverwandlung|Retour à la forme initiale|Regresso à forma inicial|Возврат к обычной форме|Повернення до початкової форми|Powrót do postaci podstawowej|عودة إلى الشكل الأساسي|Kurudi katika umbo la awali|Return a la furma iniziala|变身解除|変身解除|변신 해제
+super-chrome|Ascesa cromata|Ascenso cromado|Chromaufstieg|Ascension chromée|Ascensão cromada|Хромированное восхождение|Хромоване сходження|Chromowe wzniesienie|صعود كرومي|Kupaa kwa kromu|Ascensiun da crom|铬光升华|クローム覚醒|크롬 각성
+super-obsidian|Caos d’ossidiana|Caos de obsidiana|Obsidianchaos|Chaos d’obsidienne|Caos de obsidiana|Обсидиановый хаос|Обсидіановий хаос|Obsydianowy chaos|فوضى السَّبَج|Machafuko ya obsidiani|Chaos d’obsidian|黑曜混沌|黒曜の混沌|흑요석 혼돈
+super-quantum|Ascesa quantica|Ascenso cuántico|Quantenaufstieg|Ascension quantique|Ascensão quântica|Квантовое восхождение|Квантове сходження|Kwantowe wzniesienie|صعود كمي|Kupaa kwa kwanta|Ascensiun quantica|量子升华|量子覚醒|양자 각성
+super-crimson|Sovraccarico cremisi|Sobrecarga carmesí|Karmesinüberlastung|Surcharge cramoisie|Sobrecarga carmesim|Багровая перегрузка|Багряне перевантаження|Karmazynowe przeciążenie|حمل قرمزي زائد|Mzigo mwekundu kupita kiasi|Surchargia cotschna|绯红超载|深紅のオーバードライブ|진홍 과부하
+super-solar|Circuito solare|Circuito solar|Solarschaltkreis|Circuit solaire|Circuito solar|Солнечный контур|Сонячний контур|Obwód słoneczny|الدائرة الشمسية|Saketi ya jua|Circuit solar|太阳回路|太陽回路|태양 회로
+energy-low|Energia in riserva|Energía baja|Energie knapp|Énergie faible|Energia baixa|Мало энергии|Мало енергії|Mało energii|طاقة منخفضة|Nishati imepungua|Pauca energia|能量不足|エネルギー低下|에너지 부족
+energy-drain|Energia assorbita|Drenaje de energía|Energieentzug|Drainage d’énergie|Drenagem de energia|Отток энергии|Відтік енергії|Utrata energii|استنزاف الطاقة|Kuondolewa nishati|Svuotada d’energia|能量流失|エネルギー吸収|에너지 흡수
+energy-full|Energia al massimo|Energía al máximo|Volle Energie|Énergie maximale|Energia máxima|Полная энергия|Повна енергія|Pełna energia|طاقة مكتملة|Nishati imejaa|Energia cumpletta|能量已满|エネルギー満タン|에너지 완충
+enemy-wake|Risveglio del nemico|Despertar del enemigo|Gegner erwacht|Réveil de l’ennemi|Despertar do inimigo|Пробуждение врага|Пробудження ворога|Przebudzenie wroga|استيقاظ العدو|Kuamka kwa adui|Il nemi sa dasda|敌人苏醒|敵の起動|적 기동
+drone-wing|Ali del drone|Alas del dron|Drohnenflügel|Ailes du drone|Asas do drone|Крылья дрона|Крила дрона|Skrzydła drona|أجنحة المسيّرة|Mabawa ya droni|Alas dal dron|无人机振翼|ドローンの羽音|드론 날갯짓
+turret-lock|Bersaglio agganciato|Objetivo fijado|Ziel erfasst|Verrouillage de la cible|Alvo fixado|Захват цели|Захоплення цілі|Namierzenie celu|تثبيت الهدف|Shabaha imefungiwa|Finamira fixada|炮塔锁定|砲台ロックオン|포탑 조준
+turret-fire|Colpo della torretta|Disparo de la torreta|Geschützfeuer|Tir de tourelle|Disparo da torre|Выстрел турели|Постріл турелі|Strzał wieżyczki|إطلاق البرج|Mlio wa mzinga|Sajet da la tur|炮塔开火|砲台発射|포탑 사격
+crawler-tread|Cingoli in marcia|Orugas en marcha|Laufende Ketten|Chenilles en marche|Lagartas em marcha|Ход гусениц|Рух гусениць|Ruch gąsienic|حركة الجنزير|Mwendo wa mikanda|Chadainas en moviment|履带行进|無限軌道の駆動音|궤도 이동
+press-warn|Allarme della pressa|Alerta de la prensa|Pressenwarnung|Alerte de presse|Alerta da prensa|Сигнал пресса|Сигнал преса|Ostrzeżenie prasy|تحذير المكبس|Onyo la mashine ya kukandamiza|Avertiment da la pressa|冲压机警报|プレス警報|프레스 경보
+press-strike|Colpo della pressa|Golpe de la prensa|Pressenschlag|Coup de presse|Golpe da prensa|Удар пресса|Удар преса|Uderzenie prasy|ضربة المكبس|Pigo la mashine ya kukandamiza|Culp da la pressa|冲压重击|プレスの打撃|프레스 강타
+boss-enter|Ingresso del boss|Entrada del jefe|Bossauftritt|Arrivée du boss|Entrada do chefe|Появление босса|Поява боса|Wejście bossa|ظهور الزعيم|Kuingia kwa mkuu|Entrada dal schef|首领登场|ボス登場|보스 등장
+boss-telegraph|Preavviso d’attacco|Aviso de ataque|Angriffsvorzeichen|Signe avant l’attaque|Aviso de ataque|Предвестник атаки|Ознака атаки|Zapowiedź ataku|إشارة ما قبل الهجوم|Ishara kabla ya shambulio|Avis avant l’attatga|攻击预警|攻撃の予兆|공격 예고
+boss-volley|Raffica del boss|Ráfaga del jefe|Bosssalve|Salve du boss|Rajada do chefe|Залп босса|Залп боса|Salwa bossa|وابل الزعيم|Msururu wa mashambulio ya mkuu|Salva dal schef|首领齐射|ボスの一斉射撃|보스 연속 사격
+boss-exposed|Punto debole esposto|Punto débil expuesto|Schwachstelle offen|Point faible exposé|Ponto fraco exposto|Уязвимое место открыто|Слабке місце відкрито|Odsłonięty słaby punkt|انكشاف نقطة الضعف|Udhaifu umefichuka|Punct flaivel avert|弱点暴露|弱点露出|약점 노출
+boss-hit|Boss colpito|Jefe alcanzado|Bosstreffer|Boss touché|Chefe atingido|Попадание по боссу|Влучання в боса|Trafienie bossa|إصابة الزعيم|Mkuu amepigwa|Schef tutgà|击中首领|ボスに命中|보스 피격
+boss-phase|Cambio di fase del boss|Cambio de fase del jefe|Phasenwechsel des Bosses|Changement de phase du boss|Mudança de fase do chefe|Смена фазы босса|Зміна фази боса|Zmiana fazy bossa|تبدل مرحلة الزعيم|Badiliko la awamu ya mkuu|Midada da fasa dal schef|首领阶段转换|ボスの段階移行|보스 페이즈 전환
+boss-fall|Caduta del boss|Caída del jefe|Sturz des Bosses|Chute du boss|Queda do chefe|Падение босса|Падіння боса|Upadek bossa|سقوط الزعيم|Kuanguka kwa mkuu|Crudada dal schef|首领倒下|ボス撃破|보스 쓰러짐
+core-reactor|Reattore del nucleo|Reactor del núcleo|Kernreaktor|Réacteur du noyau|Reator do núcleo|Реактор ядра|Реактор ядра|Reaktor rdzenia|مفاعل النواة|Kinu cha kiini|Reactur dal nuschegl|核心反应堆|コアリアクター|코어 원자로
+guardian-call|Richiamo del guardiano|Llamada del guardián|Ruf des Wächters|Appel du gardien|Chamamento do guardião|Зов хранителя|Поклик вартового|Zew strażnika|نداء الحارس|Mwito wa mlinzi|Clom dal guardian|守卫呼唤|守護者の呼び声|수호자의 부름
+door-open|Apertura della porta|Apertura de puerta|Tür öffnet sich|Ouverture de porte|Abertura da porta|Открытие двери|Відчинення дверей|Otwarcie drzwi|فتح الباب|Kufungua mlango|Avrir la porta|开门|扉が開く|문 열림
+door-close|Chiusura della porta|Cierre de puerta|Tür schließt sich|Fermeture de porte|Fecho da porta|Закрытие двери|Зачинення дверей|Zamknięcie drzwi|إغلاق الباب|Kufunga mlango|Serrar la porta|关门|扉が閉まる|문 닫힘
+portal-in|Ingresso nel portale|Entrada al portal|Portaleintritt|Entrée dans le portail|Entrada no portal|Вход в портал|Вхід у портал|Wejście do portalu|دخول البوابة|Kuingia langoni|Entrar en il portal|进入传送门|ポータル進入|포털 진입
+portal-out|Uscita dal portale|Salida del portal|Portalaustritt|Sortie du portail|Saída do portal|Выход из портала|Вихід з порталу|Wyjście z portalu|خروج من البوابة|Kutoka langoni|Sortir dal portal|离开传送门|ポータル退出|포털 탈출
+lift-rise|Salita dell’ascensore|Subida del ascensor|Aufzug fährt hoch|Montée de l’ascenseur|Subida do elevador|Подъём лифта|Підйом ліфта|Ruch windy w górę|صعود المصعد|Lifti inapanda|L’ascensur va ensi|升降梯上行|リフト上昇|승강기 상승
+ice-crack|Crepa nel ghiaccio|Grieta en el hielo|Eisbruch|Fissure dans la glace|Fenda no gelo|Треск льда|Тріск криги|Pękanie lodu|تصدع الجليد|Kupasuka kwa barafu|Sfessa en il glatsch|冰面开裂|氷のひび|얼음 균열
+geyser|Geyser|Géiser|Geysir|Geyser|Géiser|Гейзер|Гейзер|Gejzer|ينبوع فائر|Chemchemi inayolipuka|Geyser|间歇泉|間欠泉|간헐천
+rain-impact|Gocce sulla superficie|Gotas sobre la superficie|Regentropfenaufprall|Impact des gouttes|Impacto das gotas|Удары дождевых капель|Удари крапель дощу|Uderzenia kropel deszczu|ارتطام القطرات|Matone ya mvua yakigonga|Guttas da plievgia|雨滴撞击|雨粒の音|빗방울 충돌
+low-gravity|Bassa gravità|Baja gravedad|Niedrige Schwerkraft|Faible gravité|Baixa gravidade|Низкая гравитация|Низька гравітація|Niska grawitacja|جاذبية منخفضة|Mvuto mdogo|Gravitaziun bassa|低重力|低重力|저중력
+bumper|Respingente|Rebotador|Prellpuffer|Butoir|Amortecedor|Отбойник|Відбійник|Odbijak|مصدّ ارتداد|Kizuizi cha kudunda|Puffer|弹跳装置|バンパー|범퍼
+power-switch|Interruttore di corrente|Interruptor de corriente|Stromschalter|Interrupteur électrique|Interruptor de corrente|Выключатель питания|Вимикач живлення|Włącznik zasilania|مفتاح الطاقة|Swichi ya umeme|Interrupter electric|电源开关|電源スイッチ|전원 스위치
+crumble|Crollo della struttura|Derrumbe|Einsturz|Effondrement|Desmoronamento|Обвал|Обвал|Zawalenie|انهيار|Kuporomoka|Buvadira|结构崩塌|崩落|구조물 붕괴
+menu-select|Conferma nel menu|Confirmar selección|Auswahl bestätigen|Valider la sélection|Confirmar seleção|Подтверждение выбора|Підтвердження вибору|Potwierdzenie wyboru|تأكيد الاختيار|Kuthibitisha chaguo|Confermar la selecziun|确认选择|メニュー決定|메뉴 선택
+menu-move|Spostamento nel menu|Desplazamiento en el menú|Menübewegung|Déplacement dans le menu|Navegação no menu|Навигация по меню|Навігація меню|Nawigacja w menu|تنقل في القائمة|Kusogea kwenye menyu|Navigar en il menu|菜单移动|メニュー移動|메뉴 이동
+menu-back|Indietro nel menu|Volver en el menú|Zurück im Menü|Retour dans le menu|Voltar no menu|Назад в меню|Назад у меню|Wstecz w menu|رجوع في القائمة|Kurudi kwenye menyu|Enavos en il menu|菜单返回|メニューで戻る|메뉴 뒤로
+menu-error|Errore del menu|Error de menú|Menüfehler|Erreur du menu|Erro do menu|Ошибка меню|Помилка меню|Błąd menu|خطأ في القائمة|Hitilafu ya menyu|Errur dal menu|菜单错误|メニューエラー|메뉴 오류
+pause|Pausa|Pausa|Pause|Pause|Pausa|Пауза|Пауза|Pauza|إيقاف مؤقت|Kusitisha|Pausa|暂停|一時停止|일시 정지
+resume|Ripresa del gioco|Reanudar partida|Spiel fortsetzen|Reprise du jeu|Retomar jogo|Возобновление игры|Продовження гри|Wznowienie gry|استئناف اللعب|Kuendelea kucheza|Cuntinuar il gieu|继续游戏|ゲーム再開|게임 재개
+menu-tab|Cambio scheda|Cambio de pestaña|Reiterwechsel|Changement d’onglet|Mudança de separador|Смена вкладки|Зміна вкладки|Zmiana karty|تغيير علامة التبويب|Kubadili kichupo|Midada da tab|切换标签页|タブ切り替え|탭 전환
+save|Salvataggio|Guardado|Speichern|Sauvegarde|Gravação|Сохранение|Збереження|Zapis|حفظ|Kuhifadhi|Memorisar|保存|セーブ|저장
+load|Caricamento|Carga|Laden|Chargement|Carregamento|Загрузка|Завантаження|Wczytanie|تحميل|Kupakia|Chargiar|载入|ロード|불러오기
+countdown|Conto alla rovescia|Cuenta atrás|Countdown|Compte à rebours|Contagem decrescente|Обратный отсчёт|Зворотний відлік|Odliczanie|عد تنازلي|Kuhesabu kurudi nyuma|Dumbrar enavos|倒计时|カウントダウン|카운트다운
+signal-open|Apertura del segnale|Apertura de señal|Signalbeginn|Ouverture du signal|Abertura do sinal|Начало сигнала|Початок сигналу|Początek sygnału|بدء الإشارة|Mwanzo wa mawimbi|Avertura dal signal|信号开启|信号開始|신호 개방
+transmission|Trasmissione|Transmisión|Übertragung|Transmission|Transmissão|Передача|Передача|Transmisja|إرسال|Matangazo|Transmissiun|通信传输|通信|송신
+signal-close|Chiusura del segnale|Cierre de señal|Signalende|Fin du signal|Fecho do sinal|Конец сигнала|Кінець сигналу|Koniec sygnału|نهاية الإشارة|Mwisho wa mawimbi|Fin dal signal|信号关闭|信号終了|신호 종료
+vision|Visione temporale|Visión temporal|Zeitvision|Vision temporelle|Visão temporal|Видение времени|Видіння часу|Wizja czasu|رؤية زمنية|Maono ya wakati|Visiun dal temp|时空幻象|時の幻視|시간의 환영
+revelation|Rivelazione|Revelación|Enthüllung|Révélation|Revelação|Откровение|Одкровення|Objawienie|انكشاف الحقيقة|Ufunuo|Revelaziun|真相揭示|真相の開示|진실의 계시
+after-credits|Dopo i titoli di coda|Después de los créditos|Nach dem Abspann|Après le générique|Depois dos créditos|После титров|Після титрів|Po napisach|ما بعد الشارة|Baada ya majina ya watayarishaji|Suenter ils credits|片尾之后|エンドロール後|엔딩 크레디트 이후

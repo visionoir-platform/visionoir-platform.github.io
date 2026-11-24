@@ -1,0 +1,207 @@
+{
+ "rows": [
+  "entry",
+  "idle",
+  "telegraph",
+  "attack",
+  "vulnerable",
+  "hit",
+  "defeat",
+  "destruction"
+ ],
+ "frameCount": 6,
+ "frame": [
+  112,
+  88
+ ],
+ "pivot": [
+  55,
+  75
+ ],
+ "machines": [
+  {
+   "id": 0,
+   "file": "machine-0.png",
+   "hull": "crusher",
+   "locomotion": "gantry",
+   "armament": "hammer",
+   "zone": 0
+  },
+  {
+   "id": 1,
+   "file": "machine-1.png",
+   "hull": "shark",
+   "locomotion": "wheels",
+   "armament": "jaw",
+   "zone": 0
+  },
+  {
+   "id": 2,
+   "file": "machine-2.png",
+   "hull": "kiln",
+   "locomotion": "legs",
+   "armament": "piston",
+   "zone": 1
+  },
+  {
+   "id": 3,
+   "file": "machine-3.png",
+   "hull": "crucible",
+   "locomotion": "tracks",
+   "armament": "pour",
+   "zone": 1
+  },
+  {
+   "id": 4,
+   "file": "machine-4.png",
+   "hull": "mantis",
+   "locomotion": "stilts",
+   "armament": "cards",
+   "zone": 2
+  },
+  {
+   "id": 5,
+   "file": "machine-5.png",
+   "hull": "carousel",
+   "locomotion": "wheels",
+   "armament": "orbs",
+   "zone": 2
+  },
+  {
+   "id": 6,
+   "file": "machine-6.png",
+   "hull": "kite",
+   "locomotion": "hover",
+   "armament": "scythe",
+   "zone": 3
+  },
+  {
+   "id": 7,
+   "file": "machine-7.png",
+   "hull": "bathysphere",
+   "locomotion": "spider",
+   "armament": "sonar",
+   "zone": 3
+  },
+  {
+   "id": 8,
+   "file": "machine-8.png",
+   "hull": "obelisk",
+   "locomotion": "hover",
+   "armament": "orbs",
+   "zone": 4
+  },
+  {
+   "id": 9,
+   "file": "machine-9.png",
+   "hull": "mask",
+   "locomotion": "stilts",
+   "armament": "mirror",
+   "zone": 4
+  },
+  {
+   "id": 10,
+   "file": "machine-10.png",
+   "hull": "ramjet",
+   "locomotion": "hover",
+   "armament": "jet",
+   "zone": 5
+  },
+  {
+   "id": 11,
+   "file": "machine-11.png",
+   "hull": "serpent",
+   "locomotion": "orbit",
+   "armament": "jaw",
+   "zone": 5
+  },
+  {
+   "id": 12,
+   "file": "machine-12.png",
+   "hull": "kiln",
+   "locomotion": "tracks",
+   "armament": "drill",
+   "zone": 6
+  },
+  {
+   "id": 13,
+   "file": "machine-13.png",
+   "hull": "crucible",
+   "locomotion": "spider",
+   "armament": "hammer",
+   "zone": 6
+  },
+  {
+   "id": 14,
+   "file": "machine-14.png",
+   "hull": "mantis",
+   "locomotion": "gantry",
+   "armament": "beam",
+   "zone": 6
+  },
+  {
+   "id": 15,
+   "file": "machine-15.png",
+   "hull": "crown",
+   "locomotion": "orbit",
+   "armament": "halo",
+   "zone": 7
+  },
+  {
+   "id": 16,
+   "file": "machine-16.png",
+   "hull": "kite",
+   "locomotion": "legs",
+   "armament": "mirror",
+   "zone": 0
+  },
+  {
+   "id": 17,
+   "file": "machine-17.png",
+   "hull": "bathysphere",
+   "locomotion": "hover",
+   "armament": "pour",
+   "zone": 1
+  },
+  {
+   "id": 18,
+   "file": "machine-18.png",
+   "hull": "mask",
+   "locomotion": "wheels",
+   "armament": "scythe",
+   "zone": 2
+  },
+  {
+   "id": 19,
+   "file": "machine-19.png",
+   "hull": "carousel",
+   "locomotion": "stilts",
+   "armament": "sonar",
+   "zone": 3
+  },
+  {
+   "id": 20,
+   "file": "machine-20.png",
+   "hull": "obelisk",
+   "locomotion": "spider",
+   "armament": "cards",
+   "zone": 4
+  },
+  {
+   "id": 21,
+   "file": "machine-21.png",
+   "hull": "ramjet",
+   "locomotion": "gantry",
+   "armament": "drill",
+   "zone": 5
+  },
+  {
+   "id": 22,
+   "file": "machine-22.png",
+   "hull": "crown",
+   "locomotion": "hover",
+   "armament": "jet",
+   "zone": 7
+  }
+ ]
+}

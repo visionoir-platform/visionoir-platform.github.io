@@ -1,0 +1,454 @@
+{
+  "host": "Darwin 27.0.0 arm64",
+  "browser": "158.0.8127.38",
+  "headless": true,
+  "graphics": [
+    {
+      "vendor": "Google Inc. (Apple)",
+      "device": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.0.1 (Build 26A434))"
+    }
+  ],
+  "samples": [
+    {
+      "name": "desktop-frame-run",
+      "viewport": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "deviceScaleFactor": 1
+      },
+      "stageSamples": [
+        {
+          "stage": 0,
+          "hero": 0,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              1098,
+              617.625
+            ],
+            "dpr": 1
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4182.7,
+            "meanFps": 60.01,
+            "p50ms": 16.7,
+            "p95ms": 17.5,
+            "p99ms": 17.7,
+            "maxMs": 17.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.1,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.8,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 2,
+          "hero": 3,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              1098,
+              617.625
+            ],
+            "dpr": 1
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4183.6,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.5,
+            "p99ms": 17.6,
+            "maxMs": 17.7,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.2,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.7,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 4,
+          "hero": 4,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              1098,
+              617.625
+            ],
+            "dpr": 1
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4183.2,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.5,
+            "p99ms": 17.7,
+            "maxMs": 18.3,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.1,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.8,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 0,
+          "hero": 0,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              1098,
+              617.625
+            ],
+            "dpr": 1
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4183.8,
+            "meanFps": 59.99,
+            "p50ms": 16.7,
+            "p95ms": 17.4,
+            "p99ms": 17.7,
+            "maxMs": 17.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.2,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.8,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        }
+      ],
+      "heap": [
+        {
+          "at": "menu",
+          "jsHeapUsedMiB": 3,
+          "nodes": 268,
+          "documents": 8
+        },
+        {
+          "at": "after-0",
+          "jsHeapUsedMiB": 4.1,
+          "nodes": 1018,
+          "documents": 10
+        },
+        {
+          "at": "after-2",
+          "jsHeapUsedMiB": 4.9,
+          "nodes": 1722,
+          "documents": 10
+        },
+        {
+          "at": "after-4",
+          "jsHeapUsedMiB": 5.2,
+          "nodes": 2545,
+          "documents": 10
+        },
+        {
+          "at": "after-0",
+          "jsHeapUsedMiB": 4.9,
+          "nodes": 3283,
+          "documents": 10
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "mobile-frame-run",
+      "viewport": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "deviceScaleFactor": 2,
+        "isMobile": true,
+        "hasTouch": true
+      },
+      "stageSamples": [
+        {
+          "stage": 0,
+          "hero": 0,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              368,
+              207
+            ],
+            "dpr": 2
+          },
+          "draw": {
+            "frames": 253,
+            "spanMs": 4200,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.4,
+            "p99ms": 17.6,
+            "maxMs": 17.9,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 253,
+            "spanMs": 4199.8,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.7,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 2,
+          "hero": 3,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              368,
+              207
+            ],
+            "dpr": 2
+          },
+          "draw": {
+            "frames": 253,
+            "spanMs": 4199.8,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.5,
+            "p99ms": 17.7,
+            "maxMs": 19.6,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 253,
+            "spanMs": 4199.8,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.7,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 4,
+          "hero": 4,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              368,
+              207
+            ],
+            "dpr": 2
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4183.2,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.4,
+            "p99ms": 17.6,
+            "maxMs": 18.1,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.2,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.7,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        },
+        {
+          "stage": 0,
+          "hero": 0,
+          "canvas": {
+            "logical": [
+              480,
+              270
+            ],
+            "css": [
+              368,
+              207
+            ],
+            "dpr": 2
+          },
+          "draw": {
+            "frames": 252,
+            "spanMs": 4183.5,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 17.3,
+            "p99ms": 17.6,
+            "maxMs": 17.7,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "animationFrame": {
+            "frames": 252,
+            "spanMs": 4183.1,
+            "meanFps": 60,
+            "p50ms": 16.7,
+            "p95ms": 16.7,
+            "p99ms": 16.8,
+            "maxMs": 16.8,
+            "over20ms": 0,
+            "over33_4ms": 0
+          },
+          "drawsWhilePaused": 0
+        }
+      ],
+      "heap": [
+        {
+          "at": "menu",
+          "jsHeapUsedMiB": 3.1,
+          "nodes": 268,
+          "documents": 8
+        },
+        {
+          "at": "after-0",
+          "jsHeapUsedMiB": 4.1,
+          "nodes": 1018,
+          "documents": 10
+        },
+        {
+          "at": "after-2",
+          "jsHeapUsedMiB": 5,
+          "nodes": 1705,
+          "documents": 10
+        },
+        {
+          "at": "after-4",
+          "jsHeapUsedMiB": 5.2,
+          "nodes": 2528,
+          "documents": 10
+        },
+        {
+          "at": "after-0",
+          "jsHeapUsedMiB": 5.6,
+          "nodes": 3266,
+          "documents": 10
+        }
+      ],
+      "pageErrors": []
+    }
+  ],
+  "fan": {
+    "servedThroughLoopback": true,
+    "expectedNamesCount": 5,
+    "privateAssetLoaded": true,
+    "sha256MatchesFinalPrivateExport": true,
+    "differsFromOriginal": true,
+    "allPrivateAtlasesMatchFinalExport": true,
+    "pageErrors": []
+  },
+  "method": "Same-origin local release builds. Real Canvas world-frame fill and independent rAF timestamps. Temporary local progress fixture unlocks sampled stages. Stage 0 repeated after zones 1 and 2. JS heap via CDP; no forced collection.",
+  "retention": {
+    "method": "Separate 10-cycle test, sampled after returning to menu. Forced garbage collection via CDP at cycles 1,4,7,10. Measures JS/DOM only.",
+    "samples": [
+      {
+        "cycle": 1,
+        "jsHeapUsedMiB": 2.72,
+        "nodes": 399,
+        "documents": 2,
+        "liveDocumentElements": 65
+      },
+      {
+        "cycle": 4,
+        "jsHeapUsedMiB": 2.96,
+        "nodes": 639,
+        "documents": 2,
+        "liveDocumentElements": 65
+      },
+      {
+        "cycle": 7,
+        "jsHeapUsedMiB": 3.04,
+        "nodes": 879,
+        "documents": 2,
+        "liveDocumentElements": 65
+      },
+      {
+        "cycle": 10,
+        "jsHeapUsedMiB": 3.08,
+        "nodes": 1119,
+        "documents": 2,
+        "liveDocumentElements": 65
+      }
+    ]
+  },
+  "buildEntry": "unseen-qdctnA7d.js",
+  "cssEntry": "unseen-DSR9IWJl.css"
+}

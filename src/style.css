@@ -196,3 +196,5 @@ dialog h2{font-size:2rem}
 }
 .service-card-custom h3,.service-card-custom .underlink{color:var(--track-accent)}
 .service-end strong{font-size:1.12rem}
+
+.unseen-signature{font-style:italic;white-space:nowrap}.unseen-signature a{color:inherit;text-underline-offset:.2em;text-decoration-color:transparent}.unseen-signature a:is(:hover,:focus-visible){text-decoration-color:currentColor;color:white}.entering-unseen::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;background:linear-gradient(115deg,transparent 20%,#e1ecff 44%,#3e4a55 49%,#07090e 59%);background-size:240% 100%;animation:open-gate .2s ease-in both}@keyframes open-gate{from{background-position:0%}to{background-position:100%}}@media(prefers-reduced-motion:reduce){.entering-unseen::after{display:none}}

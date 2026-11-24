@@ -91,7 +91,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  <section class="section faq-section">${t('faq','h2')}<div>${['idea','remote','ai','delivery'].map(id=>`<details>${t(id+'Q','summary')}${t(id+'A','p')}</details>`).join('')}</div></section>
 </main>
 <footer class="footer">
- <b>VISIONOIR</b><span>© 2026</span>
+ <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="${base}unseen/?lang=${encodeURIComponent(lang)}">unseen.</a></span>
  <details>${t('privacy','summary')}${t('privacyCopy','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a></details>
  <details>${t('credits','summary')}${t('logoCredit','p')}${t('musicCredit','p')}${enabledTracks.includes('alloy')||enabledTracks.includes('aura')?t('creditsNew','p'):''}${t('rights','p')}<a class="underlink" href="${asset('AUDIO-LICENSE.txt')}">${t('license')} · 01–04</a>${enabledTracks.includes('alloy')? ` <a class="underlink" href="${asset('AUDIO-PREMIUM-LICENSE.txt')}">${t('license')} · 05–06</a>` : ''}</details>
 </footer>

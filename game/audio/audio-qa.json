@@ -1,0 +1,1863 @@
+{
+  "tracks": 39,
+  "effects": 118,
+  "mastersChecked": true,
+  "allDecoded": true,
+  "method": "Full AAC decode, EBU R128 stereo true peak, mono sum, duration and downsampled PCM SHA-256; lossless loop boundary when masters present.",
+  "rows": [
+    {
+      "id": "01",
+      "durationSeconds": 72.0,
+      "pcmSHA256_12kStereo": "926d26e0ea430f1fee2db5cec21193562b97f39e00b3364cc0cd15c3ea325c76",
+      "webTruePeakDBTP": -3.8,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 100.5,
+      "webLoopEdgeStep12k": 0.005524,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 55.7,
+        "mid": 43.9,
+        "high": 0.4
+      }
+    },
+    {
+      "id": "02",
+      "durationSeconds": 73.220333,
+      "pcmSHA256_12kStereo": "6e69ee6222bf05ffc8b0074ee69477c994c83cec32becaceadd8b88ede7aadcf",
+      "webTruePeakDBTP": -1.9,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 27.08,
+      "webLoopEdgeStep12k": 0.002241,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 51.1,
+        "mid": 48.4,
+        "high": 0.5
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "03",
+      "durationSeconds": 65.242708,
+      "pcmSHA256_12kStereo": "99e55e5bbc1cb99830a56378affd81110bef0851da2a8f10c22e9eb04b9dbc14",
+      "webTruePeakDBTP": -3.8,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 4.08,
+      "webLoopEdgeStep12k": 0.00098,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 71.0,
+        "mid": 28.4,
+        "high": 0.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "04",
+      "durationSeconds": 64.0,
+      "pcmSHA256_12kStereo": "9d7792b0770aaae1bd7ab80642a3c71b2a72792767aafe5219c67ba1f44eefe5",
+      "webTruePeakDBTP": -4.9,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.67,
+      "webLoopEdgeStep12k": 0.011646,
+      "webIntegratedLUFS": -16.5,
+      "bandEnergyPercent12k": {
+        "bass": 49.5,
+        "mid": 50.0,
+        "high": 0.5
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "05",
+      "durationSeconds": 48.0,
+      "pcmSHA256_12kStereo": "e9ad5c9d466d4b13e7fc3fb590183be9c1d9622d597a63683c618b49b862bdca",
+      "webTruePeakDBTP": -5.5,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.000578,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 52.9,
+        "mid": 44.9,
+        "high": 2.2
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "06",
+      "durationSeconds": 60.0,
+      "pcmSHA256_12kStereo": "2abd318a1c83bddcd3a1455b9d2886f2fa58bfaea30d5910be4047833f86b6af",
+      "webTruePeakDBTP": -3.7,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 2.17,
+      "webLoopEdgeStep12k": 0.007535,
+      "webIntegratedLUFS": -16.5,
+      "bandEnergyPercent12k": {
+        "bass": 62.7,
+        "mid": 37.1,
+        "high": 0.2
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "07",
+      "durationSeconds": 139.130437,
+      "pcmSHA256_12kStereo": "32628b05d020d3f0948496c2cd4a443a1a234f50c2f4420f296948582d56a5da",
+      "webTruePeakDBTP": -4.7,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.92,
+      "webLoopEdgeStep12k": 0.00068,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 56.3,
+        "mid": 41.3,
+        "high": 2.3
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "08",
+      "durationSeconds": 137.142854,
+      "pcmSHA256_12kStereo": "e8e46b221f140a31ace7e5d2460d2c3db98b5632dcb78ab6687bad4fd253bac4",
+      "webTruePeakDBTP": -2.6,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 0.92,
+      "webLoopEdgeStep12k": 0.000818,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 46.6,
+        "mid": 52.3,
+        "high": 1.1
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "09",
+      "durationSeconds": 133.953479,
+      "pcmSHA256_12kStereo": "2192c324deed431c9c4469a44235241acba79c4b373a940cac89940e3507c1d1",
+      "webTruePeakDBTP": -1.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.33,
+      "webLoopEdgeStep12k": 0.002289,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 64.9,
+        "mid": 34.2,
+        "high": 0.8
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "10",
+      "durationSeconds": 135.211271,
+      "pcmSHA256_12kStereo": "c11fabcf27d4ea7cee219612110fb51b3f6ca5de8ac6e7a77267630cf361df36",
+      "webTruePeakDBTP": -2.8,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.001028,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 63.1,
+        "mid": 36.1,
+        "high": 0.8
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "11",
+      "durationSeconds": 133.565208,
+      "pcmSHA256_12kStereo": "cc152168cf98b7237f7fa87d8d00a426f1a80a6152b9b802d82037a21ef51f86",
+      "webTruePeakDBTP": -4.2,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 2.42,
+      "webLoopEdgeStep12k": 0.001192,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 60.8,
+        "mid": 35.1,
+        "high": 4.1
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "12",
+      "durationSeconds": 139.354833,
+      "pcmSHA256_12kStereo": "e6bea8058880eebb72c2e06f652fa4eed5383078d52b2fdaf313418483500e0e",
+      "webTruePeakDBTP": -4.6,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.42,
+      "webLoopEdgeStep12k": 0.000996,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 58.9,
+        "mid": 40.4,
+        "high": 0.7
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "13",
+      "durationSeconds": 132.413792,
+      "pcmSHA256_12kStereo": "08f7e61506a76b87a11cafb3d393db9dcce637bd26f132b32dd924c054cfe7a9",
+      "webTruePeakDBTP": -3.2,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 3.08,
+      "webLoopEdgeStep12k": 0.002626,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 47.1,
+        "mid": 47.3,
+        "high": 5.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "14",
+      "durationSeconds": 132.631583,
+      "pcmSHA256_12kStereo": "1a0cc508814d2dffc4512302d0108f633dad2cc47fd0cc369023af083eaa4663",
+      "webTruePeakDBTP": -2.8,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 16.75,
+      "webLoopEdgeStep12k": 0.005584,
+      "webIntegratedLUFS": -17.1,
+      "bandEnergyPercent12k": {
+        "bass": 49.6,
+        "mid": 49.8,
+        "high": 0.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "15",
+      "durationSeconds": 128.571438,
+      "pcmSHA256_12kStereo": "b95aa11b49085cd0bb9edc2886d9a0532541391bc5bf18ecd4571eee7692deac",
+      "webTruePeakDBTP": -4.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 3.08,
+      "webLoopEdgeStep12k": 0.000638,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 48.2,
+        "mid": 51.1,
+        "high": 0.7
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "16",
+      "durationSeconds": 132.110083,
+      "pcmSHA256_12kStereo": "5bad3417d08c710237cb343a251fe491a3f7907a039cb0c8f2cfa41e977b4cca",
+      "webTruePeakDBTP": -2.5,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.33,
+      "webLoopEdgeStep12k": 0.005708,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 47.5,
+        "mid": 49.2,
+        "high": 3.2
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "17",
+      "durationSeconds": 134.4,
+      "pcmSHA256_12kStereo": "44a7bfda974968d29d8308cbf150a25f9bc9e3d2728e600f9c9292df347957ea",
+      "webTruePeakDBTP": -5.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 2.67,
+      "webLoopEdgeStep12k": 0.000853,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 59.5,
+        "mid": 39.7,
+        "high": 0.7
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "18",
+      "durationSeconds": 130.909083,
+      "pcmSHA256_12kStereo": "d06ba9ba63f3b08a2419252adda8a53970579df628143e85527ee71caf87646e",
+      "webTruePeakDBTP": -3.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.08,
+      "webLoopEdgeStep12k": 0.001776,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 46.6,
+        "mid": 52.5,
+        "high": 0.8
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "19",
+      "durationSeconds": 141.176479,
+      "pcmSHA256_12kStereo": "06fc9274ed322b761f2d8208a091d9876ae89e00b6926e23f0fb4bfb5f3b7f76",
+      "webTruePeakDBTP": -2.4,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.0,
+      "webLoopEdgeStep12k": 0.004997,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 67.1,
+        "mid": 32.2,
+        "high": 0.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "20",
+      "durationSeconds": 142.978729,
+      "pcmSHA256_12kStereo": "9b82fd9a2258d636c04e1bfb812db382986492dbb163c6a8c8254e17d73401d4",
+      "webTruePeakDBTP": -3.5,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 3.0,
+      "webLoopEdgeStep12k": 0.004511,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 55.8,
+        "mid": 43.3,
+        "high": 0.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "21",
+      "durationSeconds": 120.96,
+      "pcmSHA256_12kStereo": "f5fc02e6e9a00634bebc30c0c0764d34893c4e793e37d443fff6cd719370bfa5",
+      "webTruePeakDBTP": -3.2,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.42,
+      "webLoopEdgeStep12k": 0.012927,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 53.5,
+        "mid": 38.1,
+        "high": 8.4
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "22",
+      "durationSeconds": 25.116271,
+      "pcmSHA256_12kStereo": "d43b3477b9c09238ce94559c9020595b619ff88c6fdbdfce3eb3ff3fbdaafcbf",
+      "webTruePeakDBTP": -2.7,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 75.0,
+      "webLoopEdgeStep12k": 0.000142,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 71.9,
+        "mid": 27.7,
+        "high": 0.4
+      }
+    },
+    {
+      "id": "23",
+      "durationSeconds": 129.729729,
+      "pcmSHA256_12kStereo": "dbb8fedb2badb1510f88a8c1e1f2d808ecaa87c30c48387f00ffdbf1c6f81538",
+      "webTruePeakDBTP": -3.1,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 0.92,
+      "webLoopEdgeStep12k": 0.000533,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 55.1,
+        "mid": 44.2,
+        "high": 0.7
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "24",
+      "durationSeconds": 129.230771,
+      "pcmSHA256_12kStereo": "44bf62d89e0a45ce780c3efd9db5c2e5261df5816804be201a1e7558e51f14cf",
+      "webTruePeakDBTP": -5.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.83,
+      "webLoopEdgeStep12k": 0.003439,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 54.2,
+        "mid": 44.8,
+        "high": 1.0
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "25",
+      "durationSeconds": 132.413792,
+      "pcmSHA256_12kStereo": "12205560523fba3fccf6206f2a80295cb6431f190766ee95a691410199b0fcf0",
+      "webTruePeakDBTP": -4.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 0.83,
+      "webLoopEdgeStep12k": 0.001228,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 66.3,
+        "mid": 31.6,
+        "high": 2.1
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "26",
+      "durationSeconds": 131.908396,
+      "pcmSHA256_12kStereo": "f9c0855763f35ee895f30753601127aee6336798847e69b24de211b2e9cc5264",
+      "webTruePeakDBTP": -2.6,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 2.08,
+      "webLoopEdgeStep12k": 0.001108,
+      "webIntegratedLUFS": -16.8,
+      "bandEnergyPercent12k": {
+        "bass": 70.2,
+        "mid": 28.6,
+        "high": 1.1
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "27",
+      "durationSeconds": 132.830187,
+      "pcmSHA256_12kStereo": "0a492220021cfbdbeac72a9d596a1ec87eb0063eab7a3644216fcdcfec7ef5c1",
+      "webTruePeakDBTP": -4.4,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.002495,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 62.3,
+        "mid": 36.7,
+        "high": 1.0
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "28",
+      "durationSeconds": 168.421063,
+      "pcmSHA256_12kStereo": "bef158bed005c8cd28275cd0048d2ef9e826a36f084ff30d88dda147aa4aeab6",
+      "webTruePeakDBTP": -3.9,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 1.92,
+      "webLoopEdgeStep12k": 0.000508,
+      "webIntegratedLUFS": -16.5,
+      "bandEnergyPercent12k": {
+        "bass": 57.0,
+        "mid": 42.3,
+        "high": 0.5
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "29",
+      "durationSeconds": 74.805188,
+      "pcmSHA256_12kStereo": "0cf82ac4c8c7ea800c41f4d40dd7bb7381b4e97a1cda269b63ec0ef15b0928f6",
+      "webTruePeakDBTP": -3.9,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 0.75,
+      "webLoopEdgeStep12k": 0.007487,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 47.3,
+        "mid": 51.2,
+        "high": 1.4
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "30",
+      "durationSeconds": 6.760562,
+      "pcmSHA256_12kStereo": "23a62ae93801f05e3113d503be2640f676dc612b9b6f146ce8bbc85a6805fb8a",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 62.42,
+      "webLoopEdgeStep12k": 0.003029,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 54.0,
+        "mid": 43.2,
+        "high": 2.7
+      }
+    },
+    {
+      "id": "31",
+      "durationSeconds": 7.741937,
+      "pcmSHA256_12kStereo": "a3d2ebead3d94a31d6f405ef33a13d5b6f4d931e3dbed5a7727cda72fe9b8c25",
+      "webTruePeakDBTP": -3.8,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 50.33,
+      "webLoopEdgeStep12k": 0.001994,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 60.6,
+        "mid": 38.9,
+        "high": 0.4
+      }
+    },
+    {
+      "id": "32",
+      "durationSeconds": 6.990292,
+      "pcmSHA256_12kStereo": "3ddc129c1f57f84372dffbac8d0b54686b447ecfa19dd059721d20bb5ec828fa",
+      "webTruePeakDBTP": -5.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 59.42,
+      "webLoopEdgeStep12k": 0.006045,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 59.5,
+        "mid": 36.9,
+        "high": 3.5
+      }
+    },
+    {
+      "id": "33",
+      "durationSeconds": 9.0,
+      "pcmSHA256_12kStereo": "37c884cd7f4bce9ab51e1a5376581dc5a90426003196d0f7270b0e787fc2376e",
+      "webTruePeakDBTP": -2.8,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 73.83,
+      "webLoopEdgeStep12k": 0.0023,
+      "webIntegratedLUFS": -17.3,
+      "bandEnergyPercent12k": {
+        "bass": 56.5,
+        "mid": 43.4,
+        "high": 0.1
+      }
+    },
+    {
+      "id": "34",
+      "durationSeconds": 111.627917,
+      "pcmSHA256_12kStereo": "1dd5bc10d4c64ffd1c78a8d8423be200f6ddf38982ce09679652b98677597d7d",
+      "webTruePeakDBTP": -2.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 51.33,
+      "webLoopEdgeStep12k": 0.000285,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 55.2,
+        "mid": 44.3,
+        "high": 0.5
+      }
+    },
+    {
+      "id": "35",
+      "durationSeconds": 123.076917,
+      "pcmSHA256_12kStereo": "5ad5d6d4fca5e3c24a1f772023f7b74fd76dca124abb388575530671614bdb56",
+      "webTruePeakDBTP": -4.0,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 54.5,
+      "webLoopEdgeStep12k": 0.000433,
+      "webIntegratedLUFS": -16.5,
+      "bandEnergyPercent12k": {
+        "bass": 56.3,
+        "mid": 43.2,
+        "high": 0.4
+      }
+    },
+    {
+      "id": "36",
+      "durationSeconds": 145.210083,
+      "pcmSHA256_12kStereo": "3fc6776c93d615b5af7e80231bb8117af0264a04ef86bcda7dcda8477ce115ab",
+      "webTruePeakDBTP": -2.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 68.25,
+      "webLoopEdgeStep12k": 0.000202,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 55.0,
+        "mid": 44.3,
+        "high": 0.6
+      }
+    },
+    {
+      "id": "37",
+      "durationSeconds": 130.909083,
+      "pcmSHA256_12kStereo": "a7dac053319221c71ad12213b0cb4571c990dece623aab4fc8f28d4626bd51c4",
+      "webTruePeakDBTP": -5.4,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 1.08,
+      "webLoopEdgeStep12k": 0.002493,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 52.1,
+        "mid": 45.1,
+        "high": 2.6
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "38",
+      "durationSeconds": 126.315792,
+      "pcmSHA256_12kStereo": "ceeae8183b5e109e8dbce4e0015a3eb052b5d17e6e9d4177a4b6e81cb46ed988",
+      "webTruePeakDBTP": -4.8,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 1.92,
+      "webLoopEdgeStep12k": 0.00054,
+      "webIntegratedLUFS": -16.7,
+      "bandEnergyPercent12k": {
+        "bass": 63.7,
+        "mid": 35.5,
+        "high": 0.8
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "39",
+      "durationSeconds": 67.2,
+      "pcmSHA256_12kStereo": "bcd4d491a868490fed4682280f5e8b2f7dba810aa27f82db531bf22f6b28025e",
+      "webTruePeakDBTP": -3.8,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 1.42,
+      "webLoopEdgeStep12k": 0.002961,
+      "webIntegratedLUFS": -16.6,
+      "bandEnergyPercent12k": {
+        "bass": 70.0,
+        "mid": 24.9,
+        "high": 5.1
+      },
+      "pcmLoopEdgeStep": 0.0
+    },
+    {
+      "id": "jump",
+      "durationSeconds": 0.155,
+      "pcmSHA256_12kStereo": "77ebf4ee92f05e1df560b0924ce0eb5d6a3622354fc25330e077d947799b8805",
+      "webTruePeakDBTP": -10.8,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 2.0,
+      "webLoopEdgeStep12k": 1.6e-05
+    },
+    {
+      "id": "land",
+      "durationSeconds": 0.11,
+      "pcmSHA256_12kStereo": "7c01f12009861cac205bfcec8b18ea33ed50593da3481fd57cf8c66ab5b6c8f1",
+      "webTruePeakDBTP": -10.9,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 9.67,
+      "webLoopEdgeStep12k": 0.013742
+    },
+    {
+      "id": "step-metal",
+      "durationSeconds": 0.065,
+      "pcmSHA256_12kStereo": "f7b513144109963eadc18f17fd842bdc74ab7077479c8a6f336bfa0b7697a9c5",
+      "webTruePeakDBTP": -9.0,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.25,
+      "webLoopEdgeStep12k": 0.008238
+    },
+    {
+      "id": "skid",
+      "durationSeconds": 0.19,
+      "pcmSHA256_12kStereo": "dfa6724c232c24afca91d61e83442ef8850b280d593a8d4d3d0c7ec8d1662986",
+      "webTruePeakDBTP": -10.4,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 6.0,
+      "webLoopEdgeStep12k": 0.0069
+    },
+    {
+      "id": "roll",
+      "durationSeconds": 0.16,
+      "pcmSHA256_12kStereo": "796cffa6889635e1f3df51d35d5e0a2f636b065c90080b8f6a60a9e061549893",
+      "webTruePeakDBTP": -10.2,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 2.17,
+      "webLoopEdgeStep12k": 0.003512
+    },
+    {
+      "id": "charge-dash",
+      "durationSeconds": 0.34,
+      "pcmSHA256_12kStereo": "02a283a879dc31006b2148d36b6985ea9c9f1ef1fc110dd1977e9193e34b3d89",
+      "webTruePeakDBTP": -10.2,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.67,
+      "tailBelowThresholdMs": 4.0,
+      "webLoopEdgeStep12k": 0.000301
+    },
+    {
+      "id": "dash-release",
+      "durationSeconds": 0.268,
+      "pcmSHA256_12kStereo": "ab17bac87905a73b1e5305f5827b514b6c7496cfe77fae7aa492ad1b9f5d85c6",
+      "webTruePeakDBTP": -9.3,
+      "monoChangeDB": -0.08,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 6.33,
+      "webLoopEdgeStep12k": 0.015489
+    },
+    {
+      "id": "spring",
+      "durationSeconds": 0.21,
+      "pcmSHA256_12kStereo": "92a139a278c33f3418d30f7731be37639ba33aaadc4430056959f6bea9e9a0a9",
+      "webTruePeakDBTP": -10.3,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 13.5,
+      "webLoopEdgeStep12k": 0.001646
+    },
+    {
+      "id": "rail-grind",
+      "durationSeconds": 0.27,
+      "pcmSHA256_12kStereo": "6a90aa97328dbc6318f9722e14de6f1ba27a813b810e9d2a497285de31301c29",
+      "webTruePeakDBTP": -9.6,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 6.83,
+      "webLoopEdgeStep12k": 0.006091
+    },
+    {
+      "id": "wall-grip",
+      "durationSeconds": 0.144,
+      "pcmSHA256_12kStereo": "ab86d25f98136f3e2ffdf341ef1f8e9ab20b950a956d4933fb89f900c2932086",
+      "webTruePeakDBTP": -11.0,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 5.33,
+      "webLoopEdgeStep12k": 0.010104
+    },
+    {
+      "id": "wall-kick",
+      "durationSeconds": 0.181,
+      "pcmSHA256_12kStereo": "93c5d17ed9d1742ca0963933162c6711fc1c5ccc4bc2e93ee4b94e8ba3992f2d",
+      "webTruePeakDBTP": -10.2,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 1.83,
+      "webLoopEdgeStep12k": 0.002239
+    },
+    {
+      "id": "glide",
+      "durationSeconds": 0.286,
+      "pcmSHA256_12kStereo": "9bb97eaae3452ce670a778419649f33fe5ea8c8212abc7868944f1a39da245c5",
+      "webTruePeakDBTP": -9.8,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 8.17,
+      "webLoopEdgeStep12k": 0.002804
+    },
+    {
+      "id": "dive",
+      "durationSeconds": 0.244,
+      "pcmSHA256_12kStereo": "4d48c6fd5edd2f289968bc0ae41bf74e1b1287dfdd439ff05f1f796bd10b7a60",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 6.83,
+      "webLoopEdgeStep12k": 0.006274
+    },
+    {
+      "id": "water-entry",
+      "durationSeconds": 0.222,
+      "pcmSHA256_12kStereo": "a69b5b90821031cda284c853b76b05490a009bbcfbadd02aa8ce2f2326d88421",
+      "webTruePeakDBTP": -8.2,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 9.92,
+      "webLoopEdgeStep12k": 0.004553
+    },
+    {
+      "id": "swim-stroke",
+      "durationSeconds": 0.169,
+      "pcmSHA256_12kStereo": "54c675b3c35f14d05c8f450ce9f71b5d0a530e8b9e1ece33017fa573c5c88eab",
+      "webTruePeakDBTP": -10.4,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 4.75,
+      "webLoopEdgeStep12k": 0.011999
+    },
+    {
+      "id": "boost-pad",
+      "durationSeconds": 0.265,
+      "pcmSHA256_12kStereo": "c39c1f3948254964980270e85d8f507dc09b1834fb80af3a0e5aff1174121121",
+      "webTruePeakDBTP": -10.2,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 2.33,
+      "webLoopEdgeStep12k": 8.6e-05
+    },
+    {
+      "id": "loop-apex",
+      "durationSeconds": 0.196,
+      "pcmSHA256_12kStereo": "8f87b43a3fe2323f186df1bbf0eb4d91b8a0bb32f43d45a6f2b7cf8fb7d9facf",
+      "webTruePeakDBTP": -9.8,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 8.75,
+      "webLoopEdgeStep12k": 0.000267
+    },
+    {
+      "id": "fast-step",
+      "durationSeconds": 0.087,
+      "pcmSHA256_12kStereo": "1c43646f4ccd631a179c9ff813a5ffa649509d8eab3fc1791a86f7ff66b9216b",
+      "webTruePeakDBTP": -10.2,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 12.75,
+      "webLoopEdgeStep12k": 0.003086
+    },
+    {
+      "id": "ring",
+      "durationSeconds": 0.245,
+      "pcmSHA256_12kStereo": "d80367e17d6c3976f1e591615e9041cda9a4ef3c407ee4de78dd80f3f9b8b6c4",
+      "webTruePeakDBTP": -7.7,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 5.08,
+      "webLoopEdgeStep12k": 0.003635
+    },
+    {
+      "id": "ring-chain",
+      "durationSeconds": 0.278,
+      "pcmSHA256_12kStereo": "41471cafa35a394b963b1c5c8acc4c241de2f2ea6c7a8df61ecdc815b30c0e73",
+      "webTruePeakDBTP": -6.6,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 7.33,
+      "webLoopEdgeStep12k": 0.005144
+    },
+    {
+      "id": "cache-found",
+      "durationSeconds": 0.322,
+      "pcmSHA256_12kStereo": "7269677bc94134efd8b79a6b5a37d6816a5b6acb590dcc7ff2b9a380bf9c4315",
+      "webTruePeakDBTP": -9.2,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 9.08,
+      "webLoopEdgeStep12k": 0.017313
+    },
+    {
+      "id": "core-spark",
+      "durationSeconds": 0.324,
+      "pcmSHA256_12kStereo": "471c06cef560024cedc2888b728e195f629b4d544732331261ae2f3dea130d85",
+      "webTruePeakDBTP": -8.3,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 4.83,
+      "webLoopEdgeStep12k": 0.00249
+    },
+    {
+      "id": "checkpoint",
+      "durationSeconds": 0.467,
+      "pcmSHA256_12kStereo": "05601c042df6e68f01e5f808cac2254623b4c7507b083fb8ec5562aee27cce1e",
+      "webTruePeakDBTP": -9.1,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 11.0,
+      "webLoopEdgeStep12k": 2.2e-05,
+      "webIntegratedLUFS": -17.1
+    },
+    {
+      "id": "shield-gain",
+      "durationSeconds": 0.314,
+      "pcmSHA256_12kStereo": "104e72f31fe5c25f0a4a39ae17f761bb1fb66647489998cedfb68a766cf2637b",
+      "webTruePeakDBTP": -9.0,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 4.42,
+      "webLoopEdgeStep12k": 0.010636
+    },
+    {
+      "id": "extra-life",
+      "durationSeconds": 0.47,
+      "pcmSHA256_12kStereo": "a85f5b49828b0c3975255626057b12e121cdd3f9dca83f9e29ace6020d18d0ca",
+      "webTruePeakDBTP": -7.7,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 4.42,
+      "webLoopEdgeStep12k": 0.007395,
+      "webIntegratedLUFS": -13.7
+    },
+    {
+      "id": "score-tick",
+      "durationSeconds": 0.05,
+      "pcmSHA256_12kStereo": "1ca0f5a396384ff0995dbc9f86edf4ba98703f317e443d0320a384e7da5dd231",
+      "webTruePeakDBTP": -9.7,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 4.0,
+      "webLoopEdgeStep12k": 0.008241
+    },
+    {
+      "id": "bonus-key",
+      "durationSeconds": 0.294,
+      "pcmSHA256_12kStereo": "e1bfea057b6b6c7403f304c5a88464919496c5c78af13345e5b12330780eb86a",
+      "webTruePeakDBTP": -8.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.75,
+      "webLoopEdgeStep12k": 0.041584
+    },
+    {
+      "id": "secret-route",
+      "durationSeconds": 0.417,
+      "pcmSHA256_12kStereo": "d5755d6d094f16b0d83a431fdca93c117eb0577c3c3171a0344b769f90f1e389",
+      "webTruePeakDBTP": -9.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 4.75,
+      "webLoopEdgeStep12k": 0.00218,
+      "webIntegratedLUFS": -15.7
+    },
+    {
+      "id": "record",
+      "durationSeconds": 0.46,
+      "pcmSHA256_12kStereo": "f7a8edab6d5b7c9bc2d49e080ac8479565c9c923de1ebfdd9fdad12565af9251",
+      "webTruePeakDBTP": -8.5,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 2.83,
+      "webLoopEdgeStep12k": 0.00145,
+      "webIntegratedLUFS": -17.4
+    },
+    {
+      "id": "victory",
+      "durationSeconds": 0.502,
+      "pcmSHA256_12kStereo": "e753645ad1e91346429caa2353a73f366766bb5d682e3dab311fa5700bc45dd8",
+      "webTruePeakDBTP": -9.1,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 2.5,
+      "webLoopEdgeStep12k": 0.000509,
+      "webIntegratedLUFS": -17.0
+    },
+    {
+      "id": "hit",
+      "durationSeconds": 0.148,
+      "pcmSHA256_12kStereo": "cd518b59e9f5c88be236c0f2221ebea1e2edd7d109a84dadec196f2a1ba1226c",
+      "webTruePeakDBTP": -4.3,
+      "monoChangeDB": -0.2,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 6.75,
+      "webLoopEdgeStep12k": 0.004618
+    },
+    {
+      "id": "shield-break",
+      "durationSeconds": 0.202,
+      "pcmSHA256_12kStereo": "ea5fd3d47d7765f7e0c6dbbf3feeb510865aad3cf823c36e4ff70ff2607fe0c7",
+      "webTruePeakDBTP": -5.6,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 5.17,
+      "webLoopEdgeStep12k": 0.017274
+    },
+    {
+      "id": "punch",
+      "durationSeconds": 0.153,
+      "pcmSHA256_12kStereo": "d74e379a4ad37cf5ca15ba7b9736c1daf834e76fb2a18f2cb5c641fed6bd8584",
+      "webTruePeakDBTP": -6.1,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 6.5,
+      "webLoopEdgeStep12k": 0.00329
+    },
+    {
+      "id": "combo-kick",
+      "durationSeconds": 0.221,
+      "pcmSHA256_12kStereo": "eb4c28d46d2b2ee74d7a05684d0eaf85099e5a84f43c92229125c0a4fb8cbf36",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 12.0,
+      "webLoopEdgeStep12k": 0.000269
+    },
+    {
+      "id": "slam",
+      "durationSeconds": 0.273,
+      "pcmSHA256_12kStereo": "fdd4de78e3d85e4b0ed09e751a6dc746b7619be258068532b823b45b6aaf5b1f",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 14.17,
+      "webLoopEdgeStep12k": 0.007249
+    },
+    {
+      "id": "parry",
+      "durationSeconds": 0.22,
+      "pcmSHA256_12kStereo": "b07e3b3ce5d14f1ed77f69265047369f0aa5c6e08e2253eba710371ee0520baf",
+      "webTruePeakDBTP": -2.5,
+      "monoChangeDB": -0.2,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 5.92,
+      "webLoopEdgeStep12k": 0.013922
+    },
+    {
+      "id": "spin-hit",
+      "durationSeconds": 0.144,
+      "pcmSHA256_12kStereo": "a46bca888192b5a86d471ae65757655b2b191c24ff3a244461a6eb775035bed3",
+      "webTruePeakDBTP": -6.1,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 13.08,
+      "webLoopEdgeStep12k": 0.001702
+    },
+    {
+      "id": "projectile",
+      "durationSeconds": 0.154,
+      "pcmSHA256_12kStereo": "0552edbff38badaf6a64835428d60f03f2442712ca6aff86d5f5fd066a0f18b9",
+      "webTruePeakDBTP": -5.4,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 2.42,
+      "webLoopEdgeStep12k": 0.03926
+    },
+    {
+      "id": "ricochet",
+      "durationSeconds": 0.211,
+      "pcmSHA256_12kStereo": "c10278cbc8445e6e5affc69a054f184d1775812d717daebe74f2b7e9fbd7205a",
+      "webTruePeakDBTP": -4.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 7.33,
+      "webLoopEdgeStep12k": 0.005511
+    },
+    {
+      "id": "invulnerable",
+      "durationSeconds": 0.245,
+      "pcmSHA256_12kStereo": "6839cd52c78d3552073f2d5b24b5411eb4c9bb32d26f082362ec13c3288fbe9f",
+      "webTruePeakDBTP": -6.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 1.67,
+      "webLoopEdgeStep12k": 0.001767
+    },
+    {
+      "id": "knockback",
+      "durationSeconds": 0.172,
+      "pcmSHA256_12kStereo": "9ca0708b1d621e0b6a0b048251493f35542c8500d6866fdf9373e8dd6f3c6122",
+      "webTruePeakDBTP": -6.3,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 18.92,
+      "webLoopEdgeStep12k": 0.002977
+    },
+    {
+      "id": "defeat",
+      "durationSeconds": 0.56,
+      "pcmSHA256_12kStereo": "1d726e0c425bcac661ea8946370c6399312179269879f7cc38cd921bf66e9c68",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 11.42,
+      "webLoopEdgeStep12k": 0.026619,
+      "webIntegratedLUFS": -12.7
+    },
+    {
+      "id": "respawn",
+      "durationSeconds": 0.447,
+      "pcmSHA256_12kStereo": "0b8bb3397f96036b53b4a94e2186f9296e5db07ee0124d86eecdefac2252245f",
+      "webTruePeakDBTP": -5.8,
+      "monoChangeDB": -0.08,
+      "attackMs": 16.75,
+      "tailBelowThresholdMs": 7.33,
+      "webLoopEdgeStep12k": 0.000239,
+      "webIntegratedLUFS": -16.1
+    },
+    {
+      "id": "combo-finish",
+      "durationSeconds": 0.265,
+      "pcmSHA256_12kStereo": "7f78f092d92ebf9294ad40969dcc0a3c8df7cee7ee4329c1a2c7a1c734e1e03e",
+      "webTruePeakDBTP": -5.8,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 2.67,
+      "webLoopEdgeStep12k": 0.009816
+    },
+    {
+      "id": "velocity-coil",
+      "durationSeconds": 0.235,
+      "pcmSHA256_12kStereo": "a27fad777037b86fca55b83140215cf05ee22b7664d9dd25d1db31e729a57b2b",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.67,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.000395
+    },
+    {
+      "id": "velocity-air-step",
+      "durationSeconds": 0.153,
+      "pcmSHA256_12kStereo": "36817423752519398b010a47f1073614d32f76038e53800c04ba3e5c7209909d",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.08,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.25,
+      "webLoopEdgeStep12k": 0.009148
+    },
+    {
+      "id": "velocity-rail-flare",
+      "durationSeconds": 0.217,
+      "pcmSHA256_12kStereo": "7f82e990410c33733ef5a5b57608cef03fb381a10982c637841e177f080b9c3e",
+      "webTruePeakDBTP": -8.3,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.75,
+      "webLoopEdgeStep12k": 0.011262
+    },
+    {
+      "id": "velocity-overrun",
+      "durationSeconds": 0.26,
+      "pcmSHA256_12kStereo": "fd20056a1fc209a963d69d3aa37aa06b1bef66cccededc055826a23e476a7957",
+      "webTruePeakDBTP": -5.1,
+      "monoChangeDB": -0.1,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 2.42,
+      "webLoopEdgeStep12k": 0.005039
+    },
+    {
+      "id": "noir-blink",
+      "durationSeconds": 0.147,
+      "pcmSHA256_12kStereo": "ba9bfcda0e73b052a7dcee857569fd9459f91cdc27da05a679f47286bff4ea8b",
+      "webTruePeakDBTP": -9.1,
+      "monoChangeDB": -0.08,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 0.58,
+      "webLoopEdgeStep12k": 0.000457
+    },
+    {
+      "id": "noir-stasis",
+      "durationSeconds": 0.351,
+      "pcmSHA256_12kStereo": "64666385470add772da4a570078c2a11431b0981872d6df9cb46c0d492233c4e",
+      "webTruePeakDBTP": -7.5,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 2.42,
+      "webLoopEdgeStep12k": 0.001778
+    },
+    {
+      "id": "noir-hover",
+      "durationSeconds": 0.26,
+      "pcmSHA256_12kStereo": "58433cc00c6f546c4bd2730ed3a5a04836524b0255a1051fcf64c61a9ad8c4fb",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 0.58,
+      "webLoopEdgeStep12k": 0.000955
+    },
+    {
+      "id": "noir-lance",
+      "durationSeconds": 0.252,
+      "pcmSHA256_12kStereo": "63879650333d1b7477f80be949cdbd7404cfc69df57d9f607fdbe92b1c14aeb1",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.0,
+      "webLoopEdgeStep12k": 0.030472
+    },
+    {
+      "id": "aura-lift",
+      "durationSeconds": 0.327,
+      "pcmSHA256_12kStereo": "117c6a190a5b20e1880bc3925ecad439a12e944cf1c999fb755d489596666a4c",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 2.33,
+      "webLoopEdgeStep12k": 0.00289
+    },
+    {
+      "id": "aura-grip",
+      "durationSeconds": 0.249,
+      "pcmSHA256_12kStereo": "0b231043919eba4d5c7d277c21c040367ac2e1d5f60426fe0f46d2715db55165",
+      "webTruePeakDBTP": -5.1,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 6.17,
+      "webLoopEdgeStep12k": 0.014592
+    },
+    {
+      "id": "aura-throw",
+      "durationSeconds": 0.289,
+      "pcmSHA256_12kStereo": "b817cfe777c5239e0f0a3188ed2976599b0209191208640ae0fb5fe409ce3576",
+      "webTruePeakDBTP": -8.3,
+      "monoChangeDB": -0.07,
+      "attackMs": 8.58,
+      "tailBelowThresholdMs": 4.42,
+      "webLoopEdgeStep12k": 0.000106
+    },
+    {
+      "id": "aura-phase",
+      "durationSeconds": 0.296,
+      "pcmSHA256_12kStereo": "e4e581b428b32dc4dc708af90ba569ad6dcc4d2e6d9ec89fbc3aca93f0ac2c29",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 4.75,
+      "webLoopEdgeStep12k": 0.001101
+    },
+    {
+      "id": "crimson-hook",
+      "durationSeconds": 0.155,
+      "pcmSHA256_12kStereo": "ea423af1d6677f3e55ece800a55292cf440f27712ab9f651ed71c81d3d3eb0d1",
+      "webTruePeakDBTP": -7.7,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 7.33,
+      "webLoopEdgeStep12k": 0.001601
+    },
+    {
+      "id": "crimson-breach",
+      "durationSeconds": 0.249,
+      "pcmSHA256_12kStereo": "4cb708b4e2c9123c88a8e3658507ca86ecab2fa4ec7e7c1891f2b7e65cd33d9c",
+      "webTruePeakDBTP": -8.7,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 24.75,
+      "webLoopEdgeStep12k": 0.002225
+    },
+    {
+      "id": "crimson-glide",
+      "durationSeconds": 0.245,
+      "pcmSHA256_12kStereo": "e7287fc6eccc914ca31e294a0a68246c8aafaded067945a54ec034582cdcedfd",
+      "webTruePeakDBTP": -7.4,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 6.17,
+      "webLoopEdgeStep12k": 0.00518
+    },
+    {
+      "id": "crimson-fault",
+      "durationSeconds": 0.332,
+      "pcmSHA256_12kStereo": "655c28b2836385aa855421153be43c0119c8799146ea5bf95883dd14107d028e",
+      "webTruePeakDBTP": -8.5,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 10.67,
+      "webLoopEdgeStep12k": 0.012355
+    },
+    {
+      "id": "amber-flight",
+      "durationSeconds": 0.316,
+      "pcmSHA256_12kStereo": "24c33a6b02b61eb0c8eab2d0756533a716ab0dc8e19cfb1f1fb7023dc23d9703",
+      "webTruePeakDBTP": -7.9,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.42,
+      "tailBelowThresholdMs": 1.58,
+      "webLoopEdgeStep12k": 0.002044
+    },
+    {
+      "id": "amber-compute",
+      "durationSeconds": 0.281,
+      "pcmSHA256_12kStereo": "756eebf33ed152946f82708380823e349a5a0066c2900d545b87af42177f65da",
+      "webTruePeakDBTP": -5.9,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 8.92,
+      "webLoopEdgeStep12k": 0.008164
+    },
+    {
+      "id": "amber-beacon",
+      "durationSeconds": 0.324,
+      "pcmSHA256_12kStereo": "21151907e721abfef917fe506d4f907918ac58004f15491223102bd85eadaf55",
+      "webTruePeakDBTP": -7.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 6.33,
+      "webLoopEdgeStep12k": 0.000291
+    },
+    {
+      "id": "amber-turbine",
+      "durationSeconds": 0.297,
+      "pcmSHA256_12kStereo": "6bc4fcd525ce28468cec6beb565dea8c6cbbbd39766581ca4d97ff0f72cae989",
+      "webTruePeakDBTP": -6.3,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.33,
+      "tailBelowThresholdMs": 4.83,
+      "webLoopEdgeStep12k": 0.000535
+    },
+    {
+      "id": "transform",
+      "durationSeconds": 0.526,
+      "pcmSHA256_12kStereo": "78e2cdbafe5e9b94b0f5a52bf794796f50480b66d1d9682147d5e2f995191d62",
+      "webTruePeakDBTP": -6.7,
+      "monoChangeDB": -0.08,
+      "attackMs": 18.92,
+      "tailBelowThresholdMs": 4.33,
+      "webLoopEdgeStep12k": 0.000368,
+      "webIntegratedLUFS": -17.5
+    },
+    {
+      "id": "transform-end",
+      "durationSeconds": 0.337,
+      "pcmSHA256_12kStereo": "10b3e28bad503f61842ccd1c859e461beb5af1071e6dcae2dec91ee312d3698d",
+      "webTruePeakDBTP": -5.4,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.017056
+    },
+    {
+      "id": "super-chrome",
+      "durationSeconds": 0.396,
+      "pcmSHA256_12kStereo": "998ad4b07b21236ea41c4d4b75f21a4c437604dbe6aaa815976877051d5f9ea6",
+      "webTruePeakDBTP": -6.5,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 5.33,
+      "webLoopEdgeStep12k": 0.004009
+    },
+    {
+      "id": "super-obsidian",
+      "durationSeconds": 0.405,
+      "pcmSHA256_12kStereo": "8fadc43f40db1fc70227286d461b4b9e7559d886b78c247e8623943a56c5d99c",
+      "webTruePeakDBTP": -6.4,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 7.42,
+      "webLoopEdgeStep12k": 0.002766,
+      "webIntegratedLUFS": -14.9
+    },
+    {
+      "id": "super-quantum",
+      "durationSeconds": 0.399,
+      "pcmSHA256_12kStereo": "6d421e00fa05706866eee05393dceca5160c7525b9a0d196726b9d617831330b",
+      "webTruePeakDBTP": -5.6,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 1.08,
+      "webLoopEdgeStep12k": 0.002693
+    },
+    {
+      "id": "super-crimson",
+      "durationSeconds": 0.43,
+      "pcmSHA256_12kStereo": "5f8925b82a6d19783a419029609f3738944d23daff357d61e775e63bfc02ea72",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 2.08,
+      "webLoopEdgeStep12k": 0.000121,
+      "webIntegratedLUFS": -15.5
+    },
+    {
+      "id": "super-solar",
+      "durationSeconds": 0.326,
+      "pcmSHA256_12kStereo": "c8fcba21e2e1a091824d073d9017c364ac2736f3b7d752022ed7502f609f888c",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 10.33,
+      "webLoopEdgeStep12k": 0.004461
+    },
+    {
+      "id": "energy-low",
+      "durationSeconds": 0.285,
+      "pcmSHA256_12kStereo": "0d8a56a669cf9adf4820960ec87223e2739d95e8fd413f78a7990fd2d164eb10",
+      "webTruePeakDBTP": -6.9,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 1.67,
+      "webLoopEdgeStep12k": 0.002949
+    },
+    {
+      "id": "energy-drain",
+      "durationSeconds": 0.286,
+      "pcmSHA256_12kStereo": "6899492340246b281af48dd7f04b20082d9a4da90a0aa23a842451901a340cba",
+      "webTruePeakDBTP": -3.4,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 8.83,
+      "webLoopEdgeStep12k": 0.000851
+    },
+    {
+      "id": "energy-full",
+      "durationSeconds": 0.406,
+      "pcmSHA256_12kStereo": "5ac7deb9a6f9a8fba30ef6845313b45823eb4b4a05f685fe518a0b22fca9b9fe",
+      "webTruePeakDBTP": -7.0,
+      "monoChangeDB": -0.08,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.006587,
+      "webIntegratedLUFS": -15.0
+    },
+    {
+      "id": "enemy-wake",
+      "durationSeconds": 0.238,
+      "pcmSHA256_12kStereo": "6e36baf3f62e6319e7f587b8b065c9d99a9c338f3c25228e67c2ab1353bf9a12",
+      "webTruePeakDBTP": -5.6,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 8.33,
+      "webLoopEdgeStep12k": 0.001122
+    },
+    {
+      "id": "drone-wing",
+      "durationSeconds": 0.247,
+      "pcmSHA256_12kStereo": "5dfefe7f9e3176c9b91159d78827666fe8002e81391bf1e0f85925e77f16b428",
+      "webTruePeakDBTP": -6.7,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.0,
+      "webLoopEdgeStep12k": 0.011446
+    },
+    {
+      "id": "turret-lock",
+      "durationSeconds": 0.245,
+      "pcmSHA256_12kStereo": "0776c7fdbae8508db540219b4afe5d6ee459ffa9a1021f70f3c7073035d30f63",
+      "webTruePeakDBTP": -4.0,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 0.58,
+      "webLoopEdgeStep12k": 0.016306
+    },
+    {
+      "id": "turret-fire",
+      "durationSeconds": 0.2,
+      "pcmSHA256_12kStereo": "9c144df455b6d2a8828752b5b174f8607fdced4bfbad00d89b79193684bc922b",
+      "webTruePeakDBTP": -6.5,
+      "monoChangeDB": -0.09,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.83,
+      "webLoopEdgeStep12k": 0.011929
+    },
+    {
+      "id": "crawler-tread",
+      "durationSeconds": 0.163,
+      "pcmSHA256_12kStereo": "803bc0f33f52cd10f34f7498d8b9413c6975641bf6bfce67afa27c70d3bedd99",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.25,
+      "webLoopEdgeStep12k": 0.008407
+    },
+    {
+      "id": "press-warn",
+      "durationSeconds": 0.294,
+      "pcmSHA256_12kStereo": "968ecdc816b8d9c6654732c3403a7b4cd4151edefe8f870dd1dfa5e8d6c832e1",
+      "webTruePeakDBTP": -5.1,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 0.92,
+      "webLoopEdgeStep12k": 0.005333
+    },
+    {
+      "id": "press-strike",
+      "durationSeconds": 0.255,
+      "pcmSHA256_12kStereo": "714082b3fdebe14ab147d9e6fff9dc21c8ab0cef45dd1512431fada69353cab3",
+      "webTruePeakDBTP": -3.1,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 19.58,
+      "webLoopEdgeStep12k": 0.003973
+    },
+    {
+      "id": "boss-enter",
+      "durationSeconds": 0.452,
+      "pcmSHA256_12kStereo": "47b94307db029bd136e1936f82351ee42b6698f2caf53cd89f6005228f9575a9",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.67,
+      "tailBelowThresholdMs": 4.08,
+      "webLoopEdgeStep12k": 0.000699,
+      "webIntegratedLUFS": -14.3
+    },
+    {
+      "id": "boss-telegraph",
+      "durationSeconds": 0.258,
+      "pcmSHA256_12kStereo": "d9628cbc9529c863ff7b49c6dd7ea75cd99f3f1b278d9815bc5c56c9515857cb",
+      "webTruePeakDBTP": -6.7,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 1.5,
+      "webLoopEdgeStep12k": 0.008307
+    },
+    {
+      "id": "boss-volley",
+      "durationSeconds": 0.275,
+      "pcmSHA256_12kStereo": "649129ab13d242406cede021d03ceb7dae4babb13c342660d34fef0b80670618",
+      "webTruePeakDBTP": -5.6,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 1.42,
+      "webLoopEdgeStep12k": 0.002983
+    },
+    {
+      "id": "boss-exposed",
+      "durationSeconds": 0.287,
+      "pcmSHA256_12kStereo": "076b13296a31290910d7be88362a56cf4d3897bdc63e5ed2580cef775dc7660e",
+      "webTruePeakDBTP": -6.8,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 2.0,
+      "webLoopEdgeStep12k": 0.025618
+    },
+    {
+      "id": "boss-hit",
+      "durationSeconds": 0.176,
+      "pcmSHA256_12kStereo": "11ec9298e05126221051574632e2cb9c84e719ca1152e490d37fa420eee36e32",
+      "webTruePeakDBTP": -2.7,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 13.08,
+      "webLoopEdgeStep12k": 0.012499
+    },
+    {
+      "id": "boss-phase",
+      "durationSeconds": 0.477,
+      "pcmSHA256_12kStereo": "004106ebc4692dac6b8b873c13ac04be58b19f72ad3eae572c8fdf399c87c506",
+      "webTruePeakDBTP": -6.9,
+      "monoChangeDB": -0.08,
+      "attackMs": 19.0,
+      "tailBelowThresholdMs": 2.75,
+      "webLoopEdgeStep12k": 3.6e-05,
+      "webIntegratedLUFS": -17.9
+    },
+    {
+      "id": "boss-fall",
+      "durationSeconds": 0.569,
+      "pcmSHA256_12kStereo": "a106a173ab4224c2a93cb6af225edb34e3a7f83eb74388c07ddad73404ea00c3",
+      "webTruePeakDBTP": -7.4,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 13.42,
+      "webLoopEdgeStep12k": 0.035355,
+      "webIntegratedLUFS": -15.1
+    },
+    {
+      "id": "core-reactor",
+      "durationSeconds": 0.433,
+      "pcmSHA256_12kStereo": "5699c17ee028472e67754a5ffd54384f60e7c57553024993e6c68588bd6ffa42",
+      "webTruePeakDBTP": -3.2,
+      "monoChangeDB": -0.09,
+      "attackMs": 0.25,
+      "tailBelowThresholdMs": 5.75,
+      "webLoopEdgeStep12k": 0.006085,
+      "webIntegratedLUFS": -14.3
+    },
+    {
+      "id": "guardian-call",
+      "durationSeconds": 0.409,
+      "pcmSHA256_12kStereo": "731da19b29395027a9432d209dd3bef3b0570273486be64c997713c33eaf91ee",
+      "webTruePeakDBTP": -6.5,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 10.92,
+      "webLoopEdgeStep12k": 0.001157,
+      "webIntegratedLUFS": -13.6
+    },
+    {
+      "id": "door-open",
+      "durationSeconds": 0.338,
+      "pcmSHA256_12kStereo": "e33c4d45f22e3ff9cb0fcf3ad85b876735d1c8764b7e717fab05dd3d604020e2",
+      "webTruePeakDBTP": -8.6,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.5,
+      "tailBelowThresholdMs": 24.5,
+      "webLoopEdgeStep12k": 0.001811
+    },
+    {
+      "id": "door-close",
+      "durationSeconds": 0.351,
+      "pcmSHA256_12kStereo": "572f5c83fdabb9afb6d35a2beeb26003029b3bc9528c096f685eea2f1ae39981",
+      "webTruePeakDBTP": -8.8,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 11.33,
+      "webLoopEdgeStep12k": 0.012804
+    },
+    {
+      "id": "portal-in",
+      "durationSeconds": 0.441,
+      "pcmSHA256_12kStereo": "76360e5c631fef521967a2fb7b97286ca5e43c850726b3bc61bc92a3b13dbd0c",
+      "webTruePeakDBTP": -8.1,
+      "monoChangeDB": -0.07,
+      "attackMs": 23.0,
+      "tailBelowThresholdMs": 7.58,
+      "webLoopEdgeStep12k": 5.1e-05,
+      "webIntegratedLUFS": -21.0
+    },
+    {
+      "id": "portal-out",
+      "durationSeconds": 0.311,
+      "pcmSHA256_12kStereo": "d9dc32e5327cfd269f63ff5c22ddd08b4691d6ac3e1579c74d5c853bd8d64b4f",
+      "webTruePeakDBTP": -5.9,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 6.17,
+      "webLoopEdgeStep12k": 0.00563
+    },
+    {
+      "id": "lift-rise",
+      "durationSeconds": 0.346,
+      "pcmSHA256_12kStereo": "19693d72cc1db6edfaa41ee6c9d5102d6540c3d0189f6a1e4d495c8a7184ee72",
+      "webTruePeakDBTP": -8.6,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 8.75,
+      "webLoopEdgeStep12k": 0.002089
+    },
+    {
+      "id": "ice-crack",
+      "durationSeconds": 0.168,
+      "pcmSHA256_12kStereo": "946e0d0c150eee4c541a5d85651453b9d56b990595c28a52453b5e867ebf7de3",
+      "webTruePeakDBTP": -6.2,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 14.08,
+      "webLoopEdgeStep12k": 0.014679
+    },
+    {
+      "id": "geyser",
+      "durationSeconds": 0.31,
+      "pcmSHA256_12kStereo": "423c4f19945c19bbbf0e61adff96e7535ddd8283a6f198b6f17dd83c18689616",
+      "webTruePeakDBTP": -8.8,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.58,
+      "tailBelowThresholdMs": 5.5,
+      "webLoopEdgeStep12k": 0.004396
+    },
+    {
+      "id": "rain-impact",
+      "durationSeconds": 0.153,
+      "pcmSHA256_12kStereo": "cbcc6a410a2762da13f433c3cc978d6be020326d7c4ea40fb6a8b0551c2ed52a",
+      "webTruePeakDBTP": -8.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 5.5,
+      "webLoopEdgeStep12k": 0.011353
+    },
+    {
+      "id": "low-gravity",
+      "durationSeconds": 0.315,
+      "pcmSHA256_12kStereo": "f736787d9ad0e42d2c45849298037cc5b17d36096e5c28bd7e496785c2d4856a",
+      "webTruePeakDBTP": -7.7,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 3.33,
+      "webLoopEdgeStep12k": 0.010004
+    },
+    {
+      "id": "bumper",
+      "durationSeconds": 0.153,
+      "pcmSHA256_12kStereo": "6200e20f09897063ad2700f4f514570ef690c9465a9ba2b3aab8d4c2baf11598",
+      "webTruePeakDBTP": -6.6,
+      "monoChangeDB": -0.01,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 10.92,
+      "webLoopEdgeStep12k": 0.004838
+    },
+    {
+      "id": "power-switch",
+      "durationSeconds": 0.208,
+      "pcmSHA256_12kStereo": "baf28d0b4dedf6b93c054feb9a4be66f005d91e199c96282e8c62dfbc5c2743d",
+      "webTruePeakDBTP": -8.4,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 7.0,
+      "webLoopEdgeStep12k": 0.012376
+    },
+    {
+      "id": "crumble",
+      "durationSeconds": 0.269,
+      "pcmSHA256_12kStereo": "ea3764d8f27d5eeed0e71872db45a8e843be046381314e33e8bbad1754b08ce7",
+      "webTruePeakDBTP": -8.8,
+      "monoChangeDB": -0.04,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 6.5,
+      "webLoopEdgeStep12k": 0.001873
+    },
+    {
+      "id": "menu-select",
+      "durationSeconds": 0.165,
+      "pcmSHA256_12kStereo": "cbab922fd15bd39ca3134734c4ebd82aedb14805e507a78e0a24470884483326",
+      "webTruePeakDBTP": -11.7,
+      "monoChangeDB": -0.11,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 3.5,
+      "webLoopEdgeStep12k": 0.001615
+    },
+    {
+      "id": "menu-move",
+      "durationSeconds": 0.043,
+      "pcmSHA256_12kStereo": "5bd856c636e7870efb5c3d17751e60e5104028c3e16567ae46584d3ac4ad6a0a",
+      "webTruePeakDBTP": -12.2,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 11.67,
+      "webLoopEdgeStep12k": 0.002185
+    },
+    {
+      "id": "menu-back",
+      "durationSeconds": 0.157,
+      "pcmSHA256_12kStereo": "7d8be43de41e11da2e4f463bcecb8245a93736b803b003d52b739d11188aadac",
+      "webTruePeakDBTP": -12.1,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 2.58,
+      "webLoopEdgeStep12k": 0.00188
+    },
+    {
+      "id": "menu-error",
+      "durationSeconds": 0.232,
+      "pcmSHA256_12kStereo": "660ed1e3bc83a3d7cba760b8f69885f194ae0ff130e6a9e956f8bceb12c3817f",
+      "webTruePeakDBTP": -11.4,
+      "monoChangeDB": -0.11,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 6.5,
+      "webLoopEdgeStep12k": 0.01105
+    },
+    {
+      "id": "pause",
+      "durationSeconds": 0.208,
+      "pcmSHA256_12kStereo": "05cb51ac67504a945fe573e699937a56f822f6cf186be9441d9d4225daf279b9",
+      "webTruePeakDBTP": -12.6,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 14.75,
+      "webLoopEdgeStep12k": 0.000128
+    },
+    {
+      "id": "resume",
+      "durationSeconds": 0.202,
+      "pcmSHA256_12kStereo": "e153688251372706a9c2e5c3553a7cd5aa7920aeebb970c960d5333905e17e0c",
+      "webTruePeakDBTP": -12.2,
+      "monoChangeDB": -0.08,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 4.17,
+      "webLoopEdgeStep12k": 0.002066
+    },
+    {
+      "id": "menu-tab",
+      "durationSeconds": 0.103,
+      "pcmSHA256_12kStereo": "25b160da5ad261952130008055a7d047b2d1c9a5b75f5fa62cf65552f3363ed9",
+      "webTruePeakDBTP": -9.7,
+      "monoChangeDB": -0.02,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 0.67,
+      "webLoopEdgeStep12k": 0.011065
+    },
+    {
+      "id": "save",
+      "durationSeconds": 0.242,
+      "pcmSHA256_12kStereo": "d5d9903a8483ad14d42679ab3dfa3f1a14d820e267baf8add8e1ee71dab38bfe",
+      "webTruePeakDBTP": -9.7,
+      "monoChangeDB": -0.09,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 9.92,
+      "webLoopEdgeStep12k": 0.003946
+    },
+    {
+      "id": "load",
+      "durationSeconds": 0.247,
+      "pcmSHA256_12kStereo": "a86ad6515f050fb670e37ebf84b147800c75a21ffd00cbee7b7b708695772a9d",
+      "webTruePeakDBTP": -12.4,
+      "monoChangeDB": -0.07,
+      "attackMs": 7.42,
+      "tailBelowThresholdMs": 5.92,
+      "webLoopEdgeStep12k": 0.000105
+    },
+    {
+      "id": "countdown",
+      "durationSeconds": 0.09,
+      "pcmSHA256_12kStereo": "75dbfb1575c5426081503782b9e6b09206a26fb421ea4c7f33215bad179e1102",
+      "webTruePeakDBTP": -11.3,
+      "monoChangeDB": -0.0,
+      "attackMs": 1.25,
+      "tailBelowThresholdMs": 1.75,
+      "webLoopEdgeStep12k": 0.004607
+    },
+    {
+      "id": "signal-open",
+      "durationSeconds": 0.278,
+      "pcmSHA256_12kStereo": "2dbfbe149d7da5f1b1bcf0e3b830d4992382d2e0657544f3eb5ae62ef4280aee",
+      "webTruePeakDBTP": -7.6,
+      "monoChangeDB": -0.07,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 5.5,
+      "webLoopEdgeStep12k": 0.002381
+    },
+    {
+      "id": "transmission",
+      "durationSeconds": 0.299,
+      "pcmSHA256_12kStereo": "ce86f67d7def0e2e0b7785eeecfd0866c535427fd9ec2c4094a555212826fa34",
+      "webTruePeakDBTP": -7.3,
+      "monoChangeDB": -0.03,
+      "attackMs": 0.17,
+      "tailBelowThresholdMs": 1.42,
+      "webLoopEdgeStep12k": 0.000352
+    },
+    {
+      "id": "signal-close",
+      "durationSeconds": 0.175,
+      "pcmSHA256_12kStereo": "d9055c82ab02a4b2fddace94d98eeda280b68a6f7808e0d8bf5f634e0090ca2c",
+      "webTruePeakDBTP": -7.1,
+      "monoChangeDB": -0.0,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 12.25,
+      "webLoopEdgeStep12k": 0.007016
+    },
+    {
+      "id": "vision",
+      "durationSeconds": 0.476,
+      "pcmSHA256_12kStereo": "67b4925a89a8715901936a355548f9ba251d4c0673be651e1d8363bb61b37830",
+      "webTruePeakDBTP": -7.4,
+      "monoChangeDB": -0.05,
+      "attackMs": 0.0,
+      "tailBelowThresholdMs": 2.58,
+      "webLoopEdgeStep12k": 0.00597,
+      "webIntegratedLUFS": -14.3
+    },
+    {
+      "id": "revelation",
+      "durationSeconds": 0.573,
+      "pcmSHA256_12kStereo": "1bcc2e09ae564d520840cd298a405777a0a437201ac65a4a61c9becd61985e75",
+      "webTruePeakDBTP": -7.1,
+      "monoChangeDB": -0.07,
+      "attackMs": 25.25,
+      "tailBelowThresholdMs": 2.58,
+      "webLoopEdgeStep12k": 3.6e-05,
+      "webIntegratedLUFS": -16.7
+    },
+    {
+      "id": "after-credits",
+      "durationSeconds": 0.839,
+      "pcmSHA256_12kStereo": "3d0db1cd6c784c9f68d9c3ec6021d22d4553c81b9aec4c291b624f94de797598",
+      "webTruePeakDBTP": -8.2,
+      "monoChangeDB": -0.06,
+      "attackMs": 0.08,
+      "tailBelowThresholdMs": 9.67,
+      "webLoopEdgeStep12k": 0.005077,
+      "webIntegratedLUFS": -17.2
+    }
+  ]
+}

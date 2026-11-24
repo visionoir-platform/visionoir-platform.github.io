@@ -1,0 +1,64 @@
+{
+ "frame": [
+  64,
+  64
+ ],
+ "pivot": [
+  32,
+  56
+ ],
+ "portraits": "portraits.png",
+ "portraitsMotion": "portraits-motion.png",
+ "characters": [
+  {
+   "id": "Vela",
+   "form": 0,
+   "file": "character-0-0.png"
+  },
+  {
+   "id": "Vela",
+   "form": 1,
+   "file": "character-0-1.png"
+  },
+  {
+   "id": "Offset",
+   "form": 0,
+   "file": "character-1-0.png"
+  },
+  {
+   "id": "Offset",
+   "form": 1,
+   "file": "character-1-1.png"
+  },
+  {
+   "id": "Ione",
+   "form": 0,
+   "file": "character-2-0.png"
+  },
+  {
+   "id": "Ione",
+   "form": 1,
+   "file": "character-2-1.png"
+  },
+  {
+   "id": "Maglio",
+   "form": 0,
+   "file": "character-3-0.png"
+  },
+  {
+   "id": "Maglio",
+   "form": 1,
+   "file": "character-3-1.png"
+  },
+  {
+   "id": "Spola",
+   "form": 0,
+   "file": "character-4-0.png"
+  },
+  {
+   "id": "Spola",
+   "form": 1,
+   "file": "character-4-1.png"
+  }
+ ]
+}

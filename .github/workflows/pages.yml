@@ -39,12 +39,13 @@ jobs:
           python scripts/synthesize-modes.py
           python scripts/synthesize-premium.py --track all
       - run: npm ci
-      - run: node --test tests/locales.test.mjs
+      - run: node --test tests/locales.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
       - name: Build localized pages
         env:
           VISIONOIR_ALL_LOCALES: '1'
           VISIONOIR_ALL_TRACKS: '1'
         run: npm run build
+      - run: node game/qa/release.mjs
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist

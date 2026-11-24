@@ -1,0 +1,30 @@
+{
+  "chromium": {
+    "version": "158.0.8127.38",
+    "music": 39,
+    "effects": 118,
+    "seek": 3.128,
+    "loopWrapped": true,
+    "warmScheduleMs": [
+      0,
+      0,
+      0
+    ],
+    "analyserResponded": true,
+    "unhandledErrors": []
+  },
+  "webkit": {
+    "version": "27.2",
+    "music": 39,
+    "effects": 118,
+    "seek": 3.0800775833195075,
+    "loopWrapped": true,
+    "warmScheduleMs": [
+      0,
+      0,
+      0
+    ],
+    "analyserResponded": true,
+    "unhandledErrors": []
+  }
+}
