@@ -66,7 +66,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </section>
  <section class="section work-section" id="progetti">
   <div class="section-copy">${t('works','h2')}${t('workCopy','p')}</div>
-  <figure class="studio-art"><img src="${asset('studio-x.webp')}" data-alt="workAlt" alt="${escape(dict.workAlt)}" loading="lazy" width="1983" height="793"><figcaption>STUDIO X</figcaption></figure>
+  <figure class="studio-art"><img src="${asset('studio-x-monochrome.jpg')}" data-alt="workAlt" alt="${escape(dict.workAlt)}" loading="lazy" width="1983" height="793"><figcaption>STUDIO X</figcaption></figure>
  </section>
  <section class="section studio-section" id="studio">
   <div class="section-copy">${t('studio','p','class="kicker"')}${t('studioTitle','h2')}${t('studioCopy','p')}</div>

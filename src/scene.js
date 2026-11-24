@@ -115,16 +115,16 @@ export async function initScene(container, getAudioData = () => ({})) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 80);
   camera.position.set(0, 0, 10.5);
-  const studio = new THREE.Scene(); studio.background = new THREE.Color('#1e2022');
+  const studio = new THREE.Scene(); studio.background = new THREE.Color('#202020');
   function panel(w, h, x, y, z, color, strength = 1) {
     const material = new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide });
     material.color.multiplyScalar(strength);
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material);
     mesh.position.set(x, y, z); mesh.lookAt(0, 0, 0); studio.add(mesh);
   }
-  panel(4, 10, -5, 3, 4, '#ffffff', 3); panel(3, 8, 6, 0, 2, '#e3eaf4', 2);
-  panel(10, 2, 0, 6, 2, '#ffffff', 4); panel(1, 10, 1, -2, -6, '#ecf5ee', 2);
-  panel(12, 1, 0, -5, 3, '#a8b1ad', 1.3); panel(1, 7, -3, 0, -4, '#dfff5e', .9);
+  panel(4, 10, -5, 3, 4, '#ffffff', 3); panel(3, 8, 6, 0, 2, '#e9e9e9', 2);
+  panel(10, 2, 0, 6, 2, '#ffffff', 4); panel(1, 10, 1, -2, -6, '#f3f3f3', 2);
+  panel(12, 1, 0, -5, 3, '#afafaf', 1.3); panel(1, 7, -3, 0, -4, '#ededed', .9);
   function restoreEnvironment() {
     const generator = new THREE.PMREMGenerator(renderer);
     try {
@@ -133,14 +133,14 @@ export async function initScene(container, getAudioData = () => ({})) {
     } finally { generator.dispose(); }
   }
   const mark = new THREE.Group(); scene.add(mark);
-  const metal = new THREE.MeshPhysicalMaterial({ color: '#c1c6c9', metalness: 1, roughness: .19, clearcoat: 1, clearcoatRoughness: .18, envMapIntensity: 2.4 });
+  const metal = new THREE.MeshPhysicalMaterial({ color: '#c5c5c5', metalness: 1, roughness: .19, clearcoat: 1, clearcoatRoughness: .18, envMapIntensity: 2.4 });
   metal.onBeforeCompile = shader => {
     shader.vertexShader = 'varying vec3 vLogoPosition;\n' + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvLogoPosition = position;');
     shader.fragmentShader = 'varying vec3 vLogoPosition;\n' + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize(normal + vec3(sin(vLogoPosition.y * 1.25) * 0.24, cos(vLogoPosition.x * 1.4) * 0.16, 0.0));');
   };
-  const edge = new THREE.MeshPhysicalMaterial({ color: '#bac2c4', metalness: 1, roughness: .25, envMapIntensity: 2.8, clearcoat: 1 });
+  const edge = new THREE.MeshPhysicalMaterial({ color: '#c0c0c0', metalness: 1, roughness: .25, envMapIntensity: 2.8, clearcoat: 1 });
   const disposeGraph = graph => graph.traverse(object => {
     object.geometry?.dispose();
     if (object.material) for (const material of Array.isArray(object.material) ? object.material : [object.material]) material.dispose();
@@ -170,36 +170,36 @@ export async function initScene(container, getAudioData = () => ({})) {
     return passiveAPI;
   } finally { clearTimeout(fetchTimeout); }
   mark.rotation.set(-.08, -.28, -.1);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x242923, 1.2));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x282828, 1.2));
   const key = new THREE.DirectionalLight(0xffffff, 4); key.position.set(-3, 6, 5); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xdfff9d, 2); rim.position.set(5, -2, -3); scene.add(rim);
+  const rim = new THREE.DirectionalLight(0xf1f1f1, 2); rim.position.set(5, -2, -3); scene.add(rim);
   const orbitalRig = new THREE.Group(); scene.add(orbitalRig);
   const ringPoints = Array.from({ length: 181 }, (_, i) => {
     const angle = i / 180 * Math.PI * 2;
     return new THREE.Vector3(Math.cos(angle) * 3.08, Math.sin(angle) * 3.08, 0);
   });
-  const ringMaterial = new THREE.LineBasicMaterial({ color: 0x77816e, transparent: true, opacity: .25 });
+  const ringMaterial = new THREE.LineBasicMaterial({ color: 0x7e7e7e, transparent: true, opacity: .25 });
   const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPoints), ringMaterial);
   ring.rotation.x = 1.11; ring.rotation.z = -.32; orbitalRig.add(ring);
-  const ring2 = new THREE.Line(ring.geometry.clone(), new THREE.LineBasicMaterial({ color: 0x919592, transparent: true, opacity: .09 }));
+  const ring2 = new THREE.Line(ring.geometry.clone(), new THREE.LineBasicMaterial({ color: 0x949494, transparent: true, opacity: .09 }));
   ring2.rotation.set(.25, .7, .3); ring2.scale.setScalar(1.14); orbitalRig.add(ring2);
-  const node = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 8), new THREE.MeshBasicMaterial({ color: 0xe1ff7e })); orbitalRig.add(node);
+  const node = new THREE.Mesh(new THREE.SphereGeometry(.035, 8, 8), new THREE.MeshBasicMaterial({ color: 0xefefef })); orbitalRig.add(node);
   const positions = new Float32Array(75 * 3);
   for (let i = 0; i < 75; i++) {
     const angle = i * 2.399963, radius = 2.9 + (i % 9) * .19;
     positions[i * 3] = Math.cos(angle) * radius; positions[i * 3 + 1] = Math.sin(angle) * radius; positions[i * 3 + 2] = Math.sin(i * 7) * 2.2 - 1.8;
   }
   const speckGeometry = new THREE.BufferGeometry(); speckGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const specks = new THREE.Points(speckGeometry, new THREE.PointsMaterial({ color: 0xc4c9bd, size: .013, transparent: true, opacity: .37, depthWrite: false })); scene.add(specks);
+  const specks = new THREE.Points(speckGeometry, new THREE.PointsMaterial({ color: 0xc7c7c7, size: .013, transparent: true, opacity: .37, depthWrite: false })); scene.add(specks);
   const makePalette = (face, edgeColor, rimColor, line, roughness, exposure, environment, scale, light) => ({
     face: new THREE.Color(face), edge: new THREE.Color(edgeColor), rim: new THREE.Color(rimColor), line: new THREE.Color(line), roughness, exposure, environment, scale, light,
   });
   const palettes = {
-    chrome: makePalette('#c1c6c9', '#bac2c4', '#dfff9d', '#77816e', .19, 1.25, 2.4, 1, 1.6),
-    acid: makePalette('#d4ef64', '#819c36', '#dfff5e', '#c9f15b', .22, 1.15, 2.1, 1.04, 2.5),
-    noir: makePalette('#323b3e', '#727e85', '#d2e5ff', '#a4b4c6', .13, 1.25, 3.2, .97, 3),
-    alloy: makePalette('#c7c2af', '#8d979b', '#e4d3ad', '#a7a18d', .24, 1.2, 2.5, 1, 2.1),
-    aura: makePalette('#d3d8df', '#a2b2c5', '#e1ddff', '#b5b1cd', .17, 1.2, 2.7, 1.015, 1.9),
+    chrome: makePalette('#c5c5c5', '#c0c0c0', '#f1f1f1', '#7e7e7e', .19, 1.25, 2.4, 1, 1.6),
+    acid: makePalette('#dfdfdf', '#8f8f8f', '#ededed', '#dedede', .22, 1.15, 2.1, 1.04, 2.5),
+    noir: makePalette('#393939', '#7c7c7c', '#e3e3e3', '#b2b2b2', .13, 1.25, 3.2, .97, 3),
+    alloy: makePalette('#c2c2c2', '#959595', '#d4d4d4', '#a1a1a1', .24, 1.2, 2.5, 1, 2.1),
+    aura: makePalette('#d7d7d7', '#b0b0b0', '#e0e0e0', '#b4b4b4', .17, 1.2, 2.7, 1.015, 1.9),
   };
   let targetX = 0, targetY = 0, pointerX = 0, pointerY = 0, lastTime = 0, elapsed = 0;
   let needsRender = true, wasWarped = false, width = 0, height = 0;

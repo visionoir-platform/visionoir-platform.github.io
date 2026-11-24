@@ -58,7 +58,7 @@ for (const { route,lang } of variants) {
 <meta property="og:title" content="${escape(pageTitle(dict))}">
 <meta property="og:description" content="${escape(dict.description)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${site}assets/studio-x.webp">
+<meta property="og:image" content="${site}assets/studio-x-monochrome.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="${url}">
 ${alternates}`;
