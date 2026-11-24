@@ -1,0 +1,100 @@
+title|크리에이티브 디렉션, 비주얼, 사운드
+description|VISIONOIR는 전략, 비주얼 아이덴티티, 사운드를 결합해 아티스트, 크리에이터, 소규모 브랜드를 돕습니다.
+skip|본문으로 이동
+nav|주요 메뉴
+menu|메뉴
+language|언어
+languageError|언어를 불러오지 못했습니다. 다시 시도해 주세요.
+experience|체험
+services|서비스
+studio|스튜디오
+contact|문의
+heroFirst|보이지 않는 생각에
+heroAccent|형태를 입힙니다.
+heroCopy|전략, 비주얼 아이덴티티, 사운드. 전하고 싶은 이야기가 있는 이들을 위한, 자신만의 뚜렷한 방향.
+start|프로젝트 이야기를 들려주세요
+logo|금속으로 표현한 VISIONOIR의 오리지널 심볼
+labTitle|형태에 리듬이 깃듭니다.
+labCopy|트랙을 선택하거나 소리 없이 둘러보세요. 음악을 재생하면 금속이 곡의 주파수에 반응합니다.
+scene|몰입형 장면으로 들어가기
+exit|장면 나가기
+sound|사운드 체험 시작
+pause|일시 정지
+mute|음소거
+unmute|음소거 해제
+volume|음량
+audio|오디오 제어
+track|트랙과 분위기
+loading|오디오 불러오는 중
+audioBlocked|오디오 버튼을 누르면 음악이 재생됩니다.
+audioError|트랙을 재생할 수 없습니다. 잠시 후 다시 시도해 주세요.
+audioUnsupported|이 브라우저는 인터랙티브 오디오를 지원하지 않습니다.
+motionOff|움직임 줄이기
+motionOn|움직임 켜기
+chrome|크롬
+acid|애시드
+noir|누아르
+alloy|합금
+aura|아우라
+servicesTitle|프로젝트에 형태를 입히세요.
+servicesCopy|첫 아이덴티티 구축부터 지속적인 디렉션까지. 필요한 지점에서 시작하세요.
+brandName|Brand Sprint
+brandCopy|포지셔닝, 기본 비주얼 아이덴티티, 활용을 위한 미니 가이드. 새로 시작하거나 다시 출발하는 분, 더 뚜렷한 이미지를 원하는 분을 위한 서비스입니다.
+contentName|AI Content Kit
+contentCopy|나만의 목소리와 일관성을 유지하는 크리에이티브 콘텐츠와 프롬프트 시스템. 전략, 디렉션, 최종 선택은 사람이 맡습니다.
+soundName|Sound / Visual Pack
+soundCopy|프로젝트에 맞춘 오디오 또는 비주얼 에셋. 작품 공개, 커뮤니케이션, 특별한 순간을 위한 고유한 표현 방식을 만듭니다.
+retainerName|지속적인 디렉션
+retainerCopy|지속적인 크리에이티브 디렉션과 정기적인 콘텐츠 제작으로 성장하는 프로젝트의 일관성을 지켜갑니다.
+experienceName|Experience / 캠페인
+experienceCopy|소규모 이벤트나 캠페인을 위한 콘셉트, 아트 디렉션, 사운드, 비주얼.
+month|월
+prices|유로 기준 참고 가격입니다. 작업 범위, 일정, 수정 사항, 세금 처리는 견적에서 정합니다.
+choose|이 서비스 선택
+works|창작 탐구
+workCopy|Studio X는 시연을 위해 제작한 에디토리얼 디자인 연구입니다. Afterimage는 VISIONOIR의 사운드 아이덴티티를 탐구합니다.
+workAlt|에디토리얼 디자인 연구 Studio X의 그래픽 구성
+method|아이디어에서 활용 도구까지.
+methodCopy|프로젝트의 배경을 듣고, 방향을 정하고, 에셋을 제작합니다. 완성된 자료와 활용 안내를 함께 전달합니다.
+studioTitle|두 시선. 하나의 비전.
+studioCopy|VISIONOIR는 Flavio Giorgio Guarini와 Maria Bellini의 독립 크리에이티브 프로젝트입니다. 풀리아를 기반으로 원격으로도 작업하며, 아티스트, 크리에이터, 소규모 브랜드와 직접 소통합니다.
+flavio|크리에이티브 전략, 사운드 아이덴티티, AI 워크플로
+maria|아트 디렉션, 그래픽 디자인, 비주얼 아이덴티티
+instagram|Instagram 팔로우
+contactTitle|다음으로 실현하고 싶은 아이디어는 무엇인가요?
+contactCopy|생각하고 있는 것을 들려주세요. 어디서부터 시작할지 함께 찾아보겠습니다.
+name|이름
+email|이메일 주소
+service|서비스
+undecided|상담 후 결정
+message|아이디어를 들려주세요
+formNote|프로젝트 요청서는 브라우저 안에 머뭅니다. 내용을 확인한 뒤 본인의 이메일 앱에서 보낼 수 있습니다.
+prepare|프로젝트 요청서 준비
+invalidName|이름을 입력해 주세요.
+invalidEmail|유효한 이메일 주소를 입력해 주세요.
+invalidMessage|아이디어를 10자 이상으로 설명해 주세요.
+briefTitle|VISIONOIR 프로젝트 요청서
+send|이메일 앱에서 열기
+copy|요청서 복사
+download|요청서 다운로드
+copied|요청서를 복사했습니다.
+copyError|요청서의 텍스트를 선택해 복사해 주세요.
+close|닫기
+faq|자주 묻는 질문
+ideaQ|아이디어만 있어도 시작할 수 있나요?
+ideaA|네. 먼저 프로젝트의 배경을 살펴보고, 가장 적합한 서비스와 방향을 함께 정합니다.
+remoteQ|원격으로도 작업하나요?
+remoteA|네. 풀리아를 기반으로 활동하며, 프로젝트 전체를 원격으로 진행할 수 있습니다.
+aiQ|인공지능은 어떻게 활용하나요?
+aiA|창작 도구로 활용합니다. 전략, 아트 디렉션, 최종 선택은 사람이 책임집니다.
+deliveryQ|완료되면 무엇을 받게 되나요?
+deliveryA|견적에서 합의한 제작물과 활용 안내를 받습니다. 파일 형식, 일정, 조건은 함께 정합니다.
+privacy|개인정보 보호
+privacyCopy|이 사이트는 광고 목적의 추적을 사용하지 않습니다. 프로젝트 요청서는 사용자의 기기에서 작성되며, 직접 보내는 경우에만 VISIONOIR에 전달됩니다. 호스팅 업체는 자체 약관에 따라 기술적인 접속 데이터를 처리할 수 있습니다.
+credits|제작 크레딧 및 라이선스
+logoCredit|오리지널 로고 기획 및 제작: Maria Bellini.
+musicCredit|VISIONOIR 프로젝트의 오리지널 음악: Flavio Giorgio Guarini.
+rights|Flavio Giorgio Guarini, Maria Bellini, VISIONOIR는 각자 담당한 부분에 대한 권리를 보유합니다. 에셋을 재사용하려면 허가를 요청해 주세요.
+license|음악 라이선스
+privacyGeo|자동 언어 선택 서비스를 이용할 수 있는 경우, 해당 서비스는 접속 정보를 받아 대략적인 국가 정보를 반환합니다. 사이트는 국가 코드만 임시로 저장합니다.
+creditsNew|VISIONOIR를 위해 독자적인 사운드 합성으로 제작한 새로운 음악.

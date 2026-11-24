@@ -1,0 +1,100 @@
+title|Direzione creativa, immagine e suono
+description|VISIONOIR unisce strategia, identità visiva e suono per artisti, creator e piccoli brand.
+skip|Vai al contenuto
+nav|Navigazione principale
+menu|Menu
+language|Lingua
+languageError|Non è stato possibile caricare la lingua. Riprova.
+experience|Esperienza
+services|Servizi
+studio|Studio
+contact|Contatti
+heroFirst|Diamo forma
+heroAccent|all’invisibile.
+heroCopy|Strategia, identità visiva e suono. Una direzione riconoscibile per chi ha qualcosa da dire.
+start|Raccontaci il tuo progetto
+logo|Il simbolo originale VISIONOIR in metallo
+labTitle|La materia prende ritmo.
+labCopy|Scegli una traccia o esplora in silenzio. Quando ascolti, il metallo reagisce alle frequenze del brano.
+scene|Entra nella scena immersiva
+exit|Esci dalla scena
+sound|Attiva l’esperienza sonora
+pause|Pausa
+mute|Silenzia
+unmute|Riattiva audio
+volume|Volume
+audio|Controlli audio
+track|Traccia e atmosfera
+loading|Caricamento audio
+audioBlocked|Tocca il pulsante audio per iniziare l’ascolto.
+audioError|La traccia non è disponibile. Riprova tra un momento.
+audioUnsupported|Questo browser non supporta l’audio interattivo.
+motionOff|Riduci movimento
+motionOn|Attiva movimento
+chrome|Cromo
+acid|Acid
+noir|Noir
+alloy|Lega
+aura|Aura
+servicesTitle|Dai forma al tuo progetto.
+servicesCopy|Dalla prima identità alla direzione continuativa. Scegli il punto da cui partire.
+brandName|Brand Sprint
+brandCopy|Posizionamento, identità visiva di base e mini guida per usarla. Per chi parte, riparte o vuole un’immagine più riconoscibile.
+contentName|AI Content Kit
+contentCopy|Contenuti creativi e un sistema di prompt coerente con la tua voce. Strategia, direzione e selezione finale restano umane.
+soundName|Sound / Visual Pack
+soundCopy|Asset audio o visuali dedicati. Un linguaggio riconoscibile per uscite, comunicazione e occasioni speciali.
+retainerName|Direzione continua
+retainerCopy|Direzione creativa e produzione di contenuti ricorrenti per dare coerenza a un progetto che cresce.
+experienceName|Experience / Campagna
+experienceCopy|Concept, direzione artistica, suono e immagine per un micro evento o una campagna.
+month|al mese
+prices|Prezzi di riferimento in EUR. Perimetro, tempi, revisioni e trattamento fiscale vengono definiti nel preventivo.
+choose|Scegli questo servizio
+works|Esplorazioni
+workCopy|Studio X è uno studio editoriale dimostrativo. Afterimage esplora l’identità sonora di VISIONOIR.
+workAlt|Composizione grafica dello studio editoriale Studio X
+method|Dall’idea agli strumenti.
+methodCopy|Ascoltiamo il contesto, definiamo la direzione, realizziamo gli asset e ti consegniamo materiali e indicazioni per usarli.
+studioTitle|Due sguardi. Una visione.
+studioCopy|VISIONOIR è il progetto creativo indipendente di Flavio Giorgio Guarini e Maria Bellini. Lavoriamo dalla Puglia e da remoto, a contatto diretto con artisti, creator e piccoli brand.
+flavio|Strategia creativa, identità sonora e workflow AI
+maria|Direzione artistica, graphic design e identità visiva
+instagram|Seguici su Instagram
+contactTitle|Qual è la tua prossima idea?
+contactCopy|Raccontaci cosa hai in mente. Troviamo insieme il punto da cui partire.
+name|Il tuo nome
+email|La tua email
+service|Servizio
+undecided|Da definire insieme
+message|Raccontaci la tua idea
+formNote|Il brief resta nel browser. Puoi rivederlo e inviarlo dalla tua email.
+prepare|Prepara il brief
+invalidName|Inserisci il tuo nome.
+invalidEmail|Inserisci un indirizzo email valido.
+invalidMessage|Descrivi la tua idea in almeno 10 caratteri.
+briefTitle|Il tuo brief VISIONOIR
+send|Apri nella tua email
+copy|Copia il brief
+download|Scarica il brief
+copied|Brief copiato.
+copyError|Seleziona e copia il testo del brief.
+close|Chiudi
+faq|Domande frequenti
+ideaQ|Posso partire anche solo da un’idea?
+ideaA|Sì. Partiamo dal contesto e scegliamo insieme il servizio e la direzione più adatti.
+remoteQ|Lavorate anche da remoto?
+remoteA|Sì. Lavoriamo dalla Puglia e possiamo seguire il progetto interamente da remoto.
+aiQ|Come usate l’intelligenza artificiale?
+aiA|Come strumento creativo. Strategia, direzione artistica e selezione finale restano sotto responsabilità umana.
+deliveryQ|Che cosa ricevo alla fine?
+deliveryA|I materiali concordati nel preventivo e le indicazioni per usarli. Formati, tempi e condizioni vengono definiti insieme.
+privacy|Privacy
+privacyCopy|Il sito non usa tracciamento pubblicitario. Il brief viene preparato sul dispositivo e arriva a VISIONOIR solo se lo spedisci. L’hosting può trattare dati tecnici di connessione secondo le proprie condizioni.
+credits|Crediti e licenze
+logoCredit|Logo originale ideato e realizzato da Maria Bellini.
+musicCredit|Musica originale del progetto VISIONOIR: Flavio Giorgio Guarini.
+rights|Diritti riservati a Flavio Giorgio Guarini, Maria Bellini e VISIONOIR per le rispettive parti. Per riutilizzare gli asset, richiedi un’autorizzazione.
+license|Licenza audio
+privacyGeo|Se disponibile, il servizio di lingua automatica riceve la connessione e restituisce il paese approssimativo. Il sito memorizza temporaneamente solo il codice del paese.
+creditsNew|Nuova musica prodotta con sintesi originale per VISIONOIR.

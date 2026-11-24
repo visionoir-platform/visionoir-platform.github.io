@@ -1,0 +1,100 @@
+title|Uongozi wa ubunifu, taswira na sauti
+description|VISIONOIR inaunganisha mkakati, utambulisho wa kuona na sauti kwa wasanii, waundaji wa maudhui na chapa ndogo.
+skip|Nenda kwenye maudhui
+nav|Urambazaji mkuu
+menu|Menyu
+language|Lugha
+languageError|Imeshindikana kupakia lugha. Jaribu tena.
+experience|Uzoefu
+services|Huduma
+studio|Studio
+contact|Mawasiliano
+heroFirst|Tunapa umbo
+heroAccent|kisichoonekana.
+heroCopy|Mkakati, utambulisho wa kuona na sauti. Mwelekeo unaotambulika kwa wenye jambo la kusema.
+start|Tuambie kuhusu mradi wako
+logo|Alama asili ya VISIONOIR katika umbo la metali
+labTitle|Metali inafuata mdundo.
+labCopy|Chagua wimbo au chunguza bila sauti. Unaposikiliza, metali huitikia masafa ya muziki.
+scene|Ingia katika mandhari ya kuzama
+exit|Ondoka kwenye mandhari
+sound|Washa uzoefu wa sauti
+pause|Sitisha kwa muda
+mute|Zima sauti
+unmute|Washa sauti tena
+volume|Kiwango cha sauti
+audio|Vidhibiti vya sauti
+track|Wimbo na hali ya mandhari
+loading|Sauti inapakiwa
+audioBlocked|Gusa kitufe cha sauti ili kuanza kusikiliza.
+audioError|Wimbo haupatikani. Jaribu tena baada ya muda mfupi.
+audioUnsupported|Kivinjari hiki hakitumii sauti shirikishi.
+motionOff|Punguza mwendo
+motionOn|Washa mwendo
+chrome|Kromu
+acid|Acid
+noir|Noir
+alloy|Aloi
+aura|Aura
+servicesTitle|Upe umbo mradi wako.
+servicesCopy|Kuanzia utambulisho wa kwanza hadi uongozi endelevu. Chagua pa kuanzia.
+brandName|Brand Sprint
+brandCopy|Nafasi ya chapa sokoni, utambulisho wa msingi wa kuona na mwongozo mfupi wa kuutumia. Kwa wanaoanza, wanaoanza upya au wanaotaka taswira inayotambulika zaidi.
+contentName|AI Content Kit
+contentCopy|Maudhui ya ubunifu na mfumo wa maagizo kwa AI unaoendana na sauti ya chapa yako. Mkakati, uongozi na uteuzi wa mwisho hubaki mikononi mwa binadamu.
+soundName|Sound / Visual Pack
+soundCopy|Vipengele vya sauti au taswira vilivyoundwa kwa ajili yako. Lugha inayotambulika kwa uzinduzi, mawasiliano na matukio maalumu.
+retainerName|Uongozi endelevu
+retainerCopy|Uongozi wa ubunifu na uzalishaji wa maudhui wa mara kwa mara ili kudumisha mshikamano wa mradi unaokua.
+experienceName|Experience / Kampeni
+experienceCopy|Dhana, uongozi wa kisanii, sauti na taswira kwa tukio dogo au kampeni.
+month|kwa mwezi
+prices|Bei elekezi katika EUR. Wigo wa kazi, muda, marekebisho na utaratibu wa kodi hufafanuliwa katika makadirio ya gharama.
+choose|Chagua huduma hii
+works|Ugunduzi wa ubunifu
+workCopy|Studio X ni mfano wa kazi ya usanifu wa machapisho. Afterimage inachunguza utambulisho wa sauti wa VISIONOIR.
+workAlt|Muundo wa picha wa mfano wa usanifu wa machapisho wa Studio X
+method|Kutoka wazo hadi nyenzo.
+methodCopy|Tunaelewa mazingira ya mradi, tunafafanua mwelekeo, tunaunda vipengele na kukukabidhi nyenzo pamoja na maelekezo ya kuvitumia.
+studioTitle|Mitazamo miwili. Dira moja.
+studioCopy|VISIONOIR ni mradi huru wa ubunifu wa Flavio Giorgio Guarini na Maria Bellini. Tunafanya kazi kutoka Puglia na kwa njia ya mtandao, tukishirikiana moja kwa moja na wasanii, waundaji wa maudhui na chapa ndogo.
+flavio|Mkakati wa ubunifu, utambulisho wa sauti na mifumo ya kazi inayotumia AI
+maria|Uongozi wa kisanii, usanifu wa picha na utambulisho wa kuona
+instagram|Tufuate kwenye Instagram
+contactTitle|Wazo lako linalofuata ni lipi?
+contactCopy|Tuambie unachofikiria. Tutapata pa kuanzia pamoja.
+name|Jina lako
+email|Barua pepe yako
+service|Huduma
+undecided|Tutafafanua pamoja
+message|Tuambie kuhusu wazo lako
+formNote|Muhtasari wa mradi unabaki kwenye kivinjari. Unaweza kuupitia na kuutuma kupitia barua pepe yako.
+prepare|Andaa muhtasari wa mradi
+invalidName|Weka jina lako.
+invalidEmail|Weka anwani halali ya barua pepe.
+invalidMessage|Eleza wazo lako kwa angalau herufi 10.
+briefTitle|Muhtasari wa mradi wako wa VISIONOIR
+send|Fungua kwenye barua pepe yako
+copy|Nakili muhtasari
+download|Pakua muhtasari
+copied|Muhtasari umenakiliwa.
+copyError|Chagua na unakili maandishi ya muhtasari.
+close|Funga
+faq|Maswali yanayoulizwa mara kwa mara
+ideaQ|Naweza kuanza nikiwa na wazo pekee?
+ideaA|Ndiyo. Tunaanza kwa kuelewa mazingira ya mradi na kuchagua pamoja huduma na mwelekeo unaofaa zaidi.
+remoteQ|Mnafanya kazi pia kwa njia ya mtandao?
+remoteA|Ndiyo. Tunafanya kazi kutoka Puglia na tunaweza kusimamia mradi mzima kwa njia ya mtandao.
+aiQ|Mnatumiaje akili bandia?
+aiA|Kama nyenzo ya ubunifu. Mkakati, uongozi wa kisanii na uteuzi wa mwisho hubaki chini ya uwajibikaji wa binadamu.
+deliveryQ|Nitapokea nini mwishoni?
+deliveryA|Nyenzo zilizokubaliwa katika makadirio ya gharama pamoja na maelekezo ya kuzitumia. Miundo ya faili, muda na masharti hufafanuliwa pamoja.
+privacy|Faragha
+privacyCopy|Tovuti haitumii ufuatiliaji wa matangazo. Muhtasari wa mradi huandaliwa kwenye kifaa chako na hufika VISIONOIR tu ukiutuma. Mtoa huduma wa kuhifadhi tovuti anaweza kuchakata data za kiufundi za muunganisho kulingana na masharti yake.
+credits|Sifa za watayarishi na leseni
+logoCredit|Nembo asili iliyobuniwa na kutengenezwa na Maria Bellini.
+musicCredit|Muziki asili wa mradi wa VISIONOIR: Flavio Giorgio Guarini.
+rights|Haki zimehifadhiwa kwa Flavio Giorgio Guarini, Maria Bellini na VISIONOIR kwa michango yao husika. Omba ruhusa kabla ya kutumia tena nyenzo.
+license|Leseni ya sauti
+privacyGeo|Ikipatikana, huduma ya kuchagua lugha kiotomatiki hupokea muunganisho na kurudisha nchi inayokadiriwa. Tovuti huhifadhi kwa muda msimbo wa nchi pekee.
+creditsNew|Muziki mpya uliotayarishwa kwa VISIONOIR kwa kuunda sauti asili kwa usanisi.

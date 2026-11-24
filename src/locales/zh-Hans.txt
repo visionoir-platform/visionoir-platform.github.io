@@ -1,0 +1,100 @@
+title|创意指导、视觉与声音
+description|VISIONOIR 为艺术家、创作者和小型品牌融合策略、视觉识别与声音设计。
+skip|跳到正文
+nav|主导航
+menu|菜单
+language|语言
+languageError|无法加载该语言，请重试。
+experience|体验
+services|服务
+studio|工作室
+contact|联系
+heroFirst|让隐而未见
+heroAccent|有形可感。
+heroCopy|策略、视觉识别与声音设计，为有想法的人建立鲜明的创意方向。
+start|和我们聊聊你的项目
+logo|金属质感的 VISIONOIR 原创标志
+labTitle|金属也有节奏。
+labCopy|选择一首曲目，或安静探索。音乐播放时，金属会随声音频率变化。
+scene|进入沉浸场景
+exit|退出场景
+sound|开启声音体验
+pause|暂停
+mute|静音
+unmute|取消静音
+volume|音量
+audio|音频控制
+track|曲目与氛围
+loading|正在加载音频
+audioBlocked|点击声音按钮开始聆听。
+audioError|暂时无法播放这首曲目，请稍后重试。
+audioUnsupported|此浏览器不支持互动音频。
+motionOff|减少动态效果
+motionOn|开启动态效果
+chrome|铬
+acid|酸性
+noir|暗影
+alloy|合金
+aura|光晕
+servicesTitle|为你的项目塑形。
+servicesCopy|从第一套视觉识别到持续的创意指导，选择适合你的起点。
+brandName|Brand Sprint
+brandCopy|品牌定位、基础视觉识别和简明使用指南，适用于初次推出、重新出发或建立更鲜明的形象。
+contentName|AI Content Kit
+contentCopy|按照你的表达风格制作创意内容和提示词体系。策略、指导和最终选择由人负责。
+soundName|Sound / Visual Pack
+soundCopy|定制音频或视觉素材，为作品发布、传播及特别活动建立鲜明风格。
+retainerName|持续创意指导
+retainerCopy|通过创意指导和定期内容制作，让成长中的项目保持一致的表达。
+experienceName|体验或传播活动
+experienceCopy|为小型活动或传播项目提供概念、艺术指导、声音与视觉。
+month|每月
+prices|参考价格以欧元计。工作范围、时间安排、修改和税务处理以报价为准。
+choose|选择此服务
+works|创意探索
+workCopy|Studio X 是编辑设计概念研究。Afterimage 探索 VISIONOIR 的声音识别。
+workAlt|Studio X 编辑设计研究中的视觉构成
+method|从想法到可用的工具。
+methodCopy|我们倾听需求、明确方向、制作素材，并交付材料和使用说明。
+studioTitle|两种视角，一个愿景。
+studioCopy|VISIONOIR 是 Flavio Giorgio Guarini 和 Maria Bellini 的独立创意项目。我们从意大利普利亚出发，也远程与艺术家、创作者及小型品牌直接合作。
+flavio|创意策略、声音识别与 AI 工作流程
+maria|艺术指导、平面设计与视觉识别
+instagram|在 Instagram 上关注我们
+contactTitle|你的下一个想法是什么？
+contactCopy|告诉我们你在构思什么，我们一起找到起点。
+name|你的姓名
+email|你的电子邮箱
+service|服务
+undecided|一起确定
+message|介绍你的想法
+formNote|需求简报保存在当前浏览器中。你可以查看后通过自己的邮箱发送。
+prepare|准备需求简报
+invalidName|请输入姓名。
+invalidEmail|请输入有效的电子邮箱地址。
+invalidMessage|请至少用 10 个字符描述你的想法。
+briefTitle|你的 VISIONOIR 需求简报
+send|在邮件应用中打开
+copy|复制简报
+download|下载简报
+copied|已复制简报。
+copyError|请选择并复制简报文本。
+close|关闭
+faq|常见问题
+ideaQ|只有一个想法也可以开始吗？
+ideaA|可以。我们先了解背景，再一起确定合适的服务和方向。
+remoteQ|你们可以远程合作吗？
+remoteA|可以。我们在普利亚工作，可以全程远程协作。
+aiQ|你们如何使用人工智能？
+aiA|将人工智能作为创意工具，策略、艺术指导和最终选择由人负责。
+deliveryQ|我最终会收到什么？
+deliveryA|你会收到报价中约定的材料和使用说明。格式、时间及条件由双方共同确定。
+privacy|隐私
+privacyCopy|本站不使用广告追踪。简报在你的设备上生成，仅在你发送后才会到达 VISIONOIR。托管服务可能按其条款处理技术连接数据。
+credits|署名与许可
+logoCredit|原创标志由 Maria Bellini 构思并制作。
+musicCredit|VISIONOIR 项目的原创音乐来自 Flavio Giorgio Guarini。
+rights|Flavio Giorgio Guarini、Maria Bellini 与 VISIONOIR 保留各自贡献部分的权利。重复使用素材前请申请许可。
+license|音频许可
+privacyGeo|自动语言服务可用时，会根据网络连接返回大致所在国家。本站仅临时保存国家代码。
+creditsNew|新曲目为 VISIONOIR 以原创声音合成方式制作。

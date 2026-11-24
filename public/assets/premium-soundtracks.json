@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-24T16:26:40.700028+00:00",
+  "generator": "scripts/synthesize-premium.py",
+  "generator_version": 1,
+  "generation_platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "python_version": "3.14.2",
+  "numpy_version": "2.4.2",
+  "ffmpeg_version": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "verification": "Encoded MP3 full decode and FFmpeg loudnorm (EBU R128/true peak); sampled bass mid/side spectrum; mono fold down. No critical listening session claimed.",
+  "tracks": [
+    {
+      "id": "alloy",
+      "mode": "alloy",
+      "title": "METALLOGRAM",
+      "bpm": 130,
+      "bars": 112,
+      "key": "D minor",
+      "character": "Rhythmic metallic / Lega",
+      "src": "assets/visionoir-metallogram.mp3",
+      "filename": "visionoir-metallogram.mp3",
+      "permissions_contact": "visionoir.platform@gmail.com",
+      "license_url": "assets/AUDIO-PREMIUM-LICENSE.txt",
+      "license": "All rights reserved",
+      "provenance": "Original score and deterministic DSP synthesis created for VISIONOIR with AI assistance. No external recordings, samples or interpolated melodies.",
+      "seed": 2026112401,
+      "sample_rate": 44100,
+      "channels": 2,
+      "bitrate_kbps": 160,
+      "bytes": 4137310,
+      "sha256": "5d5e917469abca1236fc2a44fb002fbd4e6f5dbd3c20c7aa27e436063dfd857c",
+      "source_pcm_sha256": "400c51234453f477de1740f9405730793cdd943c0ef3dc48a8df2ebfe908bbc2",
+      "generator_sha256": "8641ad143fecdd7870cf83e17843047abb6609809fa188fa132a75388159fee5",
+      "measured_lufs": -15.44,
+      "measured_true_peak_dbtp": -3.43,
+      "measured_lra_lu": 8.4,
+      "measured_mono_lufs": -18.37,
+      "measured_mono_true_peak_dbtp": -3.63,
+      "arrangement": [
+        {
+          "start_bar": 1,
+          "end_bar": 8,
+          "label": "Materiale",
+          "start_seconds": 0.0,
+          "end_seconds": 14.769
+        },
+        {
+          "start_bar": 9,
+          "end_bar": 24,
+          "label": "Incisione",
+          "start_seconds": 14.769,
+          "end_seconds": 44.308
+        },
+        {
+          "start_bar": 25,
+          "end_bar": 48,
+          "label": "Moto",
+          "start_seconds": 44.308,
+          "end_seconds": 88.615
+        },
+        {
+          "start_bar": 49,
+          "end_bar": 64,
+          "label": "Rifrazione",
+          "start_seconds": 88.615,
+          "end_seconds": 118.154
+        },
+        {
+          "start_bar": 65,
+          "end_bar": 96,
+          "label": "Lega",
+          "start_seconds": 118.154,
+          "end_seconds": 177.231
+        },
+        {
+          "start_bar": 97,
+          "end_bar": 112,
+          "label": "Residuo",
+          "start_seconds": 177.231,
+          "end_seconds": 206.769
+        }
+      ],
+      "duration_seconds": 206.769229,
+      "sample_peak_dbfs": -3.438,
+      "rms_dbfs": -15.938,
+      "stereo_correlation": 0.94068,
+      "mono_fold_rms_change_db": -0.131,
+      "bass_side_to_mid_db_25_120hz": -68.518,
+      "dc_offset": [
+        1.0076417098840507e-06,
+        1.308560568669347e-06
+      ],
+      "boundary_jump_peak": 1.3246535672806203e-05,
+      "first_10ms_peak_dbfs": -38.687,
+      "last_10ms_peak_dbfs": -67.726,
+      "complete_decode_verified": true,
+      "artist": "VISIONOIR",
+      "producer": "Sintesi originale assistita per VISIONOIR",
+      "copyright": "© 2026 VISIONOIR. Rights notice as indicated."
+    },
+    {
+      "id": "aura",
+      "mode": "aura",
+      "title": "VELUM",
+      "bpm": 84,
+      "bars": 72,
+      "key": "E minor",
+      "character": "Cinematic atmospheric / Aura",
+      "src": "assets/visionoir-velum.mp3",
+      "filename": "visionoir-velum.mp3",
+      "permissions_contact": "visionoir.platform@gmail.com",
+      "license_url": "assets/AUDIO-PREMIUM-LICENSE.txt",
+      "license": "All rights reserved",
+      "provenance": "Original score and deterministic DSP synthesis created for VISIONOIR with AI assistance. No external recordings, samples or interpolated melodies.",
+      "seed": 2026112402,
+      "sample_rate": 44100,
+      "channels": 2,
+      "bitrate_kbps": 160,
+      "bytes": 4115882,
+      "sha256": "8726deed95b348e15c8fc6190e54a94c75c4e9d0ca9ee743b1cb75d700c86c3c",
+      "source_pcm_sha256": "0cd1495835a829992b8ec626ec6a52a4131f9a38295d2491c0ccbeea4d38ae37",
+      "generator_sha256": "8641ad143fecdd7870cf83e17843047abb6609809fa188fa132a75388159fee5",
+      "measured_lufs": -16.44,
+      "measured_true_peak_dbtp": -2.5,
+      "measured_lra_lu": 6.9,
+      "measured_mono_lufs": -20.95,
+      "measured_mono_true_peak_dbtp": -3.09,
+      "arrangement": [
+        {
+          "start_bar": 1,
+          "end_bar": 8,
+          "label": "Soglia",
+          "start_seconds": 0.0,
+          "end_seconds": 22.857
+        },
+        {
+          "start_bar": 9,
+          "end_bar": 24,
+          "label": "Emergenza",
+          "start_seconds": 22.857,
+          "end_seconds": 68.571
+        },
+        {
+          "start_bar": 25,
+          "end_bar": 36,
+          "label": "Ascesa",
+          "start_seconds": 68.571,
+          "end_seconds": 102.857
+        },
+        {
+          "start_bar": 37,
+          "end_bar": 44,
+          "label": "Sospensione",
+          "start_seconds": 102.857,
+          "end_seconds": 125.714
+        },
+        {
+          "start_bar": 45,
+          "end_bar": 64,
+          "label": "Orizzonte",
+          "start_seconds": 125.714,
+          "end_seconds": 182.857
+        },
+        {
+          "start_bar": 65,
+          "end_bar": 72,
+          "label": "Dissolvenza",
+          "start_seconds": 182.857,
+          "end_seconds": 205.714
+        }
+      ],
+      "duration_seconds": 205.714286,
+      "sample_peak_dbfs": -2.498,
+      "rms_dbfs": -16.529,
+      "stereo_correlation": 0.63737,
+      "mono_fold_rms_change_db": -0.869,
+      "bass_side_to_mid_db_25_120hz": -52.258,
+      "dc_offset": [
+        9.499524120612047e-06,
+        1.0847916775648565e-05
+      ],
+      "boundary_jump_peak": 2.4137989385053515e-06,
+      "first_10ms_peak_dbfs": -75.303,
+      "last_10ms_peak_dbfs": -61.784,
+      "complete_decode_verified": true,
+      "artist": "VISIONOIR",
+      "producer": "Sintesi originale assistita per VISIONOIR",
+      "copyright": "© 2026 VISIONOIR. Rights notice as indicated."
+    }
+  ]
+}

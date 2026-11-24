@@ -1,0 +1,100 @@
+title|Direcziun creativa, maletg e tun
+description|VISIONOIR collia strategia, identitad visuala e tun per artistas ed artists, creaturas e creaturs da cuntegn e pitschnas marcas.
+skip|Ir al cuntegn
+nav|Navigaziun principala
+menu|Menu
+language|Lingua
+languageError|La lingua n’ha betg pudì vegnir chargiada. Emprova anc ina giada.
+experience|Experientscha
+services|Servetschs
+studio|Studio
+contact|Contact
+heroFirst|Nus dain furma
+heroAccent|a l’invisibel.
+heroCopy|Strategia, identitad visuala e tun. Ina direcziun che sa lascha reconuscher per tgi che ha insatge da dir.
+start|Raquinta a nus da tes project
+logo|Il simbol original da VISIONOIR en metal
+labTitle|La materia survegn in ritmus.
+labCopy|Tscherna in toc da musica u explorescha en silenzi. Cur che ti taidlas, reagescha il metal sin las frequenzas da la musica.
+scene|Entrar en la scena immersiva
+exit|Bandunar la scena
+sound|Activar l’experientscha sonora
+pause|Pausa
+mute|Deactivar il tun
+unmute|Reactivar il tun
+volume|Volumen
+audio|Elements da controlla per l’audio
+track|Toc da musica ed atmosfera
+loading|L’audio vegn chargià
+audioBlocked|Tutga il buttun d’audio per cumenzar a tadlar.
+audioError|Il toc da musica n’è betg disponibel. Emprova anc ina giada en in mument.
+audioUnsupported|Quest navigatur na sustegna betg audio interactiv.
+motionOff|Reducir il moviment
+motionOn|Activar il moviment
+chrome|Crom
+acid|Acid
+noir|Noir
+alloy|Maschaida da metals
+aura|Aura
+servicesTitle|Dà furma a tes project.
+servicesCopy|Da l’emprima identitad fin a l’accumpagnament cuntinuant. Tscherna nua cumenzar.
+brandName|Brand Sprint
+brandCopy|Posiziunament, identitad visuala da basa ed in pitschen mussavia per la duvrar. Per tgi che cumenza, cumenza danovamain u vul in maletg pli renconuschibel.
+contentName|AI Content Kit
+contentCopy|Cuntegns creativs ed in sistem da prompts che correspunda a tia vusch. La strategia, la direcziun e la selecziun finala restan en mauns umans.
+soundName|Sound / Visual Pack
+soundCopy|Elements d’audio u visuals sviluppads aposta per tai. In linguatg renconuschibel per publicaziuns, communicaziun ed occasiuns spezialas.
+retainerName|Accumpagnament cuntinuant
+retainerCopy|Direcziun creativa e producziun regulara da cuntegns per dar coerenza ad in project che crescha.
+experienceName|Experience / Campagna
+experienceCopy|Concept, direcziun artistica, tun e maletg per in pitschen eveniment u ina campagna.
+month|per mais
+prices|Pretschs indicativs en EUR. La dimensiun da las lavurs, ils termins, las revisiuns ed il tractament fiscal vegnan definids en l’offerta.
+choose|Tscherner quest servetsch
+works|Exploraziuns
+workCopy|Studio X è in studi demonstrativ da design editorial. Afterimage explorescha l’identitad sonora da VISIONOIR.
+workAlt|Cumposiziun grafica dal studi da design editorial Studio X
+method|Da l’idea als instruments.
+methodCopy|Nus tadlain il context, definain la direcziun, realisain ils elements e ta surdain ils materials cun indicaziuns per als duvrar.
+studioTitle|Dus sguards. Ina visiun.
+studioCopy|VISIONOIR è il project creativ independent da Flavio Giorgio Guarini e Maria Bellini. Nus lavurain da la Puglia e a distanza, en contact direct cun artistas ed artists, creaturas e creaturs da cuntegn e pitschnas marcas.
+flavio|Strategia creativa, identitad sonora e process da lavur cun IA
+maria|Direcziun artistica, design grafic ed identitad visuala
+instagram|Suonda nus sin Instagram
+contactTitle|Tge è tia proxima idea?
+contactCopy|Raquinta a nus tge che ti has en senn. Nus chattain ensemen nua cumenzar.
+name|Tes num
+email|Tia adressa dad e-mail
+service|Servetsch
+undecided|Da definir ensemen
+message|Raquinta a nus da tia idea
+formNote|Il briefing resta en il navigatur. Ti pos al controllar ed al trametter cun tes program dad e-mail.
+prepare|Preparar il briefing
+invalidName|Endatescha tes num.
+invalidEmail|Endatescha ina adressa dad e-mail valaivla.
+invalidMessage|Descriva tia idea cun almain 10 caracters.
+briefTitle|Tes briefing VISIONOIR
+send|Avrir en tes program dad e-mail
+copy|Copiar il briefing
+download|Telechargiar il briefing
+copied|Il briefing è copià.
+copyError|Selecziunescha e copiescha il text dal briefing.
+close|Serrar
+faq|Dumondas frequentas
+ideaQ|Poss jau cumenzar mo cun in’idea?
+ideaA|Gea. Nus partin dal context e tschernin ensemen il servetsch e la direcziun che sa cunfan il meglier.
+remoteQ|Lavurais vus er a distanza?
+remoteA|Gea. Nus lavurain da la Puglia e pudain accumpagnar l’entir project a distanza.
+aiQ|Co duvrais vus l’intelligenza artifiziala?
+aiA|Sco instrument creativ. La strategia, la direcziun artistica e la selecziun finala restan sut responsabladad umana.
+deliveryQ|Tge survegn jau a la fin?
+deliveryA|Ils materials fixads en l’offerta e las indicaziuns per als duvrar. Nus definain ensemen ils formats, ils termins e las cundiziuns.
+privacy|Protecziun da datas
+privacyCopy|La pagina d’internet na dovra betg tracking per reclama. Il briefing vegn preparà sin tes apparat e cuntanscha VISIONOIR mo sche ti al tramettas. Il purschider dal hosting po elavurar datas tecnicas da connexiun tenor sias atgnas cundiziuns.
+credits|Credits e licenzas
+logoCredit|Logo original concepì e realisà da Maria Bellini.
+musicCredit|Musica originala dal project VISIONOIR: Flavio Giorgio Guarini.
+rights|Ils dretgs restan reservads a Flavio Giorgio Guarini, Maria Bellini e VISIONOIR per lur contribuziuns respectivas. Dumonda ina permissiun per duvrar danovamain ils materials.
+license|Licenza d’audio
+privacyGeo|Sch’il servetsch per tscherner automaticamain la lingua è disponibel, retschaiva el la connexiun e returna il pajais approximativ. La pagina d’internet arcuna temporarmain mo il code dal pajais.
+creditsNew|Nova musica producida per VISIONOIR cun sintesa sonora originala.

@@ -1,0 +1,38 @@
+languageError|Não foi possível carregar o idioma. Tente novamente.
+contact|Contato
+start|Conte sobre o seu projeto
+labCopy|Escolha uma faixa ou explore em silêncio. Ao ouvir, o metal reage às frequências da música.
+scene|Entre na cena imersiva
+audio|Controles de áudio
+loading|Carregando áudio
+audioBlocked|Toque no botão de áudio para começar a ouvir.
+audioError|A faixa não está disponível. Tente novamente em instantes.
+servicesTitle|Dê forma ao seu projeto.
+servicesCopy|Da primeira identidade a uma direção contínua. Escolha por onde começar.
+contentCopy|Conteúdos criativos e um sistema de prompts coerente com a sua voz. A estratégia, a direção e a seleção final continuam sendo humanas.
+prices|Preços de referência em EUR. O escopo, os prazos, as revisões e o tratamento fiscal são definidos no orçamento.
+methodCopy|Ouvimos o contexto, definimos a direção, criamos os elementos e entregamos os materiais com orientações de uso.
+studioCopy|A VISIONOIR é o projeto criativo independente de Flavio Giorgio Guarini e Maria Bellini. Trabalhamos a partir da Apúlia e remotamente, em contato direto com artistas, criadores de conteúdo e pequenas marcas.
+instagram|Siga-nos no Instagram
+contactTitle|Qual é a sua próxima ideia?
+contactCopy|Conte o que você tem em mente. Encontramos juntos o ponto de partida.
+name|Seu nome
+email|Seu e-mail
+message|Conte sobre a sua ideia
+formNote|O briefing fica no navegador. Você pode revisá-lo e enviá-lo pelo seu e-mail.
+invalidName|Digite seu nome.
+invalidEmail|Digite um endereço de e-mail válido.
+invalidMessage|Descreva a sua ideia com pelo menos 10 caracteres.
+briefTitle|Seu briefing VISIONOIR
+send|Abrir no seu e-mail
+download|Baixar o briefing
+copyError|Selecione e copie o texto do briefing.
+remoteQ|Vocês também trabalham remotamente?
+remoteA|Sim. Trabalhamos a partir da Apúlia e podemos acompanhar o projeto inteiramente de forma remota.
+aiQ|Como vocês usam a inteligência artificial?
+aiA|Como ferramenta criativa. A estratégia, a direção artística e a seleção final continuam sob responsabilidade humana.
+deliveryA|Os materiais combinados no orçamento e as orientações de uso. Os formatos, os prazos e as condições são definidos em conjunto.
+privacyCopy|O site não usa rastreamento publicitário. O briefing é preparado no seu dispositivo e só chega à VISIONOIR se você o enviar. A hospedagem pode tratar dados técnicos de conexão conforme suas próprias condições.
+logoCredit|Logotipo original concebido e realizado por Maria Bellini.
+rights|Direitos reservados a Flavio Giorgio Guarini, Maria Bellini e VISIONOIR pelas respectivas contribuições. Para reutilizar os elementos, solicite autorização.
+privacyGeo|Quando disponível, o serviço de idioma automático recebe a conexão e retorna o país aproximado. O site armazena temporariamente apenas o código do país.

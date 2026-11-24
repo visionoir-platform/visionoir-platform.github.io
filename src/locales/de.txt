@@ -1,0 +1,100 @@
+title|Kreative Leitung, Bild und Klang
+description|VISIONOIR verbindet Strategie, visuelle Identität und Klang für Kunstschaffende, Content Creator und kleine Marken.
+skip|Zum Inhalt springen
+nav|Hauptnavigation
+menu|Menü
+language|Sprache
+languageError|Die Sprache konnte nicht geladen werden. Bitte versuche es erneut.
+experience|Erlebnis
+services|Leistungen
+studio|Studio
+contact|Kontakt
+heroFirst|Wir geben dem
+heroAccent|Unsichtbaren Form.
+heroCopy|Strategie, visuelle Identität und Klang. Eine unverwechselbare Richtung für alle, die etwas zu sagen haben.
+start|Erzähl uns von deinem Projekt
+logo|Das Originalsymbol von VISIONOIR in Metall
+labTitle|Materie findet ihren Rhythmus.
+labCopy|Wähle einen Track oder erkunde die Szene in Stille. Beim Hören reagiert das Metall auf die Frequenzen der Musik.
+scene|Immersive Szene betreten
+exit|Szene verlassen
+sound|Klangerlebnis aktivieren
+pause|Pause
+mute|Ton ausschalten
+unmute|Ton wieder einschalten
+volume|Lautstärke
+audio|Audiosteuerung
+track|Track und Atmosphäre
+loading|Audio wird geladen
+audioBlocked|Tippe auf die Audiotaste, um die Wiedergabe zu starten.
+audioError|Der Track ist nicht verfügbar. Versuche es in einem Moment erneut.
+audioUnsupported|Dieser Browser unterstützt kein interaktives Audio.
+motionOff|Bewegung reduzieren
+motionOn|Bewegung aktivieren
+chrome|Chrom
+acid|Acid
+noir|Noir
+alloy|Legierung
+aura|Aura
+servicesTitle|Gib deinem Projekt Form.
+servicesCopy|Von der ersten Identität bis zur laufenden kreativen Begleitung. Wähle deinen Ausgangspunkt.
+brandName|Brand Sprint
+brandCopy|Positionierung, grundlegende visuelle Identität und ein kompakter Leitfaden für ihre Anwendung. Für den Start, den Neustart oder einen unverwechselbareren Auftritt.
+contentName|AI Content Kit
+contentCopy|Kreative Inhalte und ein Prompt-System, das zu deiner Stimme passt. Strategie, Leitung und finale Auswahl bleiben in menschlicher Hand.
+soundName|Sound / Visual Pack
+soundCopy|Individuelle Audio- oder Bildelemente. Eine wiedererkennbare Sprache für Veröffentlichungen, Kommunikation und besondere Anlässe.
+retainerName|Laufende kreative Begleitung
+retainerCopy|Kreative Leitung und regelmäßige Content-Produktion für einen stimmigen Auftritt deines wachsenden Projekts.
+experienceName|Experience / Kampagne
+experienceCopy|Konzept, künstlerische Leitung, Klang und Bild für eine kleine Veranstaltung oder eine Kampagne.
+month|pro Monat
+prices|Richtpreise in EUR. Leistungsumfang, Zeitplan, Korrekturschleifen und steuerliche Behandlung werden im Angebot festgelegt.
+choose|Diese Leistung auswählen
+works|Erkundungen
+workCopy|Studio X ist eine beispielhafte Studie im Editorial Design. Afterimage erkundet die klangliche Identität von VISIONOIR.
+workAlt|Grafische Komposition der Editorial-Design-Studie Studio X
+method|Von der Idee zu den Werkzeugen.
+methodCopy|Wir hören zu, verstehen den Kontext und legen die Richtung fest. Dann gestalten wir die Elemente und übergeben dir die Materialien mit Hinweisen zur Nutzung.
+studioTitle|Zwei Blickwinkel. Eine Vision.
+studioCopy|VISIONOIR ist das unabhängige Kreativprojekt von Flavio Giorgio Guarini und Maria Bellini. Wir arbeiten von Apulien aus und remote, im direkten Austausch mit Kunstschaffenden, Content Creatorn und kleinen Marken.
+flavio|Kreative Strategie, klangliche Identität und KI-Workflows
+maria|Künstlerische Leitung, Grafikdesign und visuelle Identität
+instagram|Folge uns auf Instagram
+contactTitle|Was ist deine nächste Idee?
+contactCopy|Erzähl uns, was dir vorschwebt. Gemeinsam finden wir den Anfang.
+name|Dein Name
+email|Deine E-Mail-Adresse
+service|Leistung
+undecided|Gemeinsam festlegen
+message|Erzähl uns von deiner Idee
+formNote|Das Briefing bleibt im Browser. Du kannst es prüfen und über dein E-Mail-Programm versenden.
+prepare|Briefing vorbereiten
+invalidName|Bitte gib deinen Namen ein.
+invalidEmail|Bitte gib eine gültige E-Mail-Adresse ein.
+invalidMessage|Beschreibe deine Idee mit mindestens 10 Zeichen.
+briefTitle|Dein VISIONOIR-Briefing
+send|Im E-Mail-Programm öffnen
+copy|Briefing kopieren
+download|Briefing herunterladen
+copied|Briefing kopiert.
+copyError|Markiere den Text des Briefings und kopiere ihn.
+close|Schließen
+faq|Häufige Fragen
+ideaQ|Kann ich auch mit einer bloßen Idee starten?
+ideaA|Ja. Wir betrachten zunächst den Kontext und wählen gemeinsam die passende Leistung und Richtung.
+remoteQ|Arbeitet ihr auch remote?
+remoteA|Ja. Wir arbeiten von Apulien aus und können das gesamte Projekt aus der Ferne begleiten.
+aiQ|Wie setzt ihr künstliche Intelligenz ein?
+aiA|Als kreatives Werkzeug. Strategie, künstlerische Leitung und finale Auswahl bleiben in menschlicher Verantwortung.
+deliveryQ|Was erhalte ich am Ende?
+deliveryA|Die im Angebot vereinbarten Materialien und Hinweise zu ihrer Nutzung. Formate, Zeitplan und Bedingungen legen wir gemeinsam fest.
+privacy|Datenschutz
+privacyCopy|Die Website verwendet kein Werbetracking. Das Briefing wird auf deinem Gerät vorbereitet und erreicht VISIONOIR nur, wenn du es absendest. Der Hostinganbieter kann technische Verbindungsdaten gemäß seinen eigenen Bedingungen verarbeiten.
+credits|Mitwirkende und Lizenzen
+logoCredit|Originallogo entworfen und umgesetzt von Maria Bellini.
+musicCredit|Originalmusik des Projekts VISIONOIR: Flavio Giorgio Guarini.
+rights|Die Rechte an den jeweiligen Beiträgen bleiben Flavio Giorgio Guarini, Maria Bellini und VISIONOIR vorbehalten. Für eine Wiederverwendung der Materialien ist eine Genehmigung anzufragen.
+license|Audiolizenz
+privacyGeo|Sofern verfügbar, empfängt der Dienst zur automatischen Sprachwahl die Verbindung und gibt das ungefähre Land zurück. Die Website speichert vorübergehend nur den Ländercode.
+creditsNew|Neue Musik mit eigens entwickelter Klangsynthese für VISIONOIR produziert.

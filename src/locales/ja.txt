@@ -1,0 +1,100 @@
+title|クリエイティブディレクション、ビジュアル、サウンド
+description|VISIONOIRは、戦略、ビジュアルアイデンティティ、サウンドを組み合わせ、アーティスト、クリエイター、小規模ブランドを支えます。
+skip|コンテンツへ移動
+nav|メインナビゲーション
+menu|メニュー
+language|言語
+languageError|言語を読み込めませんでした。もう一度お試しください。
+experience|体験
+services|サービス
+studio|スタジオ
+contact|お問い合わせ
+heroFirst|見えない想いに
+heroAccent|かたちを。
+heroCopy|戦略、ビジュアルアイデンティティ、サウンド。伝えたい想いに、その人らしい表現を。
+start|プロジェクトについて聞かせてください
+logo|メタルで表現したVISIONOIRのオリジナルシンボル
+labTitle|かたちが、リズムをまとう。
+labCopy|曲を選ぶことも、静かに眺めることもできます。音楽を再生すると、メタルが曲の周波数に反応します。
+scene|没入型のシーンを開く
+exit|シーンを閉じる
+sound|サウンド体験を始める
+pause|一時停止
+mute|消音
+unmute|消音を解除
+volume|音量
+audio|オーディオ操作
+track|曲と雰囲気
+loading|音声を読み込み中
+audioBlocked|オーディオボタンをタップすると再生が始まります。
+audioError|曲を再生できません。少し待ってからもう一度お試しください。
+audioUnsupported|このブラウザーはインタラクティブオーディオに対応していません。
+motionOff|動きを抑える
+motionOn|動きを有効にする
+chrome|クローム
+acid|アシッド
+noir|ノワール
+alloy|合金
+aura|オーラ
+servicesTitle|あなたのプロジェクトを、かたちに。
+servicesCopy|最初のアイデンティティづくりから、継続的なディレクションまで。必要なところから始めましょう。
+brandName|Brand Sprint
+brandCopy|ポジショニング、基本的なビジュアルアイデンティティ、使い方のミニガイド。新たな出発や再出発、より自分らしいイメージを求める方へ。
+contentName|AI Content Kit
+contentCopy|あなたの表現に合ったクリエイティブコンテンツとプロンプトの仕組み。戦略、ディレクション、最終的な選択は、人が担います。
+soundName|Sound / Visual Pack
+soundCopy|プロジェクト専用の音声またはビジュアル素材。作品のリリース、情報発信、特別な機会に、あなたらしい表現を届けます。
+retainerName|継続的なディレクション
+retainerCopy|継続的なクリエイティブディレクションとコンテンツ制作で、成長するプロジェクトに一貫性をもたらします。
+experienceName|Experience / キャンペーン
+experienceCopy|小規模イベントやキャンペーンのためのコンセプト、アートディレクション、サウンド、ビジュアル。
+month|月額
+prices|参考価格はユーロ表記です。作業範囲、納期、修正回数、税の取り扱いは、お見積もりで定めます。
+choose|このサービスを選ぶ
+works|クリエイティブの探求
+workCopy|Studio Xは、デモンストレーションとして制作したエディトリアルデザインの試作です。Afterimageは、VISIONOIRの音のアイデンティティを探求しています。
+workAlt|エディトリアルデザインの試作Studio Xのグラフィック構成
+method|アイデアから、使えるツールへ。
+methodCopy|背景を伺い、方向性を定め、素材を制作。完成した素材と、その使い方をお届けします。
+studioTitle|ふたつの視点。ひとつのビジョン。
+studioCopy|VISIONOIRは、Flavio Giorgio GuariniとMaria Belliniによる独立したクリエイティブプロジェクトです。プーリアを拠点にリモートでも活動し、アーティスト、クリエイター、小規模ブランドと直接向き合っています。
+flavio|クリエイティブ戦略、サウンドアイデンティティ、AIワークフロー
+maria|アートディレクション、グラフィックデザイン、ビジュアルアイデンティティ
+instagram|Instagramをフォロー
+contactTitle|次にかたちにしたいアイデアは？
+contactCopy|思い描いていることを聞かせてください。どこから始めるか、一緒に考えましょう。
+name|お名前
+email|メールアドレス
+service|サービス
+undecided|相談して決めたい
+message|アイデアを聞かせてください
+formNote|ご相談内容はブラウザー内にとどまります。内容を確認して、ご自身のメールアプリから送信できます。
+prepare|相談内容をまとめる
+invalidName|お名前を入力してください。
+invalidEmail|有効なメールアドレスを入力してください。
+invalidMessage|アイデアを10文字以上で入力してください。
+briefTitle|VISIONOIRへのご相談内容
+send|メールアプリで開く
+copy|相談内容をコピー
+download|相談内容をダウンロード
+copied|相談内容をコピーしました。
+copyError|相談内容のテキストを選択してコピーしてください。
+close|閉じる
+faq|よくあるご質問
+ideaQ|アイデアだけの段階でも相談できますか？
+ideaA|はい。まず背景を伺い、最適なサービスと方向性を一緒に考えます。
+remoteQ|リモートでも依頼できますか？
+remoteA|はい。プーリアを拠点に活動しており、プロジェクトのすべてをリモートで進めることも可能です。
+aiQ|AIをどのように活用していますか？
+aiA|クリエイティブのためのツールとして活用しています。戦略、アートディレクション、最終的な選択には、人が責任を持ちます。
+deliveryQ|完成時には何を受け取れますか？
+deliveryA|お見積もりで合意した素材と、その使い方をお渡しします。形式、納期、条件は事前に一緒に決めます。
+privacy|プライバシー
+privacyCopy|このサイトでは広告目的のトラッキングを行いません。相談内容はお使いの端末上で作成され、ご自身で送信した場合にのみVISIONOIRに届きます。ホスティング事業者は、自社の規約に従って技術的な接続データを処理する場合があります。
+credits|クレジットとライセンス
+logoCredit|オリジナルロゴの考案・制作：Maria Bellini。
+musicCredit|VISIONOIRプロジェクトのオリジナル音楽：Flavio Giorgio Guarini。
+rights|各制作物の権利は、それぞれFlavio Giorgio Guarini、Maria Bellini、VISIONOIRに帰属します。素材を再利用する場合は、許可をお求めください。
+license|音楽ライセンス
+privacyGeo|自動言語選択サービスが利用可能な場合、そのサービスは接続情報を受け取り、おおよその国を返します。このサイトが一時保存するのは国コードのみです。
+creditsNew|VISIONOIRのために、独自の音響合成で制作した新しい音楽。
