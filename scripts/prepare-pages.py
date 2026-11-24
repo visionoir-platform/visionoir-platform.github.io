@@ -23,7 +23,7 @@ paths += [
 paths.extend(["unseen/index.html", ".github/workflows/unseen-check.yml", "scripts/prepare-pages.py"])
 # Only original distribution directories are staged; private profiles and references live outside the checkout.
 for directory, suffixes in (
-    ("game", {".md", ".js", ".mjs", ".cjs", ".py", ".tsv", ".score", ".json", ".png", ".gif"}),
+    ("game", {".md", ".css", ".js", ".mjs", ".cjs", ".py", ".tsv", ".score", ".json", ".png", ".gif"}),
     ("public/unseen/art", {".png", ".json"}),
     ("public/unseen/audio", {".m4a", ".js", ".json", ".txt"}),
 ):
