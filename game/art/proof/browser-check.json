@@ -1,0 +1,42 @@
+{
+  "cinematic": {
+    "a": 1131749384,
+    "b": 1841708137
+  },
+  "engine": "chromium",
+  "mode": "desktop viewport",
+  "canvas": "480x270",
+  "errors": [],
+  "result": [
+    {
+      "hero": 0,
+      "zone": 0,
+      "unique": 7,
+      "hash": 3017430236
+    },
+    {
+      "hero": 1,
+      "zone": 1,
+      "unique": 7,
+      "hash": 1662877584
+    },
+    {
+      "hero": 2,
+      "zone": 2,
+      "unique": 7,
+      "hash": 3601095406
+    },
+    {
+      "hero": 3,
+      "zone": 3,
+      "unique": 7,
+      "hash": 1954568160
+    },
+    {
+      "hero": 4,
+      "zone": 4,
+      "unique": 7,
+      "hash": 1801177830
+    }
+  ]
+}

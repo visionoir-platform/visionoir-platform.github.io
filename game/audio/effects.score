@@ -1,0 +1,128 @@
+# id | gesture score. Each event = voice / onset and duration (ms) / frequency contour (Hz).
+[movement]
+jump|zip:0:155:230:960 air:18:100:600:1500
+land|thud:0:110:126:48 grit:4:85:900:200
+step-metal|tap:0:52:730:320 bell:4:61:1300:1220
+skid|grit:0:190:2100:560 zip:26:120:440:80
+roll|motor:0:160:102:174 tap:44:45:330:270 tap:111:40:360:290
+charge-dash|motor:0:340:72:320 fm:110:220:160:670
+dash-release|snap:0:43:900:280 air:8:260:3200:310 sub:0:120:100:54
+spring|boing:0:210:180:690 bell:58:126:490:980
+rail-grind|grit:0:270:2200:1550 bell:34:185:960:600
+wall-grip|tap:0:80:450:310 scrape:48:96:980:610
+wall-kick|thud:0:67:170:80 zip:33:148:280:1040
+glide|air:0:286:680:1500 glass:65:170:210:350
+dive|zip:0:210:1200:117 air:48:196:1550:460
+water-entry|drop:0:111:510:84 grit:8:170:1340:370 bubble:90:132:360:760
+swim-stroke|bubble:0:110:250:470 bubble:56:104:360:620 air:15:154:650:450
+boost-pad|pulse:0:90:155:310 pulse:70:90:310:620 zip:110:155:620:1560
+loop-apex|glass:0:124:430:650 bell:54:142:865:1290
+fast-step|tap:0:38:610:390 snap:42:45:1100:390
+[collect]
+ring|bell:0:136:1060:1060 glass:58:187:1588:1588
+ring-chain|glass:0:95:790:790 glass:58:94:1055:1055 bell:110:168:1580:1580
+cache-found|clink:0:95:530:425 pulse:72:102:640:880 bell:142:180:1090:1090
+core-spark|fm:0:192:275:551 glass:120:204:1100:1320
+checkpoint|ping:0:150:440:440 ping:117:170:660:660 bell:246:221:880:880
+shield-gain|air:0:230:450:1490 chord:64:250:311:330
+extra-life|pulse:0:100:392:392 pulse:87:90:493:493 pulse:160:120:587:587 glass:270:200:784:784
+score-tick|tap:0:34:1400:920 ping:14:36:1045:1045
+bonus-key|clink:0:85:710:485 glass:58:114:889:889 glass:139:155:1334:1334
+secret-route|reed:0:155:277:277 glass:112:176:415:415 glass:232:185:523:523
+record|chord:0:143:330:330 bell:99:173:660:660 chord:210:250:440:440
+victory|brass:0:135:295:295 brass:118:115:370:370 chord:223:279:444:444
+[combat]
+hit|snap:0:70:1320:170 thud:5:143:152:45
+shield-break|glass:0:115:880:173 grit:35:167:1950:350 clink:110:82:720:400
+punch|air:0:73:550:1200 thud:46:107:170:53
+combo-kick|zip:0:107:320:740 snap:83:85:940:220 sub:85:136:89:41
+slam|sub:0:273:132:37 grit:10:202:1250:250 tap:95:89:296:85
+parry|clink:0:87:1030:910 bell:31:189:1520:1520
+spin-hit|buzz:0:129:184:510 snap:63:81:1100:270
+projectile|fm:0:149:690:135 air:15:139:1800:430
+ricochet|zip:0:86:880:1590 bell:51:160:1250:570
+invulnerable|chord:0:150:310:340 pulse:122:123:622:622
+knockback|buzz:0:153:322:74 tap:79:93:450:140
+defeat|reed:0:210:350:275 reed:170:185:262:180 sub:318:242:148:47
+respawn|reverse:0:227:170:940 glass:174:184:790:790 bell:275:172:1186:1186
+combo-finish|clank:0:122:350:130 sub:38:185:117:44 glass:121:144:880:660
+[ability]
+velocity-coil|motor:0:235:76:318 pulse:65:160:155:540
+velocity-air-step|air:0:90:1000:1950 zip:33:120:350:1190
+velocity-rail-flare|grit:0:207:2400:1300 glass:63:154:700:1150
+velocity-overrun|pulse:0:101:160:320 pulse:76:97:320:640 motor:80:180:107:370
+noir-blink|snap:0:54:1600:240 reverse:28:119:440:1510
+noir-stasis|fm:0:292:240:125 chord:95:256:311:234
+noir-hover|motor:0:260:91:134 air:59:189:510:980
+noir-lance|clank:0:75:440:310 zip:26:226:1420:172
+aura-lift|glass:0:176:311:466 chord:115:212:466:622
+aura-grip|bell:0:144:720:620 fm:52:197:263:350
+aura-throw|reverse:0:97:120:720 air:65:167:1900:620 thud:198:91:118:54
+aura-phase|bubble:0:168:330:550 glass:72:224:784:987
+crimson-hook|scrape:0:79:1900:730 clank:43:112:480:134
+crimson-breach|sub:0:170:189:55 grit:13:205:2000:362 clink:147:102:740:390
+crimson-glide|air:0:245:610:1190 reed:60:142:191:235
+crimson-fault|thud:0:198:145:39 tom:107:125:220:66 tom:197:135:175:55
+amber-flight|motor:0:316:105:240 reed:101:192:311:414
+amber-compute|pulse:0:55:930:930 pulse:72:48:1242:1242 ping:150:131:699:699
+amber-beacon|bell:0:128:523:523 bell:178:146:783:783
+amber-turbine|motor:0:261:170:530 air:98:199:1240:2600
+[energy]
+transform|reverse:0:230:100:1700 sub:184:233:108:48 chord:176:350:368:491
+transform-end|glass:0:238:1046:523 chord:100:237:392:261
+super-chrome|zip:0:211:254:1410 glass:152:244:1047:1319
+super-obsidian|buzz:0:228:86:208 fm:119:286:292:389
+super-quantum|bell:0:176:622:832 chord:126:273:466:622
+super-crimson|tom:0:165:175:59 tom:90:139:215:83 brass:195:235:261:415
+super-solar|motor:0:190:131:395 bell:119:207:784:1046
+energy-low|pulse:0:95:277:277 pulse:168:117:234:234
+energy-drain|fm:0:232:555:116 bubble:121:165:360:141
+energy-full|ping:0:97:660:660 ping:88:102:831:831 chord:181:225:494:494
+[machine]
+enemy-wake|motor:0:207:69:155 ping:142:96:466:466
+drone-wing|buzz:0:205:205:294 air:36:211:855:1290
+turret-lock|pulse:0:59:784:784 pulse:83:55:784:784 pulse:156:89:1046:1046
+turret-fire|snap:0:73:1300:280 fm:27:173:840:160
+crawler-tread|clank:0:79:370:150 clank:78:74:420:175 grit:25:138:860:400
+press-warn|reed:0:132:396:396 reed:170:124:471:471
+press-strike|thud:0:255:175:42 clank:6:162:580:122
+boss-enter|motor:0:357:56:152 brass:218:234:185:148
+boss-telegraph|fm:0:158:196:311 pulse:149:109:466:466
+boss-volley|zip:0:105:880:140 zip:83:107:1050:160 zip:160:115:1244:189
+boss-exposed|clink:0:76:640:445 chord:65:222:311:370
+boss-hit|thud:0:147:190:57 clank:7:169:810:173
+boss-phase|reverse:0:285:165:960 brass:233:244:196:294
+boss-fall|motor:0:386:241:43 grit:149:420:1600:195 sub:329:224:114:38
+core-reactor|fm:0:410:69:116 motor:142:291:103:156
+guardian-call|reed:0:225:277:208 bell:140:269:622:741
+[world]
+door-open|motor:0:264:78:138 clink:240:98:465:200
+door-close|scrape:0:225:1250:470 thud:193:158:124:46
+portal-in|reverse:0:245:160:1510 glass:196:245:830:1240
+portal-out|fm:0:156:880:311 air:87:224:1770:450
+lift-rise|motor:0:289:80:196 ping:249:97:587:587
+ice-crack|snap:0:66:1850:310 clink:39:101:911:345 clink:92:76:1340:710
+geyser|air:0:310:390:2850 bubble:94:157:180:610
+rain-impact|drop:0:105:950:300 drop:58:95:660:260
+low-gravity|glass:0:220:262:392 reverse:43:272:510:960
+bumper|boing:0:153:118:660 clink:28:125:960:635
+power-switch|tap:0:63:530:300 buzz:41:167:111:222
+crumble|thud:0:148:153:65 grit:45:215:1500:390 clank:151:118:360:100
+[interface]
+menu-select|ping:0:67:880:880 glass:48:117:1175:1175
+menu-move|tap:0:43:1245:835
+menu-back|pulse:0:70:660:660 pulse:59:98:440:440
+menu-error|buzz:0:90:196:185 buzz:108:124:175:147
+pause|glass:0:100:659:523 ping:70:138:392:392
+resume|ping:0:92:392:392 glass:71:131:523:659
+menu-tab|clink:0:50:991:630 pulse:40:63:784:784
+save|pulse:0:70:523:523 pulse:63:74:660:660 ping:136:106:784:784
+load|reverse:0:98:294:660 glass:83:164:587:587
+countdown|brass:0:90:523:523 tap:10:47:1245:650
+[narrative]
+signal-open|grit:0:135:2200:680 fm:96:182:233:349
+transmission|buzz:0:110:185:155 pulse:120:68:466:466 pulse:208:91:311:311
+signal-close|fm:0:131:370:147 snap:118:57:1600:380
+vision|glass:0:270:554:831 chord:158:318:370:494
+revelation|reverse:0:293:147:1175 bell:237:291:784:784 chord:293:280:392:392
+after-credits|tap:0:65:411:240 bell:193:340:523:523 glass:438:401:784:784

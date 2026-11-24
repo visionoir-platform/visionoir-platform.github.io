@@ -1,0 +1,79 @@
+{
+  "portraitFrames": 8,
+  "character": {
+    "atlasCount": 10,
+    "rows": 42,
+    "frameCells": 3360,
+    "staticRows": []
+  },
+  "machine": {
+    "atlasCount": 23,
+    "rows": 8,
+    "frameCells": 1104,
+    "staticRows": []
+  },
+  "director": {
+    "atlasCount": 1,
+    "rows": 11,
+    "frameCells": 66,
+    "staticRows": []
+  },
+  "objects": {
+    "atlasCount": 1,
+    "rows": 38,
+    "frameCells": 228,
+    "staticRows": [
+      [
+        "objects.png",
+        "shield"
+      ],
+      [
+        "objects.png",
+        "breakable"
+      ],
+      [
+        "objects.png",
+        "terminal"
+      ],
+      [
+        "objects.png",
+        "battery"
+      ],
+      [
+        "objects.png",
+        "spike"
+      ],
+      [
+        "objects.png",
+        "block"
+      ],
+      [
+        "objects.png",
+        "pulse"
+      ],
+      [
+        "objects.png",
+        "shard"
+      ],
+      [
+        "objects.png",
+        "beam"
+      ],
+      [
+        "objects.png",
+        "mine"
+      ],
+      [
+        "objects.png",
+        "disc"
+      ],
+      [
+        "objects.png",
+        "friendly"
+      ]
+    ]
+  },
+  "zones": 8,
+  "pngFiles": 70,
+  "totalBytes": 1770803
+}

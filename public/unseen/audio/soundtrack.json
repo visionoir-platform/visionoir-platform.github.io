@@ -1,0 +1,1339 @@
+[
+  {
+    "id": "01",
+    "title": "The Unseen Awakens",
+    "category": "system",
+    "file": "/unseen/audio/ost-01.m4a",
+    "duration": 72.0,
+    "bpm": 80,
+    "key": "D phrygian",
+    "loop": null,
+    "scenes": [
+      "prologue"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#9cbdff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.7,
+    "editableMidi": "ost-01.mid",
+    "meter": "4/4",
+    "recipe": "49c49886a042a9d2dfa79d6857fa09def92779b5ec36ac74c8b3cc64b2b761e4",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "02",
+    "title": "We Design the Unseen",
+    "category": "system",
+    "file": "/unseen/audio/ost-02.m4a",
+    "duration": 73.22033333333333,
+    "bpm": 118,
+    "key": "F dorian",
+    "loop": {
+      "start": 0,
+      "end": 73.22033333333333
+    },
+    "scenes": [
+      "title"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#beefff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.2,
+    "editableMidi": "ost-02.mid",
+    "meter": "4/4",
+    "recipe": "1ab7a53ce66d4c1634a8e9bb92e0d0b068389b731950e1b5df6d9049a70604f0",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "03",
+    "title": "Choose Your Frequency",
+    "category": "system",
+    "file": "/unseen/audio/ost-03.m4a",
+    "duration": 65.24270833333334,
+    "bpm": 103,
+    "key": "G mixolydian",
+    "loop": {
+      "start": 0,
+      "end": 65.24270833333334
+    },
+    "scenes": [
+      "select-character"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#f3be91",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.6,
+    "editableMidi": "ost-03.mid",
+    "meter": "4/4",
+    "recipe": "7b753e2ba35e79e8738ee53ed2cdf5311a3afce9869a3c7e802147a6f71f98f2",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "04",
+    "title": "Noir City Navigator",
+    "category": "system",
+    "file": "/unseen/audio/ost-04.m4a",
+    "duration": 64.0,
+    "bpm": 90,
+    "key": "C♯ minor",
+    "loop": {
+      "start": 0,
+      "end": 64.0
+    },
+    "scenes": [
+      "select-stage"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#b397f0",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.7,
+    "editableMidi": "ost-04.mid",
+    "meter": "4/4",
+    "recipe": "57c541efcba99f9c79ea30017d442eee04e98df32b258c79074f70062130ef58",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "05",
+    "title": "System Configuration",
+    "category": "system",
+    "file": "/unseen/audio/ost-05.m4a",
+    "duration": 48.0,
+    "bpm": 120,
+    "key": "B♭ lydian",
+    "loop": {
+      "start": 0,
+      "end": 48.0
+    },
+    "scenes": [
+      "options"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#9be2dc",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -6.4,
+    "editableMidi": "ost-05.mid",
+    "meter": "3/4",
+    "recipe": "e1860c6e839769a7d882915751fa744de3040ac72c67fc361a575fdb3fae4ec7",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "06",
+    "title": "Memory Archive",
+    "category": "system",
+    "file": "/unseen/audio/ost-06.m4a",
+    "duration": 60.0,
+    "bpm": 64,
+    "key": "E dorian",
+    "loop": {
+      "start": 0,
+      "end": 60.0
+    },
+    "scenes": [
+      "extras"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#deb7d2",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.7,
+    "editableMidi": "ost-06.mid",
+    "meter": "4/4",
+    "recipe": "8b3fccf085c83d73208daa19f2fd313cd9f2857a96ab8e347d92814deb79e71c",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "07",
+    "title": "Chrome District",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-07.m4a",
+    "duration": 139.1304375,
+    "bpm": 138,
+    "key": "E dorian",
+    "loop": {
+      "start": 0,
+      "end": 139.1304375
+    },
+    "scenes": [
+      "stage-01"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#acd5ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.4,
+    "editableMidi": "ost-07.mid",
+    "meter": "4/4",
+    "recipe": "00af64a0be003c6dac9bffda088e331ff58b3dde68d45d6b3d1cbe22b085e31f",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "08",
+    "title": "Midnight Highway",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-08.m4a",
+    "duration": 137.14285416666667,
+    "bpm": 168,
+    "key": "F♯ minor",
+    "loop": {
+      "start": 0,
+      "end": 137.14285416666667
+    },
+    "scenes": [
+      "stage-02"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#9baff7",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.1,
+    "editableMidi": "ost-08.mid",
+    "meter": "4/4",
+    "recipe": "7b47e5ba6bda47272c4cc1b455d8913a84091f60b053e6999896affb12561e28",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "09",
+    "title": "Industrial Core",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-09.m4a",
+    "duration": 133.95347916666665,
+    "bpm": 129,
+    "key": "C phrygian",
+    "loop": {
+      "start": 0,
+      "end": 133.95347916666665
+    },
+    "scenes": [
+      "stage-03"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ffae7b",
+    "masterIntegratedLUFS": -16.6,
+    "masterTruePeakDBTP": -2.7,
+    "editableMidi": "ost-09.mid",
+    "meter": "4/4",
+    "recipe": "1906b94182cd0bda152ea53b33eefeb82da61af871d6a86ac3c2df53195ee8b5",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "10",
+    "title": "Molten Circuit",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-10.m4a",
+    "duration": 135.21127083333334,
+    "bpm": 142,
+    "key": "E♭ harmonic",
+    "loop": {
+      "start": 0,
+      "end": 135.21127083333334
+    },
+    "scenes": [
+      "stage-04"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ff805f",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.7,
+    "editableMidi": "ost-10.mid",
+    "meter": "4/4",
+    "recipe": "a9a97faa51130f2b4bc0fb073d618f4f55292fed594ad40442fbc9e2dc6b68cb",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "11",
+    "title": "Phantom Arcade",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-11.m4a",
+    "duration": 133.56520833333335,
+    "bpm": 115,
+    "key": "A♭ mixolydian",
+    "loop": {
+      "start": 0,
+      "end": 133.56520833333335
+    },
+    "scenes": [
+      "stage-05"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ffa4cf",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.2,
+    "editableMidi": "ost-11.mid",
+    "meter": "4/4",
+    "recipe": "a85bb64c665feaf91faf67ec7529691cc706f0682be01b1069ad5572cb3ef7ac",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "12",
+    "title": "Hologram Casino",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-12.m4a",
+    "duration": 139.35483333333335,
+    "bpm": 124,
+    "key": "F dorian",
+    "loop": {
+      "start": 0,
+      "end": 139.35483333333335
+    },
+    "scenes": [
+      "stage-06"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ffbcb0",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.6,
+    "editableMidi": "ost-12.mid",
+    "meter": "4/4",
+    "recipe": "df2120cc1f466f81b77def24e2757149270da35bd5903fd82249bf37861a3d8e",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "13",
+    "title": "Cryogenic Facility",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-13.m4a",
+    "duration": 132.41379166666667,
+    "bpm": 87,
+    "key": "B lydian",
+    "loop": {
+      "start": 0,
+      "end": 132.41379166666667
+    },
+    "scenes": [
+      "stage-07"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#a5e9ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.3,
+    "editableMidi": "ost-13.mid",
+    "meter": "4/4",
+    "recipe": "6245ed3d034b70c05f1db2080ac477fbcefa3b82a94875a6b9c221426f363550",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "14",
+    "title": "Submerged Memory",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-14.m4a",
+    "duration": 132.63158333333334,
+    "bpm": 76,
+    "key": "D minor",
+    "loop": {
+      "start": 0,
+      "end": 132.63158333333334
+    },
+    "scenes": [
+      "stage-08"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#7fcbdf",
+    "masterIntegratedLUFS": -17.0,
+    "masterTruePeakDBTP": -2.7,
+    "editableMidi": "ost-14.mid",
+    "meter": "6/4",
+    "recipe": "1967f914ea5e15bee770a98bcf30d22e9743e524c0560d370e960f9b7b2e4969",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "15",
+    "title": "Forgotten Monolith",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-15.m4a",
+    "duration": 128.5714375,
+    "bpm": 84,
+    "key": "E♭ phrygian",
+    "loop": {
+      "start": 0,
+      "end": 128.5714375
+    },
+    "scenes": [
+      "stage-09"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#9ce6c0",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.1,
+    "editableMidi": "ost-15.mid",
+    "meter": "5/4",
+    "recipe": "a22b75b766fd7fffa4cf4e0c12922fb0f0e721502d53b983adc8f6b4144b9efe",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "16",
+    "title": "Floating Ruins",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-16.m4a",
+    "duration": 132.11008333333334,
+    "bpm": 109,
+    "key": "G lydian",
+    "loop": {
+      "start": 0,
+      "end": 132.11008333333334
+    },
+    "scenes": [
+      "stage-10"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#a2f3dd",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.6,
+    "editableMidi": "ost-16.mid",
+    "meter": "3/4",
+    "recipe": "a9d991bb03df535a0e5055bed16626c3cee91a63dbb9fd477f3383269181f745",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "17",
+    "title": "Larpking Rocket",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-17.m4a",
+    "duration": 134.4,
+    "bpm": 150,
+    "key": "C dorian",
+    "loop": {
+      "start": 0,
+      "end": 134.4
+    },
+    "scenes": [
+      "stage-11"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#f0c18e",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.3,
+    "editableMidi": "ost-17.mid",
+    "meter": "4/4",
+    "recipe": "445f8b6df51feb9ea5dfdd20847842047189d1d5e865ac988acbb675d5f1c180",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "18",
+    "title": "Celestial Machine",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-18.m4a",
+    "duration": 130.90908333333334,
+    "bpm": 132,
+    "key": "F♯ harmonic",
+    "loop": {
+      "start": 0,
+      "end": 130.90908333333334
+    },
+    "scenes": [
+      "stage-12"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#c1b4ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.1,
+    "editableMidi": "ost-18.mid",
+    "meter": "4/4",
+    "recipe": "343943f51c641544c1dc295d7069965bd4daf2ee675958e41364b2843a095b32",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "19",
+    "title": "Protocol X",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-19.m4a",
+    "duration": 141.17647916666667,
+    "bpm": 136,
+    "key": "B phrygian",
+    "loop": {
+      "start": 0,
+      "end": 141.17647916666667
+    },
+    "scenes": [
+      "stage-13"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ec8297",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.0,
+    "editableMidi": "ost-19.mid",
+    "meter": "4/4",
+    "recipe": "d7e36b77bd2e95bd23509661f688d51114e31950e46139d5606f06f6a56d2948",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "20",
+    "title": "The Unseen Moon",
+    "category": "campaign",
+    "file": "/unseen/audio/ost-20.m4a",
+    "duration": 142.97872916666665,
+    "bpm": 94,
+    "key": "F lydian",
+    "loop": {
+      "start": 0,
+      "end": 142.97872916666665
+    },
+    "scenes": [
+      "stage-14"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#d4d5ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.6,
+    "editableMidi": "ost-20.mid",
+    "meter": "4/4",
+    "recipe": "6ef146e95b75c0d302e12b2c389676eb1c3c32dac5648ff1793215b553f95773",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "21",
+    "title": "Seven Frequencies",
+    "category": "special",
+    "file": "/unseen/audio/ost-21.m4a",
+    "duration": 120.96,
+    "bpm": 125,
+    "key": "A dorian",
+    "loop": {
+      "start": 0,
+      "end": 120.96
+    },
+    "scenes": [
+      "special-01..07"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#dcf5c4",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.2,
+    "editableMidi": "ost-21.mid",
+    "meter": "7/4",
+    "recipe": "56b425df296f8c2d371e03c23fba45601dd18b5f071577869f4481b378ef61c1",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "22",
+    "title": "Larpking Transmission",
+    "category": "boss",
+    "file": "/unseen/audio/ost-22.m4a",
+    "duration": 25.116270833333335,
+    "bpm": 86,
+    "key": "B♭ phrygian",
+    "loop": null,
+    "scenes": [
+      "boss-intro"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ff8c9e",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -2.9,
+    "editableMidi": "ost-22.mid",
+    "meter": "3/4",
+    "recipe": "32435ad7a1a2b3b1f2d4c32b37b660b05a36dd5ba871b82a8d128f497ba742d2",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "23",
+    "title": "Mechanical Domination",
+    "category": "boss",
+    "file": "/unseen/audio/ost-23.m4a",
+    "duration": 129.72972916666666,
+    "bpm": 148,
+    "key": "C♯ minor",
+    "loop": {
+      "start": 0,
+      "end": 129.72972916666666
+    },
+    "scenes": [
+      "boss-standard"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ffb57c",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.9,
+    "editableMidi": "ost-23.mid",
+    "meter": "4/4",
+    "recipe": "3b0ff2f36a3e02a90457c884e18ab46e653a25302bacd35c9afa367afc516c7f",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "24",
+    "title": "Rivalry Beyond Time",
+    "category": "boss",
+    "file": "/unseen/audio/ost-24.m4a",
+    "duration": 129.23077083333334,
+    "bpm": 156,
+    "key": "E harmonic",
+    "loop": {
+      "start": 0,
+      "end": 129.23077083333334
+    },
+    "scenes": [
+      "boss-rival"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#d3a2ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.4,
+    "editableMidi": "ost-24.mid",
+    "meter": "4/4",
+    "recipe": "978bf3357eacf4b78994ce1fa28d97e7bd948e6aae9e6c2ff7fd1291f0ece567",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "25",
+    "title": "Orbital Destruction",
+    "category": "boss",
+    "file": "/unseen/audio/ost-25.m4a",
+    "duration": 132.41379166666667,
+    "bpm": 145,
+    "key": "D phrygian",
+    "loop": {
+      "start": 0,
+      "end": 132.41379166666667
+    },
+    "scenes": [
+      "boss-orbital"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ff9e8b",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.2,
+    "editableMidi": "ost-25.mid",
+    "meter": "5/4",
+    "recipe": "e231b1e94443c967ced7e4f78796f8ed42ade204f5492ae982c9d4fb2d3c691a",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "26",
+    "title": "Protocol X: Prototype",
+    "category": "boss",
+    "file": "/unseen/audio/ost-26.m4a",
+    "duration": 131.90839583333334,
+    "bpm": 131,
+    "key": "A phrygian",
+    "loop": {
+      "start": 0,
+      "end": 131.90839583333334
+    },
+    "scenes": [
+      "boss-prototype"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#c6a1ef",
+    "masterIntegratedLUFS": -16.7,
+    "masterTruePeakDBTP": -2.7,
+    "editableMidi": "ost-26.mid",
+    "meter": "4/4",
+    "recipe": "8f949bbb2f43568d1f1a08d9e185f20efe1f20c80665fb615621a7c3ee91d3fb",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "27",
+    "title": "Protocol X: Omega",
+    "category": "boss",
+    "file": "/unseen/audio/ost-27.m4a",
+    "duration": 132.8301875,
+    "bpm": 159,
+    "key": "B harmonic",
+    "loop": {
+      "start": 0,
+      "end": 132.8301875
+    },
+    "scenes": [
+      "boss-omega-x"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#fb879c",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.4,
+    "editableMidi": "ost-27.mid",
+    "meter": "4/4",
+    "recipe": "7e0bcd2bfd90b1f99f394d5d826dce5852c76dc20a33e01bd71a82a79bdc95a9",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "28",
+    "title": "The Unseen God Machine",
+    "category": "boss",
+    "file": "/unseen/audio/ost-28.m4a",
+    "duration": 168.4210625,
+    "bpm": 114,
+    "key": "C harmonic",
+    "loop": {
+      "start": 0,
+      "end": 168.4210625
+    },
+    "scenes": [
+      "boss-secret"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#eee3c8",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.0,
+    "editableMidi": "ost-28.mid",
+    "meter": "4/4",
+    "recipe": "fa59af02686026a7f6d534b4e8c0e9ae9f83a9e8e807d11fea290b555bf27bbe",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "29",
+    "title": "Chromatic Ascension",
+    "category": "event",
+    "file": "/unseen/audio/ost-29.m4a",
+    "duration": 74.8051875,
+    "bpm": 154,
+    "key": "A♭ lydian",
+    "loop": {
+      "start": 0,
+      "end": 74.8051875
+    },
+    "scenes": [
+      "transform"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#fff2ad",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.7,
+    "editableMidi": "ost-29.mid",
+    "meter": "4/4",
+    "recipe": "0d440ad29b1453286911ab445a2d7c4ae0bd2db3ff21108239eb2ecd620d56bf",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "30",
+    "title": "Act Complete",
+    "category": "event",
+    "file": "/unseen/audio/ost-30.m4a",
+    "duration": 6.7605625,
+    "bpm": 142,
+    "key": "G major",
+    "loop": null,
+    "scenes": [
+      "win-act"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#b3efff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.5,
+    "editableMidi": "ost-30.mid",
+    "meter": "4/4",
+    "recipe": "6ea889ea63563db5468a47aab62eb889a99f50ac637d88df24f1dbf988aa475e",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "31",
+    "title": "Machine Destroyed",
+    "category": "event",
+    "file": "/unseen/audio/ost-31.m4a",
+    "duration": 7.7419375,
+    "bpm": 124,
+    "key": "E♭ dorian",
+    "loop": null,
+    "scenes": [
+      "win-boss"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#ffba8d",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -3.8,
+    "editableMidi": "ost-31.mid",
+    "meter": "4/4",
+    "recipe": "f68589af00b165ece0ff982f212319dcb58946e024ec0cc538002573860923a3",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "32",
+    "title": "Core Acquired",
+    "category": "event",
+    "file": "/unseen/audio/ost-32.m4a",
+    "duration": 6.990291666666667,
+    "bpm": 103,
+    "key": "B lydian",
+    "loop": null,
+    "scenes": [
+      "win-core"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#adf1d8",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -5.3,
+    "editableMidi": "ost-32.mid",
+    "meter": "3/4",
+    "recipe": "5344f18700e47446f2bd9c6602a1b5f88e8dfa47b298bd0cc7c300ae3c54b5e6",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "33",
+    "title": "Signal Lost",
+    "category": "event",
+    "file": "/unseen/audio/ost-33.m4a",
+    "duration": 9.0,
+    "bpm": 60,
+    "key": "C♯ minor",
+    "loop": null,
+    "scenes": [
+      "game-over"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#b09fbe",
+    "masterIntegratedLUFS": -17.3,
+    "masterTruePeakDBTP": -2.7,
+    "editableMidi": "ost-33.mid",
+    "meter": "3/4",
+    "recipe": "2375705815e5401a37daac7e495d394f66e6df63d22493c6d3627253e551a3c3",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "34",
+    "title": "Beyond the Shadows",
+    "category": "ending",
+    "file": "/unseen/audio/ost-34.m4a",
+    "duration": 111.62791666666666,
+    "bpm": 86,
+    "key": "G mixolydian",
+    "loop": null,
+    "scenes": [
+      "ending-normal"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#f7c7a6",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -2.7,
+    "editableMidi": "ost-34.mid",
+    "meter": "4/4",
+    "recipe": "c89ac38490e8fcc41bbd92c93548567b12a25c968c71d8941cf6424bc466e3a8",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "35",
+    "title": "The Truth Behind the Unseen",
+    "category": "ending",
+    "file": "/unseen/audio/ost-35.m4a",
+    "duration": 123.07691666666666,
+    "bpm": 78,
+    "key": "E major",
+    "loop": null,
+    "scenes": [
+      "ending-secret"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#c0e4f6",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.0,
+    "editableMidi": "ost-35.mid",
+    "meter": "4/4",
+    "recipe": "e8b492bb936d2a1a48df255542887e8b9c18b34dbdcb19d00cd95baca6afb972",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "36",
+    "title": "VISIONOIR Forever",
+    "category": "ending",
+    "file": "/unseen/audio/ost-36.m4a",
+    "duration": 145.21008333333333,
+    "bpm": 119,
+    "key": "F dorian",
+    "loop": null,
+    "scenes": [
+      "credits"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#d1e7ff",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.8,
+    "editableMidi": "ost-36.mid",
+    "meter": "4/4",
+    "recipe": "d8e78f543557d9b6fa5367c0037b708b073f243b3fe16bf7ade1dc06561194ca",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "37",
+    "title": "Velocity Trial",
+    "category": "extra",
+    "file": "/unseen/audio/ost-37.m4a",
+    "duration": 130.90908333333334,
+    "bpm": 176,
+    "key": "A minor",
+    "loop": {
+      "start": 0,
+      "end": 130.90908333333334
+    },
+    "scenes": [
+      "time-attack"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#a5e6ef",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -6.0,
+    "editableMidi": "ost-37.mid",
+    "meter": "4/4",
+    "recipe": "31ad946f36cff33872c4364f5a86f313af893e13ba3ac8da61e4bd009b95addb",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "38",
+    "title": "Chaos Circuit",
+    "category": "extra",
+    "file": "/unseen/audio/ost-38.m4a",
+    "duration": 126.31579166666667,
+    "bpm": 152,
+    "key": "E♭ dorian",
+    "loop": {
+      "start": 0,
+      "end": 126.31579166666667
+    },
+    "scenes": [
+      "challenge"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#eb9ab3",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.9,
+    "editableMidi": "ost-38.mid",
+    "meter": "4/4",
+    "recipe": "58f594b4e789e593f8a580dcc0d306878db7e2909b6e7d15a5609c6ea1977bfb",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  },
+  {
+    "id": "39",
+    "title": "Legacy of Speed",
+    "category": "extra",
+    "file": "/unseen/audio/ost-39.m4a",
+    "duration": 67.2,
+    "bpm": 100,
+    "key": "B♭ major",
+    "loop": {
+      "start": 0,
+      "end": 67.2
+    },
+    "scenes": [
+      "records"
+    ],
+    "stems": [
+      "lead",
+      "bass",
+      "harmony",
+      "countermelody",
+      "percussion"
+    ],
+    "provenance": "Original editable cue book, multitrack MIDI and deterministic FM/additive synthesis. No external samples.",
+    "credits": "Project Creator & Creative Director: Flavio Giorgio Guarini. Original score, synthesis and mix produced with AI assistance for VISIONOIR.",
+    "license": "© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.",
+    "production": "rendered",
+    "verification": "master measured; encoded verification in audio-qa.json",
+    "color": "#eddb9b",
+    "masterIntegratedLUFS": -16.5,
+    "masterTruePeakDBTP": -4.9,
+    "editableMidi": "ost-39.mid",
+    "meter": "4/4",
+    "recipe": "ae3ec6d012258e5cbc48097f5472cdeea2c51bdd8058b3d0b744034637741183",
+    "album": "VISIONOIR: THE UNSEEN PROTOCOL — ORIGINAL GAME SOUNDTRACK"
+  }
+]

@@ -1,0 +1,25 @@
+{
+ "file": "director.png",
+ "frame": [
+  64,
+  64
+ ],
+ "pivot": [
+  31,
+  55
+ ],
+ "frameCount": 6,
+ "rows": [
+  "walk",
+  "laugh",
+  "dialogue",
+  "reaction",
+  "board",
+  "pilot",
+  "anger",
+  "defeat",
+  "escape",
+  "arrival",
+  "overdrive"
+ ]
+}

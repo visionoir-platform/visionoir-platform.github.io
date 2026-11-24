@@ -135,11 +135,13 @@ export async function initScene(container, getAudioData = () => ({})) {
   }
   const mark = new THREE.Group(); scene.add(mark);
   const metal = new THREE.MeshPhysicalMaterial({ color: '#c5c5c5', metalness: 1, roughness: .19, clearcoat: 1, clearcoatRoughness: .18, envMapIntensity: 2.4 });
+  const surfaceFlow = { value: 0 };
   metal.onBeforeCompile = shader => {
+    shader.uniforms.uSurfaceFlow = surfaceFlow;
     shader.vertexShader = 'varying vec3 vLogoPosition;\n' + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvLogoPosition = position;');
-    shader.fragmentShader = 'varying vec3 vLogoPosition;\n' + shader.fragmentShader;
-    shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize(normal + vec3(sin(vLogoPosition.y * 1.25) * 0.24, cos(vLogoPosition.x * 1.4) * 0.16, 0.0));');
+    shader.fragmentShader = 'uniform float uSurfaceFlow; varying vec3 vLogoPosition;\n' + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize(normal + vec3(sin(vLogoPosition.y * 1.25 + uSurfaceFlow) * 0.24, cos(vLogoPosition.x * 1.4 - uSurfaceFlow * 0.65) * 0.16, 0.0));');
   };
   const edge = new THREE.MeshPhysicalMaterial({ color: '#c0c0c0', metalness: 1, roughness: .25, envMapIntensity: 2.8, clearcoat: 1 });
   const disposeGraph = graph => graph.traverse(object => {
@@ -314,6 +316,7 @@ export async function initScene(container, getAudioData = () => ({})) {
     mark.position.y = motion ? Math.sin(elapsed * .6) * .075 * intensity : 0;
     const palette = palettes[mode], blend = motion && dt ? 1 - Math.exp(-dt * 4) : 1;
     metal.color.lerp(palette.face, blend); edge.color.lerp(palette.edge, blend);
+    surfaceFlow.value = motion ? elapsed * .19 + pointerX * .85 + warpAudio.mid * .3 : 0;
     metal.roughness += (palette.roughness - metal.roughness) * blend;
     metal.envMapIntensity += (palette.environment - metal.envMapIntensity) * blend;
     renderer.toneMappingExposure += (palette.exposure - renderer.toneMappingExposure) * blend;

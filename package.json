@@ -1,1 +1,21 @@
-{"name":"visionoir-studio","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"npm run build && vite preview --host 127.0.0.1","build":"vite build && node scripts/localize.mjs","preview":"vite preview --host 0.0.0.0"},"dependencies":{"@fontsource-variable/manrope":"^5.3.0","@fontsource/bebas-neue":"^5.3.0","three":"^0.183.0"},"devDependencies":{"vite":"^7.3.0"}}
+{
+  "name": "visionoir-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build && vite preview --host 127.0.0.1",
+    "build": "node game/ui/catalogs.mjs && vite build && node scripts/localize.mjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "game:fan": "node game/ui/catalogs.mjs && VITE_UNSEEN_PROFILE=fan vite --host 127.0.0.1 --open /unseen/",
+    "game:build:fan": "node game/studio/build-fan.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/bebas-neue": "^5.3.0",
+    "three": "^0.183.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.0"
+  }
+}

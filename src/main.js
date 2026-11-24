@@ -4,6 +4,7 @@ import { money, updateMetadata, contact } from './site.js';
 import { approximateCountry, storageValue } from './geo.js';
 import { trackAccents } from './palette.js';
 import { createAudioEngine } from './audio.js';
+import { enterFromFooter } from './unseen-door.js';
 
 const configNode = document.getElementById('site-config');
 if (configNode) initialize(JSON.parse(configNode.textContent));
@@ -134,6 +135,24 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   menu.onclick = () => setMenu(menu.getAttribute('aria-expanded')!=='true');
   q('#navigation').addEventListener('click',()=>setMenu(false));
 
+  let returningSound = false;
+  const door = q('#unseen-door');
+  door.addEventListener('click', event => {
+    if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (html.classList.contains('entering-unseen')) return;
+    returningSound = audio.isPlaying;
+    audio.pause();
+    scene?.setMotion(false);
+    html.classList.add('entering-unseen');
+    setTimeout(() => enterFromFooter(base + 'unseen/?lang=' + encodeURIComponent(lang)), motion ? 190 : 0);
+  });
+  window.addEventListener('pageshow', event => {
+    html.classList.remove('entering-unseen');
+    scene?.setMotion(motion);
+    if(event.persisted && returningSound && !mute)void audio.selectTrack(audio.currentTrack.id,{automatic:true});
+    returningSound=false;
+  });
   let audioInteracted = false;
   function persistSilence(value) { storageValue(silentKey,value?'1':'0'); }
   audio.setVolume(mute ? 0 : volume/100);
