@@ -1,258 +1,236 @@
 import { tracks } from './tracks.js';
 
-export function createAudioEngine({ enabledTracks = tracks.map(track=>track.id) } = {}) {
-  const TRACKS = tracks.filter(track=>enabledTracks.includes(track.id));
+export function createAudioEngine({ enabledTracks = tracks.map(track => track.id), onMediaAction } = {}) {
+  const available = tracks.filter(track => enabledTracks.includes(track.id));
   const entries = new Map();
-  const FADE_SECONDS = 0.6;
-  let context, analyser, master, bins, waveform;
-  let selected = TRACKS[0];
-  let activeId = null;
-  let volume = 0.23;
-  let wanted = false;
-  let loading = false;
-  let disposed = false;
-  let generation = 0;
+  const zero = Object.freeze({bass:0, mid:0, high:0, level:0});
+  const data = { ...zero };
+  const bands = ['bass', 'mid', 'high', 'level'];
+  const media = navigator.mediaSession;
+  let selected = available[0];
+  let active = null;
   let pending = null;
+  let generation = 0;
+  let volume = 0.23;
+  let frame = 0;
+  let disposed = false;
+  let mediaActions = false;
+  let metadataTrack = null;
 
-  const isPlaying = () => Boolean(wanted && activeId && !entries.get(activeId)?.audio.paused && context?.state === 'running');
+  const playing = () => Boolean(active && !active.audio.paused && !active.audio.ended);
   function signal(error = null) {
     if (disposed) return;
+    if (media && mediaActions) {
+      media.playbackState = playing() ? 'playing' : 'paused';
+      if (active && metadataTrack !== active.track && typeof MediaMetadata !== 'undefined') {
+        metadataTrack = active.track;
+        media.metadata = new MediaMetadata({title:active.track.title, artist:'VISIONOIR', album:'VISIONOIR'});
+      }
+    }
     window.dispatchEvent(new CustomEvent('visionoir:audio', {
-      detail: { playing: isPlaying(), track: selected, loading, error },
+      detail:{playing:playing(), track:selected, loading:Boolean(pending), error},
     }));
   }
 
-  function clearTimer(entry) {
-    if (entry.timer !== null) clearTimeout(entry.timer);
-    entry.timer = null;
+  function setMix(entry, gain) {
+    entry.gain = gain;
+    entry.audio.volume = volume * gain;
+    // Some mobile versions reserve programmatic volume for the device controls.
+    entry.audio.muted = volume === 0;
   }
 
-  function gainAt(entry) {
-    const fade = entry.fade;
-    if (!fade) return 0;
-    const progress = fade.end > fade.start
-      ? Math.max(0, Math.min(1, (context.currentTime - fade.start) / (fade.end - fade.start))) : 1;
-    return fade.from + (fade.to - fade.from) * progress;
-  }
-
-  function ramp(entry, target, seconds = FADE_SECONDS) {
-    clearTimer(entry);
-    const now = context.currentTime;
-    const from = gainAt(entry);
-    entry.gain.gain.cancelScheduledValues(now);
-    entry.gain.gain.setValueAtTime(from, now);
-    if (seconds > 0) entry.gain.gain.linearRampToValueAtTime(target, now + seconds);
-    else entry.gain.gain.setValueAtTime(target, now);
-    entry.fade = { from, to: target, start: now, end: now + seconds };
-    entry.fadeSerial++;
-  }
-
-  function stopEntry(entry) {
+  function stop(entry) {
     entry.request = 0;
-    ramp(entry, 0, 0);
     entry.audio.pause();
+    setMix(entry, 0);
+  }
+
+  function cancelFade() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+  }
+
+  function finishFade() {
+    cancelFade();
+    for (const entry of entries.values()) {
+      if (entry === active) setMix(entry, 1);
+      else if (entry !== pending?.entry) stop(entry);
+    }
+  }
+
+  function crossfade(previous) {
+    cancelFade();
+    if (!previous || !playing() || document.hidden || !active.adjustable || previous.audio.paused) {
+      finishFade();
+      return;
+    }
+    const mix = [...entries.values()].filter(entry => !entry.audio.paused).map(entry => [entry,entry.gain]);
+    const start = performance.now();
+    const tick = now => {
+      const progress = Math.min(1, (now - start) / 600);
+      for (const [entry,from] of mix) setMix(entry, from + ((entry === active ? 1 : 0) - from) * progress);
+      if (progress < 1) frame = requestAnimationFrame(tick);
+      else finishFade();
+    };
+    frame = requestAnimationFrame(tick);
   }
 
   function pause() {
-    if (disposed) return;
-    wanted = false;
-    loading = false;
     generation++;
     pending = null;
-    activeId = null;
-    for (const entry of entries.values()) stopEntry(entry);
+    active = null;
+    cancelFade();
+    for (const entry of entries.values()) stop(entry);
     signal();
   }
 
-  function onStateChange() {
-    if (context?.state === 'interrupted') pause();
-    else signal();
-  }
-
-  function setup() {
-    if (context) return;
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) throw new Error('audioUnsupported');
-    context = new AudioContext();
-    analyser = context.createAnalyser();
-    analyser.fftSize = 1024;
-    analyser.smoothingTimeConstant = 0.78;
-    master = context.createGain();
-    master.gain.value = volume;
-    analyser.connect(master);
-    master.connect(context.destination);
-    bins = new Uint8Array(analyser.frequencyBinCount);
-    waveform = new Uint8Array(analyser.fftSize);
-    context.addEventListener('statechange', onStateChange);
-  }
-
-  function failSelection(attempt, entry, message = 'audioError') {
-    if (attempt !== generation || disposed) return false;
-    generation++;
-    loading = false;
-    pending = null;
-    if (entry && entry.track.id !== activeId) stopEntry(entry);
-    const previous = entries.get(activeId);
-    if (previous && !previous.audio.paused) {
-      selected = previous.track;
-      wanted = true;
-    } else {
-      wanted = false;
-      activeId = null;
-      for (const item of entries.values()) stopEntry(item);
+  function bindMediaActions() {
+    if (!media || mediaActions) return;
+    mediaActions = true;
+    const handlers = {
+      play: () => { onMediaAction?.('play'); void selectTrack(selected.id); },
+      pause: () => { onMediaAction?.('pause'); pause(); },
+      stop: () => { onMediaAction?.('pause'); pause(); },
+    };
+    for (const [action,handler] of Object.entries(handlers)) {
+      try { media.setActionHandler(action, handler); } catch { /* Optional platform action. */ }
     }
-    signal(message);
-    return false;
+  }
+
+  function loadLevels(entry) {
+    if (entry.levels || entry.fetching) return;
+    entry.fetching = true;
+    const url = entry.track.src.replace(/\.mp3$/, '.levels.json');
+    fetch(url).then(async response => {
+      if (!response.ok) return;
+      const {fps, frames} = await response.json();
+      if (!(fps > 0) || typeof frames !== 'string') return;
+      const bytes = Uint8Array.from(atob(frames), c => c.charCodeAt(0));
+      if (bytes.length >= 4 && bytes.length % 4 === 0) entry.levels = {fps, bytes};
+    }).catch(() => {}).finally(() => { entry.fetching = false; });
   }
 
   function entryFor(track) {
     if (entries.has(track.id)) return entries.get(track.id);
-    const audio = new Audio();
+    const audio = document.createElement('audio');
+    audio.hidden = true;
     audio.preload = 'none';
     audio.loop = true;
     audio.setAttribute('playsinline', '');
-    const gain = context.createGain();
-    gain.gain.value = 0;
-    const source = context.createMediaElementSource(audio);
-    source.connect(gain);
-    gain.connect(analyser);
-    const entry = { track, audio, gain, source, request: 0, fade: null, fadeSerial: 0, timer: null };
-    const onPlaying = () => {
-      // A late media event cannot revive an explicitly cancelled selection.
-      if (disposed || !wanted || !entry.request) {
-        audio.pause();
-        return;
-      }
-      signal();
-    };
-    const onPause = () => {
-      if (disposed || !audio.paused || !entry.request) return;
-      if (activeId === track.id && !loading) pause();
+    audio.volume = 0.5;
+    const adjustable = audio.volume === 0.5;
+    const entry = {track, audio, adjustable, gain:0, request:0, levels:null, fetching:false};
+    entry.onPlaying = () => {
+      if (!entry.request || disposed) audio.pause();
       else signal();
     };
-    const onError = () => {
-      if (disposed) return;
-      if (loading && selected.id === track.id) {
-        failSelection(entry.request, entry, 'audioError');
-      } else if (activeId === track.id) {
-        pause();
-        signal('audioError');
-      }
+    entry.onPause = () => {
+      if (entry === active && audio.paused) { finishFade(); signal(); }
     };
-    entry.listeners = { playing: onPlaying, pause: onPause, error: onError };
-    for (const [name, listener] of Object.entries(entry.listeners)) audio.addEventListener(name, listener);
+    entry.onError = () => {
+      if (!pending && entry === active) { pause(); signal('audioError'); }
+    };
+    audio.addEventListener('playing', entry.onPlaying);
+    audio.addEventListener('pause', entry.onPause);
+    audio.addEventListener('error', entry.onError);
     audio.src = track.src;
+    document.body.append(audio);
     entries.set(track.id, entry);
     return entry;
   }
 
-  function crossfadeTo(next) {
-    activeId = next.track.id;
-    ramp(next, 1);
-    for (const entry of entries.values()) {
-      if (entry === next) continue;
-      if (entry.audio.paused) { stopEntry(entry); continue; }
-      ramp(entry, 0);
-      const serial = entry.fadeSerial;
-      entry.timer = setTimeout(() => {
-        if (disposed || entry.fadeSerial !== serial || entry.track.id === activeId) return;
-        stopEntry(entry);
-      }, (FADE_SECONDS + 0.05) * 1000);
-    }
-  }
-
   function selectTrack(id, { play = true, automatic = false } = {}) {
     if (disposed) return Promise.resolve(false);
-    const track = TRACKS.find(item => item.id === id);
+    const track = available.find(item => item.id === id);
     if (!track) { signal('audioError'); return Promise.resolve(false); }
-    if (!play) {
-      selected = track;
-      pause();
-      return Promise.resolve(false);
-    }
-    if (selected.id === id && loading && pending?.id === id) return pending.promise;
-    if (selected.id === id && activeId === id && isPlaying() && !loading) return Promise.resolve(true);
+    if (!play) { selected = track; pause(); return Promise.resolve(false); }
+    if (pending?.entry.track === track) return pending.promise;
+    if (!pending && active?.track === track && playing()) return Promise.resolve(true);
 
+    const request = ++generation;
+    const previous = active;
+    const entry = entryFor(track);
+    if (pending && pending.entry !== active) stop(pending.entry);
+    pending = null;
+    finishFade();
+    // On a fixed-volume device use a native hand-off instead of overlapping full-level tracks.
+    if (previous && previous !== entry && !entry.adjustable) stop(previous);
     selected = track;
-    wanted = true;
-    loading = true;
-    const attempt = ++generation;
-    let entry;
-    try {
-      setup();
-      entry = entryFor(track);
-      entry.request = attempt;
-      // Cancel superseded silent loads, while retaining the current audible mix.
-      for (const item of entries.values()) {
-        if (item !== entry && item.track.id !== activeId && gainAt(item) < 0.001) stopEntry(item);
+    entry.request = request;
+    setMix(entry, previous && previous !== entry && playing() ? 0 : 1);
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* Optional. */ }
+
+    // The native player owns output and looping. It does not need JavaScript frames
+    // or a running Web Audio graph when the browser backgrounds this document.
+    const promise = entry.audio.play().then(() => {
+      if (disposed || request !== generation) {
+        if (!entry.request || entry.request === request) stop(entry);
+        return false;
       }
-      // Both calls occur directly in the click stack, before any await (iOS).
-      const resumed = context.resume();
-      const played = entry.audio.play();
-      const promise = Promise.all([resumed, played]).then(() => {
-        if (attempt !== generation || !wanted || disposed) {
-          // A newer request can own the very same element; do not stop it.
-          if (!entry.request || entry.request === attempt) stopEntry(entry);
-          return false;
-        }
-        loading = false;
-        pending = null;
-        crossfadeTo(entry);
-        signal();
-        return true;
-      }).catch(error => failSelection(attempt, entry, error?.name === 'NotAllowedError' ? (automatic ? null : 'audioBlocked') : 'audioError'));
-      pending = { id, promise };
+      pending = null;
+      active = entry;
+      bindMediaActions();
+      crossfade(previous === entry ? null : previous);
+      loadLevels(entry);
       signal();
-      return promise;
-    } catch (error) {
-      return Promise.resolve(failSelection(attempt, entry, error?.message === 'audioUnsupported' ? 'audioUnsupported' : 'audioError'));
-    }
+      return true;
+    }).catch(error => {
+      if (request !== generation || disposed) return false;
+      pending = null;
+      if (entry !== active) stop(entry);
+      if (playing()) selected = active.track;
+      else { active = null; stop(entry); }
+      signal(error?.name === 'NotAllowedError' ? (automatic ? null : 'audioBlocked') : 'audioError');
+      return false;
+    });
+    pending = {entry, promise};
+    signal();
+    return promise;
   }
 
-  function toggle() {
-    if (disposed) return Promise.resolve(false);
-    if (wanted || loading || isPlaying()) { pause(); return Promise.resolve(false); }
-    return selectTrack(selected.id);
-  }
-
-  function setVolume(next) {
-    const value = Number(next);
-    if (!Number.isFinite(value)) return;
-    volume = Math.max(0, Math.min(1, value));
-    if (master && context) master.gain.setTargetAtTime(volume, context.currentTime, 0.035);
-  }
-
-  const data = { bass:0, mid:0, high:0, level:0 };
-  const zero = Object.freeze({ bass:0, mid:0, high:0, level:0 });
+  // These envelopes are measured from the six MP3 masters used by the player.
+  // Reading the native media clock also handles looping, seeking and interruptions.
   function getData() {
-    if (!analyser || !isPlaying() || volume === 0) return zero;
-    analyser.getByteFrequencyData(bins);
-    analyser.getByteTimeDomainData(waveform);
-    const hzPerBin = context.sampleRate / analyser.fftSize;
-    const band = (low, high) => {
-      const first = Math.max(1, Math.floor(low / hzPerBin));
-      const last = Math.min(bins.length - 1, Math.ceil(high / hzPerBin));
-      let total = 0;
-      for (let i = first; i <= last; i++) total += bins[i];
-      return Math.min(1, total / ((last - first + 1) * 255));
-    };
-    let squareSum = 0;
-    for (const sample of waveform) squareSum += ((sample - 128) / 128) ** 2;
-    data.bass = band(30,200);
-    data.mid = band(200,2200);
-    data.high = band(2200,10000);
-    data.level = Math.min(1,Math.sqrt(squareSum / waveform.length)*2.2);
+    if (!playing() || !volume || document.hidden) return zero;
+    data.bass = data.mid = data.high = data.level = 0;
+    for (const entry of entries.values()) {
+      if (!entry.levels || entry.audio.paused || entry.gain === 0) continue;
+      const {fps,bytes} = entry.levels;
+      const last = bytes.length / 4 - 1;
+      const time = Math.min(last, entry.audio.currentTime * fps);
+      const frame = Math.floor(time);
+      const start = frame * 4, end = Math.min(last,frame + 1) * 4;
+      const fraction = time - frame;
+      for (let i = 0; i < bands.length; i++) {
+        const interpolated = bytes[start+i] + (bytes[end+i] - bytes[start+i]) * fraction;
+        data[bands[i]] += entry.gain * interpolated / 255;
+      }
+    }
     return data;
   }
 
-  const onVisibility = () => { if (document.hidden) pause(); };
+  function onVisibility() {
+    // Animation frames are throttled in background tabs. Settle only an in-flight
+    // mix; the active native track keeps its current position and playback intent.
+    if (document.hidden && frame) finishFade();
+  }
   document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('pagehide', pause);
 
   return {
-    toggle, pause, selectTrack, setVolume, getData,
+    selectTrack, pause, getData,
+    toggle() {
+      if (playing() || pending) { pause(); return Promise.resolve(false); }
+      return selectTrack(selected.id);
+    },
+    setVolume(next) {
+      if (!Number.isFinite(Number(next))) return;
+      volume = Math.min(1, Math.max(0, Number(next)));
+      for (const entry of entries.values()) setMix(entry, entry.gain);
+    },
     get currentTrack() { return selected; },
-    get isPlaying() { return isPlaying(); },
-    get isLoading() { return loading; },
+    get isPlaying() { return playing(); },
+    get isLoading() { return Boolean(pending); },
     get currentTime() { return entries.get(selected.id)?.audio.currentTime || 0; },
     get duration() {
       const duration = entries.get(selected.id)?.audio.duration;
@@ -263,18 +241,20 @@ export function createAudioEngine({ enabledTracks = tracks.map(track=>track.id) 
       pause();
       disposed = true;
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', pause);
+      if (mediaActions) {
+        for (const action of ['play','pause','stop']) {
+          try { media.setActionHandler(action,null); } catch { /* Optional platform action. */ }
+        }
+        media.metadata = null; media.playbackState = 'none';
+      }
       for (const entry of entries.values()) {
-        clearTimer(entry);
-        for (const [name, listener] of Object.entries(entry.listeners)) entry.audio.removeEventListener(name, listener);
-        entry.source.disconnect();
-        entry.gain.disconnect();
-        entry.audio.removeAttribute('src');
-        entry.audio.load();
+        entry.audio.removeEventListener('playing', entry.onPlaying);
+        entry.audio.removeEventListener('pause', entry.onPause);
+        entry.audio.removeEventListener('error', entry.onError);
+        entry.audio.removeAttribute('src'); entry.audio.load(); entry.audio.remove();
       }
       entries.clear();
-      analyser?.disconnect(); master?.disconnect();
-      context?.removeEventListener('statechange', onStateChange);
-      context?.close().catch(() => {});
     },
   };
 }
