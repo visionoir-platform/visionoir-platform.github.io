@@ -1,5 +1,6 @@
 import './style.css';
 import { names,matchLocale } from '../../src/locales.js';
+import { acceptFooterEntry } from '../../src/unseen-door.js';
 import { STAGES,HEROES,BOSSES,createRun,step,groundAt,canEnter,sanitizeProgress,finishRun,rankOf } from '../engine/index.js';
 import { playCinematic } from '../art/cinematic.js';
 import { createCadence } from './cadence.js';
@@ -62,7 +63,7 @@ function returnToStudio(event){
 document.addEventListener('click',e=>{if(e.target.closest('#home,.back-site'))returnToStudio(e);});
 function updateLocaleChrome(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  select.value=lang;select.setAttribute('aria-label',t('language'));home.href='/'+lang.toLowerCase()+'/';
+  select.value=lang;select.setAttribute('aria-label',t('language'));home.href='/'+lang.toLowerCase()+'/#unseen-door';
 }
 async function language(next,initial=false){
   const serial=++localeToken;
@@ -123,7 +124,7 @@ function resumeRun(){
   if(run.boss){music(run.boss.track||((run.boss.id===15)?28:23));}else if(audio?.state().id)audio.resume().catch(()=>notify(t('error')));else music(run.stage.track);
 }
 function newStory(){loadMark=false;mode='story';target=0;hero=progress.lastHero;portalReturn=null;go('heroes',{track:3,from:'story'});}
-function footerReturn(){return '<a class="back-site" href="/'+lang.toLowerCase()+'/">↗ VISIONOIR</a>';}
+function footerReturn(){return '<a class="back-site" href="/'+lang.toLowerCase()+'/#unseen-door">↗ VISIONOIR</a>';}
 function title(){
   return '<section class="title-screen"><div class="cover-art"></div><div class="cover-type"><p class="over" dir="ltr">VISIONOIR / NOIR CITY</p><h1 lang="en" dir="ltr">'+(fan?'<span class="fan-title">SONIC: VISIONOIR</span>':'')+'<span>THE UNSEEN</span><span>PROTOCOL<i>.</i></span></h1><p class="synopsis">'+safe(t('synopsis'))+'</p>'+button('start',t('start')+' <span aria-hidden="true">↗</span>','class="primary start"')+'</div></section>';
 }
@@ -323,7 +324,7 @@ async function boot(){
   requestAnimationFrame(gameFrame);
 }
 const developmentPreview = import.meta.env.DEV && ['127.0.0.1','localhost','[::1]'].includes(location.hostname);
-if (typeof history.state?.visionoirFooter === 'string' || developmentPreview) {
+if (acceptFooterEntry() || developmentPreview) {
   boot().catch(()=>{root.innerHTML='<a class="back-site" href="/">← VISIONOIR</a>';notify('The Unseen Protocol · '+(t('error')==='error'?'Caricamento non riuscito':t('error')));});
 } else {
   document.querySelector('#console').hidden = true;

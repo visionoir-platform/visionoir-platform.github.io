@@ -29,17 +29,19 @@ assert.equal(art.profile,'VISIONOIR ORIGINAL');
 for(const file of art.files){const b=await readFile(resolve(dist,'unseen/art',file));assert.equal(b.subarray(1,4).toString(),'PNG');}
 const folders=await readdir(dist,{recursive:true});
 assert(!folders.some(s=>/(?:__fan-art|fan-studio|\.wav$|\.als$|\.mid$|\.zip$|driver\.dev|codex-clipboard|UNSEEN_PROTOCOL_MASTER_SPEC)/i.test(s)));
-const bundles=(await readdir(resolve(dist,'assets'))).filter(s=>/^unseen-.*\.js$/.test(s));assert.equal(bundles.length,1);
-const runtime=await text('assets/'+bundles[0]);
+const cover=await text('unseen/index.html');
+const entry=cover.match(/<script[^>]+src="\/assets\/(unseen-[^"/]+\.js)"/)?.[1];
+assert(entry,'Missing game entry module');
+const runtime=await text('assets/'+entry);
 for(const forbidden of ['__fan-art','SONIC: VISIONOIR','__unseenQA'])assert(!runtime.includes(forbidden),'Public runtime includes '+forbidden);
 for(const [l,rows] of Object.entries(all)){
   const html=await text(l.toLowerCase()+'/index.html');assert(html.includes('id="unseen-door"'));assert(html.includes('visionoir.platform@gmail.com'));assert(html.includes('packX'));assert(!html.includes('/unseen/audio/'));
   assert.deepEqual(await data('unseen/i18n/'+l+'.json'),rows);
   const soundNames=await data('unseen/audio/names/'+l+'.json');assert.equal(Object.keys(soundNames).length,fx.length);for(const e of fx)assert(soundNames[e.id]);
 }
-const cover=await text('unseen/index.html');assert(cover.includes('The Unseen Protocol') && cover.includes(bundles[0]));
+assert(cover.includes('The Unseen Protocol'));
 assert(cover.includes('name="robots" content="noindex, nofollow"'));
 assert(!(await text('sitemap.xml')).includes('/unseen/'));
 const reference=JSON.parse(await readFile(new URL('../research/sound-reference.json',import.meta.url),'utf8'));
 assert.equal(reference.files.length,118);
-console.log(JSON.stringify({profile:art.profile,stageCount:STAGES.length,campaignBosses:16,guardians:7,music:music.length,effects:fx.length,artwork:art.files.length,languages:Object.keys(all).length,catalogKeys:Object.keys(all.it).length,bundleBytes:(await stat(resolve(dist,'assets',bundles[0]))).size}));
+console.log(JSON.stringify({profile:art.profile,stageCount:STAGES.length,campaignBosses:16,guardians:7,music:music.length,effects:fx.length,artwork:art.files.length,languages:Object.keys(all).length,catalogKeys:Object.keys(all.it).length,bundleBytes:(await stat(resolve(dist,'assets',entry))).size}));

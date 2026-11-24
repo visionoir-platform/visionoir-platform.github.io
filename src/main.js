@@ -4,6 +4,7 @@ import { money, updateMetadata, contact } from './site.js';
 import { approximateCountry, storageValue } from './geo.js';
 import { trackAccents } from './palette.js';
 import { createAudioEngine } from './audio.js';
+import { enterFromFooter } from './unseen-door.js';
 
 const configNode = document.getElementById('site-config');
 if (configNode) initialize(JSON.parse(configNode.textContent));
@@ -144,11 +145,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     audio.pause();
     scene?.setMotion(false);
     html.classList.add('entering-unseen');
-    setTimeout(() => {
-      // This history entry belongs to this visit. A shared address starts at the footer.
-      history.pushState({ visionoirFooter: location.pathname }, '', base + 'unseen/?lang=' + encodeURIComponent(lang));
-      location.reload();
-    }, motion ? 190 : 0);
+    setTimeout(() => enterFromFooter(base + 'unseen/?lang=' + encodeURIComponent(lang)), motion ? 190 : 0);
   });
   window.addEventListener('pageshow', event => {
     html.classList.remove('entering-unseen');

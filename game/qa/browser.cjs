@@ -19,6 +19,8 @@ async function run(){
     assert.equal(await page.locator('.service-grid article, [data-price]').count()>0,true);
     assert.equal(await page.locator('a#unseen-door').textContent(),'unseen.');
     assert(!requests.some(u=>u.includes('/unseen/')));
+    await page.locator('a#unseen-door').focus();await page.keyboard.press('Enter');await page.waitForSelector('[data-act=start]');
+    await page.click('#home');await page.waitForSelector('a#unseen-door');
     await page.locator('a#unseen-door').click();await page.waitForSelector('[data-act=start]');
     assert(page.url().includes('/unseen/?lang=it'));assert.equal(await page.locator('html').getAttribute('lang'),'it');
     await page.screenshot({path:path.join(proof,engineName+'-title-mobile.png')});await click('start');
