@@ -1,4 +1,7 @@
 {
+  "quickHelp": "Pomoc i informacje",
+  "quickBeat": "Twój pierwszy rytm",
+  "quickHint": "Włącz odtwarzanie sceny. Dotykaj kroków, aby dodawać lub usuwać uderzenia, a następnie zapisz projekt.",
   "eqMacro": "Jedno pokrętło",
   "eqParametric": "Niezależne ustawienia",
   "eqFrequency": "Częstotliwość środkowa",

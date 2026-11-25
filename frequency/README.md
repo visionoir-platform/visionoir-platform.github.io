@@ -4,6 +4,8 @@ Created, designed and developed by Flavio Giorgio Guarini.
 
 ## Inizia a suonare
 
+Apri **Guida e info** per suonare e modificare i primi sedici passi del canale e della scena selezionati. **Salva · Libreria** conserva una copia. **Sequencer** porta il focus sulla stessa traccia nella matrice completa.
+
 Premi **Avvia** per ascoltare la scena selezionata. Toccando una cella inserisci o togli lo step. Le frecce della tastiera spostano il focus nella matrice. **Modifica step** imposta nota MIDI, durata, dinamica, probabilità, ripetizioni, accordo e automazione dei parametri. Ogni canale può avere una propria lunghezza fino a 128 step. In **Sequencer**, attiva **Seleziona · Step** nella barra sopra la matrice per ispezionare una cella mantenendone lo stato. In **Piano roll**, trascina la nota con il mouse o con il dito per cambiare posizione e altezza. Il movimento si arresta se la destinazione contiene un altro attacco. **Durata** modifica il gate trascinando in orizzontale. **Accordi** aggiunge o rimuove una voce sulla stessa colonna. Le voci di un accordo condividono durata e dinamica. La selezione multipla, le frecce, i campi numerici e i comandi di copia e duplicazione permettono le stesse modifiche da tastiera.
 
 **Strumenti** offre variazioni procedurali riproducibili, quantizzazione e copia del pattern. In **Libreria → Genera sessione** scegli genere, seme, tonalità, tempo, intensità e complessità. Il generatore prepara otto scene modificabili. **Annulla** recupera il lavoro precedente. Le sessioni e i nomi dei preset di fabbrica sono opere originali del progetto.

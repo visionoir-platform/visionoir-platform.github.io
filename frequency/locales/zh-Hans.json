@@ -1,4 +1,7 @@
 {
+  "quickHelp": "入门指南与简介",
+  "quickBeat": "制作你的第一个节奏",
+  "quickHint": "按播放键试听场景。轻点步进格添加或移除鼓点，然后保存项目。",
   "eqMacro": "单一控制",
   "eqParametric": "独立调节",
   "eqFrequency": "中心频率",

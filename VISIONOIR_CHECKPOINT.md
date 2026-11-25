@@ -98,3 +98,9 @@ In una prova di quattro ore della precedente build `frequency-2d63855e8b3907`, i
 Quando WebGL è indisponibile, il ritratto metallico del creatore segue ciascuna delle sei tracce anche nella rotazione a 24 viste. Il caricamento riguarda la finitura scelta. Nel mixer, i sei bus misurano la somma stereo dopo il fader. Il silenzio o un canale privo di segnale danno una correlazione indefinita, indicata da «—». L’indicatore CLIP rileva anche i sovraccarichi nella dissolvenza fra due scene.
 
 La [PR 17](https://github.com/visionoir-platform/visionoir-platform.github.io/pull/17) ha superato 114 test automatici. Sul sito pubblico è stato possibile impostare lo studio offline, scollegare la rete del browser, riaprire uno ZIP esportato, recuperare il salvataggio precedente dopo un guasto simulato e ricaricare il progetto. Il [formato nativo](frequency/FORMAT.md) descrive come conservare e leggere i progetti fuori dal sito.
+
+## Primo ritmo e arrangiamenti di fabbrica
+
+In **Guida e info** si può ascoltare la scena corrente, modificare i primi sedici passi del canale scelto, salvare una copia nella libreria e ritrovare lo stesso canale nel sequencer. Una prova a 360 px, in italiano e in arabo, ha verificato suono digitale, annulla/ripristina, focus della tastiera e riapertura della copia.
+
+Le dodici sessioni di fabbrica aggiuntive hanno sequenze di sezioni, durate, organici e finali specifici. Ogni arrangiamento ha da 85 a 94 battute. Un test ricarica anche un progetto salvato con il precedente arrangiamento a otto scene e confronta i dati modificati dal musicista.

@@ -1,4 +1,5 @@
 /** Original patch recipes. Each family and variant changes the sound-producing parameters. */
+import { arrangeDemo } from './demo-forms.js';
 const blend = (base, change, depth) =>
   Object.fromEntries(
     Object.entries(base).map(([key, value]) => [
@@ -278,9 +279,6 @@ export function additionalSession(blank, id) {
       return { length, steps };
     });
   }
-  p.arrangement = p.scenes.map((_, scene) => ({
-    scene,
-    bars: [8, 8, 16, 16, 8, 8, 16, 8][scene] + (scene === 6 && d % 2 ? 8 : 0),
-  }));
+  arrangeDemo(p, id, root);
   return p;
 }

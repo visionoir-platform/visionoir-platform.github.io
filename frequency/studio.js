@@ -192,7 +192,7 @@ export async function startStudio() {
   const href = (path) => path + '?lang=' + encodeURIComponent(lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('about'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
     updateTransport();
     renderTabs();
     editor();
@@ -568,12 +568,15 @@ export async function startStudio() {
     const trigger = dialogTrigger?.isConnected ? dialogTrigger : selector && el('studio').querySelector(selector);
     if (trigger) trigger.focus({preventScroll:true});
   }
+  let guideSaving = false;
   function help() {
-    open(
-      'about',
-      t('about'),
-      `<p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}<p lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`,
-    );
+    const pat = pattern();
+    const buttons = pat.steps.slice(0, Math.min(16, pat.length)).map((note, index) =>
+      act('guide-step', pad(index + 1), { data: 'data-index="' + index + '"',
+        title: t('step') + ' ' + (index + 1), pressed: !!note, disabled: s.protect || !off() }),
+    ).join('');
+    open('about', t('quickHelp'),
+      `<h3>${h(t('quickBeat'))}</h3><p>${h(t('quickHint'))}</p><div class="bar-tools">${act('guide-play',t(playing ? 'stop' : 'play'),{ icon: playing ? '■' : '▶', classes: 'play' })}</div><fieldset class="guide-rhythm"><legend>${h(track().name)} · ${h(sceneName(s.scene))}</legend><div class="guide-steps" dir="ltr">${buttons}</div></fieldset><div class="bar-tools">${act('guide-save',t('save') + ' · ' + t('library'),{disabled:!storageAvailable || guideSaving})}${act('guide-full',t('sequencer'))}</div><output class="guide-status" role="status"></output><details><summary>${h(t('about'))} · FREQUENCY</summary><p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}</details><p lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`);
   }
   async function projects() {
     const saved = await library().catch(() => []),
@@ -1037,6 +1040,43 @@ export async function startStudio() {
         return;
       case 'about':
         help();
+        return;
+      case 'guide-step': {
+        const pat = pattern();
+        if (!guardLive() || !Number.isInteger(i) || i < 0 || i >= Math.min(pat.length, 16)) return;
+        mutate(() => { pat.steps[i] = pat.steps[i] ? null : newNote(noteBase()); });
+        help();
+        return;
+      }
+      case 'guide-play': {
+        const wasPlaying = playing;
+        if (wasPlaying) stop();
+        else await play(false);
+        if (playing !== wasPlaying && activeDialog === 'about') help();
+        return;
+      }
+      case 'guide-save': {
+        if (guideSaving || !storageAvailable) return;
+        guideSaving = true;
+        btn.disabled = true;
+        try {
+          await save(s.p, { named: true });
+          if (activeDialog === 'about') el('panel').querySelector('.guide-status').textContent = t('saved');
+        } finally {
+          guideSaving = false;
+          const button = el('panel').querySelector('[data-action="guide-save"]');
+          if (button) button.disabled = !storageAvailable;
+        }
+        return;
+      }
+      case 'guide-full':
+        s.view = 'sequencer';
+        s.bank = Math.floor(s.channel / s.bankSize);
+        s.page = 0;
+        renderTabs();
+        editor();
+        close();
+        el('editor').querySelector('[data-action="step"][data-channel="' + s.channel + '"]')?.focus();
         return;
       case 'close':
         close();
