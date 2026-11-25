@@ -81,7 +81,8 @@ async function probe(browser, disableWebGL) {
     }
     const right = await side(32);
     const left = await side(-32);
-    for (const key of ['grid','glow','pack','instagram','poster']) assert.notEqual(right[key], left[key], key);
+    for (const key of ['grid','glow','pack','instagram']) assert.notEqual(right[key], left[key], key);
+    if (disableWebGL) assert.notEqual(right.poster, left.poster, 'visible fallback poster');
     for (const sample of [left, right]) assert.deepEqual(sample.hitboxes, neutral.hitboxes, 'interactive areas moved');
     if (!disableWebGL) {
       assert.ok((right.logoX-neutral.logoX)*(left.logoX-neutral.logoX)<0, 'opposite rotations must move the scene in opposite directions');
