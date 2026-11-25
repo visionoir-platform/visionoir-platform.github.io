@@ -333,7 +333,8 @@ export async function mountChromatic(
   }
   return {
     getState: () => structuredClone(visual),
-    getCanvas: () => (surface.dataset.render === 'webgl' ? surface.querySelector('canvas') : null),
+    getCanvas: () => stage.captureCanvas?.() ?? null,
+    startRecording: fps => stage.startRecording(fps),
     setState: (v) => {
       visual = normalizeVisual(v);
       update(false);

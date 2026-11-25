@@ -415,7 +415,7 @@ export class DSP {
           stereoReturn = (room - b.low) * c.params.width * 0.25 * c.g;
           signal += tail;
         }
-        const dry = signal * c.g * (t.invert ? -1 : 1);
+        const dry = signal * c.g;
         let leftPan = c.lp, rightPan = c.rp;
         const balance = c.panLane;
         if (balance.value !== null) {
@@ -426,6 +426,7 @@ export class DSP {
         }
         let x = dry * leftPan + stereoReturn,
           y = dry * rightPan - stereoReturn;
+        if (t.invert) { x = -x; y = -y; }
         for (let k = 0; k < c.fx.length; k++) {
           const fx = c.fx[k];
           fx.step(x, y, detector);

@@ -43,3 +43,12 @@ Il pannello di esportazione consente di scegliere nome del file, titolo musicale
 Nella sezione The Creator la traccia controlla sei comportamenti della superficie. Le prove Chrome hanno misurato la deformazione e la ricostruzione della sagoma in pausa. WebKit ha verificato gli ingressi a FREQUENCY e al gioco con passaggi rapidi in italiano e arabo. I contorni originali del logo sono ora inclusi nel modulo grafico che li usa.
 
 Il comando di cancellazione dello studio rimuove anche preferenze, preset personali e stampe temporanee. Il test su più schede ha controllato l’annullamento, la protezione dai salvataggi obsoleti e la possibilità di iniziare un nuovo progetto. Il gioco conserva il proprio salvataggio. I file scaricati sul dispositivo rimangono disponibili.
+
+
+## Affidabilità della performance
+
+Il tasto Play può ricostruire il processore audio dopo un errore del worklet. Nel collaudo con errore indotto in Chrome, il segnale PCM è tornato sulla stessa uscita, mantenendo progetto, tempo e scena. L’inversione di polarità ora comprende entrambi i canali del Rumble Engine. Un segnale stereo sommato alla sua copia invertita si annulla nel test.
+
+Il file video registrato continua a ricevere fotogrammi quando il musicista scorre la pagina o apre il mixer. La registrazione verificata contiene 367 fotogrammi VP8 e oltre 15 secondi di audio stereo. Il collaudo riguarda la pagina in primo piano.
+
+Durante una prova con due build, il nuovo service worker ha atteso la chiusura dello studio mentre il master continuava a suonare. La nuova versione si è avviata offline alla riapertura. Il preflight distingue l’uscita confermata, quella scollegata e i casi in cui il browser non permette di verificare la periferica. La prova dei cambi di uscita usa dispositivi simulati.

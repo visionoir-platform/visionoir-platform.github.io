@@ -113,3 +113,28 @@ test('MIDI CC ramps quantize at half steps and reset; duplicate, unsorted or unk
     lanes.pop();
   }
 });
+
+test('channel input polarity reverses both sides of the stereo rumble before inserts and sends', () => {
+  const project = createProject('blank');
+  const index = project.tracks.findIndex(track => track.instrument === 'rumble');
+  const track = project.tracks[index];
+  Object.assign(track, { volume: 0.8, width: 1, sendDelay: 0, sendReverb: 0, fx: [] });
+  Object.assign(track.params, { width: 1, reverb: 0.9, feedback: 0.6 });
+  function capture(invert) {
+    track.invert = invert;
+    const dsp = new DSP(project, 48000, { mastering: false });
+    const left = new Float32Array(48000), right = new Float32Array(left.length);
+    dsp.trigger(index, 36, 1, 0.36);
+    dsp.render(left, right);
+    return [left, right];
+  }
+  const [left, right] = capture(false);
+  const [inverseLeft, inverseRight] = capture(true);
+  let stereo = 0, residual = 0;
+  for (let i = 0; i < left.length; i++) {
+    stereo = Math.max(stereo, Math.abs(left[i] - right[i]));
+    residual = Math.max(residual, Math.abs(left[i] + inverseLeft[i]), Math.abs(right[i] + inverseRight[i]));
+  }
+  assert.ok(stereo > 0.1, 'The test must exercise the stereo return');
+  assert.ok(residual < 1e-7, 'Both channels must null against their inverses');
+});

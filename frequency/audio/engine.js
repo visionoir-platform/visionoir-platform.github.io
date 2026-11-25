@@ -6,6 +6,7 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     analyser = null,
     streamOut = null,
     initializing = null,
+    workletLoaded = false,
     playing = false,
     version = 0,
     mode = 'idle',
@@ -26,22 +27,34 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
       initializing = (async () => {
         try {
           if (!target.audioWorklet) throw Error('audio.workletUnavailable');
-          await target.audioWorklet.addModule(processorUrl);
-          node = new AudioWorkletNode(target, 'frequency-rack-v1', {
+          if (!workletLoaded) {
+            await target.audioWorklet.addModule(processorUrl);
+            workletLoaded = true;
+          }
+          const active = new AudioWorkletNode(target, 'frequency-rack-v1', {
             numberOfInputs: 0,
             numberOfOutputs: 1,
             outputChannelCount: [2],
           });
-          deliver = (m) => node.port.postMessage(m);
+          node = active;
+          deliver = (m) => active.port.postMessage(m);
           mode = 'worklet';
-          node.port.onmessage = ({ data: m }) => {
+          active.port.onmessage = ({ data: m }) => {
+            if (node !== active) return;
             if (m.type === 'tick') {
               playing = m.data.playing;
               onTick(m.data);
             } else if (m.type === 'error') onError(Error(m.message));
           };
-          node.onprocessorerror = () => {
+          active.onprocessorerror = () => {
+            if (node !== active) return;
+            version++;
             playing = false;
+            mode = 'failed';
+            node = deliver = null;
+            active.onprocessorerror = active.port.onmessage = null;
+            active.disconnect();
+            active.port.close();
             onError(Error('audio.processorError'));
           };
         } catch (error) {
@@ -100,18 +113,21 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
             }
           };
         }
-        analyser = target.createAnalyser();
-        analyser.fftSize = 2048;
-        analyser.smoothingTimeConstant = 0.72;
-        streamOut = target.createMediaStreamDestination?.() ?? null;
+        if (!analyser) {
+          analyser = target.createAnalyser();
+          analyser.fftSize = 2048;
+          analyser.smoothingTimeConstant = 0.72;
+          streamOut = target.createMediaStreamDestination?.() ?? null;
+          analyser.connect(target.destination);
+          if (streamOut) analyser.connect(streamOut);
+        }
         node.connect(analyser);
-        analyser.connect(target.destination);
-        if (streamOut) analyser.connect(streamOut);
       })().finally(() => {
         initializing = null;
       });
     }
     await Promise.all([resumed, initializing]);
+    if (!node) throw Error('audio.processorError');
     if (project) post('project', { project });
     onState(context.state);
   }
@@ -164,6 +180,7 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
       if (context && context.state !== 'closed') await context.close();
       context = node = analyser = streamOut = deliver = null;
       playing = false;
+      workletLoaded = false;
       mode = 'idle';
     },
     get context() {

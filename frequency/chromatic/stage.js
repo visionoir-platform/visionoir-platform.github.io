@@ -104,6 +104,7 @@ export async function buildStage(
   const abort = new AbortController();
   let closed = false,
     visible = true,
+    recording = null,
     raf = 0,
     lost = false,
     failed = false,
@@ -188,12 +189,14 @@ export async function buildStage(
     last = 0;
   };
   function request() {
-    if (!closed && !failed && !raf && visible && !lost && !document.hidden)
+    if (!closed && !failed && !raf && (visible || recording) && !lost && !document.hidden)
       raf = frameWindow.requestAnimationFrame(draw);
   }
   function resize() {
-    if (closed) return;
+    // Keep the encoder's frame size stable while the studio layout changes.
+    if (closed || recording) return;
     const rect = host.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
     box = { width: Math.max(1, rect.width), height: Math.max(1, rect.height) };
     const aspect = box.width / box.height;
     camera.aspect = aspect;
@@ -233,7 +236,7 @@ export async function buildStage(
   };
   const obs = new IntersectionObserver(([o]) => {
     visible = o.isIntersecting;
-    if (visible) request();
+    if (visible || recording) request();
     else cancel();
   });
   obs.observe(host);
@@ -257,7 +260,7 @@ export async function buildStage(
   const currentSignal = normalizeSignal();
   function draw(now) {
     raf = 0;
-    if (closed || lost || !visible || document.hidden || !solid || failed) return;
+    if (closed || lost || (!visible && !recording) || document.hidden || !solid || failed) return;
     const state = getState() || defaultVisual(),
       simple = state.reduced || motion.matches,
       frozen = state.freeze;
@@ -400,9 +403,31 @@ export async function buildStage(
     }
     if (!simple && !frozen) request();
   }
+  function captureCanvas() {
+    return solid && !closed && !lost && !failed ? canvas : null;
+  }
+  function startRecording(fps) {
+    if (recording || !captureCanvas()?.captureStream) throw Error('Video unavailable');
+    const stream = canvas.captureStream(fps);
+    const stop = () => {
+      for (const track of stream.getTracks()) track.stop();
+      if (recording !== stop) return;
+      recording = null;
+      resize();
+      if (!visible) cancel();
+    };
+    if (!stream.getVideoTracks().length) {
+      stop();
+      throw Error('Video unavailable');
+    }
+    recording = stop;
+    request();
+    return { stream, stop };
+  }
   function dispose() {
     if (closed) return;
     closed = true;
+    recording?.();
     abort.abort();
     cancel();
     obs.disconnect();
@@ -467,6 +492,8 @@ export async function buildStage(
   }
   return {
     getRenderState: () => host.dataset.render,
+    captureCanvas,
+    startRecording,
     dispose,
     resize,
     invalidate: request,
