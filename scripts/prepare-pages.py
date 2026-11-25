@@ -10,16 +10,17 @@ target.mkdir(parents=True, exist_ok=False)
 paths = [
     "index.html", "package.json", "package-lock.json", "vite.config.js",
     ".gitignore", "README.md", "AUDIO-PREMIUM.md", "ASSETS.md",
-    ".github/workflows/pages.yml", "tests/locales.test.mjs", "tests/device-tilt.test.mjs",
-    "scripts/localize.mjs", "scripts/deploy-pages.py", "scripts/analyze-studio-audio.py", "scripts/synthesize-modes.py", "scripts/synthesize-soundtrack.py",
+    ".github/workflows/pages.yml", "tests/locales.test.mjs", "tests/device-tilt.test.mjs", "tests/device-shake.test.mjs",
+    "scripts/prepare-player-artwork.py", "scripts/localize.mjs", "scripts/deploy-pages.py", "scripts/analyze-studio-audio.py", "scripts/synthesize-modes.py", "scripts/synthesize-soundtrack.py",
     "scripts/synthesize-premium.py", "scripts/audio-premium-requirements.txt",
-    "public/favicon.svg", "tools/editor-visionoir.html",
+    "public/favicon.svg", "public/favicon.ico", "tools/editor-visionoir.html",
 ]
 paths += [str(file.relative_to(root)) for file in (root/"src").rglob("*") if file.is_file() and not file.is_symlink() and "__pycache__" not in file.parts and not file.name.startswith(".")]
 paths += [
     str(file.relative_to(root)) for file in (root/"public/assets").glob("*")
     if file.suffix in {".jpg",".webp",".woff2",".svg",".txt",".json"}
 ]
+paths.extend(str(f.relative_to(root)) for f in (root / "public/assets").glob("visionoir-original-cover-v1-*.png"))
 paths.extend(["unseen/index.html", ".github/workflows/unseen-check.yml", "scripts/prepare-pages.py"])
 # Only original distribution directories are staged; private profiles and references live outside the checkout.
 for directory, suffixes in (

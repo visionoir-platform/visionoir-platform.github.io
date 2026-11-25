@@ -77,3 +77,7 @@
 @media (prefers-reduced-motion: reduce) {
   .creator-render-surface:not([data-render='webgl']) :is(.creator-poster, .creator-turntable) { transform: none; }
 }
+
+.creator-orbit-actions [data-orbit='spin']{width:auto;padding-inline:.75rem;border-radius:1.5rem;font:.8rem/1.15 var(--body,system-ui)}
+.creator-orbit-actions{flex-wrap:wrap;max-inline-size:100%}
+@media(max-width:660px){.creator-orbit-controls{align-items:flex-start;flex-direction:column}}

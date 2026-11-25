@@ -43,7 +43,11 @@ ${t('skip','a','class="skip" href="#contenuto"')}
    ${t('heroCopy','p')}
    <a class="cta" href="#contatto">${t('start')}${arrow}</a>
    <a class="support-link" data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a>
-   <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
+   <div class="logo-gesture-controls" hidden>
+    <button type="button" id="logo-negative-toggle" class="underlink" data-logo-negative aria-pressed="false">${t('negativeLogo')}</button>
+    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
+    <div class="tilt-opt-in" hidden><button type="button" id="device-shake-enable" class="underlink">${t('shakeEnable')}</button><span aria-live="polite" id="device-shake-status"></span></div>
+   </div>
   </div>
   <button type="button" id="logo-scene" ${a11y('ecoDoor')} style="touch-action:manipulation">
    <img class="scene-fallback poster" src="${asset('logo.svg')}" alt="" width="660" height="790" fetchpriority="high">
@@ -100,6 +104,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
     <div class="creator-orbit-controls" hidden>
       ${t('orbitHint','small','id="creator-orbit-hint"')}
       <div class="creator-orbit-actions" dir="ltr">
+        <button type="button" data-orbit="spin" aria-controls="creator-stage"><span data-auto-label="pause">${t('orbitPause')}</span><span data-auto-label="play" hidden>${t('orbitPlay')}</span></button>
         <button type="button" data-orbit="left" aria-controls="creator-stage" ${a11y('orbitLeft')}>←</button>
         <button type="button" data-orbit="reset" aria-controls="creator-stage" ${a11y('orbitReset')}>↺</button>
         <button type="button" data-orbit="right" aria-controls="creator-stage" ${a11y('orbitRight')}>→</button>
@@ -129,7 +134,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  <label class="volume"><span class="sr-only">${t('volume')}</span><input id="volume" type="range" min="0" max="100" value="23" ${a11y('volume')}></label>
  <button id="motion-toggle" type="button" aria-pressed="false">${escape(dict.motionOff)}</button></div>
 </aside>
-<section id="immersive-view" hidden><button type="button" class="cta cta-secondary" id="exit-immersive">${t('exit')} <span aria-hidden="true">×</span></button></section>
+<section id="immersive-view" hidden><button type="button" class="cta cta-secondary immersive-negative" data-logo-negative aria-pressed="false">${t('negativeLogo')}</button><button type="button" class="cta cta-secondary" id="exit-immersive">${t('exit')} <span aria-hidden="true">×</span></button></section>
 <dialog id="brief-dialog" aria-labelledby="brief-heading">
  ${t('inquiryReview','h2','id="brief-heading"')}
  <pre id="brief-text" dir="auto"></pre>

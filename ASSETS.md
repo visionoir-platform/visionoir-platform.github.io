@@ -11,3 +11,5 @@
 | Instagram CTA | Text link to the supplied profile, with a generic arrow and a dimensional container. | No Instagram glyph redistributed. The approved Meta download requires accepting its terms; an authorized package was unavailable. |
 
 Rights notice covers the respective contributions of Flavio Giorgio Guarini, Maria Bellini and VISIONOIR. The credits document the supplied attribution and production process. No transfer of rights is asserted.
+
+Le copertine di sistema delle sei tracce riproducono il marchio originale di Maria Bellini, simbolo e scritta VISIONOIR, in nero su bianco. Per rigenerare le quattro misure dal file originale usare `python scripts/prepare-player-artwork.py --original LOGO.jpg` (Pillow e Mutagen). La pipeline incorpora la copertina negli MP3 dopo la sintesi e conserva i crediti audio.

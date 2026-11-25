@@ -7,6 +7,12 @@ export function createAudioEngine({ enabledTracks = tracks.map(track => track.id
   const data = { ...zero };
   const bands = ['bass', 'mid', 'high', 'level'];
   const media = navigator.mediaSession;
+  const assetBase = import.meta.env?.BASE_URL || '/';
+  const artwork = [96, 192, 512].map(size => ({
+    src: new URL(assetBase + 'assets/visionoir-original-cover-v1-' + size + '.png', location.origin).href,
+    sizes: size + 'x' + size,
+    type: 'image/png',
+  }));
   let selected = available[0];
   let active = null;
   let pending = null;
@@ -24,7 +30,7 @@ export function createAudioEngine({ enabledTracks = tracks.map(track => track.id
       media.playbackState = playing() ? 'playing' : 'paused';
       if (active && metadataTrack !== active.track && typeof MediaMetadata !== 'undefined') {
         metadataTrack = active.track;
-        media.metadata = new MediaMetadata({title:active.track.title, artist:'VISIONOIR', album:'VISIONOIR'});
+        media.metadata = new MediaMetadata({title:active.track.title, artist:'VISIONOIR', album:'VISIONOIR', artwork});
       }
     }
     window.dispatchEvent(new CustomEvent('visionoir:audio', {

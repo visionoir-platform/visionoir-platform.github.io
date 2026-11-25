@@ -59,7 +59,9 @@ html:is([lang=ar],[lang=ja],[lang=ko],[lang^=zh]) h1 em{font-family:inherit;font
 .arrow{font-family:system-ui;flex-shrink:0;direction:ltr}
 #logo-scene{position:relative;isolation:isolate;inline-size:100%;block-size:clamp(20rem,55vw,40rem);min-inline-size:0;overflow:hidden}
 #logo-scene canvas,#logo-scene .scene-fallback{position:absolute;inset:0;inline-size:100%;block-size:100%;object-fit:contain}
-#logo-scene .scene-fallback{padding:12%;filter:drop-shadow(0 0 35px #f0f0f037)}
+#logo-scene .scene-fallback{padding:12%;filter:invert(0) drop-shadow(0 0 1px transparent) drop-shadow(0 0 2px transparent) drop-shadow(0 0 35px #f0f0f037)}
+.logo-negative #logo-scene .scene-fallback{filter:invert(1) drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px #fff) drop-shadow(0 0 16px #dfe3ee8c)}
+@media(prefers-reduced-motion:no-preference){html:not(.reduced-motion) #logo-scene .scene-fallback{transition:filter .52s var(--ease)}}
 #logo-scene img:not([src]){display:none}
 .section{padding:clamp(3rem,7vw,7rem) var(--space);border-block-end:1px solid var(--line)}
 .section-copy{max-inline-size:49rem}

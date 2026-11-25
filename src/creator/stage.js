@@ -5,7 +5,7 @@ import { portraitProfile, easePortrait, scatterTarget } from './material-motion.
 import { trackAccents } from '../palette.js';
 
 const clamp = (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0);
-export async function createPortraitStage(host, { url, beat, playing, track, look, moving, signal, syncPoster, yaw, pitch }) {
+export async function createPortraitStage(host, { url, beat, playing, track, look, moving, signal, syncPoster, yaw, pitch, afterDraw }) {
   const gpu = new T.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
   const canvas = gpu.domElement;
   canvas.setAttribute('aria-hidden', 'true');
@@ -141,6 +141,7 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
     } else slow = Math.max(0, slow - 1);
     group.rotation.set(pitch(), -.11 + yaw(), -.025, 'YXZ');
     gpu.render(scene, camera);
+    afterDraw?.();
     host.dataset.render = 'webgl';
     const settling = current.x || current.y || current.z || current.w ||
       u.uScatter.value || echo.visible || u.uLiquid.value !== liquidTarget;

@@ -24,8 +24,11 @@
 #brief-form .brief-price{font-weight:750;margin-block:.5rem 0}#brief-form #inquiry-mode{margin:0}.inquiry-privacy{width:fit-content;color:inherit;text-decoration:underline;text-underline-offset:.2em}#brief-dialog [hidden]{display:none!important}#brief-dialog[aria-busy="true"] #send-brief{opacity:.72}#brief-dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}#brief-copy-status:empty{display:none}
 .research-choice{border-inline-start:2px solid currentColor;padding:.6rem .75rem;margin-block:.2rem}.research-choice p{margin:.3rem 0 0}#brief-form .research-choice label{display:flex;align-items:flex-start;gap:.6rem;cursor:pointer}#brief-form .research-choice input{min-block-size:1.25rem;inline-size:1.25rem;block-size:1.25rem;margin:0;flex:none;accent-color:#292929}
 
-.tilt-opt-in{margin-block-start:.85rem}
-.tilt-opt-in button{padding:.35rem 0;min-height:44px;border:0;border-block-end:1px solid currentColor;background:none;color:inherit;font:inherit;cursor:pointer}
+.logo-gesture-controls:not([hidden]){display:flex;align-items:baseline;gap:.55rem 1rem;flex-wrap:wrap;margin-block-start:.85rem}
+.logo-gesture-controls [hidden]{display:none}
+.logo-gesture-controls [aria-pressed=true],.immersive-negative[aria-pressed=true]{box-shadow:inset 0 -2px currentColor}
+.immersive-negative{position:absolute;inset-block-start:max(1rem,env(safe-area-inset-top));inset-inline-start:var(--space);max-inline-size:48%}
+.logo-gesture-controls button{padding:.35rem 0;min-height:44px;border:0;border-block-end:1px solid currentColor;background:none;color:inherit;font:inherit;cursor:pointer}
 .tilt-opt-in [aria-live]{display:block;font-size:.85rem}
 
 #home-preferences{padding-block:.65rem}
