@@ -1,0 +1,28 @@
+@font-face{font-family:Manrope;src:url('/assets/manrope.woff2') format('woff2');font-display:swap}
+*{box-sizing:border-box}
+:root{color-scheme:dark;font-family:Manrope,system-ui,sans-serif;background:#0b0c0d;color:#f5f5f3}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 85% 10%,#30343750,transparent 45%)}
+a{color:inherit;text-underline-offset:.23em}
+header,main,footer{max-width:1160px;margin:auto;padding-inline:clamp(20px,5vw,80px)}
+header{display:flex;min-height:76px;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #454748}
+header a:first-child{display:flex;align-items:center;gap:12px;text-decoration:none;letter-spacing:.14em;font-weight:800}
+header img{width:27px;height:27px}
+main{padding-block:clamp(48px,8vw,110px)}
+h1{font-size:clamp(3.1rem,8.4vw,7.8rem);letter-spacing:-.067em;line-height:.98;max-width:14ch;margin:.25em 0;overflow-wrap:anywhere}
+.lead{font-size:clamp(1.15rem,2.2vw,1.8rem);line-height:1.5;max-width:49ch;color:#d1d4d6}
+.layout{display:grid;grid-template-columns:1.4fr 1fr;gap:clamp(2rem,7vw,6rem);align-items:center}
+.panel{border-top:2px solid #e2e3e4;border-bottom:1px solid #535659;padding:1.6rem 0}
+fieldset{padding:0;border:0;margin:0}
+legend,h2{font-size:1.3rem;font-weight:700}
+.amounts{display:flex;flex-wrap:wrap;gap:.55rem;margin:1.3rem 0}
+.amounts label{position:relative;cursor:pointer}
+.amounts input{position:absolute;opacity:0}
+.amounts span{display:grid;place-items:center;padding:.65em 1em;min-height:44px;border:1px solid #595b5e}
+.amounts input:focus-visible+span{outline:3px solid white;outline-offset:3px}
+.amounts input:checked+span{background:#dfe2df;color:#111;border-color:#dfe2df}
+.custom{width:100%;font:inherit;background:#181a1c;color:#eee;border:1px solid #666;padding:.7rem}.custom:disabled{opacity:.38}
+.contact{display:inline-block;margin-top:1em;padding-block:.6rem}
+footer{display:flex;flex-wrap:wrap;gap:1rem;align-items:baseline;border-top:1px solid #454748;padding-block:24px;font-size:.9rem}
+details.languages{margin-inline-start:auto}details.languages nav{max-width:450px;display:flex;flex-wrap:wrap;gap:.4rem 1rem;padding-top:1rem}
+summary{cursor:pointer}article{max-width:80ch;margin-block:2em}p{line-height:1.6}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.panel{max-width:550px}header{min-height:62px}}

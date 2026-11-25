@@ -9,7 +9,8 @@ export default defineConfig(({command})=>{
   }
   return {
   plugins: [localFanPreview()],
+  worker: { format: 'es' },
   base: process.env.VISIONOIR_BASE || '/',
-  build: { rollupOptions: { input: { site: 'index.html', unseen: 'unseen/index.html' } } },
+  build: { rollupOptions: { input: { site: 'index.html', unseen: 'unseen/index.html', portals:'support/index.html', frequency:'frequency/index.html' } } },
   };
 });

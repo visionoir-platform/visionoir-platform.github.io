@@ -1,7 +1,9 @@
+import { generatePortals } from './portals.mjs';
 import { readFile, readdir, writeFile, mkdir, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { names, parents, localePath, parseCatalogue, site } from '../src/locales.js';
 import { escape, renderSite, direction, pageTitle } from '../src/site.js';
+import { ecosystemLocale } from './ecosystem-locales.mjs';
 import { tracks } from '../src/tracks.js';
 
 const output = resolve(process.argv[2] || 'dist');
@@ -19,7 +21,7 @@ for (const lang of available) {
   for (const key of Object.keys(source[lang])) if (!keys.includes(key)) throw Error(`${lang}: unknown key ${key}`);
   const dict = { ...source[parents[lang]], ...source[lang] };
   for (const key of keys) if (!dict[key]) throw Error(`${lang}: missing ${key}`);
-  dictionaries[lang] = dict;
+  dictionaries[lang] = {...dict,...ecosystemLocale(lang)};
 }
 
 const enabledTracks = [];
@@ -31,7 +33,9 @@ if (process.env.VISIONOIR_ALL_TRACKS && enabledTracks.length !== tracks.length) 
 const shell = await readFile(resolve(output,'index.html'),'utf8');
 if (!shell.includes('<!-- VISIONOIR:APP -->')) throw Error('Build the Vite shell before prerendering');
 const base = process.env.VISIONOIR_BASE || '/';
-const geoEndpoint = process.env.VISIONOIR_GEO_ENDPOINT ?? 'https://api.country.is/';
+const contactEndpoint = process.env.VISIONOIR_CONTACT_ENDPOINT || '';
+if (contactEndpoint && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(contactEndpoint)) throw Error('Invalid studio contact deployment');
+const geoEndpoint = process.env.VISIONOIR_GEO_ENDPOINT ?? '';
 if (geoEndpoint && new URL(geoEndpoint).protocol !== 'https:') throw Error('GeoIP requires HTTPS');
 
 for (const lang of available) {
@@ -62,13 +66,19 @@ for (const { route,lang } of variants) {
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="${url}">
 ${alternates}`;
-  const config = JSON.stringify({ lang, available, enabledTracks, geoEndpoint, initial:dict }).replaceAll('<','\\u003c');
+  const config = JSON.stringify({ lang, available, enabledTracks, geoEndpoint, contactEndpoint, initial:dict }).replaceAll('<','\\u003c');
   const html = shell.replace('<html lang="it">',`<html lang="${lang}" dir="${direction(lang)}">`)
     .replace('<!-- VISIONOIR:META -->',()=>meta)
-    .replace('<!-- VISIONOIR:APP -->',()=>renderSite({ lang, dict, available, enabledTracks, base }))
+    .replace('<!-- VISIONOIR:APP -->',()=>renderSite({ lang, dict, available, enabledTracks, base, contactEndpoint }))
     .replace('<!-- VISIONOIR:CONFIG -->',()=>`<script type="application/json" id="site-config">${config}</script>`);
   await writeFile(resolve(output,route.slice(1),'index.html'),html);
 }
 await writeFile(resolve(output,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${variants.map(({route})=>`<url><loc>${new URL(route,site)}</loc></url>`).join('\n')}\n</urlset>\n`);
 await writeFile(resolve(output,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${site}sitemap.xml\n`);
 console.log(`Prerendered ${variants.length} pages, ${available.length} locales, ${enabledTracks.length} tracks`);
+
+const portalShell=await readFile(resolve(output,'support/index.html'),'utf8');
+const portalModule=portalShell.match(/<script[^>]+src="([^"]+)"/)?.[1];
+const portalStyle=portalShell.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/)?.[1];
+if (!portalModule || !portalStyle) throw Error('Missing support build assets');
+await generatePortals(output,dictionaries,base,portalModule,portalStyle,contactEndpoint);

@@ -124,9 +124,11 @@ function resumeRun(){
   if(run.boss){music(run.boss.track||((run.boss.id===15)?28:23));}else if(audio?.state().id)audio.resume().catch(()=>notify(t('error')));else music(run.stage.track);
 }
 function newStory(){loadMark=false;mode='story';target=0;hero=progress.lastHero;portalReturn=null;go('heroes',{track:3,from:'story'});}
+const creatorSignature='<small lang="en" class="creator-signature">Created, designed and developed by Flavio Giorgio Guarini.</small>';
+function projectLinks(){return '<div class="project-links"><a href="/support/?lang='+encodeURIComponent(lang)+'">'+safe(t('supportPortal'))+'</a><a href="/legal/?lang='+encodeURIComponent(lang)+'">'+safe(t('legalPortal'))+'</a></div>';}
 function footerReturn(){return '<a class="back-site" href="/'+lang.toLowerCase()+'/#unseen-door">↗ VISIONOIR</a>';}
 function title(){
-  return '<section class="title-screen"><div class="cover-art"></div><div class="cover-type"><p class="over" dir="ltr">VISIONOIR / NOIR CITY</p><h1 lang="en" dir="ltr">'+(fan?'<span class="fan-title">SONIC: VISIONOIR</span>':'')+'<span>THE UNSEEN</span><span>PROTOCOL<i>.</i></span></h1><p class="synopsis">'+safe(t('synopsis'))+'</p>'+button('start',t('start')+' <span aria-hidden="true">↗</span>','class="primary start"')+'</div></section>';
+  return '<section class="title-screen"><div class="cover-art"></div><div class="cover-type"><p class="over" dir="ltr">VISIONOIR / NOIR CITY</p><h1 lang="en" dir="ltr">'+(fan?'<span class="fan-title">SONIC: VISIONOIR</span>':'')+'<span>THE UNSEEN</span><span>PROTOCOL<i>.</i></span></h1><p class="synopsis">'+safe(t('synopsis'))+'</p>'+button('start',t('start')+' <span aria-hidden="true">↗</span>','class="primary start"')+creatorSignature+projectLinks()+'</div></section>';
 }
 function menu(){
   return '<section class="menu-page"><div class="menu-cover"><img src="/unseen/art/noir-city.png" alt=""><h1 lang="en">The Unseen<br>Protocol</h1></div><div class="menu-list">'+['story','continue','trial','rush','stages','extras','options','credits'].map(k=>button(k,safe(t(k))+' <span aria-hidden="true">'+(k==='rush'&&!progress.storyEnding?'◇':'→')+'</span>',((k==='rush'&&!progress.storyEnding)||(k==='continue'&&!progress.cleared.length&&!savedMark))?'disabled title="'+safe(t('locked'))+'"':'')).join('')+footerReturn()+'</div></section>';
@@ -143,10 +145,10 @@ function options(){
 }
 function extras(){
   const stageIds=[...new Set(progress.cleared)];
-  return '<div class="page">'+header(t('extras'))+'<div class="bottom-actions">'+button('lab',t('lab'),'class="primary"')+button('records',t('records'))+'</div><h2>'+t('replay')+'</h2><div class="stage-grid">'+button('prologue',t('story'))+stageIds.map(i=>button('replay-'+i,safe(STAGES[i].title))).join('')+(progress.storyEnding?button('ending',t('ending')):'')+(progress.secretEnding?button('trueEnd',t('trueEnd')):'')+'</div></div>';
+  return '<div class="page">'+header(t('extras'))+'<div class="bottom-actions">'+button('lab',t('lab'),'class="primary"')+button('records',t('records'))+projectLinks()+'</div><h2>'+t('replay')+'</h2><div class="stage-grid">'+button('prologue',t('story'))+stageIds.map(i=>button('replay-'+i,safe(STAGES[i].title))).join('')+(progress.storyEnding?button('ending',t('ending')):'')+(progress.secretEnding?button('trueEnd',t('trueEnd')):'')+'</div></div>';
 }
 function credits(){
-  return '<div class="page credits">'+header(t('credits'))+'<p class="over">VISIONOIR</p><h2>'+safe(t('original'))+'</h2><p>'+t('direction')+'<br><b>Flavio Giorgio Guarini</b></p><p>VISIONOIR · Logo<br><b>Maria Bellini</b></p><p>'+t('aiCredit')+'</p><p lang="en">© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.</p>'+(fan?'<p lang="en">An independent fan project by VISIONOIR. Sonic and related characters belong to their respective owners. Unofficial and unaffiliated with SEGA.</p>':'')+footerReturn()+'</div>';
+  return '<div class="page credits">'+header(t('credits'))+creatorSignature+projectLinks()+'<p class="over">VISIONOIR</p><h2>'+safe(t('original'))+'</h2><p>'+t('direction')+'<br><b>Flavio Giorgio Guarini</b></p><p>VISIONOIR · Logo<br><b>Maria Bellini</b></p><p>'+t('aiCredit')+'</p><p lang="en">© 2026 Flavio Giorgio Guarini. All rights reserved for original contributions.</p>'+(fan?'<p lang="en">An independent fan project by VISIONOIR. Sonic and related characters belong to their respective owners. Unofficial and unaffiliated with SEGA.</p>':'')+footerReturn()+'</div>';
 }
 function records(){
   return '<div class="page">'+header(t('records'))+'<div class="record-list">'+(Object.entries(progress.records).length?Object.entries(progress.records).map(([key,v])=>{const [m,s,h]=key.split(':');return '<p><b>'+safe(STAGES[+s].title)+'</b> · '+heroNames[+h]+' · '+t(({time:'trial',rush:'rush',story:'story'})[m])+' · '+clock(v.time)+' · '+v.rank+'</p>';}).join(''):'<p>—</p>')+'</div></div>';

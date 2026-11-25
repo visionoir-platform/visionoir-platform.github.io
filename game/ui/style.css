@@ -36,3 +36,6 @@ button:hover,.file:hover{background:#2b353e;border-color:#697b88}button:active{t
 .options-grid>*{min-width:0}.options-grid label{flex-wrap:wrap}.options-grid .file{justify-content:flex-start;overflow-wrap:anywhere}.options-grid .file input{min-width:0;width:100%;max-width:100%}
 @media(max-width:700px){.cover-art{background-position:81% center}.options-grid{grid-template-columns:minmax(0,1fr)}.pad button{min-height:45px}.pad small{font:500 .58em/1.05 Manrope,system-ui,sans-serif}.actionpad{grid-template-columns:repeat(3,minmax(34px,3.3em))}}
 .pad small{max-width:100%;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.creator-signature{display:block;font-size:.68rem;line-height:1.35;margin:.55rem 0;opacity:.86}
+.project-links{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;font-size:.8rem}
+.project-links a{color:inherit;text-underline-offset:.2rem;padding:.25rem 0}

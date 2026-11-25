@@ -1,0 +1,38 @@
+# VISIONOIR: FREQUENCY
+
+## Inizia a suonare
+
+Premi **Avvia** per ascoltare la scena selezionata. Toccando una cella inserisci o togli lo step. Le frecce della tastiera spostano il focus nella matrice. **Modifica step** imposta nota MIDI, durata, dinamica, probabilità, ripetizioni, accordo e automazione dei parametri. Ogni canale può avere una propria lunghezza fino a 128 step. In **Piano roll**, usa selezione multipla, trasposizione e frecce per spostare le note. Il movimento si arresta se la destinazione contiene già una nota.
+
+**Strumenti** offre variazioni procedurali riproducibili, quantizzazione e copia del pattern. In **Libreria → Genera sessione** scegli genere, seme, tonalità, tempo, intensità e complessità. Il generatore prepara otto scene modificabili. **Annulla** recupera il lavoro precedente. Le sessioni e i nomi dei preset di fabbrica sono opere originali del progetto.
+
+In **Arrangiamento**, aggiungi una scena, scegli la durata in battute e spostala con le frecce. Il pulsante di intestazione modifica il marker. Ogni cella della timeline permette di usare lo strumento dalla scena predefinita, da un’altra scena o di silenziarlo. **Avvia · Arrangiamento** percorre la timeline. Scegli **+ Regione audio** per importare una registrazione mono fino a 90 secondi. Assegna la regione a una parte, posizionala sulla griglia a sedicesimi e imposta il tratto della registrazione da ascoltare. Ogni regione termina entro la parte che la contiene. Puoi spostarla, annullare la modifica e ritrovare la sorgente intatta nel file `.vfreq`. Il Sampler consente anche di suonare un campione tramite note del pattern.
+
+## Suono, performance e registrazione
+
+Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master. Queste letture non costituiscono una misura true peak o LUFS.
+
+**Live** avvia le scene sul confine musicale, attiva i pad e controlla la dissolvenza in beat. **Proteggi il live** impedisce operazioni pesanti. **Verifica il live** controlla il motore, i campioni, il salvataggio e i dispositivi già autorizzati. Il trattino indica una misura indisponibile. Per un impianto usa un’interfaccia compatibile e una connessione cablata al mixer, con volume iniziale basso. Verifica l’uscita del sistema e i livelli prima della performance. La latenza dipende dal dispositivo, dal driver e dal browser.
+
+Premi **Registra** per acquisire il master, premi di nuovo per scaricare la performance. In **Impostazioni → Registra** puoi scegliere anche Chromatic VJ se il browser espone una scena WebGL catturabile. Il browser determina il contenitore compatibile. L’audio dei microfoni resta escluso. **Panic** ferma la riproduzione e conclude la registrazione. Per cambiare uscita o associare un controller MIDI apri Impostazioni. MIDI Learn associa un CC a un fader del volume o a un parametro dello strumento, dopo averlo toccato. La piattaforma chiede l’autorizzazione MIDI solo quando scegli Collega. Touch e tastiera restano utilizzabili.
+
+## Salva, esporta, usa offline
+
+Il browser conserva il progetto corrente e il salvataggio precedente in IndexedDB. **Libreria → Salva +** conserva una copia nominata. **Esporta → .vfreq** comprende pattern, mixer, impostazioni visive e campioni importati. **Importa file** riapre il progetto. **Cancella dati locali** richiede conferma. I browser possono liberare spazio locale: conserva una copia `.vfreq` separata.
+
+**Esporta** comprende WAV PCM 16/24 bit o float 32 bit, AIFF e FLAC 16/24 bit, MP3, MIDI e un archivio ZIP. Il FLAC impiega blocchi lossless verbatim e può avere dimensioni simili al WAV. Scegli mix, traccia o bus e imposta intervallo, frequenza, mastering e coda degli effetti. WAV/AIFF/FLAC supportano sei frequenze da 44,1 a 192 kHz. MP3 supporta 44,1 e 48 kHz, con 128, 192, 256 o 320 kbps. Per passare a un’altra DAW, esporta gli stem, importa i file WAV dal medesimo punto iniziale e importa il MIDI alle stesse impostazioni di tempo. Le scene native, i preset e la sintesi si riaprono tramite `.vfreq`.
+
+Oltre 16 canali, il file MIDI associa le parti 1–16 alla porta FREQUENCY 1 e le successive alla porta FREQUENCY 2. Il pacchetto ZIP include anche `midi/port-1.mid` e `midi/port-2.mid`, con tempo e marker allineati. Se la DAW ignora i metadati di porta, importa questi due file dalla prima battuta e assegna ciascun gruppo alla propria destinazione MIDI.
+
+Per lavorare senza connessione, apri **Impostazioni → Studio offline** mentre sei online e attendi la conferma. Riapri FREQUENCY dallo stesso browser o aggiungilo alla schermata Home tramite il suo menu. La cache è circoscritta a `/frequency/`. Service Worker, installazione PWA, MIDI, uscita selezionabile e cattura video dipendono dalle API effettive. Un sistema operativo può sospendere app in background o eliminare dati locali.
+
+## Manutenzione e collaudo
+
+- `studio.js` coordina editor, input e salvataggi. `views.js`, `ui-kit.js` e `studio.css` definiscono controlli, layout e navigazione. `composer.js` genera sessioni riproducibili dal seme.
+- I 19 cataloghi sono in `locales/`. Le tre varianti svizzere di italiano, francese e tedesco ereditano le chiavi della relativa lingua. Per aggiungere o correggere una voce, aggiorna tutti i cataloghi di base e solo le varianti che differiscono. Il romancio è predisposto per revisione madrelingua.
+- Le specifiche di parametri/tracce e i progetti di fabbrica sono in `audio/model.js` e `audio/library.js`. Le ricette restano modificabili. `chromatic/README.md` descrive shader, scene e uscita VJ separata.
+- Esegui `npm run build` dalla radice. Il passaggio finale genera `frequency/sw.js`, collegato alle risorse effettive del build. Pubblica l’intero output attraverso la pipeline di progetto. Per ripristinare una versione, usa un revert del commit di rilascio, rigenera e ripubblica lo stesso insieme di file.
+- Con la build servita da HTTP locale, `FREQUENCY_URL=http://127.0.0.1:4173 node frequency/qa/workstation.cjs chromium` esercita i controlli come un visitatore. Il nome del browser può essere `firefox` o `webkit`. `frequency/qa/locales.cjs` prova le cinque viste in ogni lingua. Le variabili `PLAYWRIGHT_MODULE`, `FREQUENCY_BROWSER_EXEC` e `FREQUENCY_PROOF` sono facoltative. Le prove su desktop ed emulazione non sostituiscono i dispositivi fisici.
+- `FREQUENCY_BUILD=dist FREQUENCY_SOAK_REPORT=/percorso/nuovo/soak.jsonl node frequency/qa/soak.cjs` verifica quattro ore di playback reale con Chromium locale, senza inviare segnali o dati in rete esterna. Registra andamento del clock, stato dell’AudioContext e campioni di ampiezza ogni due minuti. `start` e `sample` attestano una prova in corso. Solo `end` con `passed:true` chiude una prova superata. Il test osserva il segnale prima degli altoparlanti e conserva l’identificativo della build. Il dispositivo fisico, i driver, il controller e la catena di amplificazione richiedono una prova propria.
+
+Il codice originale di FREQUENCY è distribuito sotto MIT. I preset originali di fabbrica sono utilizzabili per creazioni musicali commerciali secondo le condizioni del progetto. Verifica i diritti dei tuoi campioni prima di distribuirli. Consulta `LICENSE` e il portale legale nella lingua scelta.

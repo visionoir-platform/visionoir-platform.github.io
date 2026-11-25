@@ -1,0 +1,7 @@
+VISIONOIR · Licence map
+
+The original FREQUENCY workstation software, including its interface, synthesizers, effects and Chromatic Engine code in frequency/, is licensed under the MIT License in frequency/LICENSE. The exact MIT notice must accompany copies of covered software.
+
+The bundled MP3 encoder in frequency/audio/vendor/ is separately licensed. See its NOTICE.md and the accompanying terms. Third-party software and fonts retain their upstream terms.
+
+The VISIONOIR identity, logo, recordings, artwork and personal portrait have separate notices. See ASSET_LICENSES.md and COPYRIGHT.md. The software licence confers no general licence to the rest of this repository. Applicable statutory rights remain unaffected.
