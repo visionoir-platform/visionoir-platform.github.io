@@ -129,5 +129,17 @@
   "accent": "Акцент",
   "shift": "Перемістити",
   "multiSelection": "Множинний вибір",
-  "position": "Позиція"
+  "position": "Позиція",
+  "generate": "Створити сесію",
+  "genre": "Жанр",
+  "complexity": "Складність",
+  "battery": "Акумулятор",
+  "freeSpace": "Вільне місце",
+  "samples": "Семпли",
+  "check": "Перевірка перед виступом",
+  "audioEngine": "Звуковий рушій",
+  "sceneFade": "Перехід між сценами",
+  "device": "Пристрій",
+  "cpuBudget": "Навантаження DSP",
+  "latency": "Затримка"
 }

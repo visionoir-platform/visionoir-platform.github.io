@@ -21,3 +21,5 @@
 .footer-sign a{color:inherit;text-underline-offset:.25rem}
 @media(max-width:760px){.creator-section{grid-template-columns:1fr}.support-link{margin-inline-start:0;margin-inline-end:.8rem}.intro-copy .cta{margin-inline-end:1rem}}
 @media(prefers-reduced-motion:reduce){#logo-scene canvas,#logo-scene img,#logo-scene::after{animation:none!important;transition:none!important}}
+#brief-form .brief-price{font-weight:750;margin-block:.5rem 0}#brief-form #inquiry-mode{margin:0}.inquiry-privacy{width:fit-content;color:inherit;text-decoration:underline;text-underline-offset:.2em}#brief-dialog [hidden]{display:none!important}#brief-dialog[aria-busy="true"] #send-brief{opacity:.72}#brief-dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}#brief-copy-status:empty{display:none}
+.research-choice{border-inline-start:2px solid currentColor;padding:.6rem .75rem;margin-block:.2rem}.research-choice p{margin:.3rem 0 0}#brief-form .research-choice label{display:flex;align-items:flex-start;gap:.6rem;cursor:pointer}#brief-form .research-choice input{min-block-size:1.25rem;inline-size:1.25rem;block-size:1.25rem;margin:0;flex:none;accent-color:#292929}

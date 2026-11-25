@@ -49,6 +49,7 @@ jobs:
       - run: node --test tests/*.test.mjs frequency/audio/qa/dsp.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
       - name: Build localized pages
         env:
+          VISIONOIR_CONTACT_ENDPOINT: ${{ vars.VISIONOIR_CONTACT_ENDPOINT }}
           VISIONOIR_ALL_LOCALES: '1'
           VISIONOIR_ALL_TRACKS: '1'
         run: npm run build

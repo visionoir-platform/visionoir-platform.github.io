@@ -129,5 +129,17 @@
   "accent": "강세",
   "shift": "이동",
   "multiSelection": "여러 개 선택",
-  "position": "위치"
+  "position": "위치",
+  "generate": "세션 생성",
+  "genre": "장르",
+  "complexity": "복잡도",
+  "battery": "배터리",
+  "freeSpace": "사용 가능 공간",
+  "samples": "샘플",
+  "check": "라이브 점검",
+  "audioEngine": "오디오 엔진",
+  "sceneFade": "장면 간 크로스페이드",
+  "device": "기기",
+  "cpuBudget": "DSP 사용량",
+  "latency": "지연 시간"
 }

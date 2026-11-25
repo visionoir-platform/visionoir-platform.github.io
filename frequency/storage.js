@@ -8,11 +8,17 @@ function database() {
       req.onupgradeneeded = () => req.result.createObjectStore('projects');
       req.onsuccess = () => {
         const db = req.result;
-        db.onversionchange = () => { db.close(); opening = undefined; };
+        db.onversionchange = () => {
+          db.close();
+          opening = undefined;
+        };
         resolve(db);
       };
       req.onerror = req.onblocked = () => reject(req.error || new Error('Storage unavailable'));
-    }).catch(e => { opening = undefined; throw e; });
+    }).catch((e) => {
+      opening = undefined;
+      throw e;
+    });
   }
   return opening;
 }
@@ -28,14 +34,25 @@ export async function restore(validate) {
   for (const key of [CURRENT, 'previous']) {
     const value = await read(key);
     if (value) {
-      try { validate(value); return value; } catch { /* Try the last valid snapshot. */ }
+      try {
+        validate(value);
+        return value;
+      } catch {
+        /* Try the last valid snapshot. */
+      }
     }
   }
 }
-export function previousProject() { return read('previous'); }
-export function library() { return read('library').then(list => list || []); }
-export function loadNamed(id) { return read('save:' + id); }
-export async function save(project, {named = false} = {}) {
+export function previousProject() {
+  return read('previous');
+}
+export function library() {
+  return read('library').then((list) => list || []);
+}
+export function loadNamed(id) {
+  return read('save:' + id);
+}
+export async function save(project, { named = false } = {}) {
   const db = await database();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('projects', 'readwrite');
@@ -49,7 +66,8 @@ export async function save(project, {named = false} = {}) {
       const id = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
       store.put(project, 'save:' + id);
       const list = store.get('library');
-      list.onsuccess = () => store.put([{id, name:project.name, date:Date.now()}, ...(list.result || [])], 'library');
+      list.onsuccess = () =>
+        store.put([{ id, name: project.name, date: Date.now() }, ...(list.result || [])], 'library');
     }
     tx.oncomplete = () => resolve();
     tx.onerror = tx.onabort = () => reject(tx.error || new Error('Save failed'));

@@ -129,5 +129,17 @@
   "accent": "Acento",
   "shift": "Mover",
   "multiSelection": "Seleção múltipla",
-  "position": "Posição"
+  "position": "Posição",
+  "generate": "Gerar sessão",
+  "genre": "Género",
+  "complexity": "Complexidade",
+  "battery": "Bateria",
+  "freeSpace": "Espaço disponível",
+  "samples": "Amostras",
+  "check": "Verificar o direto",
+  "audioEngine": "Motor de áudio",
+  "sceneFade": "Transição entre cenas",
+  "device": "Dispositivo",
+  "cpuBudget": "Carga DSP",
+  "latency": "Latência"
 }

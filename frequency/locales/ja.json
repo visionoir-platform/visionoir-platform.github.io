@@ -129,5 +129,17 @@
   "accent": "アクセント",
   "shift": "移動",
   "multiSelection": "複数選択",
-  "position": "位置"
+  "position": "位置",
+  "generate": "セッションを生成",
+  "genre": "ジャンル",
+  "complexity": "複雑さ",
+  "battery": "バッテリー",
+  "freeSpace": "空き容量",
+  "samples": "サンプル",
+  "check": "ライブ前の確認",
+  "audioEngine": "オーディオエンジン",
+  "sceneFade": "シーンのクロスフェード",
+  "device": "デバイス",
+  "cpuBudget": "DSP 負荷",
+  "latency": "レイテンシー"
 }

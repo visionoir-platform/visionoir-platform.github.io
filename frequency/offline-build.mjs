@@ -2,8 +2,10 @@ import { mkdir, readdir, readFile, writeFile, copyFile, stat } from 'node:fs/pro
 import { createHash } from 'node:crypto';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { applyPagesCsp } from '../scripts/pages-csp.mjs';
 
 const root = process.argv[2] || fileURLToPath(new URL('../dist/', import.meta.url));
+await applyPagesCsp(root);
 for (const name of ['manifest.webmanifest','icon-192.png','icon-512.png']) {
   await copyFile(new URL(name,import.meta.url), join(root,'frequency',name));
 }

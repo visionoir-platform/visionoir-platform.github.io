@@ -129,5 +129,17 @@
   "accent": "Accent",
   "shift": "Move",
   "multiSelection": "Multiple selection",
-  "position": "Position"
+  "position": "Position",
+  "generate": "Generate session",
+  "genre": "Genre",
+  "complexity": "Complexity",
+  "battery": "Battery",
+  "freeSpace": "Available space",
+  "samples": "Samples",
+  "check": "Performance check",
+  "audioEngine": "Audio engine",
+  "sceneFade": "Scene crossfade",
+  "device": "Device",
+  "cpuBudget": "DSP load",
+  "latency": "Latency"
 }

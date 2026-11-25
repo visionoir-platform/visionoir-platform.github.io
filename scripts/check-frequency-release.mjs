@@ -17,6 +17,7 @@ for(const lang of Object.keys(names)){
   assert(html.includes('<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'"'));
   assert(html.includes('visionoir.platform@gmail.com'));
   assert(!html.includes('undefined'));
+  if (section==='legal') assert(html.includes('id="requests"') && html.includes('Wikidata'));
   assert(!html.includes('https://buy.stripe.com/')&&!html.includes('revolut.me/'));
  }
 }

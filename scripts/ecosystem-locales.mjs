@@ -15,10 +15,20 @@ const legal=new Map(legalRows.map(([code,...entries])=>{
   if(entries.length!==legalHeader.length-1 || entries.some(x=>!x.trim()))throw Error('Incomplete legal copy '+code);
   return [code,Object.fromEntries(entries.map((text,i)=>['legal_'+legalHeader[i+1],text]))];
 }));
+const [inquiryHeader,...inquiryRows]=rows('inquiry');
+const inquiry=new Map(inquiryRows.map(([lang,...values])=>{
+  if(values.length!==inquiryHeader.length-1||values.some(value=>!value.trim()))throw Error('Incomplete inquiry language '+lang);
+  return [lang,Object.fromEntries(values.map((value,i)=>[inquiryHeader[i+1],value]))];
+}));
+const [policyHead,...policyLines]=rows('request-policy');
+const policies = new Map(policyLines.map(([code,...cells])=>{
+  if(cells.length!==policyHead.length-1||cells.some(cell=>!cell.trim()))throw Error('Incomplete request notice '+code);
+  return [code,Object.fromEntries(cells.map((text,i)=>['req_'+policyHead[i+1],text]))];
+}));
 export function ecosystemLocale(lang) {
   const code=copyMap.has(lang)?lang:parents[lang];
-  if (!bios.has(code)||!copyMap.has(code)||!legal.has(code)) throw Error('Unknown ecosystem locale '+lang);
-  const fields={...copyMap.get(code),...bios.get(code),...legal.get(code)};
+  if (!bios.has(code)||!copyMap.has(code)||!legal.has(code)||!inquiry.has(code)) throw Error('Unknown ecosystem locale '+lang);
+  const fields={...policies.get(code),...copyMap.get(code),...bios.get(code),...legal.get(code),...inquiry.get(code)};
   if(lang==='de-CH')for(const key of Object.keys(fields))fields[key]=fields[key].replaceAll('ß','ss');
   return fields;
 }

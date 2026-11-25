@@ -3,6 +3,7 @@ export const common = `
 uniform float uTime, uMode, uNext, uMix, uActive, uWarp, uNoise, uDist, uCut, uSize, uPhase, uDepth, uEcho, uParticle, uRefract, uReflect, uLight, uCreator;
 uniform vec4 uSound;
 uniform float uVoices[16];
+uniform float uBuses[6];
 uniform vec3 uTint;
 uniform sampler2D uAlbedo;
 varying vec2 vUV;
@@ -48,6 +49,12 @@ vec3 deform(vec3 p,float m,float t,float amp){
  d.z+=uVoices[12]*.14*n; d.x+=uVoices[13]*.14*hash(floor(p*4.));
  d.z+=uVoices[14]*sin(p.x*6.+sin(p.y*6.))* .13;d.y+=uVoices[15]*n*.21;
  d+=uNoise*vec3(n*.18,field(p+vec3(phase,0.,0.))*.14-.07,0.);
+ // Curl of a two-dimensional stream function: a small, divergence-free
+ // current shared by the liquid surface and its detached samples.
+ vec2 wave=1.7*p.xy+vec2(.19,-.14)*phase;
+ vec2 curl=vec2(sin(wave.x)*cos(wave.y),-cos(wave.x)*sin(wave.y));
+ d.xy+=curl*(.025+.05*uBuses[2]+.04*uBuses[4])*uNoise;
+ d.z+=.04*(uBuses[0]*cos(r*6.-phase)+uBuses[3]*sin(wave.x+wave.y));
  d.z+=uDist*.14*sin(6.*p.y+phase*1.8);
  return p+d*amp*(.3+1.25*uWarp);
 }
@@ -129,6 +136,10 @@ void main(){
  color+=vec3(1.,.24,.025)*amount(2.)*(pow(1.-abs(sin(11.*rough-uTime*.33)),6.)*.66+rim*.45);
  color+=uTint*exp(-abs(rough-vCut)*65.)*(uCut+uActive)*1.9;
  color+=film*amount(14.)*(.24+.22*uActive);
+ vec3 ray=refract(-eye,normalize(n),.74);
+ float glassBand=exp(-pow((ray.y+.11)*5.,2.));
+ color+=uTint*glassBand*(.016+.045*uBuses[5])*uRefract;
+ color+=uTint*rim*rim*(.06*uBuses[1]+.04*uBuses[4]);
  if(uEcho>.5)color=mix(uTint*.82,color,.25);
  gl_FragColor=vec4(color,uEcho>.5?.27/(1.+uEcho*.3):1.);
  #include <tonemapping_fragment>

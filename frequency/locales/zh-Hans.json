@@ -129,5 +129,17 @@
   "accent": "重音",
   "shift": "移动",
   "multiSelection": "多选",
-  "position": "位置"
+  "position": "位置",
+  "generate": "生成工程",
+  "genre": "风格",
+  "complexity": "复杂度",
+  "battery": "电池",
+  "freeSpace": "可用空间",
+  "samples": "采样",
+  "check": "演出前检查",
+  "audioEngine": "音频引擎",
+  "sceneFade": "场景交叉淡化",
+  "device": "设备",
+  "cpuBudget": "DSP 负载",
+  "latency": "延迟"
 }

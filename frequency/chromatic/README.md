@@ -1,6 +1,6 @@
 # FREQUENCY Chromatic Engine
 
-The workstation sends a normalized master spectrum, sixteen voice envelopes, tempo, beat and arrangement scene to a single visual stage. The stage can run silently from an external signal or a manual trigger. It does not request an audio input or create a playback context.
+The workstation sends a normalized master spectrum, sixteen voice envelopes, six bus meters, stereo RMS, tempo, beat and arrangement scene to a single visual stage. The stage can run silently from an external signal or a manual trigger. It does not request an audio input or create a playback context.
 
 ## Integration
 

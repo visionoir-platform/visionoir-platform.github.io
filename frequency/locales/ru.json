@@ -129,5 +129,17 @@
   "accent": "Акцент",
   "shift": "Переместить",
   "multiSelection": "Множественный выбор",
-  "position": "Позиция"
+  "position": "Позиция",
+  "generate": "Создать сессию",
+  "genre": "Жанр",
+  "complexity": "Сложность",
+  "battery": "Батарея",
+  "freeSpace": "Свободное место",
+  "samples": "Семплы",
+  "check": "Проверка перед выступлением",
+  "audioEngine": "Звуковой движок",
+  "sceneFade": "Кроссфейд сцен",
+  "device": "Устройство",
+  "cpuBudget": "Нагрузка DSP",
+  "latency": "Задержка"
 }

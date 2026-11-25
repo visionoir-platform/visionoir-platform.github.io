@@ -129,5 +129,17 @@
   "accent": "Mkazo",
   "shift": "Hamisha",
   "multiSelection": "Chaguo nyingi",
-  "position": "Nafasi"
+  "position": "Nafasi",
+  "generate": "Tengeneza kipindi",
+  "genre": "Aina ya muziki",
+  "complexity": "Uchangamano",
+  "battery": "Betri",
+  "freeSpace": "Nafasi iliyobaki",
+  "samples": "Sampuli",
+  "check": "Kagua onyesho",
+  "audioEngine": "Injini ya sauti",
+  "sceneFade": "Mpito wa sehemu",
+  "device": "Kifaa",
+  "cpuBudget": "Mzigo wa DSP",
+  "latency": "Ucheleweshaji"
 }

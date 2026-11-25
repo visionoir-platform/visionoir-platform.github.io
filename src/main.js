@@ -2,7 +2,8 @@ import './style.css';
 import './ecosystem/style.css';
 import { bindFrequencyDoor } from './frequency-door.js';
 import { localePath, names, resolveLocale } from './locales.js';
-import { money, updateMetadata, contact } from './site.js';
+import { money, updateMetadata } from './site.js';
+import { bindInquiry } from './inquiry.js';
 import { approximateCountry, storageValue } from './geo.js';
 import { trackAccents } from './palette.js';
 import { createAudioEngine } from './audio.js';
@@ -11,7 +12,7 @@ import { enterFromFooter } from './unseen-door.js';
 const configNode = document.getElementById('site-config');
 if (configNode) initialize(JSON.parse(configNode.textContent));
 
-function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
+function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoint, initial }) {
   const q = selector => document.querySelector(selector);
   const base = import.meta.env.BASE_URL;
   const audio = createAudioEngine({
@@ -40,7 +41,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   let motion = storageValue('visionoir-motion') !== 'off' && !reduced.matches;
   let audioError = null;
   let immersive = false;
-  let brief;
+  let inquiry;
   let idleTimer;
   const t = key => dictionary[key] || q(`[data-text="${key}"]`)?.textContent || '';
   const langOfPath = () => {
@@ -59,7 +60,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   }
   function setStatus(key) {
     clearTimeout(idleTimer);
-    const status = q('#brief-dialog').open ? q('#brief-status') : q('#status');
+    const status = q('#status');
     status.textContent = t(key);
     idleTimer = setTimeout(()=>{status.textContent='';},4500);
   }
@@ -105,7 +106,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
       else link.removeAttribute('aria-current');
     }
     for (const error of document.querySelectorAll('.error[data-error]')) error.textContent=t(error.dataset.error);
-    if (brief) updateBrief();
+    inquiry?.refresh();
     syncControls();
   }
   async function changeLanguage(next,{manual=false}={}) {
@@ -247,60 +248,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     } else if (immersive) setImmersive(false);
   });
 
-  const form = q('#brief-form');
-  const dialog = q('#brief-dialog');
-  function showError(field,key) {
-    const node = q('#error-'+field);
-    node.textContent = key ? t(key) : '';
-    if (key) node.dataset.error=key;
-    else delete node.dataset.error;
-    form.elements[field].setAttribute('aria-invalid',String(Boolean(key)));
-  }
-  for (const field of ['name','email','message']) {
-    form.elements[field].addEventListener('input',()=>showError(field));
-  }
-  document.querySelectorAll('[data-service]').forEach(link=>link.addEventListener('click',()=>{
-    form.elements.service.value=link.dataset.service;
-  }));
-  function updateBrief() {
-    const service = t(brief.service ? brief.service+'Name' : 'undecided');
-    const text = [t('briefTitle'),'',
-      `${t('name')}: ${brief.name}`,`${t('email')}: ${brief.email}`,`${t('service')}: ${service}`,'',
-      t('message'),brief.message].join('\n');
-    q('#brief-text').textContent = text;
-    q('#send-brief').href = `mailto:${contact}?subject=${encodeURIComponent(t('briefTitle')+' — '+service)}&body=${encodeURIComponent(text)}`;
-    return text;
-  }
-  form.onsubmit = event=>{
-    event.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-    for (const field of ['name','email','message']) data[field]=data[field].trim();
-    const errors = {
-      name:data.name?'':'invalidName',
-      email:data.email && form.elements.email.validity.valid?'':'invalidEmail',
-      message:data.message.length>=10?'':'invalidMessage',
-    };
-    for (const [field,key] of Object.entries(errors)) showError(field,key);
-    const first = Object.keys(errors).find(field=>errors[field]);
-    if (first) { form.elements[first].focus(); return; }
-    brief=data;
-    updateBrief();
-    q('#brief-status').textContent='';
-    dialog.showModal();
-  };
-  q('#close-brief').onclick=()=>dialog.close();
-  q('#copy-brief').onclick=async()=>{
-    try { await navigator.clipboard.writeText(updateBrief()); setStatus('copied'); }
-    catch { setStatus('copyError'); }
-  };
-  q('#download-brief').onclick=()=>{
-    const url = URL.createObjectURL(new Blob([updateBrief()],{type:'text/plain;charset=utf-8'}));
-    const link = document.createElement('a');
-    link.href=url;
-    link.download='VISIONOIR-brief.txt';
-    link.click();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
-  };
+  inquiry=bindInquiry({endpoint:contactEndpoint,getLocale:()=>lang,t,base});
 
   let loadingTrail = false;
   function startTrail(event) {

@@ -129,5 +129,17 @@
   "accent": "Akcent",
   "shift": "Przenieś",
   "multiSelection": "Wybór wielokrotny",
-  "position": "Pozycja"
+  "position": "Pozycja",
+  "generate": "Wygeneruj sesję",
+  "genre": "Gatunek",
+  "complexity": "Złożoność",
+  "battery": "Bateria",
+  "freeSpace": "Dostępne miejsce",
+  "samples": "Próbki",
+  "check": "Sprawdź przed występem",
+  "audioEngine": "Silnik audio",
+  "sceneFade": "Przenikanie scen",
+  "device": "Urządzenie",
+  "cpuBudget": "Obciążenie DSP",
+  "latency": "Opóźnienie"
 }

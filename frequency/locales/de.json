@@ -129,5 +129,17 @@
   "accent": "Akzent",
   "shift": "Verschieben",
   "multiSelection": "Mehrfachauswahl",
-  "position": "Position"
+  "position": "Position",
+  "generate": "Session erzeugen",
+  "genre": "Genre",
+  "complexity": "Komplexität",
+  "battery": "Akku",
+  "freeSpace": "Freier Speicher",
+  "samples": "Samples",
+  "check": "Livebetrieb prüfen",
+  "audioEngine": "Audio-Engine",
+  "sceneFade": "Szenenüberblendung",
+  "device": "Gerät",
+  "cpuBudget": "DSP-Auslastung",
+  "latency": "Latenz"
 }

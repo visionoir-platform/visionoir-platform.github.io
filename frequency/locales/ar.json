@@ -129,5 +129,17 @@
   "accent": "نبرة قوية",
   "shift": "نقل",
   "multiSelection": "تحديد متعدد",
-  "position": "الموضع"
+  "position": "الموضع",
+  "generate": "توليد جلسة",
+  "genre": "النوع الموسيقي",
+  "complexity": "التعقيد",
+  "battery": "البطارية",
+  "freeSpace": "المساحة المتاحة",
+  "samples": "العينات",
+  "check": "فحص العرض الحي",
+  "audioEngine": "محرك الصوت",
+  "sceneFade": "التلاشي بين المشاهد",
+  "device": "الجهاز",
+  "cpuBudget": "حمل معالج الإشارة",
+  "latency": "زمن التأخير"
 }
