@@ -27,3 +27,9 @@
 .tilt-opt-in{margin-block-start:.85rem}
 .tilt-opt-in button{padding:.35rem 0;min-height:44px;border:0;border-block-end:1px solid currentColor;background:none;color:inherit;font:inherit;cursor:pointer}
 .tilt-opt-in [aria-live]{display:block;font-size:.85rem}
+
+#home-preferences{padding-block:.65rem}
+.prefs-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.prefs-actions button{background:transparent;color:inherit;border:1px solid #777;padding:.55rem .85rem;min-height:44px;border-radius:.25rem;font:inherit;cursor:pointer}
+.prefs-actions button:hover,.prefs-actions button:focus-visible{border-color:currentColor}
+#home-preferences [role=status]:empty{display:none}

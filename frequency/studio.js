@@ -3,7 +3,7 @@ import { createSpectrumMeter } from './visual-spectrum.js';
 import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
 import {createAutomationEditor} from './automation-editor.js';
-import { bindEditorDrags, changeChord, relocateNotes, scales, scaleNames } from './piano.js';
+import { bindEditorDrags, changeChord, planQuantization, relocateNotes, scales, scaleNames } from './piano.js';
 import { createRegionEditor } from './region-editor.js';
 import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
 import { createMidiClock } from './midi-clock.js';
@@ -241,7 +241,7 @@ export async function startStudio() {
     p.tracks.forEach((tr, i) => {
       if (s.p.tracks[i].sample) tr.sample = { ...s.p.tracks[i].sample };
     });
-    return { p, scene: s.scene, channel: s.channel, page: s.page, step: s.step };
+    return { p, scene: s.scene, channel: s.channel, page: s.page, step: s.step, selected: [...s.selected] };
   }
   function recall(v) {
     s.p = v.p;
@@ -250,7 +250,7 @@ export async function startStudio() {
     s.page = v.page;
     s.step = v.step;
     s.bank = Math.floor(s.channel / s.bankSize);
-    s.selected.clear();
+    s.selected = new Set(v.selected);
     visual?.setState(s.p.visual || {});
     changed();
     updateTransport();
@@ -661,10 +661,45 @@ export async function startStudio() {
         )} ${act('apply-chain', t('choose'))}</div>`,
     );
   }
+  function audioExportOptions() {
+    const total = audio.totalBars(s.p);
+    const startBar = Math.min(total - 1, Math.max(0, readNum('start-bar', 1) - 1));
+    const region = fieldValue('render-region');
+    const dest = fieldValue('render-track');
+    return {
+      format: fieldValue('format') === 'stems' ? 'wav' : fieldValue('format'),
+      sampleRate: readNum('sample-rate', 48000),
+      bits: readNum('bits', 24),
+      bitrate: readNum('bitrate', 320),
+      channels: readNum('channel-count', 2),
+      startBar,
+      bars: Math.min(total - startBar, Math.max(1, readNum('render-bars', total))),
+      scene: region === 'scene' ? s.scene : null,
+      region,
+      tail: readNum('render-tail', region === 'loop' ? 0 : 0.35),
+      mastering: fieldValue('render-mastering') !== '0',
+      normalize: fieldValue('render-normalize') === '1',
+      ...(dest?.startsWith('t') ? {track:Number(dest.slice(1))} : {}),
+      ...(dest?.startsWith('b') ? {bus:dest.slice(1)} : {}),
+    };
+  }
   function exportFields() {
     const fmt = fieldValue('format');
     const wav = ['wav', 'flac', 'aiff', 'stems'].includes(fmt),
       audioFmt = wav || fmt === 'mp3';
+    const regionField = targetField('render-region');
+    regionField.querySelector('[value=loop]').disabled = !audio.exportLoop(s.p);
+    const loop = regionField.value === 'loop';
+    const tail = targetField('render-tail');
+    // A fresh loop closes at its marker; visitors can still add a deliberate effects tail.
+    if (loop && tail.dataset.otherTail === undefined) {
+      tail.dataset.otherTail = tail.value;
+      tail.value = tail.dataset.loopTail ?? '0';
+    } else if (!loop && tail.dataset.otherTail !== undefined) {
+      tail.dataset.loopTail = tail.value;
+      tail.value = tail.dataset.otherTail;
+      delete tail.dataset.otherTail;
+    }
     const bitField = targetField('bits');
     for (const op of bitField.options) op.disabled = ['flac', 'aiff'].includes(fmt) && +op.value === 32;
     if (bitField.selectedOptions[0]?.disabled) bitField.value = '24';
@@ -690,7 +725,7 @@ export async function startStudio() {
             ? fmt === 'mp3'
             : id === 'render-track'
               ? audioFmt && fmt !== 'stems'
-              : audioFmt;
+              : audioFmt && !(loop && (id === 'start-bar' || id === 'render-bars'));
       e.disabled = !on;
       e.closest('label').hidden = !on;
     }
@@ -699,34 +734,25 @@ export async function startStudio() {
       opt.disabled = fmt === 'mp3' && ![44100, 48000].includes(+opt.value);
     if (rate.selectedOptions[0]?.disabled) rate.value = '48000';
     const estimate = el('render-estimate');
-    if (estimate) {
-      try {
-        const spec = audio.estimateExport(s.p, {
-          sampleRate: readNum('sample-rate', 48000),
-          channels: readNum('channel-count', 2),
-          bits: readNum('bits', 24),
-          tail: readNum('render-tail', 0.35),
-          scene: fieldValue('render-region') === 'scene' ? s.scene : null,
-          startBar: readNum('start-bar', 1) - 1,
-          bars: readNum('render-bars', 1),
-        });
-        estimate.textContent = audioFmt
-          ? spec.seconds.toFixed(1) +
-            ' s' +
-            (wav
-              ? ' · ' +
-                ((spec.bytes * (fmt === 'stems' ? s.p.tracks.length : 1)) / 1048576).toFixed(1) +
-                ' MiB'
-              : '')
-          : '';
-      } catch {
-        estimate.textContent = '';
-      }
-    }
+    if (!estimate) return;
+    estimate.textContent = '';
+    if (!audioFmt) return;
+    try {
+      const spec = audio.estimateExport(s.p, audioExportOptions());
+      const bytes = spec.bytes * (fmt === 'stems' ? s.p.tracks.length : 1);
+      const small = bytes < 1048576;
+      const format = new Intl.NumberFormat(lang, { maximumFractionDigits: 1 });
+      const seconds = new Intl.NumberFormat(lang, { style:'unit', unit:'second', maximumFractionDigits:1 });
+      estimate.textContent = seconds.format(spec.seconds) + ' · ' + t('estimatedSize') + ' ≈ ' +
+        format.format(bytes / (small ? 1024 : 1048576)) + (small ? ' KiB' : ' MiB');
+    } catch { /* Incomplete number fields have no estimate. */ }
   }
   function exportPane() {
     const bars = s.p.arrangement.reduce((n, e) => n + e.bars, 0);
     const tags = musicTags(s.p);
+    const loop = audio.exportLoop(s.p);
+    const numberFormat = new Intl.NumberFormat(lang);
+    const loopLabel = t('loopRegion') + (loop ? ' · ' + numberFormat.format(loop.start + 1) + '–' + numberFormat.format(loop.end) : '');
     const textField = (id, label, value) =>
       `<label class="field"><span>${h(t(label))}</span><input type="text" data-field="export:${id}" maxlength="${id === 'filename' ? 100 : 240}" value="${attr(value)}"></label>`;
     const credits = textField('filename', 'exportFilename', s.p.exportInfo?.filename ?? exportBasename(s.p)) +
@@ -734,7 +760,7 @@ export async function startStudio() {
     open(
       'export',
       t('export'),
-      `<div class="field-grid">${credits}${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq'], ['json', 'JSON'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number('FX tail · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
+      `<div class="field-grid">${credits}${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq'], ['json', 'JSON'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')) + option('loop', loopLabel))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number(t('fxTail') + ' · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
     );
     exportFields();
   }
@@ -823,27 +849,8 @@ export async function startStudio() {
   }
   async function doExport() {
     if (exportController || !guardLive()) return;
-    const fmt = fieldValue('format'),
-      rate = readNum('sample-rate', 48000),
-      bits = readNum('bits', 24),
-      count = readNum('channel-count', 2);
-    const total = s.p.arrangement.reduce((n, a) => n + a.bars, 0),
-      startBar = Math.min(total - 1, Math.max(0, readNum('start-bar', 1) - 1)),
-      bars = Math.min(total - startBar, Math.max(1, readNum('render-bars', total)));
-    const dest = fieldValue('render-track'),
-      opts = {
-        sampleRate: rate,
-        bits,
-        channels: count,
-        startBar,
-        bars,
-        scene: fieldValue('render-region') === 'scene' ? s.scene : null,
-        tail: readNum('render-tail', 0.35),
-        mastering: fieldValue('render-mastering') !== '0',
-        normalize: fieldValue('render-normalize') === '1',
-      };
-    if (dest?.startsWith('t')) opts.track = Number(dest.slice(1));
-    if (dest?.startsWith('b')) opts.bus = dest.slice(1);
+    const fmt = fieldValue('format');
+    const opts = audioExportOptions();
     const filename = exportBasename(s.p);
     const d = el('panel');
     exportController = new AbortController();
@@ -881,7 +888,7 @@ export async function startStudio() {
           blob = await audio.renderAiff(s.p, opts);
           break;
         case 'mp3':
-          blob = await audio.renderMp3(s.p, { ...opts, bitrate: readNum('bitrate', 320) });
+          blob = await audio.renderMp3(s.p, opts);
           break;
         default:
           blob = await audio.renderWav(s.p, opts);
@@ -1324,35 +1331,17 @@ export async function startStudio() {
         });
         patternTools();
         return;
+      case 'piano-quantize':
+      case 'piano-quantize-scale':
       case 'quant':
-        mutate(() =>
-          pattern().steps.forEach((e) => {
-            if (e) e.offset = 0;
-          }),
-        );
+      case 'scale-notes': {
+        const pat = pattern();
+        const positions = id.startsWith('piano-') ? s.selected : pat.steps.keys();
+        const scale = id === 'scale-notes' || id === 'piano-quantize-scale' ? scales[s.scale ?? 1] : null;
+        const apply = planQuantization(pat, positions, scale, s.root ?? 36);
+        if (apply) mutate(apply);
         return;
-      case 'scale-notes':
-        mutate(() => {
-          const root = s.root ?? 36,
-            scale = scales[s.scale ?? 1];
-          pattern().steps.forEach((e) => {
-            if (!e) return;
-            const pitch = e.note,
-              oct = Math.floor((pitch - root) / 12),
-              base = root + 12 * oct;
-            e.note = Math.max(
-              0,
-              Math.min(
-                127,
-                base +
-                  scale.reduce((a, b) =>
-                    Math.abs(base + b - pitch) < Math.abs(base + a - pitch) ? b : a,
-                  ),
-              ),
-            );
-          });
-        });
-        return;
+      }
       case 'vary':
         mutate(() =>
           seededVariation(
@@ -1694,6 +1683,7 @@ export async function startStudio() {
       activeDialog === 'export' &&
       [
         'format',
+        'bitrate',
         'sample-rate',
         'bits',
         'channel-count',

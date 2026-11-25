@@ -11,6 +11,7 @@ const copyMap = new Map(copy.map(([lang,...cells])=>{
 }));
 const bios = new Map(rows('creator').map(([lang,bioA,bioB,bioC])=>[lang,{bioA,bioB,bioC}]));
 const orbit = policyTable('portrait-orbit');
+const preferences = policyTable('home-preferences');
 const [legalHeader,...legalRows]=rows('legal');
 const legal=new Map(legalRows.map(([code,...entries])=>{
   if(entries.length!==legalHeader.length-1 || entries.some(x=>!x.trim()))throw Error('Incomplete legal copy '+code);
@@ -29,7 +30,7 @@ const policies = new Map(policyLines.map(([code,...cells])=>{
 export function ecosystemLocale(lang) {
   const code=copyMap.has(lang)?lang:parents[lang];
   if (!orbit.has(code)||!bios.has(code)||!copyMap.has(code)||!legal.has(code)||!inquiry.has(code)||!policies.has(code)) throw Error('Unknown ecosystem locale '+lang);
-  const fields={...policies.get(code),...copyMap.get(code),...bios.get(code),...orbit.get(code),...legal.get(code),...inquiry.get(code)};
+  const fields={...policies.get(code),...copyMap.get(code),...bios.get(code),...preferences.get(code),...orbit.get(code),...legal.get(code),...inquiry.get(code)};
   if(lang==='de-CH')for(const key of Object.keys(fields))fields[key]=fields[key].replaceAll('ß','ss');
   return fields;
 }
