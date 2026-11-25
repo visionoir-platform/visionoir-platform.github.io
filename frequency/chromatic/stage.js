@@ -8,7 +8,7 @@ import { vertex, fragment } from './shaders.js';
 import { makeHistory } from './history.js';
 import { spatialScore } from './spatial.js';
 import { advanceBlend, phraseMode, unseenMode } from './visual-score.js';
-import { defaultVisual, mixVisualVoices, modes, normalizeSignal, unit } from './model.js';
+import { applyNoteEdges, defaultVisual, mixVisualVoices, modes, normalizeSignal, unit } from './model.js';
 
 const base = import.meta.env?.BASE_URL || '/';
 function logoAsset() {
@@ -506,6 +506,12 @@ export async function buildStage(
     resize,
     invalidate: request,
     trigger: hit,
+    noteEdges(attacks, gates, releases) {
+      if (!getState()?.freeze) {
+        applyNoteEdges(hits, envelope, attacks, gates, releases);
+        request();
+      }
+    },
     setLook(value) {
       mood = value === 'natural' && natural ? 'natural' : 'metal';
       if (solid) {

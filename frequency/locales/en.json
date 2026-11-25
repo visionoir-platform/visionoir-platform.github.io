@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Generate timbre",
+  "generatePattern": "Generate pattern",
+  "generateScene": "Generate scene",
+  "masterAnalysis": "Master meters",
+  "truePeakMax": "Maximum true peak",
   "quickHelp": "Guide & info",
   "quickBeat": "Your first beat",
   "quickHint": "Press Play to hear the scene. Tap steps to add or remove hits, then save your project.",

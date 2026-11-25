@@ -148,6 +148,17 @@ export function mixVisualVoices(voice, envelope, hits, levels, state, decay) {
     voice[destination] = Math.max(voice[destination], envelope[i] * sensitivity);
   }
 }
+export function applyNoteEdges(hits, envelopes, attacks, gates, releases) {
+  for (let i = 0; i < hits.length; i++) {
+    // A released chord member must not soften a note still held on this route.
+    if ((releases & (1 << i)) && !gates[i]) {
+      hits[i] *= .72;
+      envelopes[i] *= .88;
+    }
+    // A very short note can begin and end within one report. Its attack survives.
+    hits[i] = Math.max(hits[i], unit(attacks[i]));
+  }
+}
 export function normalizeSignal(
   raw = {},
   target = { voices: new Float32Array(16), buses: new Float32Array(6) },

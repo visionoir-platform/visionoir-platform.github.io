@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Klang erzeugen",
+  "generatePattern": "Pattern erzeugen",
+  "generateScene": "Szene erzeugen",
+  "masterAnalysis": "Master-Pegelanzeige",
+  "truePeakMax": "Maximaler True Peak",
   "quickHelp": "Hilfe und Info",
   "quickBeat": "Dein erster Beat",
   "quickHint": "Starte die Szene mit der Wiedergabetaste. Tippe auf die Schritte, um Schläge hinzuzufügen oder zu entfernen. Speichere dann dein Projekt.",

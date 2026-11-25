@@ -67,6 +67,18 @@ attribute float aSeed;
 void main(){
  float amp=uActive, t=uTime; vec3 p=position;
  vec3 q=mix(deform(p,uMode,t,amp),deform(p,uNext,t,amp),uMix);
+ if(uCreator<.5 && amp>.001){
+   // These contours follow the routed voice on any preset. Bound the added
+   // displacement so a sixteen-voice chord still reads as the original logo.
+   float radius=length(p.xy), ring=sin(12.*radius-2.8*t);
+   vec3 sector=floor(p*4.+.5);
+   vec2 twist=(turn(.28*p.y)-mat2(1.))*p.xz;
+   vec3 detail=vec3(-p.xy*exp(-radius)*uVoices[1]*.36, ring*uVoices[0]*.23);
+   detail.xz+=twist*uVoices[3];
+   detail+=sector/(1.+length(sector))*(uVoices[8]*ring*.19+uVoices[10]*.26);
+   detail.xy+=(turn(.23*sin(3.*radius-t*.7))-mat2(1.))*p.xy*uVoices[13];
+   q+=amp*detail/(1.+length(detail));
+ }
  if(uCreator>.5)q=mix(p,q,mix(.72,.34,smoothstep(.45,.88,p.y)));
  float feather=edgeNoise(p*1.14);
  float cut=uCut + amp*(amount(3.)*.52+amount(8.)*.22+amount(2.)*.12+amount(13.)*.14);
@@ -79,11 +91,18 @@ void main(){
  }
  if(uParticle>.5){
    float detach=smoothstep(feather-.11,feather+.13,threshold);
-   float kick=uVoices[0], hot=amount(2.), rain=amount(8.); float spin=t*.8+aSeed*16.;
+   float hot=amount(2.), rain=amount(8.); float spin=t*.8+aSeed*16.;
    vec3 flow=vec3(.65+.45*sin(spin+p.y),.37*sin(aSeed*14.+t*.55),.4*cos(spin*.72));
    flow.y+=hot*1.6-rain*1.38;
    float lift=detach*(.6+uDepth)+amp*(.045+.12*hot+.07*uVoices[5]);
    q+=flow*lift*(.5+aSeed*1.35);
+   if(uCreator<.5){
+     float openHat=uVoices[7], ride=uVoices[9], spark=uVoices[5];
+     vec2 sweep=vec2(-p.y,p.x)/(1.+length(p.xy));
+     q.xy+=amp*(sweep*(.24+.7*aSeed)*openHat
+       +vec2(sin(9.*aSeed+t)*.34,.72*aSeed)*spark);
+     q.y-=amp*ride*(.18+1.6*fract(aSeed*5.+t*.38));
+   }
  }
  if(uEcho>0.){q.xy=turn(uEcho*.07)*q.xy+vec2(-.17,.04)*uEcho; q.z-=uEcho*.17;}
  vUV=uv;vSeed=aSeed; vField=feather;vCut=threshold;vObj=p;
@@ -97,8 +116,12 @@ void main(){
  if(uParticle>.5){
   vec2 xy=gl_PointCoord*2.-1.; float radius=dot(xy,xy);if(radius>1.)discard;
   float strength=clamp(veil+uActive*(.13+.65*amount(2.)+.28*amount(8.)+.20*uVoices[5]+.18*uVoices[6]+.13*uVoices[9]),0.,1.);
+  float logo=1.-uCreator;
+  strength+=logo*uActive*(uVoices[7]*.22+uVoices[10]*.26)*(.3+.7*vSeed);
   if(strength<.035)discard;
   vec3 steel=mix(vec3(.83,.9,1.),uTint,.38+.48*amount(2.));steel=mix(steel,vec3(1.,.3,.035),amount(2.)*.85);
+  steel=mix(steel,vec3(.8,.53,1.),logo*uVoices[7]*(.25+.55*vSeed));
+  steel+=logo*uVoices[6]*smoothstep(.65,.95,vSeed)*vec3(.34,.40,.44);
   gl_FragColor=vec4(developNegative(steel*(1.1+.35*vSeed),vObj,0.),strength*(1.-radius)*.90);return;
  }
  if(rough<vCut)discard;
@@ -142,6 +165,20 @@ void main(){
  float glassBand=exp(-pow((ray.y+.11)*5.,2.));
  color+=uTint*glassBand*(.016+.045*uBuses[5])*uRefract;
  color+=uTint*rim*rim*(.06*uBuses[1]+.04*uBuses[4]);
+ if(uCreator<.5 && uActive>.001){
+   float acidThread=1.-smoothstep(.07,.42,abs(sin(13.*vObj.y+3.*sin(3.5*vObj.x+uTime*.8))));
+   float leadThread=1.-smoothstep(.04,.28,abs(sin(11.*vObj.x+2.4*sin(5.*vObj.y-uTime*.6))));
+   float cracks=1.-smoothstep(.015,.080,min(abs(fract(3.*vObj.x+.3*rough)-.5),abs(fract(3.*vObj.y)-.5)));
+   float mist=clamp(.23+rough*.6+rim*.32,0.,1.);
+   color=mix(color,vec3(.28,1.15,.075),uActive*uVoices[2]*acidThread*.96);
+   color*=1.-uActive*cracks*(.65*uVoices[3]+.23*uVoices[8]);
+   color+=uActive*(vec3(.67,.49,.87)*leadThread*uVoices[11]*.51
+     +vec3(.77,.88,.99)*panel*uVoices[9]*.34
+     +film*(.14+.36*cracks)*uVoices[10]);
+   color=mix(color,vec3(.50,.54,.64)+uTint*.15*glassBand,uActive*uVoices[12]*mist*.64);
+   float harmonic=.5+.5*cos(17.*vObj.x+2.*sin(14.*vObj.y-uTime*.6));
+   color+=uActive*uVoices[14]*vec3(.18,.38,.47)*harmonic*harmonic;
+ }
  if(uEcho>.5)color=mix(uTint*.82,color,.25);
  gl_FragColor=vec4(color,uEcho>.5?.27/(1.+uEcho*.3):1.);
  #include <tonemapping_fragment>

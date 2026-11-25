@@ -16,6 +16,10 @@ The ordinals in `model.js` are file-format and routing identifiers. Keep their m
 
 In The Unseen, the transport selects a chapter every eight beats. The arrangement scene offsets the sixteen-chapter cycle in `visual-score.js`. Each transition blends the material and its surrounding geometry together, including palette and echoes. Reduced motion holds The Unseen’s signature look.
 
+Instrument signatures apply across logo presets. For example, the Rumble route pulls the surface inward, Acid draws green filaments, the Open Hi-Hat sweeps particles sideways, and Ride drops them through the reflection. Dark Atmosphere veils the surface and FM Machine produces interference bands. A sampler or any other instrument can take over a signature through the visual rack’s route selector.
+
+The audio renderer latches the strongest audible attack per instrument between its 24 Hz reports. The same report carries accents, open gates, releases and post-bus levels. Short ratchets survive this interval; simultaneous notes on one route share an envelope. The projector receives at most one note packet per report, separate from the manual visual trigger. The worklet and buffered audio fallback share this behavior.
+
 For the Creator, first verify the cleared source file. Generate static levels with:
 
 ```sh
@@ -31,6 +35,10 @@ Start the repository’s Vite dev server on loopback (port 4271 by default). Use
 ```sh
 node frequency/chromatic/qa/scene.cjs
 node frequency/chromatic/qa/device.cjs
+node frequency/chromatic/qa/voice-matrix.cjs
+node frequency/chromatic/qa/playing-notes.cjs
 ```
 
 The first captures sixteen presets and three portrait states and exercises the rack, saved preset and real VJ popup. The second checks deferred mobile LOD requests, reduced motion, context loss/recovery and fallback without WebGL. Its frame timing measures the browser’s requestAnimationFrame cadence in this laboratory configuration. The tests do not establish physical mobile GPU performance or MIDI hardware latency.
+
+The voice matrix test renders the actual logo with identical camera, visual clock, bands and velocity for all sixteen routes. It compares the 120 pairs, checks for Acid’s green threads, reroutes the sampler, combines the voices and returns the logo to rest. `CHROMATIC_PROOF` saves a private contact sheet and pixel counts. For a controlled before/after comparison on a local Vite server, `CHROMATIC_BASELINE_SHADER` and `CHROMATIC_CANDIDATE_SHADER` accept paths to the corresponding shader modules.

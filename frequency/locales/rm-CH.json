@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Generar in timbre",
+  "generatePattern": "Generar in muster",
+  "generateScene": "Generar ina scena",
+  "masterAnalysis": "Mesiraziuns dal master",
+  "truePeakMax": "Pic real maximal",
   "quickHelp": "Agid ed infurmaziuns",
   "quickBeat": "Tes emprim ritmus",
   "quickHint": "Cumenza la reproducziun per tadlar la scena. Tutga ils pass per agiuntar u allontanar battidas e memorisescha tes project.",

@@ -16,7 +16,9 @@ In **Arrangiamento**, aggiungi una scena, scegli la durata in battute e spostala
 
 Nel Rumble Engine, **EQ bassi (100 Hz)** regola i bassi dopo la distorsione, da −9 a +9 dB. Il centro della manopola mantiene il timbro originale.
 
-Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master. Queste letture non costituiscono una misura true peak o LUFS.
+Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master.
+
+Apri **Misure del master · LUFS / dBTP** per misurare l’uscita stereo. La lettura M copre gli ultimi 400 ms, la lettura S gli ultimi 3 secondi. Il trattino indica che manca ancora una finestra completa. Il picco reale massimo resta visibile dopo Stop. Riparti con Play oppure chiudi e riapri il pannello per iniziare una nuova misura. Se il motore entra in protezione per il carico audio, le letture si sospendono e ricominciano al recupero.
 
 **Live** avvia le scene sul confine musicale, attiva i pad e controlla la dissolvenza in beat. Seleziona un canale della striscia Live per regolare direttamente volume, mute, solo e inserti durante il set. **Proteggi il live** impedisce operazioni pesanti. **Verifica il live** controlla il motore, i campioni, il salvataggio e i dispositivi già autorizzati. Il trattino indica una misura indisponibile. Per un impianto usa un’interfaccia compatibile e una connessione cablata al mixer, con volume iniziale basso. Verifica l’uscita del sistema e i livelli prima della performance. La latenza dipende dal dispositivo, dal driver e dal browser.
 
@@ -46,3 +48,9 @@ Per lavorare senza connessione, apri **Impostazioni → Studio offline** mentre 
 - `FREQUENCY_BUILD=dist FREQUENCY_SOAK_REPORT=/percorso/nuovo/soak.jsonl node frequency/qa/soak.cjs` verifica quattro ore di playback reale con Chromium locale, senza inviare segnali o dati in rete esterna. Registra andamento del clock, stato dell’AudioContext e campioni di ampiezza ogni due minuti. `start` e `sample` attestano una prova in corso. Solo `end` con `passed:true` chiude una prova superata. Il test osserva il segnale prima degli altoparlanti e conserva l’identificativo della build. Il dispositivo fisico, i driver, il controller e la catena di amplificazione richiedono una prova propria.
 
 Il codice originale di FREQUENCY è distribuito sotto MIT. I preset originali di fabbrica sono utilizzabili per creazioni musicali commerciali secondo le condizioni del progetto. Verifica i diritti dei tuoi campioni prima di distribuirli. Consulta `LICENSE` e il portale legale nella lingua scelta.
+
+## Comporre sul progetto aperto
+
+Da **Strumenti** nel sequencer, **Genera pattern** scrive sul canale selezionato e **Genera scena** riscrive i pattern della sola scena aperta. Seleziona genere, sezione del brano, tonalità, seme, intensità e complessità. Le lunghezze dei loop restano quelle impostate nel progetto. Puoi annullare ciascuna generazione. **Libreria → Genera sessione** crea invece un arrangiamento completo.
+
+Nel pannello **Preset** di ciascuno dei sedici strumenti, **Genera timbro** combina due caratteri timbrici secondo il seme inserito. Premi **Ascolta** per provarlo e usa i parametri del rack per rifinirlo. Sul Sampler la generazione agisce su attacco, filtro e coda del suono. Il file importato, l’accordatura, il taglio e il verso di riproduzione si conservano.

@@ -110,3 +110,13 @@ Le dodici sessioni di fabbrica aggiuntive hanno sequenze di sezioni, durate, org
 Il formato nativo FREQUENCY 2 raggruppa le pause della griglia. Il lettore apre progetti v1 e v2 e l'esportazione JSON v1 consente lo scambio con vecchie installazioni. Una copia di Furnace Ledger generata dalla prima versione dello studio è passata da 86.344 a 71.894 byte. La conversione di ritorno ha ripristinato tutti i byte originali. Su una scena a 48 kHz il confronto dei primi 48.000 frame stereo ha prodotto lo stesso PCM.
 
 Pitch e Reverse del sampler possono agire su una nota già in esecuzione. In THE UNSEEN, la frase musicale regola insieme geometria, materiale, echi e palette. Nella scultura del creatore la disgregazione segue una piega continua della manica. La soglia condivisa dalla superficie e dai frammenti consente al metallo di ricomporsi quando il segnale scende.
+
+## Comporre nel progetto e misurare il master
+
+In Strumenti si possono generare un pattern o una scena nel brano aperto. Il generatore usa un seme riproducibile e include il genere Dark electro. Per disegnare e ascoltare un nuovo timbro nella sola traccia selezionata si apre Preset. Una modifica discreta, Annulla e l’apertura di un progetto avviano subito il salvataggio locale.
+
+Nel mixer, «Misure del master» analizza il segnale stereo dopo il fader. La lettura momentanea usa 400 ms, quella a breve termine 3 secondi. Il massimo true peak usa ricostruzione a 4×. Sui segnali di riferimento provati a 44,1, 48 e 96 kHz lo scarto maggiore rispetto a FFmpeg è stato di 0,06 LU e 0,01 dBTP.
+
+Dalla pagina dei diritti si raggiunge l’indice delle 19 informative incluse nella copia offline dello studio. Comprende le licenze dei caratteri, della triangolazione Earcut e del codificatore MP3.
+
+Le sedici voci del Chromatic Engine pilotano risposte visive dedicate. Un attacco breve e il relativo rilascio vengono trasmessi anche se cadono fra due letture dei livelli. Rack e proiettore ricevono velocità e accenti delle note effettivamente suonate. Il test del sequencer comprende note escluse per probabilità, canali e bus silenziati e voci polifoniche.

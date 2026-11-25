@@ -8,6 +8,7 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     initializing = null,
     workletLoaded = false,
     playing = false,
+    masterAnalysis = false,
     version = 0,
     mode = 'idle',
     deliver = null;
@@ -128,7 +129,10 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     }
     await Promise.all([resumed, initializing]);
     if (!node) throw Error('audio.processorError');
-    if (project) post('project', { project });
+    if (project) {
+      post('project', { project });
+      if (masterAnalysis) post('control', { id:'master-analysis', value:1 });
+    }
     onState(context.state);
   }
   return {
@@ -147,6 +151,10 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     },
     control(id, value) {
       post('control', { id, value });
+    },
+    setMasterAnalysis(enabled) {
+      masterAnalysis = Boolean(enabled);
+      post('control', {id:'master-analysis', value:masterAnalysis ? 1 : 0});
     },
     queueScene(scene) {
       post('queue', { scene });

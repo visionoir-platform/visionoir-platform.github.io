@@ -216,6 +216,16 @@ export async function mountChromatic(
     stopOutputFrames();
     lastSentState = null;
   }
+  function noteEdges(notes) {
+    if (visual.freeze || !(notes.releases || notes.attacks.some(value => value > 0))) return;
+    stage?.noteEdges?.(notes.attacks, notes.gates, notes.releases);
+    if (outputVisible && outputWin && !outputWin.closed) {
+      const packet = { type:'visionoir.visual.notes', id:outputKey, attacks:notes.attacks,
+        gates:notes.gates, releases:notes.releases, accents:notes.accents };
+      if (lastSentState !== visual) attachOutputState(packet);
+      outputWin.postMessage(packet, location.origin);
+    }
+  }
   const outputReady = (e) => {
     if (e.origin !== location.origin || e.source !== outputWin || e.data?.id !== outputKey) return;
     if (e.data.type !== 'visionoir.visual.ready' && e.data.type !== 'visionoir.visual.visibility') return;
@@ -419,6 +429,7 @@ export async function mountChromatic(
     trigger,
     syncScene,
     sendOutputFrame: tellOutput,
+    noteEdges,
     setMotion: (v) => mutate({ reduced: !v }, false),
     handleCC,
     dispose() {
@@ -457,6 +468,15 @@ export async function mountVJ(host) {
     if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
     if (e.data.type === 'visionoir.visual.material') {
       if (typeof e.data.logoNegative === 'boolean') setLogoNegative(e.data.logoNegative);
+      return;
+    }
+    if (e.data.type === 'visionoir.visual.notes') {
+      const { attacks, gates, releases } = e.data;
+      if (attacks instanceof Float32Array && attacks.length === instruments.length &&
+          gates instanceof Float32Array && gates.length === instruments.length && Number.isInteger(releases)) {
+        applyState(e.data.state);
+        stage?.noteEdges?.(attacks, gates, releases);
+      }
       return;
     }
     if (e.data.type === 'visionoir.visual.hit') {

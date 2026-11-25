@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Tengeneza rangi ya sauti",
+  "generatePattern": "Tengeneza mpangilio wa noti",
+  "generateScene": "Tengeneza sehemu",
+  "masterAnalysis": "Vipimo vya sauti kuu",
+  "truePeakMax": "Kilele halisi cha juu zaidi",
   "quickHelp": "Mwongozo na maelezo",
   "quickBeat": "Mdundo wako wa kwanza",
   "quickHint": "Bonyeza kitufe cha kucheza ili kusikia sehemu hii. Gusa hatua ili kuongeza au kuondoa midundo, kisha uhifadhi mradi wako.",

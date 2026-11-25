@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Generuj barwę",
+  "generatePattern": "Generuj sekwencję",
+  "generateScene": "Generuj scenę",
+  "masterAnalysis": "Mierniki sumy",
+  "truePeakMax": "Maksymalny szczyt rzeczywisty",
   "quickHelp": "Pomoc i informacje",
   "quickBeat": "Twój pierwszy rytm",
   "quickHint": "Włącz odtwarzanie sceny. Dotykaj kroków, aby dodawać lub usuwać uderzenia, a następnie zapisz projekt.",

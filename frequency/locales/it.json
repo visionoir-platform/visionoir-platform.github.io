@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Genera timbro",
+  "generatePattern": "Genera pattern",
+  "generateScene": "Genera scena",
+  "masterAnalysis": "Misure del master",
+  "truePeakMax": "Picco reale massimo",
   "quickHelp": "Guida e info",
   "quickBeat": "Il tuo primo ritmo",
   "quickHint": "Premi Avvia per ascoltare la scena. Tocca i passi per aggiungere o togliere colpi, poi salva il progetto.",

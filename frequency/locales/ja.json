@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "音色を生成",
+  "generatePattern": "パターンを生成",
+  "generateScene": "シーンを生成",
+  "masterAnalysis": "マスターメーター",
+  "truePeakMax": "最大トゥルーピーク",
   "quickHelp": "使い方・製品情報",
   "quickBeat": "はじめてのビート",
   "quickHint": "再生ボタンでシーンを聴いてみましょう。ステップをタップして音を追加・削除し、プロジェクトを保存します。",

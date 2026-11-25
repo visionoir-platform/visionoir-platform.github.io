@@ -79,9 +79,11 @@ export async function save(project, { named = false } = {}) {
     const tx = db.transaction('projects', 'readwrite');
     const store = tx.objectStore('projects');
     const previous = store.get(CURRENT);
+    // Queue the edited snapshot immediately after the read. Deferring this write
+    // until the read callback could lose an edit when the page was reloaded.
+    store.put(project, CURRENT);
     previous.onsuccess = () => {
       if (previous.result) store.put(previous.result, 'previous');
-      store.put(project, CURRENT);
     };
     if (named) {
       const id = crypto.randomUUID?.() || Math.random().toString(36).slice(2);

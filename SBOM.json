@@ -1,5 +1,5 @@
 {
-  "scope": "Node build graph, optional platform packages and vendored browser encoder",
+  "scope": "Node build graph, optional platform packages and vendored browser components",
   "components": [
     {
       "name": "@esbuild/aix-ppc64",
@@ -429,6 +429,13 @@
       "role": "development"
     },
     {
+      "name": "playwright-core",
+      "version": "1.65.1",
+      "license": "Apache-2.0",
+      "integrity": "sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==",
+      "role": "development"
+    },
+    {
       "name": "postcss",
       "version": "8.5.32",
       "license": "MIT",
@@ -469,6 +476,13 @@
       "license": "MIT",
       "integrity": "sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==",
       "role": "development"
+    },
+    {
+      "name": "earcut",
+      "version": "3.0.2",
+      "license": "ISC",
+      "role": "copy inside Three.js used to triangulate the logo",
+      "source": "https://github.com/mapbox/earcut/tree/v3.0.2"
     },
     {
       "name": "@breezystack/lamejs",
