@@ -1,4 +1,6 @@
 {
+  "param_lead_mono": "Modalità monofonica",
+  "param_ride_noiseFilter": "Passa-alto del rumore",
   "play": "Avvia",
   "stop": "Ferma",
   "record": "Registra",
@@ -65,6 +67,8 @@
   "recovery": "Recupera progetto",
   "cancel": "Annulla",
   "level": "Livello",
+  "param_acid_filterDecay": "Decadimento del filtro",
+  "param_acid_decay": "Rilascio del volume",
   "pitch": "Altezza",
   "note": "Nota",
   "step": "Step",

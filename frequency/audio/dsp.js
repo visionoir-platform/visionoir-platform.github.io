@@ -1,12 +1,15 @@
-import { INSTRUMENTS, BUSSES, clamp, noteHz, totalBars } from './model.js';
-import { arrangementAt, planStep } from './sequencer.js';
+import { INSTRUMENTS, BUSSES, clamp, noteHz, totalBars, MAX_RATCHETS, MAX_CHORD_INTERVALS } from './model.js';
+import { arrangementAt, visitStepNotes } from './sequencer.js';
+import { ScheduledEvents } from './event-queue.js';
 import { Effect } from './fx.js';
 import { MasterLimiter } from './limiter.js';
 import { setSegment } from './automation.js';
 import { regionPlayer, mixRegion } from './regions.js';
 import { Voice, decodePCM, factoryGlass } from './voice.js';
 const kinds = new Map(INSTRUMENTS.map((x, i) => [x.id, i]));
+const availableVoice = voice => !voice.active;
 const busIndex = Object.fromEntries(BUSSES.map((x, i) => [x, i]));
+const returns = busIndex.returns;
 function rack(spec, previous, rate, bpm) {
   return (spec || []).slice(0, 12).map((s, i) => {
     if (previous?.[i]?.id === s.id) {
@@ -15,6 +18,13 @@ function rack(spec, previous, rate, bpm) {
     }
     return new Effect(s, rate, bpm);
   });
+}
+function narrowLeadToOneVoice(channel) {
+  let newest;
+  for (const voice of channel.voices) {
+    if (voice.active && voice.held && voice.age <= voice.gate && (!newest || voice.leadOrder > newest.leadOrder)) newest = voice;
+  }
+  if (newest) for (const voice of channel.voices) if (voice.active && voice !== newest) voice.choke();
 }
 export class DSP {
   constructor(project, rate, options = {}) {
@@ -32,7 +42,9 @@ export class DSP {
     this.running = false;
     this.arranging = false;
     this.queue = null;
-    this.events = [];
+    this.events = new ScheduledEvents();
+    this.emitStepNote = this.enqueueNote.bind(this);
+    this.stepPosition = { scene: 0, local: 0, clip: null };
     this.masterFx = [];
     this.histL = 0;
     this.histR = 0;
@@ -51,6 +63,7 @@ export class DSP {
   update(p) {
     const previousStep = this.stepSamples;
     this.p = p;
+    this.reserveEvents();
     this.stepSamples = (this.rate * 15) / p.bpm;
     this.total = totalBars(p) * 16;
     if (this.running && previousStep && previousStep !== this.stepSamples) {
@@ -76,8 +89,10 @@ export class DSP {
           fx: [],
         };
       }
+      const previousMono = c.params?.mono;
       c.t = t;
       c.params = { ...INSTRUMENTS[c.kind].params, ...t.params };
+      if (c.kind === 11 && c.params.mono >= 0.5 && !(previousMono >= 0.5)) narrowLeadToOneVoice(c);
       c.b = busIndex[t.bus] ?? 3;
       c.sidechain = busIndex[t.sidechainBus] ?? 0;
       if (c.kind === 1) {
@@ -119,6 +134,7 @@ export class DSP {
     if (!Number.isFinite(value) || typeof id !== 'string') return;
     if (id === 'tempo') {
       if (value < 40 || value > 300) return;
+      this.reserveEvents();
       this.p.bpm = value;
       const old = this.stepSamples;
       this.stepSamples = (this.rate * 15) / value;
@@ -153,6 +169,7 @@ export class DSP {
       return;
     }
     if (family === 'p' && Object.hasOwn(INSTRUMENTS[c.kind].params, key)) {
+      if (c.kind === 11 && key === 'mono' && value >= 0.5 && c.params.mono < 0.5) narrowLeadToOneVoice(c);
       c.params[key] = c.t.params[key] = clamp(value, 0, 1);
       if (c.kind === 1 && key === 'delay')
         c.echoOffset = Math.max(4, Math.round((0.03 + 0.19 * c.params.delay) * this.rate));
@@ -181,7 +198,7 @@ export class DSP {
     this.queue = scene;
     this.queueAt = (Math.floor(Math.max(0, this.step) / 16) + 1) * 16;
     if (this.planned >= this.queueAt) {
-      this.events = this.events.filter((e) => e.step < this.queueAt);
+      this.events.discardFrom(this.queueAt);
       this.planned = this.queueAt - 1;
       this.schedule(this.queueAt, this.nextBoundary);
     }
@@ -191,7 +208,7 @@ export class DSP {
     this.clickFrames = 0;
     this.setAutomation(null, 0);
     this.limiter.reset();
-    this.events.length = 0;
+    this.events.clear();
     for (const c of this.channels) {
       c.regions.length = 0;
       for (const v of c.voices) v.active = false;
@@ -226,11 +243,16 @@ export class DSP {
       for (const channel of this.channels)
         if (channel.kind === 7) for (const v of channel.voices) if (v.active) v.choke();
     }
-    const mono = c.kind === 2 || c.kind === 4 || c.kind === 1;
-    let voice = c.voices.find((v) => !v.active);
+    const monoLead = c.kind === 11 && (event.locks?.mono ?? c.params.mono) >= 0.5;
+    const mono = c.kind === 2 || c.kind === 4 || c.kind === 1 || monoLead;
+    let voice = c.voices.find(availableVoice);
     if (!voice) voice = c.voices[c.voice++ % c.voices.length];
     if (mono) {
       for (const v of c.voices) if (v.active && v !== voice) v.choke();
+    }
+    if (c.kind === 11) {
+      c.leadOrder = (c.leadOrder ?? 0) + 1;
+      voice.leadOrder = c.leadOrder;
     }
     voice.start(
       c.kind,
@@ -249,13 +271,25 @@ export class DSP {
     c.prevHz = noteHz(note);
   }
   release(i, note, token) {
-    for (const voice of this.channels[i]?.voices || [])
-      if (voice.active && voice.note === note && voice.token === token) voice.stopGate();
+    const c = this.channels[i];
+    if (!c) return false;
+    let restoreLead = false;
+    for (const voice of c.voices) {
+      if (!voice.active || voice.note !== note || voice.token !== token) continue;
+      if (c.kind === 11 && voice.p.mono >= 0.5 && voice.held && voice.gate === Infinity) restoreLead = true;
+      voice.stopGate();
+    }
+    return restoreLead;
   }
-  position(step) {
-    if (this.queue !== null && step >= this.queueAt)
-      return { scene: this.queue, local: step - this.queueAt };
-    if (!this.arranging) return { scene: this.liveScene, local: step - this.liveBase };
+  position(step, out = {}) {
+    const queued = this.queue !== null && step >= this.queueAt;
+    if (queued || !this.arranging) {
+      out.scene = queued ? this.queue : this.liveScene;
+      out.local = step - (queued ? this.queueAt : this.liveBase);
+      // Public calls previously omitted clip for live scenes.
+      if (out.clip) out.clip = undefined;
+      return out;
+    }
     const region = this.p.loop;
     if (!this.options.offline && region?.on) {
       const start = region.start * 16,
@@ -263,36 +297,31 @@ export class DSP {
       if (start >= 0 && end <= this.total && end > start && step >= end)
         step = start + ((step - start) % (end - start));
     }
-    return arrangementAt(this.p, step);
+    return arrangementAt(this.p, step, out);
+  }
+  reserveEvents() {
+    // One step is planned ahead. With swing, positive offset and the last ratchet,
+    // hits from at most three step numbers can overlap at constant tempo.
+    // Retain space for everything already pending across project or tempo changes.
+    const hitsPerTrack = MAX_RATCHETS * (MAX_CHORD_INTERVALS + 1) + 1; // one extra flam
+    this.events.reserve(this.events.length + 3 * this.p.tracks.length * hitsPerTrack);
+  }
+  enqueueNote(track, source, offset, gate, velocity, step, variation, pitch) {
+    const at = Math.max(this.frame, Math.round(this.scheduleBoundary + offset * this.stepSamples));
+    const seed = Math.imul(step + 1, 8191) + Math.imul(track + 1, 65537) + variation + (this.p.seed | 0);
+    this.events.add(at, step, track, source, pitch, velocity, gate * this.stepSamples / this.rate, seed);
   }
   schedule(step, boundary) {
     if (step < 0 || step <= this.planned) return;
-    const pos = this.position(step);
+    const pos = this.position(step, this.stepPosition);
     if (!pos) return;
     this.planned = step;
-    planStep(
-      this.p,
-      step,
-      pos.scene,
-      pos.local,
-      (track, s, offset, gate, vel, absolute, n) => {
-        this.events.push({
-          step,
-          at: Math.max(this.frame, Math.round(boundary + offset * this.stepSamples)),
-          track,
-          s,
-          vel,
-          gate: (gate * this.stepSamples) / this.rate,
-          seed: Math.imul(absolute + 1, 8191) + Math.imul(track + 1, 65537) + n + (this.p.seed | 0),
-        });
-      },
-      pos.clip,
-    );
-    this.events.sort((a, b) => b.at - a.at);
+    this.scheduleBoundary = boundary;
+    visitStepNotes(this.p, step, pos.scene, pos.local, this.emitStepNote, pos.clip);
   }
   refreshAutomation() {
     if (this.running && this.arranging && this.step >= 0 && this.hasAutomation) {
-      const pos = this.position(this.step);
+      const pos = this.position(this.step, this.stepPosition);
       if (pos) {
         const elapsed = clamp(1 - (this.nextBoundary - this.frame) / this.stepSamples, 0, 1);
         this.setAutomation(pos.clip, pos.local + elapsed);
@@ -339,7 +368,7 @@ export class DSP {
       this.arranging = false;
       this.queue = null;
     }
-    const at = this.position(this.step);
+    const at = this.position(this.step, this.stepPosition);
     if (this.hasAutomation || this.activeAutomation) this.setAutomation(this.arranging ? at?.clip : null, at?.local);
     if (this.hasRegions || this.lastRegionPart) this.updateRegions(this.arranging ? at?.clip : null, at?.local);
     if (!at) {
@@ -363,9 +392,10 @@ export class DSP {
       busFilter = this.options.bus;
     for (let j = 0; j < n; j++, this.frame++) {
       if (this.running && this.frame >= this.nextBoundary) this.boundary();
-      while (this.events.length && this.events[this.events.length - 1].at <= this.frame) {
+      while (this.events.length && this.events.slots[0].at <= this.frame) {
         const e = this.events.pop();
-        this.trigger(e.track, e.s.note, e.vel, e.gate, e.s, e.seed);
+        this.trigger(e.track, e.pitch, e.velocity, e.gate, e.source, e.seed);
+        e.source = null;
       }
       this.busInput.fill(0);
       let l = 0,
@@ -373,7 +403,9 @@ export class DSP {
         dl = 0,
         dr = 0,
         vl = 0,
-        vr = 0;
+        vr = 0,
+        directReturnL = 0,
+        directReturnR = 0;
       const masterDetector = this.previousBusInput[0];
       const channels = this.channels;
       const meterFrame = this.meterStride === 1 || (this.frame & 3) === 0;
@@ -444,7 +476,9 @@ export class DSP {
           const power = (x * x + y * y) * 0.5;
           c.energy += (power - c.energy) * (this.meterStride === 1 ? 0.0015 : 0.0059865);
           c.peak = Math.max(Math.abs(x), Math.abs(y), c.peak * (this.meterStride === 1 ? 0.9997 : 0.99880054));
-          this.busLv[c.b] = Math.max(this.busLv[c.b] * (this.meterStride === 1 ? 0.9992 : 0.99680384), Math.abs(x), Math.abs(y));
+          if (c.b !== returns) {
+            this.busLv[c.b] = Math.max(this.busLv[c.b] * (this.meterStride === 1 ? 0.9992 : 0.99680384), Math.abs(x), Math.abs(y));
+          }
         }
         this.busInput[c.b] = Math.max(
           this.busInput[c.b],
@@ -458,7 +492,11 @@ export class DSP {
           continue;
         x *= this.busGain[c.b];
         y *= this.busGain[c.b];
-        if (busFilter !== 'returns') {
+        if (c.b === returns) {
+          directReturnL += x;
+          directReturnR += y;
+        }
+        if (busFilter !== 'returns' || c.b === returns) {
           l += x;
           r += y;
         }
@@ -469,9 +507,14 @@ export class DSP {
       }
       this.delay.step(dl, dr);
       this.reverb.step(vl, vr);
-      const retL = (this.delay.L - dl + (this.reverb.L - vl)) * this.busGain[5],
-        retR = (this.delay.R - dr + (this.reverb.R - vr)) * this.busGain[5];
-      this.busInput[5] = Math.max(this.busInput[5], Math.abs(retL), Math.abs(retR));
+      const retL = (this.delay.L - dl + (this.reverb.L - vl)) * this.busGain[returns],
+        retR = (this.delay.R - dr + (this.reverb.R - vr)) * this.busGain[returns];
+      this.busInput[returns] = Math.max(this.busInput[returns], Math.abs(retL), Math.abs(retR));
+      // Returns combines directly routed channels and both wet tails after its fader.
+      if (meterFrame) {
+        const peak = Math.max(Math.abs(directReturnL + retL), Math.abs(directReturnR + retR));
+        this.busLv[returns] = Math.max(this.busLv[returns] * (this.meterStride === 1 ? 0.9992 : 0.99680384), peak);
+      }
       l += retL;
       r += retR;
       const old = this.previousBusInput;

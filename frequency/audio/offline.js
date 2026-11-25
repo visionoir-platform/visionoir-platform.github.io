@@ -92,7 +92,7 @@ function pass(project, spec, opt, consume, onProgress) {
       if (isTail && d.running) {
         d.running = false;
         d.setAutomation(null, 0);
-        d.events.length = 0;
+        d.events.clear();
       }
       const next = advanced < spec.start ? spec.start : !isTail ? spec.start + spec.musical : total;
       const n = Math.min(block, next - advanced, total - advanced);

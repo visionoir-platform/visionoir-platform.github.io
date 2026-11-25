@@ -39,7 +39,7 @@ export function preparePCM(sample) {
   return sample;
 }
 
-export function pcmReader(sample, step, from, to) {
+export function pcmReader(sample, step, from, to, reader = {}) {
   const ratio = Math.abs(step);
   let octave = 0,
     stride = 1;
@@ -51,17 +51,16 @@ export function pcmReader(sample, step, from, to) {
   const fullCut = ratio > 1 ? 0.95 / ratio : 1;
   const reduced = ratio / stride;
   const cut = reduced > 1 ? 0.95 / reduced : 1;
-  return {
-    source: sample.pcm,
-    pcm: pyramid?.[octave] || sample.pcm,
-    stride,
-    cut,
-    fullCut,
-    from,
-    to,
-    guard: halfRadius * (stride - 1) + (radius / cut + 1) * stride,
-    direct: ratio === 1,
-  };
+  reader.source = sample.pcm;
+  reader.pcm = pyramid?.[octave] || sample.pcm;
+  reader.stride = stride;
+  reader.cut = cut;
+  reader.fullCut = fullCut;
+  reader.from = from;
+  reader.to = to;
+  reader.guard = halfRadius * (stride - 1) + (radius / cut + 1) * stride;
+  reader.direct = ratio === 1;
+  return reader;
 }
 
 function filtered(pcm, position, cut, from, to) {

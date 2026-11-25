@@ -74,9 +74,18 @@ export class LiveRack {
     this.active.trigger(track, pitch, velocity, null, {voiceToken: token});
   }
   release(track, pitch, token) {
-    if (token !== undefined) this.held.delete(token);
-    this.active.release(track, pitch, token);
-    this.outgoing?.release(track, pitch, token);
+    const held = this.held.get(token);
+    if (held && held.track === track && held.pitch === pitch) this.held.delete(token);
+    const activeLead = this.active.release(track, pitch, token);
+    const outgoingLead = this.outgoing?.release(track, pitch, token);
+    if (!activeLead && !outgoingLead) return;
+    // MIDI tokens are insertion-ordered, including identical pitches from different inputs.
+    let last;
+    for (const entry of this.held) if (entry[1].track === track) last = entry;
+    if (!last) return;
+    const [key, note] = last;
+    if (activeLead) this.active.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
+    if (outgoingLead) this.outgoing.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
   }
   queueScene(scene) {
     if (!Number.isInteger(scene) || !this.project.scenes[scene]) return;

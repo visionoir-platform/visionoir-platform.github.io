@@ -1,4 +1,6 @@
 {
+  "param_lead_mono": "Tryb monofoniczny",
+  "param_ride_noiseFilter": "Filtr górnoprzepustowy szumu",
   "play": "Odtwórz",
   "stop": "Zatrzymaj",
   "record": "Nagraj",
@@ -65,6 +67,8 @@
   "recovery": "Odzyskaj projekt",
   "cancel": "Anuluj",
   "level": "Poziom",
+  "param_acid_filterDecay": "Czas opadania filtra",
+  "param_acid_decay": "Czas wybrzmiewania dźwięku",
   "pitch": "Wysokość",
   "note": "Nuta",
   "step": "Krok",

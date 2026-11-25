@@ -4,6 +4,13 @@ export const escape = (value) =>
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
   );
 export const attr = escape;
+export function instrumentParamLabel(instrument, key, t) {
+  const id = 'param_' + instrument + '_' + key;
+  const label = t(id);
+  return label === id ? key : label;
+}
+export const instrumentParamStep = (instrument, key) =>
+  instrument === 'lead' && key === 'mono' ? 1 : 0.01;
 export const pad = (n) => String(n).padStart(2, '0');
 export const noteName = (n) =>
   ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'][n % 12] + (Math.floor(n / 12) - 1);
@@ -23,8 +30,8 @@ export function slider(label, id, value, min = 0, max = 1, step = 0.01) {
   const pos = ((value - min) / (max - min)) * 100;
   return `<label class="fader" style="--fill:${pos}%"><span>${escape(label)}</span><output>${Math.round(value * 100) / 100}</output><input type="range" data-field="${attr(id)}" min="${min}" max="${max}" step="${step}" value="${attr(value)}"></label>`;
 }
-export function dial(label, id, value) {
-  return `<label class="fader dial" style="--fill:${Math.round(value * 100)}%;--angle:${-132 + value * 264}deg"><span>${escape(label)}</span><output>${Math.round(value * 100) / 100}</output><i aria-hidden="true"></i><input type="range" data-field="${attr(id)}" min="0" max="1" step=".01" value="${attr(value)}"></label>`;
+export function dial(label, id, value, step = 0.01) {
+  return `<label class="fader dial" style="--fill:${Math.round(value * 100)}%;--angle:${-132 + value * 264}deg"><span>${escape(label)}</span><output>${Math.round(value * 100) / 100}</output><i aria-hidden="true"></i><input type="range" data-field="${attr(id)}" min="0" max="1" step="${step}" value="${attr(value)}"></label>`;
 }
 export function select(label, id, options) {
   return `<label class="field"><span>${escape(label)}</span><select data-field="${attr(id)}">${options}</select></label>`;
