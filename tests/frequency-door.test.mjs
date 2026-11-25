@@ -21,7 +21,7 @@ function gestureFixture() {
   }
   const tap = () => {pointer('pointerdown'); pointer('pointerup');};
   const next = ms => {clock+=ms;};
-  return {tap,next,pointer,opens:()=>opened, scroll:()=>dispatch(win,'scroll'),key:()=>dispatch(target,'click',{detail:0}),finish:()=>dispatch(win,'blur')};
+  return {tap,next,pointer,opens:()=>opened, scroll:()=>dispatch(win,'scroll'),key:()=>dispatch(target,'click',{detail:0}),focusAway:()=>dispatch(target,'blur'), show:persisted=>dispatch(win,'pageshow',{persisted}),finish:()=>dispatch(win,'blur')};
 }
 test('Logo opens once on a deliberate triple tap or three keyboard activations',()=>{
   for(const method of ['tap','key']) {
@@ -38,5 +38,17 @@ test('Scroll, elapsed window, drags, long press and second finger reset the gest
     f=>{f.pointer('pointerdown');f.pointer('pointerdown',{pointerId:2,isPrimary:false});f.pointer('pointerup',{pointerId:2});f.pointer('pointerup');}
   ]) {
     const f=gestureFixture();f.tap();f.tap();interrupt(f);f.tap();assert.equal(f.opens(),0);f.finish();
+  }
+});
+
+test('keyboard sequence survives delayed focus scrolling and the initial pageshow',()=>{
+  const f=gestureFixture();
+  f.key();f.scroll();f.show(false);f.key();f.scroll();f.key();
+  assert.equal(f.opens(),1);f.finish();
+});
+test('moving focus, back-forward restoration, or changing input starts a fresh sequence',()=>{
+  for(const interrupt of [f=>f.focusAway(),f=>f.show(true),f=>f.tap()]){
+    const f=gestureFixture();f.key();f.key();interrupt(f);f.key();
+    assert.equal(f.opens(),0);f.finish();
   }
 });

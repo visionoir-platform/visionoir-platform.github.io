@@ -1,17 +1,18 @@
 // The public studio has two deliberate entrances. This gesture belongs only to the logo.
 export function bindFrequencyDoor(element, { onOpen, windowMs = 1500, now = () => performance.now() }) {
-  let count = 0, first = 0, resetTimer, active = null, opening = false;
+  let count = 0, first = 0, resetTimer, active = null, opening = false, source = null;
   const down = new Set();
   function reset() {
     clearTimeout(resetTimer);
     active = null;
     count = 0;
+    source = null;
     delete element.dataset.pulse;
   }
-  function activate() {
+  function activate(input) {
     if (opening) return;
     const time = now();
-    if (!count || time-first>windowMs) { reset(); first=time; }
+    if (!count || input !== source || time-first>windowMs) { reset(); first=time; source=input; }
     count++;
     element.dataset.pulse=String(count);
     if (count===3) {
@@ -34,14 +35,17 @@ export function bindFrequencyDoor(element, { onOpen, windowMs = 1500, now = () =
       element.contains(e.target) && now()-candidate.t<410 &&
       Math.hypot(e.clientX-candidate.x,e.clientY-candidate.y)<=9;
     active=null;
-    if(valid)activate();
+    if(valid)activate('pointer');
     else if(candidate)reset();
   });
   window.addEventListener('pointerdown',e=>{if(!element.contains(e.target))reset();},true);
   window.addEventListener('pointercancel',e=>{down.delete(e.pointerId);reset();});
-  window.addEventListener('scroll',reset,{passive:true,capture:true});
-  element.addEventListener('click',e=>{if(e.detail===0)activate();});
+  // Focusing a button can scroll the document after the first keyboard activation.
+  // A scroll interrupts a pointing gesture, while a keyboard sequence follows focus.
+  window.addEventListener('scroll',()=>{if(active || source==='pointer')reset();},{passive:true,capture:true});
+  element.addEventListener('blur',()=>{if(source==='keyboard')reset();});
+  element.addEventListener('click',e=>{if(e.detail===0)activate('keyboard');});
   element.addEventListener('keydown',e=>{if(e.repeat && (e.key==='Enter'||e.key===' '))e.preventDefault();});
   window.addEventListener('blur',()=>{down.clear();reset();});
-  window.addEventListener('pageshow',()=>{opening=false;down.clear();reset();});
+  window.addEventListener('pageshow',e=>{if(e.persisted){opening=false;down.clear();reset();}});
 }
