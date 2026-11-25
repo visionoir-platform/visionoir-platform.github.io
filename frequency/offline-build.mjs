@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile, copyFile, stat } from 'node:fs/promises';
+import { readdir, readFile, writeFile, copyFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,18 +40,30 @@ async function discover(url) {
 await discover('/frequency/index.html');
 for(const url of ['/favicon.svg','/assets/logo.svg','/assets/manrope.woff2','/assets/display.woff2','/frequency/manifest.webmanifest','/frequency/icon-192.png','/frequency/icon-512.png']) await discover(url);
 for(const url of candidates.keys()) if (url.startsWith('/frequency/') && !url.endsWith('/sw.js')) await discover(url);
+// The estimate is available before registration, including when installation fails.
+const infoPath = '/frequency/offline-package.json';
+found.delete(infoPath);
+const files = {};
+const contents = new Map();
+for (const path of found) contents.set(path,await readFile(candidates.get(path)));
+const bytes = [...contents.values()].reduce((sum, data) => sum + data.length, 0);
+let total = bytes, info;
+do {
+  info = Buffer.from(JSON.stringify({bytes:total, fileCount:found.size+1}));
+  if (total === bytes+info.length) break;
+  total = bytes+info.length;
+} while (true);
+await writeFile(join(root,infoPath), info);
+found.add(infoPath);
+contents.set(infoPath,info);
 const digest = createHash('sha256');
-for(const url of [...found].sort()) { digest.update(url); digest.update(await readFile(candidates.get(url))); }
+for (const path of [...found].sort()) {
+  const data = contents.get(path);
+  digest.update(path).update(data);
+  files[path] = [data.length, 'sha256-'+createHash('sha256').update(data).digest('base64')];
+}
 const version=digest.digest('hex').slice(0,14);
-const paths=JSON.stringify([...found]);
-const sw = `const CACHE='frequency-${version}', ASSETS=${paths};
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('frequency-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>clients.claim())));
-self.addEventListener('message',e=>{if(e.data==='ready')e.ports[0]?.postMessage(CACHE);});
-self.addEventListener('fetch',event=>{const r=event.request,u=new URL(r.url);if(r.method!=='GET'||u.origin!==location.origin)return;
-if(r.mode==='navigate'&&u.pathname==='/frequency/') {event.respondWith(caches.open(CACHE).then(c=>c.match('/frequency/index.html')).then(v=>v||fetch(r)));return}
-if(ASSETS.includes(u.pathname))event.respondWith(caches.open(CACHE).then(c=>c.match(u.pathname)).then(v=>v||fetch(r)));
-});`;
+const worker = await readFile(new URL('offline-worker.js',import.meta.url),'utf8');
+const sw = `const CACHE='frequency-${version}', ASSETS=${JSON.stringify([...found])};\nconst FILES=${JSON.stringify(files)};\n${worker}`;
 await writeFile(join(root,'frequency/sw.js'),sw);
-const sizes=await Promise.all([...found].map(p=>stat(candidates.get(p))));
-console.log(`FREQUENCY offline · ${found.size} resources · ${sizes.reduce((s,f)=>s+f.size,0)} bytes · ${version}`);
+console.log(`FREQUENCY offline · ${found.size} resources · ${total} bytes · ${version}`);

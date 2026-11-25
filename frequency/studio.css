@@ -402,6 +402,15 @@ select {
   overscroll-behavior-x: contain;
   scrollbar-color: #606459 #20231f;
 }
+.step-grid-help {
+  margin-block: .5rem;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+.step-matrix [role='rowheader'] { min-width: 0; }
+.step-matrix .row-label { width: 100%; }
+.step-matrix .cell { display: block; }
 .step-matrix {
   min-width: 570px;
   background: #0f120f;
@@ -471,6 +480,7 @@ select {
   inset-inline-start: 15%;
   height: 2px;
   width: calc(70% * var(--vel));
+  min-width: 4px;
   background: #19221888;
 }
 .cell.accent {
@@ -481,6 +491,11 @@ select {
 .cell.now {
   outline: 1px solid #b8c7ad;
   outline-offset: -1px;
+}
+.step-matrix button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+  z-index: 2;
 }
 .cell:disabled {
   opacity: 0.28;
@@ -1030,7 +1045,7 @@ dialog::backdrop {
     width: max-content;
     min-width: 100%;
   }
-  .row-label,
+  .step-matrix [role='rowheader'],
   .step-numbers span:first-child {
     position: sticky;
     left: 0;
