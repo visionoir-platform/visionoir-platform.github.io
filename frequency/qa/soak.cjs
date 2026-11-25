@@ -79,7 +79,14 @@ async function run() {
     await p.waitForFunction(
       () => document.documentElement.dataset.play === 'on' && window.frequencySoakAnalyser,
     );
-    await p.waitForFunction(() => document.getElementById('db').textContent !== '−∞ dBFS');
+    // Scope drawing pauses outside the viewport. Start the trial only when the master produces PCM.
+    await p.waitForFunction(() => {
+      const analyser = window.frequencySoakAnalyser;
+      if (!analyser || analyser.context.state !== 'running') return false;
+      const probe = new Float32Array(analyser.fftSize);
+      analyser.getFloatTimeDomainData(probe);
+      return probe.some(value => Math.abs(value) > 0.0001);
+    }, undefined, {polling: 150});
     const diagnostics = await p.evaluate(() => {
       const a = window.frequencySoakAnalyser,
         c = a.context,
