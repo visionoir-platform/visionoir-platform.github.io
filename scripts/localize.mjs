@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { names, parents, localePath, parseCatalogue, site } from '../src/locales.js';
 import { escape, renderSite, direction, pageTitle } from '../src/site.js';
 import { ecosystemLocale } from './ecosystem-locales.mjs';
+import { tiltLabels } from '../src/tilt-labels.js';
 import { tracks } from '../src/tracks.js';
 
 const output = resolve(process.argv[2] || 'dist');
@@ -21,7 +22,7 @@ for (const lang of available) {
   for (const key of Object.keys(source[lang])) if (!keys.includes(key)) throw Error(`${lang}: unknown key ${key}`);
   const dict = { ...source[parents[lang]], ...source[lang] };
   for (const key of keys) if (!dict[key]) throw Error(`${lang}: missing ${key}`);
-  dictionaries[lang] = {...dict,...ecosystemLocale(lang)};
+  dictionaries[lang] = {...dict,...ecosystemLocale(lang),...tiltLabels(lang)};
 }
 
 const enabledTracks = [];

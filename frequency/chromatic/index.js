@@ -1,3 +1,4 @@
+import { deviceTilt, mountDeviceTilt } from '../../src/device-tilt.js';
 import { buildStage } from './stage.js';
 import {
   normalizeSignal,
@@ -72,10 +73,36 @@ export async function mountChromatic(
   add(panel, summary, rack);
   add(shell, heading, surface, top, panel, message);
   host.append(shell);
+  const tiltButton = node('button');
+  tiltButton.type = 'button';
+  tiltButton.className = 'chromatic-tilt';
+  tiltButton.hidden = true;
+  const tiltNotice = node('span', 'chromatic-tilt-notice');
+  tiltNotice.setAttribute('role', 'status');
+  let getTiltLabels, loadingTiltLabels;
+  const tilt = mountDeviceTilt(syncTilt);
+  function syncTilt() {
+    tiltButton.hidden = !tilt.showControl || !getTiltLabels;
+    if (tilt.showControl && !getTiltLabels && !loadingTiltLabels) {
+      loadingTiltLabels = import('../../src/tilt-labels.js').then(module => {
+        getTiltLabels = module.tiltLabels;
+        if (!disposed) syncTilt();
+      }).catch(() => { loadingTiltLabels = null; });
+    }
+    if (getTiltLabels) {
+      const text = getTiltLabels(lang);
+      tiltButton.textContent = text.tiltEnable;
+      tiltNotice.textContent = tilt.showControl && tilt.status === 'unavailable' ? text.tiltUnavailable : '';
+    }
+    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
+  }
+  tiltButton.onclick = () => { void tilt.request(); };
   const buttons = {};
   let localized, parameterSelect, voiceSelect, routeSelect, slider, level, modeSelect, quality, colorInput;
   function update(notify = true) {
     visual = normalizeVisual(visual);
+    tilt.setEnabled(!visual.reduced && !visual.freeze);
+    syncTilt();
     if (modeSelect) modeSelect.value = visual.mode;
     if (quality) quality.value = visual.quality;
     for (const k of ['freeze', 'reduced', 'auto', 'sync']) if (buttons[k]) syncToggle(buttons[k], visual[k]);
@@ -122,7 +149,7 @@ export async function mountChromatic(
     const now = performance.now();
     if (!force && now - lastFrame < 50) return;
     lastFrame = now;
-    const packet = { type: 'visionoir.visual.frame', id: outputKey, signal: getFrame() };
+    const packet = { type: 'visionoir.visual.frame', id: outputKey, signal: getFrame(), viewOffset: [deviceTilt.x,deviceTilt.y] };
     if (force || lastSentState !== visual) {
       packet.state = visual;
       lastSentState = visual;
@@ -236,6 +263,7 @@ export async function mountChromatic(
       buttons[k] = button(localized[k], action);
       top.append(buttons[k]);
     }
+    top.append(tiltButton, tiltNotice);
     parameterSelect = select(Object.keys(parameters).map((k) => [k, localized[k]]));
     parameterSelect.value = activeParam;
     parameterSelect.onchange = () => {
@@ -354,6 +382,7 @@ export async function mountChromatic(
       if (outputWin && !outputWin.closed) outputWin.close();
       window.removeEventListener('message', outputReady);
       window.removeEventListener('keydown', escape);
+      tilt.dispose();
       stage?.dispose();
       shell.remove();
     },
@@ -369,6 +398,7 @@ export async function mountVJ(host) {
   let state = defaultVisual(),
     frame = normalizeSignal(),
     stage;
+  const projectedTilt = { x: 0, y: 0 };
   const receive = (e) => {
     if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
     if (e.data.type === 'visionoir.visual.hit') {
@@ -381,6 +411,11 @@ export async function mountVJ(host) {
     if (e.data.type !== 'visionoir.visual.frame') return;
     if (e.data.state) state = normalizeVisual(e.data.state);
     frame = normalizeSignal(e.data.signal || {}, frame);
+    const offset = e.data.viewOffset;
+    if (Array.isArray(offset) && offset.length === 2 && offset.every(Number.isFinite)) {
+      projectedTilt.x = Math.max(-1, Math.min(1, offset[0]));
+      projectedTilt.y = Math.max(-1, Math.min(1, offset[1]));
+    }
     stage?.invalidate();
   };
   window.addEventListener('message', receive);
@@ -388,7 +423,7 @@ export async function mountVJ(host) {
     if (!document.fullscreenElement) box.requestFullscreen?.().catch(() => {});
   };
   box.addEventListener('dblclick', full);
-  stage = await buildStage(surface, { getState: () => state, getSignal: () => frame });
+  stage = await buildStage(surface, { getState: () => state, getSignal: () => frame, tilt: projectedTilt });
   const reportVisibility = (type) =>
     window.opener?.postMessage(
       {

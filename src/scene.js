@@ -1,4 +1,5 @@
 import { trackAccents } from './palette.js';
+import { deviceTilt } from './device-tilt.js';
 import * as THREE from 'three';
 import outline from '../public/assets/logo-geometry.json' with { type: 'json' };
 
@@ -309,8 +310,13 @@ export async function initScene(container, getAudioData = () => ({})) {
     const pointerBlend = 1 - Math.exp(-dt * 6);
     pointerX = motion ? pointerX + (targetX - pointerX) * pointerBlend : 0;
     pointerY = motion ? pointerY + (targetY - pointerY) * pointerBlend : 0;
-    mark.rotation.set(-.08 + pointerY + (motion ? Math.sin(elapsed * .32) * .035 * intensity : 0), -.28 + (motion ? turn + pointerX : 0), -.1 + (motion ? Math.sin(elapsed * .24) * .035 * intensity : 0));
-    mark.position.y = motion ? Math.sin(elapsed * .6) * .075 * intensity : 0;
+    const tiltX = motion ? deviceTilt.x : 0, tiltY = motion ? deviceTilt.y : 0;
+    mark.rotation.set(
+      -.08 + pointerY + tiltY * .24 + (motion ? Math.sin(elapsed * .32) * .035 * intensity : 0),
+      -.28 + (motion ? turn + pointerX : 0) + tiltX * .42,
+      -.1 + (motion ? Math.sin(elapsed * .24) * .035 * intensity : 0)
+    );
+    mark.position.set(tiltX * .13, (motion ? Math.sin(elapsed * .6) * .075 * intensity : 0) - tiltY * .10, 0);
     const palette = palettes[mode], blend = motion && dt ? 1 - Math.exp(-dt * 4) : 1;
     metal.color.lerp(palette.face, blend); edge.color.lerp(palette.edge, blend);
     surfaceFlow.value = motion ? elapsed * .19 + pointerX * .85 + warpAudio.mid * .3 : 0;
@@ -319,10 +325,10 @@ export async function initScene(container, getAudioData = () => ({})) {
     renderer.toneMappingExposure += (palette.exposure - renderer.toneMappingExposure) * blend;
     rim.color.lerp(palette.rim, blend); ringMaterial.color.lerp(palette.line, blend); node.material.color.lerp(palette.rim, blend);
     mark.scale.lerp(scaleTarget.setScalar(palette.scale + warpAudio.bass * .032), blend);
-    orbitalRig.rotation.z = motion ? elapsed * .018 : 0;
+    orbitalRig.rotation.set(-tiltY * .13, -tiltX * .22, motion ? elapsed * .018 : 0);
     node.position.set(Math.cos(elapsed * .27) * 3.08, Math.sin(elapsed * .27) * 1.33, Math.sin(elapsed * .27) * 2.77);
     ringMaterial.opacity = .2 + warpAudio.mid * .12;
-    specks.rotation.z = motion ? -elapsed * .012 : 0;
+    specks.rotation.set(-tiltY * .07, -tiltX * .11, motion ? -elapsed * .012 : 0);
     specks.material.opacity = .28 + warpAudio.high * .1;
     rim.intensity = palette.light + warpAudio.level * .45;
     try {

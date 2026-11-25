@@ -5,7 +5,7 @@ import { portraitProfile, easePortrait, scatterTarget } from './material-motion.
 import { trackAccents } from '../palette.js';
 
 const clamp = (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0);
-export async function createPortraitStage(host, { url, beat, playing, track, look, moving, signal, syncPoster }) {
+export async function createPortraitStage(host, { url, beat, playing, track, look, moving, signal, syncPoster, yaw, pitch }) {
   const gpu = new T.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
   const canvas = gpu.domElement;
   canvas.setAttribute('aria-hidden', 'true');
@@ -31,9 +31,7 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
     camera = new T.PerspectiveCamera(35, 1, 0.1, 32),
     group = new T.Group();
   scene.add(group);
-  // A single oblique, slightly elevated photographic view. The baked skeleton never moves.
-  group.rotation.y = -0.11;
-  group.rotation.z = -0.025;
+  // Rotate the sculpture and all material effects together around its vertical centre.
   const u = {
     uLook: { value: 1 },
     uTime: { value: 0 },
@@ -141,6 +139,7 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
         resize();
       }
     } else slow = Math.max(0, slow - 1);
+    group.rotation.set(pitch(), -.11 + yaw(), -.025, 'YXZ');
     gpu.render(scene, camera);
     host.dataset.render = 'webgl';
     const settling = current.x || current.y || current.z || current.w ||

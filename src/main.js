@@ -1,5 +1,6 @@
 import './style.css';
 import './ecosystem/style.css';
+import { mountDeviceTilt } from './device-tilt.js';
 import { bindFrequencyDoor } from './frequency-door.js';
 import { localePath, names, resolveLocale } from './locales.js';
 import { money, updateMetadata } from './site.js';
@@ -65,7 +66,17 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
     idleTimer = setTimeout(()=>{status.textContent='';},4500);
   }
   const setText = (selector,key) => { q(selector).textContent = t(key); };
+  const tiltButton = q('#device-tilt-enable');
+  const tilt = mountDeviceTilt(updateTilt);
+  function updateTilt() {
+    tiltButton.parentElement.hidden = !tilt.showControl;
+    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
+    q('#device-tilt-status').textContent = tilt.status === 'unavailable' ? t('tiltUnavailable') : '';
+  }
+  tiltButton.onclick = () => { void tilt.request(); };
   function syncControls() {
+    tilt.setEnabled(motion);
+    updateTilt();
     if (Object.keys(dictionary).length) {
       setText('#sound-state',audio.isLoading?'loading':audio.isPlaying?'pause':'sound');
       setText('#mute',mute?'unmute':'mute');
@@ -294,7 +305,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
       if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();void mountSculpture();}
     },{rootMargin:'180px'});
     observer.observe(creatorStage);
-  }
+  } else void mountSculpture();
   const loadScene = () => import('./scene.js').then(async ({initScene})=>{
     scene = await initScene(sceneContainer,()=>audio.getData());
     syncControls();

@@ -1,3 +1,5 @@
+import { deviceTilt } from './device-tilt.js';
+
 /** A silver trail follows input without taking part in hit testing or native scrolling. */
 export function mountTrail() {
   const canvas = document.createElement('canvas');
@@ -84,7 +86,9 @@ export function mountTrail() {
     const lead=marks.at(-1);
     const strength=(1-(now-lead.time)/lifetime)**2;
     const radius=(lead.kind==='touch'?11:8)*(0.65+.35*strength);
-    const shine=context.createRadialGradient(lead.x-radius*.28,lead.y-radius*.36,0,lead.x,lead.y,radius);
+    const shineX=lead.x+radius*(-.28+deviceTilt.x*.36);
+    const shineY=lead.y+radius*(-.36+deviceTilt.y*.28);
+    const shine=context.createRadialGradient(shineX,shineY,0,lead.x,lead.y,radius);
     shine.addColorStop(0,'#fff');
     shine.addColorStop(.23,'#f9f9f9c0');
     shine.addColorStop(.52,'#676767ad');
