@@ -77,50 +77,26 @@ export async function mountChromatic(
   add(shell, heading, surface, top, panel, message);
   host.append(shell);
   const tiltButton = button('', () => { void tilt.request(); });
-  const shakeButton = button('', () => { void shake.request(); });
-  const negativeButton = button('', toggleLogo);
-  const expandedNegative = button('', toggleLogo);
   tiltButton.className = 'chromatic-tilt';
-  shakeButton.className = 'chromatic-shake';
-  negativeButton.className = 'chromatic-negative';
-  expandedNegative.className = 'chromatic-negative-expanded';
   const tiltNotice = node('span', 'chromatic-tilt-notice');
-  const shakeNotice = node('span', 'chromatic-shake-notice');
   tiltNotice.setAttribute('role', 'status');
-  shakeNotice.setAttribute('role', 'status');
-  const tilt = mountDeviceTilt(syncSensors);
-  const shake = mountDeviceShake({onStatus:syncSensors, onToggle:toggleLogo});
+  const tilt = mountDeviceTilt(syncTilt);
   const negative = () => document.documentElement.classList.contains('logo-negative');
-  function toggleLogo() {
-    setLogoNegative(!negative());
-  }
-  function syncMaterial() {
-    for (const control of [negativeButton,expandedNegative]) syncToggle(control, negative());
-    tellOutputMaterial();
-  }
-  window.addEventListener('visionoir:logo-negative',syncMaterial);
-  function syncSensors() {
+  const shake = mountDeviceShake({onToggle: () => setLogoNegative(!negative())});
+  window.addEventListener('visionoir:logo-negative', tellOutputMaterial);
+  function syncTilt() {
     const text = tiltLabels(lang);
-    for (const control of [negativeButton,expandedNegative]) {
-      control.textContent = text.negativeLogo;
-      syncToggle(control, negative());
-    }
-    for (const [control,sensor,notice,title,unavailable] of [
-      [tiltButton,tilt,tiltNotice,text.tiltEnable,text.tiltUnavailable],
-      [shakeButton,shake,shakeNotice,text.shakeEnable,text.shakeUnavailable]
-    ]) {
-      control.textContent = title;
-      control.hidden = !sensor.showControl;
-      control.setAttribute('aria-busy', String(sensor.status === 'waiting'));
-      notice.textContent = sensor.showControl && sensor.status === 'unavailable' ? unavailable : '';
-    }
+    tiltButton.textContent = text.tiltEnable;
+    tiltButton.hidden = !tilt.showControl;
+    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
+    tiltNotice.textContent = tilt.showControl && tilt.status === 'unavailable' ? text.tiltUnavailable : '';
   }
   const buttons = {};
   let localized, parameterSelect, voiceSelect, routeSelect, slider, level, modeSelect, quality, colorInput;
   function update(notify = true) {
     visual = normalizeVisual(visual);
     tilt.setEnabled(!visual.reduced && !visual.freeze);
-    syncSensors();
+    syncTilt();
     if (modeSelect) modeSelect.value = visual.mode;
     if (quality) quality.value = visual.quality;
     for (const k of ['freeze', 'reduced', 'auto', 'sync']) if (buttons[k]) syncToggle(buttons[k], visual[k]);
@@ -221,7 +197,7 @@ export async function mountChromatic(
   window.addEventListener('message', outputReady);
   const exitExpanded = button('×', () => surface.classList.remove('is-expanded'));
   exitExpanded.className = 'chromatic-exit';
-  surface.append(exitExpanded, expandedNegative);
+  surface.append(exitExpanded);
   function fullscreen() {
     if (document.fullscreenElement === surface) {
       document.exitFullscreen?.();
@@ -286,7 +262,7 @@ export async function mountChromatic(
       buttons[k] = button(localized[k], action);
       top.append(buttons[k]);
     }
-    top.append(negativeButton, tiltButton, tiltNotice, shakeButton, shakeNotice);
+    top.append(tiltButton, tiltNotice);
     parameterSelect = select(Object.keys(parameters).map((k) => [k, localized[k]]));
     parameterSelect.value = activeParam;
     parameterSelect.onchange = () => {
@@ -405,7 +381,7 @@ export async function mountChromatic(
       if (outputWin && !outputWin.closed) outputWin.close();
       window.removeEventListener('message', outputReady);
       window.removeEventListener('keydown', escape);
-      window.removeEventListener('visionoir:logo-negative',syncMaterial);
+      window.removeEventListener('visionoir:logo-negative', tellOutputMaterial);
       tilt.dispose();
       shake.dispose();
       stage?.dispose();

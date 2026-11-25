@@ -75,32 +75,17 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   }
   const setText = (selector,key) => { q(selector).textContent = t(key); };
   const tiltButton = q('#device-tilt-enable');
-  const shakeButton = q('#device-shake-enable');
-  const negativeButtons = document.querySelectorAll('[data-logo-negative]');
-  function toggleLogo() {
-    const negative = !html.classList.contains('logo-negative');
-    setLogoNegative(negative);
-    for (const control of negativeButtons) control.setAttribute('aria-pressed', String(negative));
-  }
-  const tilt = mountDeviceTilt(updateSensors);
-  const shake = mountDeviceShake({onToggle:toggleLogo,onStatus:updateSensors});
-  function updateSensors() {
-    for (const [control, sensor, statusId, unavailable] of [
-      [tiltButton, tilt, '#device-tilt-status', 'tiltUnavailable'],
-      [shakeButton, shake, '#device-shake-status', 'shakeUnavailable']
-    ]) {
-      control.parentElement.hidden = !sensor.showControl;
-      control.setAttribute('aria-busy', String(sensor.status === 'waiting'));
-      q(statusId).textContent = sensor.showControl && sensor.status === 'unavailable' ? t(unavailable) : '';
-    }
+  const tilt = mountDeviceTilt(updateTiltControl);
+  mountDeviceShake({onToggle: () => setLogoNegative(!html.classList.contains('logo-negative'))});
+  function updateTiltControl() {
+    tiltButton.parentElement.hidden = !tilt.showControl;
+    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
+    q('#device-tilt-status').textContent = tilt.showControl && tilt.status === 'unavailable' ? t('tiltUnavailable') : '';
   }
   tiltButton.onclick = () => { void tilt.request(); };
-  shakeButton.onclick = () => { void shake.request(); };
-  for (const control of negativeButtons) control.onclick = toggleLogo;
-  q('.logo-gesture-controls').hidden = false;
   function syncControls() {
     tilt.setEnabled(motion);
-    updateSensors();
+    updateTiltControl();
     if (Object.keys(dictionary).length) {
       setText('#sound-state',audio.isLoading?'loading':audio.isPlaying?'pause':'sound');
       setText('#mute',mute?'unmute':'mute');

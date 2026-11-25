@@ -69,10 +69,14 @@ Il pannello di esportazione permette di usare i limiti del loop già salvato nel
 
 La copertina ufficiale delle sei tracce usa il simbolo e il nome VISIONOIR in nero su bianco. Il player la fornisce in tre dimensioni e ogni MP3 include una copia da 512 pixel. La home include anche l’icona Apple da 180 pixel. In fase di verifica Chrome e WebKit su macOS hanno riprodotto i sei titoli e decodificato le immagini dei rispettivi metadati. Il contenuto audio decodificato coincide con quello delle tracce prive di copertina.
 
-La scultura di The Creator compie un giro automatico in circa 18 secondi mentre è visibile, anche a musica ferma. Il comando di pausa, la preferenza di movimento ridotto e l'uscita dal campo visivo fermano la rotazione. Le 24 viste del modello coprono il giro sui dispositivi senza WebGL. Uno scuotimento intenzionale alterna il materiale del logo tra normale e negativo. Un comando equivalente è disponibile a schermo. Il logo del player musicale conserva i colori del marchio originale. Le superfici native di iOS e i sensori fisici richiedono verifica su dispositivo.
+La scultura di The Creator compie un giro automatico in circa 18 secondi mentre è visibile, anche a musica ferma. Il comando di pausa, la preferenza di movimento ridotto e l'uscita dal campo visivo fermano la rotazione. Le 24 viste del modello coprono il giro sui dispositivi senza WebGL. Uno scuotimento intenzionale alterna il materiale del logo tra normale e negativo. Il logo del player musicale conserva i colori del marchio originale. Le superfici native di iOS e i sensori fisici richiedono verifica su dispositivo.
 
 ## FREQUENCY · Filtro 303, voci e ritorni effetti
 
 Nel rack di Acid 303 si può regolare la durata dell’inviluppo del filtro indipendentemente dal volume. Il valore centrale riproduce il decadimento originale di 42 ms. Noir Lead offre una modalità monofonica con priorità all’ultima nota tenuta. Il passa-alto del Ride agisce sulla componente di rumore. Le sessioni precedenti conservano i valori timbrici di origine. Il bus Returns include nella stampa le tracce collegate direttamente e nei misuratori le code di delay e riverbero. La coda del sequencer riusa gli eventi delle note anche in presenza di accordi e ratchet.
 
 Nel candidato i test hanno confrontato campioni PCM, ordine di 1.650 attacchi, progetti precedenti, patch, inviluppi e stampe per bus. I 100 controlli automatici sono passati. Le prestazioni prolungate sono attribuibili alla versione e alla configurazione effettivamente misurate.
+
+## Scuotimento del dispositivo
+
+Il gesto è attivo all’ingresso nella home e all’apertura del Chromatic Engine. Il primo scuotimento inverte il logo, il successivo lo ripristina. La home, la modalità immersiva e il proiettore presentano il logo senza etichette o comandi dedicati al gesto. La pagina usa esclusivamente i campioni resi disponibili dal browser. Dove serve l’autorizzazione generale ai sensori, nella home si trova nelle preferenze del footer.

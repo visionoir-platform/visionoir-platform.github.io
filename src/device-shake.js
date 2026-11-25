@@ -67,63 +67,36 @@ export function createShakeDetector() {
   return {read, reset};
 }
 
-export function mountDeviceShake({onToggle = () => {}, onStatus = () => {}} = {}) {
-  const api = window.DeviceMotionEvent;
-  const supported = window.isSecureContext && (!!api || 'ondevicemotion' in window);
-  const needsGesture = supported && typeof api?.requestPermission === 'function';
+// Listen from entry. The browser decides when it may deliver motion samples.
+export function mountDeviceShake({onToggle} = {}) {
   const detector = createShakeDetector();
-  let enabled = true, away = false, closed = false, listening = false;
-  const initial = !supported ? 'unavailable' : needsGesture ? 'ask' : 'automatic';
-  let status = initial, epoch = 0, readingTimeout;
-  const allowed = () => supported && enabled && !away && !closed && !document.hidden;
-  function report(value) { if (status !== value) { status = value; onStatus(); } }
+  const supported = window.isSecureContext && ('DeviceMotionEvent' in window || 'ondevicemotion' in window);
+  let away = false, listening = false;
   function receive(event) {
-    if (!allowed()) return;
-    const shook = detector.read(event,event.timeStamp);
-    if (shook === null) return;
-    clearTimeout(readingTimeout);
-    report('receiving');
-    if (shook && allowed()) onToggle();
+    if (detector.read(event, event.timeStamp)) onToggle?.();
   }
   function refresh() {
-    const active = !!allowed();
+    const active = Boolean(supported && !away && !document.hidden);
     if (active === listening) return;
     listening = active;
     if (active) window.addEventListener('devicemotion', receive, {passive:true});
     else {
       window.removeEventListener('devicemotion', receive);
-      clearTimeout(readingTimeout); epoch++; detector.reset();
-      if (status === 'waiting' || status === 'receiving') status = initial;
+      detector.reset();
     }
   }
-  const hide = () => { away = true; refresh(); onStatus(); };
-  const show = () => { away = false; refresh(); onStatus(); };
-  const visibility = () => { refresh(); onStatus(); };
-  window.addEventListener('pagehide',hide);
-  window.addEventListener('pageshow',show);
-  document.addEventListener('visibilitychange',visibility);
+  const hide = () => { away = true; refresh(); };
+  const show = () => { away = false; refresh(); };
+  window.addEventListener('pagehide', hide);
+  window.addEventListener('pageshow', show);
+  document.addEventListener('visibilitychange', refresh);
   refresh();
   return {
-    get status() { return status; },
-    get showControl() { return !!allowed() && needsGesture && status !== 'receiving'; },
-    setEnabled(next) { if (enabled !== !!next) { enabled = !!next; refresh(); onStatus(); } },
-    async request() {
-      if (!allowed() || !needsGesture || status === 'receiving' || status === 'waiting') return;
-      const id = ++epoch;
-      report('waiting');
-      try {
-        // Safari requires a genuine activation of the dedicated permission control.
-        const result = await api.requestPermission();
-        if (id !== epoch || !allowed() || status === 'receiving') return;
-        if (result !== 'granted') { report('unavailable'); return; }
-        readingTimeout = setTimeout(() => { if (status === 'waiting') report('unavailable'); },2400);
-      } catch { if (id === epoch && allowed() && status !== 'receiving') report('unavailable'); }
-    },
     dispose() {
-      closed = true; refresh();
-      window.removeEventListener('pagehide',hide);
-      window.removeEventListener('pageshow',show);
-      document.removeEventListener('visibilitychange',visibility);
+      hide();
+      window.removeEventListener('pagehide', hide);
+      window.removeEventListener('pageshow', show);
+      document.removeEventListener('visibilitychange', refresh);
     },
   };
 }
