@@ -1,5 +1,6 @@
 import './portrait.css';
 import { bindPortraitOrbit } from './orbit.js';
+import { createPortraitSpin, turnDuration } from './spin.js';
 import { makeTurntable } from './turntable.js';
 import { deviceTilt, recenterDeviceTilt } from '../device-tilt.js';
 
@@ -22,7 +23,8 @@ export function mountCreator(
     poster = host.querySelector('img'),
     ownPoster = false,
     flat = false,
-    angle = 0;
+    auto = true, visible = false, pageActive = true, timer = 0;
+  const spin = createPortraitSpin();
   host.classList.add('creator-render-surface');
   host.dataset.render = 'fallback';
   if (!poster) {
@@ -36,10 +38,12 @@ export function mountCreator(
   const atlas = makeTurntable(host, base);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   function yaw() {
-    return angle + (motion && !reduced.matches ? deviceTilt.yaw + deviceTilt.x * .16 : 0);
+    return spin.value() + (motion && !reduced.matches ? deviceTilt.yaw + deviceTilt.x * .16 : 0);
   }
   function pitch() { return motion && !reduced.matches ? deviceTilt.y * .15 : 0; }
   function syncPoster() {
+    clearTimeout(timer);
+    timer = 0;
     if (host.dataset.render === 'webgl' || !posterURL.endsWith('/creator/poster.webp')) return;
     const acid = getMode() === 'acid';
     const variant = (acid ? '-acid' : '') + (look === 'metal' ? '' : '-' + look);
@@ -48,6 +52,7 @@ export function mountCreator(
     if (flat || host.dataset.render === 'context-lost') {
       // The natural material uses its photographed colours in every track.
       atlas.show(yaw(), look === 'natural' ? '-natural' : variant);
+      if (spin.running) timer = setTimeout(() => { syncPoster(); orbit?.updateReadout(); }, turnDuration / 48);
     }
   }
   function refresh() {
@@ -55,11 +60,27 @@ export function mountCreator(
     stage?.invalidate();
   }
   const controls = host.closest('.creator-column')?.querySelector('.creator-orbit-controls');
-  const releaseOrbit = controls ? bindPortraitOrbit(host, controls, value => {
-    angle = value;
+  const spinButton = controls?.querySelector('[data-orbit="spin"]');
+  let orbit;
+  function syncSpin() {
+    const allowed = motion && !reduced.matches;
+    spin.setRunning(allowed && auto && visible && pageActive && !document.hidden && !!(stage || flat));
+    if (spinButton) {
+      spinButton.hidden = !allowed;
+      spinButton.querySelector('[data-auto-label=pause]').hidden = !auto;
+      spinButton.querySelector('[data-auto-label=play]').hidden = auto;
+    }
+    orbit?.updateReadout();
     refresh();
-  }, recenterDeviceTilt) : null;
-  syncPoster();
+  }
+  if (controls) orbit = bindPortraitOrbit(host, controls, value => {
+    auto = false;
+    spin.setRunning(false);
+    spin.set(value);
+    syncSpin();
+  }, recenterDeviceTilt, spin.value, () => { auto = !auto; syncSpin(); });
+  const syncReadout = () => { if (document.activeElement === host) orbit?.updateReadout(); };
+  syncSpin();
   async function start() {
     try {
       const { createPortraitStage } = await import('./stage.js');
@@ -69,7 +90,8 @@ export function mountCreator(
         url: modelURL || base + 'creator/creator-' + (mobile ? 'mobile' : 'desktop') + '.glb',
         syncPoster, yaw, pitch,
         beat: getSignal,
-        playing: isPlaying,
+        playing: () => spin.running || isPlaying(),
+        afterDraw: syncReadout,
         track: getMode,
         look: () => look,
         moving: () => motion,
@@ -79,28 +101,39 @@ export function mountCreator(
       if (!abort.signal.aborted) {
         flat = true;
         host.dataset.render = 'fallback';
-        syncPoster();
       }
     }
+    if (!abort.signal.aborted) syncSpin();
   }
   let nearView = false, started = false;
-  const near = new IntersectionObserver(
-    (entries) => {
-      nearView = entries.some(entry => entry.isIntersecting);
-      if (!nearView) return;
-      if (!started) { started = true; void start(); }
-      else refresh();
-    },
-    { rootMargin: '160px' },
-  );
-  near.observe(host);
+  const observeNear = entries => {
+    nearView = entries.some(e => e.isIntersecting);
+    if (nearView && !started) { started = true; void start(); }
+  };
+  let near, viewport;
+  const visibility = () => syncSpin();
+  const hide = () => { pageActive = false; syncSpin(); };
+  const show = () => { pageActive = true; syncSpin(); };
+  if ('IntersectionObserver' in window) {
+    near = new IntersectionObserver(observeNear,{rootMargin:'160px'});
+    near.observe(host);
+    viewport = new IntersectionObserver(entries => { visible = entries.some(e=>e.isIntersecting); syncSpin(); });
+    viewport.observe(host);
+  } else {
+    visible = nearView = started = true;
+    void start();
+  }
+  document.addEventListener('visibilitychange',visibility);
+  window.addEventListener('pagehide',hide);
+  window.addEventListener('pageshow',show);
+  reduced.addEventListener?.('change',visibility);
   window.addEventListener('visionoir:audio', refresh);
   const tiltChanged = () => { if (nearView && !document.hidden) refresh(); };
   window.addEventListener('visionoir:tilt', tiltChanged);
   return {
     setMotion(value) {
       motion = !!value;
-      refresh();
+      syncSpin();
     },
     setLook(value) {
       look = ['metal', 'natural', 'liquid'].includes(value) ? value : 'metal';
@@ -108,9 +141,15 @@ export function mountCreator(
     },
     dispose() {
       abort.abort();
-      near.disconnect();
+      near?.disconnect();
+      viewport?.disconnect();
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange',visibility);
+      window.removeEventListener('pagehide',hide);
+      window.removeEventListener('pageshow',show);
+      reduced.removeEventListener?.('change',visibility);
       stage?.dispose();
-      releaseOrbit?.();
+      orbit?.dispose();
       atlas.dispose();
       window.removeEventListener('visionoir:tilt', tiltChanged);
       if (ownPoster) poster.remove();

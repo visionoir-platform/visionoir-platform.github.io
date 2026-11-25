@@ -1,4 +1,5 @@
 import { deviceTilt } from '../../src/device-tilt.js';
+import { logoPolarity } from '../../src/logo-polarity.js';
 import * as T from 'three';
 import outline from '../../public/assets/logo-geometry.json' with { type: 'json' };
 import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModifier.js';
@@ -154,6 +155,8 @@ export async function buildStage(
   const history = makeHistory(gpu);
   let historyOn = false;
   const u = shaderUniforms();
+  const polarity = logoPolarity(document.documentElement);
+  u.uLogoNegative = polarity.uniform;
   u.uCreator.value = Number(creator);
   u.uBuses = { value: new Float32Array(6) };
   let elapsed = 0,
@@ -252,6 +255,12 @@ export async function buildStage(
   };
   document.addEventListener('visibilitychange', visibility);
   motion.addEventListener?.('change', request);
+  function onPolarity() {
+    polarity.refresh();
+    lastTimeToken = -Infinity;
+    request();
+  }
+  if (!creator) window.addEventListener('visionoir:logo-negative', onPolarity);
   function selectScore(index) {
     if (!scores.has(index)) {
       const score = spatialScore(index);
@@ -272,6 +281,8 @@ export async function buildStage(
       dt = Math.min(0.08, interval / 1000);
     last = now;
     if (!canDraw()) return;
+    if (!creator) polarity.update(dt, !simple && !frozen);
+    else polarity.uniform.value = 0;
     const s = normalizeSignal(getSignal() || {}, currentSignal);
     const index = Math.max(
       0,
@@ -444,6 +455,7 @@ export async function buildStage(
     obs.disconnect();
     size.disconnect();
     motion.removeEventListener?.('change', request);
+    if (!creator) window.removeEventListener('visionoir:logo-negative', onPolarity);
     document.removeEventListener('visibilitychange', visibility);
     canvas.removeEventListener('webglcontextlost', lose);
     canvas.removeEventListener('webglcontextrestored', restore);

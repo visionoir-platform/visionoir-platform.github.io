@@ -1,4 +1,7 @@
 import { deviceTilt, mountDeviceTilt } from '../../src/device-tilt.js';
+import { mountDeviceShake } from '../../src/device-shake.js';
+import { tiltLabels } from '../../src/tilt-labels.js';
+import { setLogoNegative } from '../../src/logo-polarity.js';
 import { buildStage } from './stage.js';
 import {
   normalizeSignal,
@@ -73,36 +76,51 @@ export async function mountChromatic(
   add(panel, summary, rack);
   add(shell, heading, surface, top, panel, message);
   host.append(shell);
-  const tiltButton = node('button');
-  tiltButton.type = 'button';
+  const tiltButton = button('', () => { void tilt.request(); });
+  const shakeButton = button('', () => { void shake.request(); });
+  const negativeButton = button('', toggleLogo);
+  const expandedNegative = button('', toggleLogo);
   tiltButton.className = 'chromatic-tilt';
-  tiltButton.hidden = true;
+  shakeButton.className = 'chromatic-shake';
+  negativeButton.className = 'chromatic-negative';
+  expandedNegative.className = 'chromatic-negative-expanded';
   const tiltNotice = node('span', 'chromatic-tilt-notice');
+  const shakeNotice = node('span', 'chromatic-shake-notice');
   tiltNotice.setAttribute('role', 'status');
-  let getTiltLabels, loadingTiltLabels;
-  const tilt = mountDeviceTilt(syncTilt);
-  function syncTilt() {
-    tiltButton.hidden = !tilt.showControl || !getTiltLabels;
-    if (tilt.showControl && !getTiltLabels && !loadingTiltLabels) {
-      loadingTiltLabels = import('../../src/tilt-labels.js').then(module => {
-        getTiltLabels = module.tiltLabels;
-        if (!disposed) syncTilt();
-      }).catch(() => { loadingTiltLabels = null; });
-    }
-    if (getTiltLabels) {
-      const text = getTiltLabels(lang);
-      tiltButton.textContent = text.tiltEnable;
-      tiltNotice.textContent = tilt.showControl && tilt.status === 'unavailable' ? text.tiltUnavailable : '';
-    }
-    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
+  shakeNotice.setAttribute('role', 'status');
+  const tilt = mountDeviceTilt(syncSensors);
+  const shake = mountDeviceShake({onStatus:syncSensors, onToggle:toggleLogo});
+  const negative = () => document.documentElement.classList.contains('logo-negative');
+  function toggleLogo() {
+    setLogoNegative(!negative());
   }
-  tiltButton.onclick = () => { void tilt.request(); };
+  function syncMaterial() {
+    for (const control of [negativeButton,expandedNegative]) syncToggle(control, negative());
+    tellOutputMaterial();
+  }
+  window.addEventListener('visionoir:logo-negative',syncMaterial);
+  function syncSensors() {
+    const text = tiltLabels(lang);
+    for (const control of [negativeButton,expandedNegative]) {
+      control.textContent = text.negativeLogo;
+      syncToggle(control, negative());
+    }
+    for (const [control,sensor,notice,title,unavailable] of [
+      [tiltButton,tilt,tiltNotice,text.tiltEnable,text.tiltUnavailable],
+      [shakeButton,shake,shakeNotice,text.shakeEnable,text.shakeUnavailable]
+    ]) {
+      control.textContent = title;
+      control.hidden = !sensor.showControl;
+      control.setAttribute('aria-busy', String(sensor.status === 'waiting'));
+      notice.textContent = sensor.showControl && sensor.status === 'unavailable' ? unavailable : '';
+    }
+  }
   const buttons = {};
   let localized, parameterSelect, voiceSelect, routeSelect, slider, level, modeSelect, quality, colorInput;
   function update(notify = true) {
     visual = normalizeVisual(visual);
     tilt.setEnabled(!visual.reduced && !visual.freeze);
-    syncTilt();
+    syncSensors();
     if (modeSelect) modeSelect.value = visual.mode;
     if (quality) quality.value = visual.quality;
     for (const k of ['freeze', 'reduced', 'auto', 'sync']) if (buttons[k]) syncToggle(buttons[k], visual[k]);
@@ -138,6 +156,10 @@ export async function mountChromatic(
     clearInterval(timer);
     timer = 0;
     outputVisible = false;
+  }
+  function tellOutputMaterial() {
+    if (!outputWin || outputWin.closed) return;
+    outputWin.postMessage({type:'visionoir.visual.material', id:outputKey, logoNegative:negative()}, location.origin);
   }
   function tellOutput(force = false) {
     if (!outputVisible) return;
@@ -190,6 +212,7 @@ export async function mountChromatic(
     if (e.data.type !== 'visionoir.visual.ready' && e.data.type !== 'visionoir.visual.visibility') return;
     stopOutputFrames();
     outputVisible = e.data.visible === true;
+    tellOutputMaterial();
     if (outputVisible) {
       tellOutput(true);
       timer = setInterval(tellOutput, 55);
@@ -198,7 +221,7 @@ export async function mountChromatic(
   window.addEventListener('message', outputReady);
   const exitExpanded = button('×', () => surface.classList.remove('is-expanded'));
   exitExpanded.className = 'chromatic-exit';
-  surface.append(exitExpanded);
+  surface.append(exitExpanded, expandedNegative);
   function fullscreen() {
     if (document.fullscreenElement === surface) {
       document.exitFullscreen?.();
@@ -263,7 +286,7 @@ export async function mountChromatic(
       buttons[k] = button(localized[k], action);
       top.append(buttons[k]);
     }
-    top.append(tiltButton, tiltNotice);
+    top.append(negativeButton, tiltButton, tiltNotice, shakeButton, shakeNotice);
     parameterSelect = select(Object.keys(parameters).map((k) => [k, localized[k]]));
     parameterSelect.value = activeParam;
     parameterSelect.onchange = () => {
@@ -382,7 +405,9 @@ export async function mountChromatic(
       if (outputWin && !outputWin.closed) outputWin.close();
       window.removeEventListener('message', outputReady);
       window.removeEventListener('keydown', escape);
+      window.removeEventListener('visionoir:logo-negative',syncMaterial);
       tilt.dispose();
+      shake.dispose();
       stage?.dispose();
       shell.remove();
     },
@@ -401,6 +426,10 @@ export async function mountVJ(host) {
   const projectedTilt = { x: 0, y: 0 };
   const receive = (e) => {
     if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
+    if (e.data.type === 'visionoir.visual.material') {
+      if (typeof e.data.logoNegative === 'boolean') setLogoNegative(e.data.logoNegative);
+      return;
+    }
     if (e.data.type === 'visionoir.visual.hit') {
       const { index, value } = e.data;
       if (Number.isInteger(index) && index >= 0 && index < instruments.length && Number.isFinite(value)) {

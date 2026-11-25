@@ -1,5 +1,6 @@
 import { trackAccents } from './palette.js';
 import { deviceTilt } from './device-tilt.js';
+import { logoPolarity, logoPolarityFragment } from './logo-polarity.js';
 import * as THREE from 'three';
 import outline from '../public/assets/logo-geometry.json' with { type: 'json' };
 
@@ -87,7 +88,7 @@ export async function initScene(container, getAudioData = () => ({})) {
       fallbackImage = document.createElement('img'); ownsFallback = true;
       fallbackImage.src = assetURL('logo.svg'); fallbackImage.alt = 'Il simbolo Visionoir';
       fallbackImage.className = 'scene-fallback';
-      Object.assign(fallbackImage.style, { width: '70%', height: '80%', objectFit: 'contain', position: 'absolute', inset: '10% 15%', filter: 'drop-shadow(0 0 30px #ffffff12)', pointerEvents: 'none' });
+      Object.assign(fallbackImage.style, { width: '70%', height: '80%', objectFit: 'contain', position: 'absolute', inset: '10% 15%', pointerEvents: 'none' });
       container.append(fallbackImage);
     }
     fallbackImage.hidden = false; fallbackImage.style.visibility = 'visible';
@@ -138,14 +139,23 @@ export async function initScene(container, getAudioData = () => ({})) {
   const mark = new THREE.Group(); scene.add(mark);
   const metal = new THREE.MeshPhysicalMaterial({ color: '#c5c5c5', metalness: 1, roughness: .19, clearcoat: 1, clearcoatRoughness: .18, envMapIntensity: 2.4 });
   const surfaceFlow = { value: 0 };
-  metal.onBeforeCompile = shader => {
-    shader.uniforms.uSurfaceFlow = surfaceFlow;
+  const polarity = logoPolarity(document.documentElement);
+  function addPolarity(shader) {
+    shader.uniforms.uLogoNegative = polarity.uniform;
     shader.vertexShader = 'varying vec3 vLogoPosition;\n' + shader.vertexShader;
     shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvLogoPosition = position;');
-    shader.fragmentShader = 'uniform float uSurfaceFlow; varying vec3 vLogoPosition;\n' + shader.fragmentShader;
+    shader.fragmentShader = logoPolarityFragment + '\nvarying vec3 vLogoPosition;\n' + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace('#include <colorspace_fragment>',
+      '#include <colorspace_fragment>\ngl_FragColor.rgb = developNegative(gl_FragColor.rgb, vLogoPosition, pow(1. - clamp(abs(dot(normal, normalize(vViewPosition))), 0., 1.), 4.));');
+  }
+  metal.onBeforeCompile = shader => {
+    addPolarity(shader);
+    shader.uniforms.uSurfaceFlow = surfaceFlow;
+    shader.fragmentShader = 'uniform float uSurfaceFlow;\n' + shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize(normal + vec3(sin(vLogoPosition.y * 1.25 + uSurfaceFlow) * 0.24, cos(vLogoPosition.x * 1.4 - uSurfaceFlow * 0.65) * 0.16, 0.0));');
   };
   const edge = new THREE.MeshPhysicalMaterial({ color: '#c0c0c0', metalness: 1, roughness: .25, envMapIntensity: 2.8, clearcoat: 1 });
+  edge.onBeforeCompile = addPolarity;
   const disposeGraph = graph => graph.traverse(object => {
     object.geometry?.dispose();
     if (object.material) for (const material of Array.isArray(object.material) ? object.material : [object.material]) material.dispose();
@@ -243,6 +253,7 @@ export async function initScene(container, getAudioData = () => ({})) {
     if (!disposed && !failed && initialized && !contextLost && visible && hasSize && !document.hidden && !frame) frame = requestAnimationFrame(animate);
   }
   function invalidate() { needsRender = true; schedule(); }
+  function onPolarity() { polarity.refresh(); invalidate(); }
   function resize() {
     if (disposed || failed) return;
     const bounds = container.getBoundingClientRect();
@@ -285,6 +296,7 @@ export async function initScene(container, getAudioData = () => ({})) {
     if (motion && lastTime && !needsRender && now - lastTime < 1000 / 60 - .5) { schedule(); return; }
     const interval = lastTime ? now - lastTime : 0;
     const dt = Math.min(interval / 1000, .05); lastTime = now; needsRender = false;
+    polarity.update(dt, motion);
     const start = performance.now();
     if (motion) elapsed += dt * (.55 + intensity * .45);
     let audio = {};
@@ -358,6 +370,7 @@ export async function initScene(container, getAudioData = () => ({})) {
   if (!intersectionObserver) window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', resize, { passive: true }); window.visualViewport?.addEventListener('resize', resize, { passive: true });
   window.addEventListener('pageshow', onPageShow); window.addEventListener('pagehide', suspend);
+  window.addEventListener('visionoir:logo-negative', onPolarity);
   document.addEventListener('visibilitychange', onVisibility);
   container.addEventListener('pointermove', onPointer, { passive: true }); container.addEventListener('pointerleave', resetPointer);
   renderer.domElement.addEventListener('webglcontextlost', onContextLost); renderer.domElement.addEventListener('webglcontextrestored', onContextRestored);
@@ -374,6 +387,7 @@ export async function initScene(container, getAudioData = () => ({})) {
       window.removeEventListener('resize', resize); window.removeEventListener('scroll', onScroll);
       window.visualViewport?.removeEventListener('resize', resize); window.removeEventListener('pageshow', onPageShow); window.removeEventListener('pagehide', suspend);
       document.removeEventListener('visibilitychange', onVisibility); reduced.removeEventListener?.('change', onReduce);
+      window.removeEventListener('visionoir:logo-negative', onPolarity);
       container.removeEventListener('pointermove', onPointer); container.removeEventListener('pointerleave', resetPointer);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost); renderer.domElement.removeEventListener('webglcontextrestored', onContextRestored);
       disposeGraph(scene); disposeGraph(studio); envTarget?.dispose(); renderer.dispose(); renderer.domElement.remove();

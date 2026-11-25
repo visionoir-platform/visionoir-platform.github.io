@@ -39,3 +39,20 @@ test('unavailable axes cannot create motion; relative tilt still works without a
   const recalibrated = tracker.read({alpha:287,beta:0,gamma:45},0);
   near(recalibrated.x,0); near(recalibrated.yaw,0);
 });
+
+test('the portrait makes one complete automatic turn in visible time and keeps its angle on pause', async () => {
+  const {createPortraitSpin, turn, turnDuration} = await import('../src/creator/spin.js');
+  let now = 0;
+  const spin = createPortraitSpin(() => now);
+  spin.setRunning(true);
+  now = turnDuration / 2;
+  assert.ok(Math.abs(spin.value() - Math.PI) < 1e-8);
+  spin.setRunning(false);
+  now += 300_000;
+  assert.ok(Math.abs(spin.value() - Math.PI) < 1e-8);
+  spin.setRunning(true);
+  now += turnDuration / 2;
+  assert.ok(spin.value() < 1e-8);
+  spin.set(5 * turn / 4);
+  assert.ok(Math.abs(spin.value() - Math.PI / 2) < 1e-8);
+});

@@ -1,17 +1,17 @@
-lang	orbitHint	orbitLeft	orbitRight	orbitReset
-it	Ritratto a 360°. Trascina di lato o usa le frecce.	Ruota a sinistra	Ruota a destra	Torna alla vista frontale
-en	360° portrait. Drag sideways or use the arrows.	Rotate left	Rotate right	Return to front view
-es	Retrato en 360°. Arrastra hacia los lados o usa las flechas.	Girar a la izquierda	Girar a la derecha	Volver a la vista frontal
-de	360°-Porträt. Seitlich ziehen oder die Pfeile verwenden.	Nach links drehen	Nach rechts drehen	Zur Vorderansicht
-fr	Portrait à 360°. Faites glisser sur le côté ou utilisez les flèches.	Tourner à gauche	Tourner à droite	Revenir à la vue de face
-pt-PT	Retrato a 360°. Arraste para os lados ou use as setas.	Rodar para a esquerda	Rodar para a direita	Voltar à vista de frente
-pt-BR	Retrato em 360°. Arraste para os lados ou use as setas.	Girar para a esquerda	Girar para a direita	Voltar à vista de frente
-ru	Портрет на 360°. Проведите вбок или используйте стрелки.	Повернуть влево	Повернуть вправо	Вернуть вид спереди
-uk	Портрет на 360°. Проведіть убік або скористайтеся стрілками.	Повернути ліворуч	Повернути праворуч	Повернути вигляд спереду
-pl	Portret 360°. Przeciągnij w bok lub użyj strzałek.	Obróć w lewo	Obróć w prawo	Przywróć widok z przodu
-zh-Hans	360° 肖像。左右拖动或使用箭头旋转。	向左旋转	向右旋转	恢复正面视图
-ja	360°ポートレート。左右にドラッグするか、矢印で回転できます。	左に回転	右に回転	正面に戻す
-ko	360° 초상입니다. 옆으로 드래그하거나 화살표로 회전하세요.	왼쪽으로 회전	오른쪽으로 회전	정면 보기로 돌아가기
-ar	صورة بزاوية ٣٦٠ درجة. اسحب جانبًا أو استخدم الأسهم.	تدوير إلى اليسار	تدوير إلى اليمين	العودة إلى المنظر الأمامي
-sw	Taswira ya nyuzi 360. Buruta upande wowote au tumia mishale.	Zungusha kushoto	Zungusha kulia	Rudisha mwonekano wa mbele
-rm-CH	Purtret da 360°. Trai a la vart u dovra las frizzas.	Volver a sanestra	Volver a dretga	Turnar a la vista frontala
+lang	orbitHint	orbitLeft	orbitRight	orbitReset	orbitPause	orbitPlay
+it	Il ritratto può ruotare da solo a 360°. Puoi fermarlo, trascinare di lato o usare le frecce.	Ruota a sinistra	Ruota a destra	Torna alla vista frontale	Pausa rotazione	Avvia rotazione
+en	The portrait can rotate 360° on its own. Pause it, drag sideways or use the arrows.	Rotate left	Rotate right	Return to front view	Pause rotation	Start rotation
+es	El retrato puede girar 360° por sí solo. Puedes pausarlo, arrastrar hacia los lados o usar las flechas.	Girar a la izquierda	Girar a la derecha	Volver a la vista frontal	Pausar el giro	Iniciar el giro
+de	Das Porträt kann sich automatisch um 360° drehen. Zum Erkunden die Drehung anhalten, seitlich ziehen oder die Pfeile nutzen.	Nach links drehen	Nach rechts drehen	Zur Vorderansicht	Drehung anhalten	Drehung starten
+fr	Le portrait peut tourner tout seul à 360°. Vous pouvez le mettre en pause, le faire glisser ou utiliser les flèches.	Tourner à gauche	Tourner à droite	Revenir à la vue de face	Suspendre la rotation	Lancer la rotation
+pt-PT	O retrato pode rodar 360° sozinho. Pode pausar a rotação, arrastar para os lados ou usar as setas.	Rodar para a esquerda	Rodar para a direita	Voltar à vista de frente	Pausar a rotação	Iniciar a rotação
+pt-BR	O retrato pode girar 360° sozinho. Você pode pausar o giro, arrastar para os lados ou usar as setas.	Girar para a esquerda	Girar para a direita	Voltar à vista de frente	Pausar o giro	Iniciar o giro
+ru	Портрет может сам поворачиваться на 360°. Вращение можно приостановить. Для ручного поворота проведите вбок или используйте стрелки.	Повернуть влево	Повернуть вправо	Вернуть вид спереди	Приостановить вращение	Начать вращение
+uk	Портрет може сам обертатися на 360°. Обертання можна призупинити. Щоб повернути портрет вручну, проведіть убік або скористайтеся стрілками.	Повернути ліворуч	Повернути праворуч	Повернути вигляд спереду	Призупинити обертання	Почати обертання
+pl	Portret może sam obracać się o 360°. Możesz zatrzymać obrót, przeciągnąć w bok lub użyć strzałek.	Obróć w lewo	Obróć w prawo	Przywróć widok z przodu	Wstrzymaj obrót	Rozpocznij obrót
+zh-Hans	肖像可以自动旋转 360°。你可以暂停旋转，也可以左右拖动或使用箭头手动查看。	向左旋转	向右旋转	恢复正面视图	暂停旋转	开始旋转
+ja	ポートレートは360°自動回転できます。回転は一時停止でき、左右にドラッグするか矢印で好きな角度から見られます。	左に回転	右に回転	正面に戻す	回転を一時停止	回転を開始
+ko	초상은 360° 자동으로 회전할 수 있습니다. 회전을 멈추거나 옆으로 드래그하거나 화살표를 눌러 원하는 각도에서 보세요.	왼쪽으로 회전	오른쪽으로 회전	정면 보기로 돌아가기	회전 일시 정지	회전 시작
+ar	يمكن للصورة أن تدور تلقائيًا بزاوية ٣٦٠ درجة. يمكنك إيقاف الدوران مؤقتًا أو تدوير الصورة يدويًا بالسحب جانبًا أو باستخدام الأسهم.	تدوير إلى اليسار	تدوير إلى اليمين	العودة إلى المنظر الأمامي	إيقاف الدوران مؤقتًا	بدء الدوران
+sw	Taswira inaweza kujizungusha kwa nyuzi 360. Unaweza kusitisha mzunguko, kuburuta upande wowote au kutumia mishale.	Zungusha kushoto	Zungusha kulia	Rudisha mwonekano wa mbele	Sitisha mzunguko	Anza mzunguko
+rm-CH	Il purtret po sa volver automaticamain per 360°. Ti pos fermar la rotaziun, trair a la vart u duvrar las frizzas.	Volver a sanestra	Volver a dretga	Turnar a la vista frontala	Pausar la rotaziun	Cumenzar la rotaziun

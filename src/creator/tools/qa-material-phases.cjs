@@ -138,6 +138,9 @@ async function inspect(browser, mobile, results) {
     }
     await stage.scrollIntoViewIfNeeded();
     await wait(() => document.querySelector('#creator-stage').dataset.render === 'webgl' && window.portraitQA.current.uProfile === 0);
+    // Keep the viewing angle fixed while measuring deformation from audio alone.
+    await page.locator('[data-orbit="spin"]').click();
+
     assert.deepEqual(report.models, [['/creator/creator-' + name + '.glb', 200]]);
 
     // Compare a material transition at the same camera angle with all bands silent.

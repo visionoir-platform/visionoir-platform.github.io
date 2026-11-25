@@ -1,6 +1,8 @@
 import './style.css';
 import './ecosystem/style.css';
 import { bindHomePreferences } from './home-preferences.js';
+import { mountDeviceShake } from './device-shake.js';
+import { setLogoNegative } from './logo-polarity.js';
 import { mountDeviceTilt } from './device-tilt.js';
 import { bindFrequencyDoor } from './frequency-door.js';
 import { localePath, names, resolveLocale } from './locales.js';
@@ -73,16 +75,32 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   }
   const setText = (selector,key) => { q(selector).textContent = t(key); };
   const tiltButton = q('#device-tilt-enable');
-  const tilt = mountDeviceTilt(updateTilt);
-  function updateTilt() {
-    tiltButton.parentElement.hidden = !tilt.showControl;
-    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
-    q('#device-tilt-status').textContent = tilt.status === 'unavailable' ? t('tiltUnavailable') : '';
+  const shakeButton = q('#device-shake-enable');
+  const negativeButtons = document.querySelectorAll('[data-logo-negative]');
+  function toggleLogo() {
+    const negative = !html.classList.contains('logo-negative');
+    setLogoNegative(negative);
+    for (const control of negativeButtons) control.setAttribute('aria-pressed', String(negative));
+  }
+  const tilt = mountDeviceTilt(updateSensors);
+  const shake = mountDeviceShake({onToggle:toggleLogo,onStatus:updateSensors});
+  function updateSensors() {
+    for (const [control, sensor, statusId, unavailable] of [
+      [tiltButton, tilt, '#device-tilt-status', 'tiltUnavailable'],
+      [shakeButton, shake, '#device-shake-status', 'shakeUnavailable']
+    ]) {
+      control.parentElement.hidden = !sensor.showControl;
+      control.setAttribute('aria-busy', String(sensor.status === 'waiting'));
+      q(statusId).textContent = sensor.showControl && sensor.status === 'unavailable' ? t(unavailable) : '';
+    }
   }
   tiltButton.onclick = () => { void tilt.request(); };
+  shakeButton.onclick = () => { void shake.request(); };
+  for (const control of negativeButtons) control.onclick = toggleLogo;
+  q('.logo-gesture-controls').hidden = false;
   function syncControls() {
     tilt.setEnabled(motion);
-    updateTilt();
+    updateSensors();
     if (Object.keys(dictionary).length) {
       setText('#sound-state',audio.isLoading?'loading':audio.isPlaying?'pause':'sound');
       setText('#mute',mute?'unmute':'mute');

@@ -1,3 +1,5 @@
+import { logoPolarityFragment } from '../../src/logo-polarity.js';
+
 // Shared rest-space field: mesh and surface samples travel through identical coordinates.
 export const common = `
 uniform float uTime, uMode, uNext, uMix, uActive, uWarp, uNoise, uDist, uCut, uSize, uPhase, uDepth, uEcho, uParticle, uRefract, uReflect, uLight, uCreator;
@@ -88,7 +90,7 @@ void main(){
  vec4 view=modelViewMatrix*vec4(q,1.);vP=view.xyz;vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*view;
  gl_PointSize=clamp((1.45+uSize*5.)*(.45+aSeed)*3.4/max(.7,-view.z),1.,9.);
 }`;
-export const fragment=common+`
+export const fragment=common+logoPolarityFragment+`
 void main(){
  float rough=edgeNoise(vObj*1.14);
  float veil=1.-smoothstep(vCut-.025,vCut+.018,rough);
@@ -97,7 +99,7 @@ void main(){
   float strength=clamp(veil+uActive*(.13+.65*amount(2.)+.28*amount(8.)+.20*uVoices[5]+.18*uVoices[6]+.13*uVoices[9]),0.,1.);
   if(strength<.035)discard;
   vec3 steel=mix(vec3(.83,.9,1.),uTint,.38+.48*amount(2.));steel=mix(steel,vec3(1.,.3,.035),amount(2.)*.85);
-  gl_FragColor=vec4(steel*(1.1+.35*vSeed),strength*(1.-radius)*.90);return;
+  gl_FragColor=vec4(developNegative(steel*(1.1+.35*vSeed),vObj,0.),strength*(1.-radius)*.90);return;
  }
  if(rough<vCut)discard;
  vec3 n=normalize(vN); vec3 surf=normalize(cross(dFdx(vP),dFdy(vP)));if(dot(surf,n)<0.)surf=-surf;
@@ -106,7 +108,7 @@ void main(){
  n=normalize(mix(n,surf,flatness));
  if(uCreator<.5)n.xy+=.21*vec2(sin(vObj.y*1.1+.55*vObj.x),cos(vObj.x*1.25-vObj.y*.5));
  n.xy+=uActive*uRefract*.08*vec2(sin(7.*vObj.y+uTime),cos(4.*vObj.x-uTime));
- vec3 eye=normalize(-vP);vec3 refl=reflect(-eye,normalize(n));float rim=pow(1.-abs(dot(n,eye)),2.2);
+ n=normalize(n);vec3 eye=normalize(-vP);vec3 refl=reflect(-eye,n);float rim=pow(1.-clamp(abs(dot(n,eye)),0.,1.),2.2);
  float band=dot(refl,normalize(vec3(.15,1.,.26)))+.22*sin(refl.x*2.5+uTime*.11)+.09*sin(vObj.y*1.5);
  float broad=smoothstep(-.26,-.02,band)*(1.-smoothstep(.35,.49,band));
  float panel=exp(-pow((band+.53)*11.,2.))+.85*exp(-pow((band-.70)*14.,2.));
@@ -144,4 +146,5 @@ void main(){
  gl_FragColor=vec4(color,uEcho>.5?.27/(1.+uEcho*.3):1.);
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
+ gl_FragColor.rgb = developNegative(gl_FragColor.rgb, vObj, rim*rim);
 }`;
