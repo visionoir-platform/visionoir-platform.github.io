@@ -47,4 +47,12 @@ for rel in paths:
         output.write_text(source.read_text().replace("/opt/homebrew/bin/ffmpeg","ffmpeg"))
     else:
         shutil.copy2(source,output)
+# Private working notes contain access and QA details. Only the release summary
+# belongs in the public checkout, where it already has its canonical filename.
+checkpoint = root / 'release' / 'VISIONOIR_CHECKPOINT.md'
+if not checkpoint.is_file():
+    checkpoint = root / 'VISIONOIR_CHECKPOINT.md'
+if not checkpoint.read_text().startswith('# VISIONOIR · Registro pubblico di rilascio\n'):
+    raise ValueError('Missing public release checkpoint')
+shutil.copy2(checkpoint, target / 'VISIONOIR_CHECKPOINT.md')
 print(f"Staged {len(paths)} public source files.")
