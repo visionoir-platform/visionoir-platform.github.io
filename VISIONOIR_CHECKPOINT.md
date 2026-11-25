@@ -80,3 +80,7 @@ Nel candidato i test hanno confrontato campioni PCM, ordine di 1.650 attacchi, p
 ## Scuotimento del dispositivo
 
 Il gesto è attivo all’ingresso nella home e all’apertura del Chromatic Engine. Il primo scuotimento inverte il logo, il successivo lo ripristina. La home, la modalità immersiva e il proiettore presentano il logo senza etichette o comandi dedicati al gesto. La pagina usa esclusivamente i campioni resi disponibili dal browser. Dove serve l’autorizzazione generale ai sensori, nella home si trova nelle preferenze del footer.
+
+## Verifica Search Console
+
+La home include il meta tag di verifica della proprietà HTTPS con prefisso URL su GitHub Pages. Il tag è statico e leggibile anche senza JavaScript.
