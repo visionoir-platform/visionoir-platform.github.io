@@ -6,6 +6,21 @@ import {names,localePath} from '../src/locales.js';
 import {tracks} from '../src/tracks.js';
 const root=resolve(process.argv[2]||'dist');
 const load=path=>readFile(resolve(root,path),'utf8');
+// Keep the verified Google property working across static rebuilds and localized releases.
+const site = 'https://visionoir-platform.github.io/';
+const home = await load('index.html');
+const head = home.split(/<\/head>/i, 1)[0];
+const requiredVerification = 'n6254FZ8ulU_CfcKlGV49Mf7FtLDY5OvIahWPXxJadw';
+const verification = [...head.matchAll(/<meta\b[^>]*>/gi)]
+  .filter(([tag]) => /\bname="google-site-verification"/i.test(tag))
+  .map(([tag]) => tag.match(/\bcontent="([^"]+)"/i)?.[1]);
+assert(verification.includes(requiredVerification), 'Missing active Search Console verification in the homepage head');
+const expectedPages = ['', ...Object.keys(names).map(tag => localePath(tag).slice(1))]
+  .flatMap(route => ['', 'legal/', 'support/'].map(section => new URL(section + route, site).href));
+const listed = [...(await load('sitemap.xml')).matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+assert.deepEqual(listed.sort(), expectedPages.sort(), 'The sitemap must list each public localized page once');
+assert((await load('robots.txt')).split(/\r?\n/).some(line => line.trim() === 'Sitemap: ' + site + 'sitemap.xml'),
+  'robots.txt must advertise the production sitemap');
 for(const lang of Object.keys(names)){
  const route=localePath(lang).slice(1);
  const localized=await load(route+'index.html');
