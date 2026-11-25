@@ -15,8 +15,8 @@ import {
   select,
 } from './ui-kit.js';
 const data = (key, n) => `data-${key}="${attr(n)}"`;
-const scroller = (html) => `<div class="scroll-zone" tabindex="0">${html}</div>`;
-export function renderEditor(state, t, audio) {
+const scroller = (html, tabStop = true) => `<div class="scroll-zone"${tabStop ? ' tabindex="0"' : ''}>${html}</div>`;
+export function renderEditor(state, t, audio, locale = 'it') {
   const { p, scene, channel, page, view } = state;
   const tr = p.tracks[channel],
     pat = p.scenes[scene].patterns[channel],
@@ -25,28 +25,42 @@ export function renderEditor(state, t, audio) {
   const rows = state.bank * Math.max(1, state.bankSize),
     cut = p.tracks.slice(rows, rows + state.bankSize);
   const ctrls = `<div class="matrix-commands">${act('bank-prev', '◂', { title: t('previous'), disabled: !state.bank })}<span>${pad(rows + 1)}–${pad(rows + cut.length)}</span>${act('bank-next', '▸', { title: t('next'), disabled: rows + cut.length >= p.tracks.length })}<i></i>${act('page-prev', '‹', { title: t('previous'), disabled: !page })}<span>${pad(page * 16 + 1)}–${pad(page * 16 + 16)}</span>${act('page-next', '›', { title: t('next'), disabled: page >= 7 })}</div>`;
-  const rowLabel = (tr, i) =>
-    act('channel', tr.name, { classes: 'row-label', data: data('index', i), pressed: i === channel });
-  const steps = () =>
-    cut
-      .map((tr, j) => {
-        const ci = rows + j,
-          pat = p.scenes[scene].patterns[ci];
-        const steps = Array.from({ length: 16 }, (_, i) => {
-          const n = page * 16 + i,
-            e = pat.steps[n],
-            outside = n >= pat.length;
-          return `<button type="button" class="cell ${i % 4 === 0 ? 'downbeat' : ''} ${e && !outside ? 'on' : ''} ${e?.accent ? 'accent' : ''}" data-action="step" data-channel="${ci}" data-pos="${n}" data-beat="${i}" aria-label="${attr(tr.name + ' · ' + t('step') + ' ' + (n + 1))}" aria-pressed="${!!e && !outside}" ${outside ? 'disabled' : ''} style="--vel:${e?.velocity ?? 0}"></button>`;
-        }).join('');
-        return `<div class="step-row ${ci === channel ? 'selected' : ''}" style="--voice:${channelColor(ci)}">${rowLabel(tr, ci)}${steps}</div>`;
-      })
-      .join('');
-  const stepHeader = `<div class="step-row step-numbers"><span>${h(t('instrument'))}</span>${Array.from({ length: 16 }, (_, i) => `<span data-beat="${i}">${pad(page * 16 + i + 1)}</span>`).join('')}</div>`;
+  const stepGrid = () => {
+    const start = page * 16;
+    const cursor = state.gridFocus ?? { channel, pos: state.step };
+    const activeRow = Math.max(rows, Math.min(rows + cut.length - 1, cursor.channel));
+    const activeLength = p.scenes[scene].patterns[activeRow].length;
+    const activePos = cursor.pos === -1 || activeLength <= start ? -1 :
+      Math.max(start, Math.min(start + 15, activeLength - 1, cursor.pos));
+    const percent = new Intl.NumberFormat(locale, {style:'percent', maximumFractionDigits:1});
+    const columns = Math.max(start + 16, ...p.scenes[scene].patterns.map(pattern => pattern.length)) + 1;
+    const numbers = Array.from({length:16}, (_, i) =>
+      `<span role="columnheader" aria-colindex="${start + i + 2}" data-beat="${i}">${pad(start + i + 1)}</span>`).join('');
+    const header = `<div role="row" aria-rowindex="1" class="step-row step-numbers"><span role="columnheader" aria-colindex="1">${h(t('instrument'))}</span>${numbers}</div>`;
+    const lines = cut.map((tr,j) => {
+      const ci = rows + j, pattern = p.scenes[scene].patterns[ci];
+      const tab = pos => ci === activeRow && pos === activePos ? 0 : -1;
+      const label = act('channel', tr.name, { classes:'row-label', data:data('index',ci) + ' tabindex="' + tab(-1) + '"', pressed:ci === channel });
+      const cells = Array.from({length:16}, (_, i) => {
+        const pos = start + i, outside = pos >= pattern.length;
+        const event = outside ? null : pattern.steps[pos];
+        const title = [tr.name, t('step') + ' ' + (pos + 1)];
+        if (event) {
+          title.push(t('note') + ' ' + noteName(event.note), t('velocity') + ' ' + percent.format(event.velocity));
+          if (event.accent) title.push(t('accent'));
+        }
+        return `<div role="gridcell" aria-colindex="${pos + 2}"><button type="button" class="cell ${i % 4 === 0 ? 'downbeat' : ''} ${event ? 'on' : ''} ${event?.accent ? 'accent' : ''}" data-action="step" data-channel="${ci}" data-pos="${pos}" data-beat="${i}" aria-label="${attr(title.join(' · '))}" aria-pressed="${!!event}" aria-keyshortcuts="F2" tabindex="${tab(pos)}" ${outside ? 'disabled' : ''} style="--vel:${event?.velocity ?? 0}"></button></div>`;
+      }).join('');
+      return `<div role="row" aria-rowindex="${ci + 2}" class="step-row ${ci === channel ? 'selected' : ''}" style="--voice:${channelColor(ci)}"><div role="rowheader" aria-colindex="1">${label}</div>${cells}</div>`;
+    }).join('');
+    return `<p id="grid-help" class="step-grid-help">${h(t('gridKeys'))}</p>` +
+      scroller(`<div role="grid" aria-label="${attr(t('sequencer'))}" aria-describedby="grid-help" aria-rowcount="${p.tracks.length + 1}" aria-colcount="${columns}" class="step-matrix" dir="ltr">${header}${lines}</div>`, false);
+  };
   if (view === 'sequencer')
     return (
       head +
       ctrls +
-      scroller(`<div class="step-matrix" dir="ltr">${stepHeader}${steps()}</div>`) +
+      stepGrid() +
       `<div class="bar-tools">${select(
         t('length'),
         'length',

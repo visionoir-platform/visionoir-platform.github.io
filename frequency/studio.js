@@ -1,4 +1,5 @@
 import { createOutputRoute } from './audio-output.js';
+import { offlineStatus, prepareOffline, offlineError } from './offline-studio.js';
 import { createSpectrumMeter } from './visual-spectrum.js';
 import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
@@ -189,7 +190,7 @@ export async function startStudio() {
   const href = (path) => path + '?lang=' + encodeURIComponent(lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel" aria-labelledby="panel-heading"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
     const panel = el('master-analysis');
     panel.addEventListener('toggle', () => {
       tick.lufsMomentary = tick.lufsShort = tick.truePeakMax = null;
@@ -234,7 +235,7 @@ export async function startStudio() {
     const root = el('editor');
     const selector = root.contains(document.activeElement) && focusSelector(document.activeElement);
     const scroll = [...root.querySelectorAll('.scroll-zone')].map((z) => z.scrollLeft);
-    root.innerHTML = renderEditor(s, t, audio);
+    root.innerHTML = renderEditor(s, t, audio, lang);
     drawTick();
     root.querySelectorAll('.scroll-zone').forEach((z, i) => {
       if (scroll[i]) z.scrollLeft = scroll[i];
@@ -294,6 +295,7 @@ export async function startStudio() {
     flushSave();
   }
   function resetSelection() {
+    s.gridFocus = undefined;
     s.scene = 0;
     s.channel = 0;
     s.step = 0;
@@ -572,7 +574,7 @@ export async function startStudio() {
     const focused = d.open && activeDialog === id && d.contains(document.activeElement)
       ? focusSelector(document.activeElement) : '';
     activeDialog = id;
-    d.innerHTML = `<div class="dialog-inner"><header><h2>${h(title)}</h2>${act('close', '×', { title: t('close') })}</header>${body}</div>`;
+    d.innerHTML = `<div class="dialog-inner"><header><h2 id="panel-heading">${h(title)}</h2>${act('close', '×', { title: t('close') })}</header>${body}</div>`;
     if (!d.open) d.showModal();
     else if (focused) (d.querySelector(focused + ':not(:disabled)') || d.querySelector('button'))?.focus({preventScroll:true});
   }
@@ -614,6 +616,11 @@ export async function startStudio() {
       t(title),
       `<div class="field-grid">${select(t('genre'), 'gen-genre', genres.map((g, i) => option(i, g)).join(''))}${section}${number(t('seed'), 'gen-seed', s.p.seed, 1, 2147483647)}${number(t('pitch') + ' MIDI', 'gen-root', 36, 16, 84)}${select(t('scale'), 'gen-scale', scaleNames.map((v, i) => option(i, t(v), i === 1)).join(''))}${slider(t('intensity'), 'gen-intensity', 0.72)}${slider(t('complexity'), 'gen-complexity', 0.57)}</div>${act('compose', t(title), { classes: 'play', data: 'data-id="' + target + '"' })}`,
     );
+  }
+  function selectGridStep(button) {
+    s.channel = Number(button.dataset.channel);
+    s.step = Number(button.dataset.pos);
+    s.selected = new Set([s.step]);
   }
   function stepDialog() {
     const trackParams = { ...audio.PARAMETER_BANK[track().instrument], ...track().params };
@@ -794,12 +801,37 @@ export async function startStudio() {
     );
     exportFields();
   }
+  let installOffer, offlineJob, offlineRevision = 0;
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    installOffer = event;
+    const button = document.querySelector('[data-action="install-app"]');
+    if (button) button.hidden = false;
+  });
+  window.addEventListener('appinstalled', () => {
+    installOffer = undefined;
+    const button = document.querySelector('[data-action="install-app"]');
+    if (button) button.hidden = true;
+  });
+  const offlineText = result => result.bytes > 0
+    ? t(result.key) + ' · ' + new Intl.NumberFormat(lang,{maximumFractionDigits:1}).format(result.bytes/1024) + ' KiB'
+    : t(result.key);
+  async function refreshOffline(label) {
+    const button = el('panel').querySelector('[data-action="offline"]');
+    if (!label) return;
+    label.textContent = t(offlineJob ? 'offlinePreparing' : 'offlineChecking');
+    const job = offlineJob, revision = offlineRevision;
+    if (job && button) button.disabled = true;
+    const result = await (job || offlineStatus()).catch(offlineError);
+    if (label.isConnected && revision === offlineRevision && job === offlineJob) label.textContent = offlineText(result);
+  }
   function settings() {
     open(
       'settings',
       t('settings'),
-      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('ui-preferences', t('interfaceTitle'))}${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('erase', t('erase'))}</div><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !canChooseOutput() })}<output data-current-output aria-live="polite">${h(outputLabel())}</output></div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
+      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('ui-preferences', t('interfaceTitle'))}${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('install-app', t('offlineInstall'), {data:installOffer ? '' : 'hidden'})}${act('erase', t('erase'))}</div><p id="offline-status" role="status"></p><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !canChooseOutput() })}<output data-current-output aria-live="polite">${h(outputLabel())}</output></div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
     );
+    void refreshOffline(el('offline-status'));
   }
   async function preflight() {
     const unknown = '—',
@@ -807,7 +839,7 @@ export async function startStudio() {
         new Intl.NumberFormat(lang, { style: 'percent', maximumFractionDigits: 1 }).format(v);
     let disk,
       battery,
-      registered,
+      offlineInfo,
       ok = true;
     try {
       await engineReady();
@@ -821,7 +853,7 @@ export async function startStudio() {
       battery = await navigator.getBattery?.();
     } catch {}
     try {
-      registered = await navigator.serviceWorker?.getRegistration?.('/frequency/');
+      offlineInfo = await offlineStatus();
     } catch {}
     let valid = true;
     try {
@@ -854,7 +886,7 @@ export async function startStudio() {
       ['MIDI', midi ? [...midi.inputs.values()].map((x) => x.name).join(', ') || '0' : unknown],
       [t('output'), outputLabel(), true],
       [t('storage'), storageAvailable ? ready : no],
-      [t('offline'), registered?.active ? ready : unknown],
+      [t('offline'), offlineInfo ? offlineText(offlineInfo) : unknown],
     ];
     open(
       'preflight',
@@ -1280,9 +1312,7 @@ export async function startStudio() {
       case 'inspect-step':
         s.inspectStep = !s.inspectStep; editor(); return;
       case 'step': {
-        s.channel = Number(btn.dataset.channel);
-        s.step = Number(btn.dataset.pos);
-        s.selected = new Set([s.step]);
+        selectGridStep(btn);
         if (s.inspectStep) { editor(); stepDialog(); return; }
         mutate(() => {
           const p = pattern();
@@ -1660,6 +1690,14 @@ export async function startStudio() {
           }
         }
         return;
+      case 'install-app': {
+        const offer = installOffer;
+        if (!offer) return;
+        installOffer = undefined;
+        btn.hidden = true;
+        await offer.prompt();
+        return;
+      }
       case 'offline':
         await offline();
         return;
@@ -2038,25 +2076,21 @@ export async function startStudio() {
     };
   }
   async function offline() {
-    if (!guardLive()) return;
-    const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-    const worker = reg.installing || reg.waiting || reg.active;
-    if (!worker) throw Error('Offline');
-    if (!['installed', 'activated'].includes(worker.state))
-      await new Promise((resolve, reject) => {
-        const inspect = () => {
-          if (['activated', 'installed'].includes(worker.state)) {
-            worker.removeEventListener('statechange', inspect);
-            resolve();
-          } else if (worker.state === 'redundant') {
-            worker.removeEventListener('statechange', inspect);
-            reject(Error('Offline'));
-          }
-        };
-        worker.addEventListener('statechange', inspect);
-        inspect();
-      });
-    say(t('offlineReady'));
+    if (!guardLive() || offlineJob) return;
+    offlineRevision++;
+    offlineJob = prepareOffline().catch(offlineError);
+    const button = el('panel').querySelector('[data-action="offline"]');
+    if (button) button.disabled = true;
+    const label = el('offline-status');
+    if (label) label.textContent = t('offlinePreparing');
+    const result = await offlineJob;
+    offlineJob = undefined;
+    const current = el('offline-status');
+    if (current) {
+      current.textContent = offlineText(result);
+      el('panel').querySelector('[data-action="offline"]').disabled = false;
+    }
+    say(offlineText(result));
   }
   const root = el('studio');
   automationEditor.bind(root);
@@ -2087,8 +2121,58 @@ export async function startStudio() {
     const b = e.target.closest('[data-action]');
     if (b && !b.disabled) void action(b).catch(fail);
   });
+  root.addEventListener('focusin', (e) => {
+    const button = e.target.closest('.step-matrix button');
+    if (!button) return;
+    const previous = button.closest('.step-matrix').querySelector('button[tabindex="0"]');
+    if (previous && previous !== button) previous.tabIndex = -1;
+    button.tabIndex = 0;
+    s.gridFocus = button.dataset.pos === undefined
+      ? {channel:Number(button.dataset.index), pos:-1}
+      : {channel:Number(button.dataset.channel), pos:Number(button.dataset.pos)};
+  });
   root.addEventListener('keydown', (e) => {
-    const b = e.target.closest('.cell,.piano-cell');
+    const button = e.target.closest('.step-matrix button');
+    if (button) {
+      if (e.altKey || e.metaKey || e.shiftKey) return;
+      if (e.key === 'F2' && !e.ctrlKey && button.dataset.pos !== undefined) {
+        e.preventDefault();
+        selectGridStep(button);
+        editor();
+        stepDialog();
+        return;
+      }
+      if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+      e.preventDefault();
+      const grid = button.closest('.step-matrix');
+      const rows = [...grid.querySelectorAll('.step-row:not(.step-numbers)')];
+      const rowIndex = rows.indexOf(button.closest('.step-row'));
+      const buttons = row => [...row.querySelectorAll('button:not(:disabled)')];
+      let cells = buttons(rows[rowIndex]);
+      let column = cells.indexOf(button);
+      switch (e.key) {
+        case 'ArrowLeft': column--; break;
+        case 'ArrowRight': column++; break;
+        case 'ArrowUp':
+        case 'ArrowDown': {
+          const nextRow = rows[rowIndex + (e.key === 'ArrowUp' ? -1 : 1)];
+          if (!nextRow) return;
+          cells = buttons(nextRow);
+          break;
+        }
+        case 'Home':
+          if (e.ctrlKey) cells = buttons(rows[0]);
+          column = 0;
+          break;
+        case 'End':
+          if (e.ctrlKey) cells = buttons(rows.at(-1));
+          column = cells.length - 1;
+          break;
+      }
+      cells[Math.max(0, Math.min(cells.length - 1, column))].focus();
+      return;
+    }
+    const b = e.target.closest('.piano-cell');
     if (!b || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'End', 'Home'].includes(e.key))
       return;
     const row = b.parentElement,

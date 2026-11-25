@@ -1,9 +1,11 @@
 // Use two real production builds on a temporary loopback origin. No personal browser data is used.
 const assert = require('node:assert/strict');
-const { readFile } = require('node:fs/promises');
+const { readFile, writeFile, mkdtemp, rm, mkdir } = require('node:fs/promises');
+const { tmpdir } = require('node:os');
+const { execFileSync } = require('node:child_process');
 const http = require('node:http');
 const path = require('node:path');
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
 
 async function readBuild(root) {
   const sw = await readFile(path.join(root, 'frequency/sw.js'), 'utf8');
@@ -12,6 +14,21 @@ async function readBuild(root) {
   const files = new Map(await Promise.all(names.map(async name => [name, await readFile(path.join(root, name))])));
   files.set('/frequency/sw.js', sw);
   return { id, files };
+}
+// CI can exercise the next release using the exact production code and a
+// second generated manifest. An explicit second build is still supported.
+async function upgradedFixture(prior) {
+  const root = await mkdtemp(path.join(tmpdir(),'frequency-next-'));
+  try {
+    for (const [name,data] of prior.files) {
+      if (name === '/frequency/sw.js') continue;
+      const file = path.join(root,name);
+      await mkdir(path.dirname(file),{recursive:true});
+      await writeFile(file,name === '/frequency/index.html' ? data.toString()+'<!-- QA release B -->' : data);
+    }
+    execFileSync(process.execPath,[path.resolve(__dirname,'../offline-build.mjs'),root]);
+    return await readBuild(root);
+  } finally { await rm(root,{recursive:true,force:true}); }
 }
 const types = {'.html':'text/html', '.js':'text/javascript', '.json':'application/json',
   '.css':'text/css', '.svg':'image/svg+xml', '.png':'image/png', '.woff2':'font/woff2', '.webmanifest':'application/manifest+json'};
@@ -40,7 +57,8 @@ async function version(page, which) {
 }
 
 (async () => {
-  const [prior, next] = await Promise.all(process.argv.slice(2, 4).map(readBuild));
+  const prior = await readBuild(process.argv[2] || 'dist');
+  const next = process.argv[3] ? await readBuild(process.argv[3]) : await upgradedFixture(prior);
   assert(prior && next && prior.id !== next.id, 'Supply two distinct production build directories');
   let build = prior;
   const server = http.createServer((req, res) => {

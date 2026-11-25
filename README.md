@@ -29,3 +29,7 @@ Three activations of the studio logo within 1.5 seconds open FREQUENCY. The exis
 The build generates the localized site, support portal, factual legal information and the offline FREQUENCY shell. Run `node --test tests/*.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs` before the production build. To test the simulated support lifecycle locally run `node scripts/support-sandbox.mjs 25 refunded`. Public contributions are disabled. Deployment and rollback use reviewed commits through the GitHub Pages workflow. To roll back, revert the release merge in a new pull request and verify the resulting deployment.
 
 [Software and asset permissions](LICENSE) · [Credits](CREDITS.md) · [User music](USER_CONTENT_POLICY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+
+### Taking FREQUENCY offline
+
+Open Settings in FREQUENCY to download the studio for offline use. Settings and the preflight panel report missing files. Reopen Settings and use the download action to repair just those files. Keep an exported project backup before clearing browser storage. When a new build is waiting, close all studio tabs and reopen to switch after your session. Browsers that offer app installation show the install action in Settings.

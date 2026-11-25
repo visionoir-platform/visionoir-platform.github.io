@@ -120,3 +120,9 @@ Nel mixer, «Misure del master» analizza il segnale stereo dopo il fader. La le
 Dalla pagina dei diritti si raggiunge l’indice delle 19 informative incluse nella copia offline dello studio. Comprende le licenze dei caratteri, della triangolazione Earcut e del codificatore MP3.
 
 Le sedici voci del Chromatic Engine pilotano risposte visive dedicate. Un attacco breve e il relativo rilascio vengono trasmessi anche se cadono fra due letture dei livelli. Rack e proiettore ricevono velocità e accenti delle note effettivamente suonate. Il test del sequencer comprende note escluse per probabilità, canali e bus silenziati e voci polifoniche.
+
+## FREQUENCY offline e accesso al sequencer
+
+In Impostazioni e nel controllo prima del live, lo studio verifica quali risorse sono nella copia offline. La riparazione richiede i soli file mancanti e controlla la firma SHA-256 di ogni risposta. I progetti salvati sono conservati separatamente. Se il browser segnala spazio insufficiente, lo studio lo indica prima del download.
+
+La griglia del sequencer si raggiunge con Tab. Le frecce spostano il focus tra tracce e passi, Spazio modifica un passo e F2 apre i suoi parametri. Il materiale Acid del ritratto concentra la luce verde sulle pieghe della giacca.

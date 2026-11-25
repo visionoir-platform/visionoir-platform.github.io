@@ -131,8 +131,27 @@ void main(){
  float luma=dot(foil,vec3(.22,.68,.1));
  foil=mix(foil,vec3(.006,.026,.014)+vec3(.085,.95,.44)*luma*1.2,uAcid*.90);
  if(uAcid>.5){
-   float filament=pow(.5+.5*cos(P.y*49.+P.x*16.+5.*sin(P.x*7.-t*4.)-t*16.),14.);
-   foil+=uAccent*filament*uAudio.y*(.40+.45*liquid);
+   float fabric=cloth(P);
+   // Retain the existing grade on glasses, skin and hair.
+   if(fabric<1.){
+     float glint=pow(.5+.5*cos(P.y*49.+P.x*16.+5.*sin(P.x*7.-t*4.)-t*16.),14.);
+     foil+=uAccent*glint*uAudio.y*(.40+.45*liquid);
+   }
+   // Reflections run down the coat in object space so the strands turn with the sculpture.
+   float field=P.x*31.+P.z*16.+2.3*sin(4.3*P.y+P.z*5.+t)
+     +1.15*sin(7.*P.y-5.*P.x+.8*t);
+   float vein=.5+.5*cos(field);
+   float ridge=pow(vein,10.);
+   float polish=smoothstep(.07,.84,luma);
+   float energy=clamp(.72*uAudio.y+.28*uAudio.z,0.,1.);
+   vec3 enamel=vec3(.003,.012,.009)+vec3(.009,.19,.075)*polish;
+   // Broad green reflections retain the volume between the narrower luminous threads.
+   enamel+=vec3(.01,.49,.18)*polish*polish
+     +vec3(.015,.15,.063)*vein*polish;
+   vec3 thread=mix(vec3(.025,.79,.28),uAccent,.14+.18*energy);
+   enamel+=thread*ridge*(.14+.48*polish+.48*energy)
+     +vec3(.51,.92,.68)*stripe(h,.53,.09)*smoothstep(.48,.87,vein);
+   foil=mix(foil,enamel,fabric);
  } else if(uNoir>.5){
    foil=mix(foil,vec3(.016,.010,.033)+luma*vec3(.43,.31,.72),.88);
    foil+=uAccent*(.1+.16*uAudio.y)*fres;

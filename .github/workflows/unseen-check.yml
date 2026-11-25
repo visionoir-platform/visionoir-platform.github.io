@@ -47,3 +47,9 @@ jobs:
           curl --retry 8 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4173/frequency/
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/guided-composition.cjs http://127.0.0.1:4173
           PLAYWRIGHT_MODULE=playwright-core BROWSER_BIN="$(command -v google-chrome)" CHROMATIC_ORIGIN=http://127.0.0.1:4173 node frequency/chromatic/qa/playing-notes.cjs
+          FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/accessible-sequencer.cjs http://127.0.0.1:4173
+          BROWSER_BIN="$(command -v google-chrome)" CREATOR_PROOF="$RUNNER_TEMP/creator-acid" node src/creator/tools/qa-material-phases.cjs --acid
+      - name: Repair the studio and reopen a saved project offline
+        run: FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/offline-repair.cjs dist
+      - name: Wait for a live performance before activating the next offline build
+        run: FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/offline-update.cjs dist
