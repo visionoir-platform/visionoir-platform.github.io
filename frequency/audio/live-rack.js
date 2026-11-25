@@ -35,6 +35,7 @@ export class LiveRack {
   }
   clearMeters() {
     this.peakL = this.peakR = this.powerL = this.powerR = this.cross = this.count = 0;
+    this.mixOverload = false;
   }
   get running() {
     return this.active.running;
@@ -108,7 +109,8 @@ export class LiveRack {
     status.masterRms[0] = Math.sqrt(this.powerL / n);
     status.masterRms[1] = Math.sqrt(this.powerR / n);
     status.correlation =
-      this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : 0;
+      this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : null;
+    status.clipped ||= this.mixOverload;
     status.dspLoad = this.budget.load;
     status.meterStride = this.active.meterStride;
     status.queuedScene = this.queued?.scene ?? null;
@@ -122,6 +124,10 @@ export class LiveRack {
       if (this.outgoing) {
         count = Math.min(count, this.fadeLength - this.fade, this.left.length);
         this.outgoing.render(this.left, this.right, count);
+        if (this.outgoing.clipped) {
+          this.mixOverload = true;
+          this.outgoing.clipped = false;
+        }
         const l = offset ? left.subarray(offset, offset + count) : left;
         const r = offset ? right.subarray(offset, offset + count) : right;
         this.active.render(l, r, count);
@@ -131,7 +137,9 @@ export class LiveRack {
             b = Math.sin((pos * Math.PI) / 2);
           let x = a * this.left[i] + b * l[i],
             y = a * this.right[i] + b * r[i];
-          const gain = Math.min(1, this.active.ceil / Math.max(0.000001, Math.abs(x), Math.abs(y)));
+          const peak = Math.max(0.000001, Math.abs(x), Math.abs(y));
+          if (peak > 1) this.mixOverload = true;
+          const gain = Math.min(1, this.active.ceil / peak);
           l[i] = x * gain;
           r[i] = y * gain;
         }

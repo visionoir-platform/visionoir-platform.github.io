@@ -5,3 +5,4 @@ Static web editions: a single studio-authored pose baked into the original scann
 No animation clips or skeleton are distributed in these web editions.
 The portrait, likeness, images and VISIONOIR identity are excluded from the open-source software licence. Display in this VISIONOIR experience is authorised by the creator. Other uses require permission from the applicable rights holder.
 Contact: visionoir.platform@gmail.com
+Fallback editions for Noir, Afterimage, Alloy and Aura colour-grade the clothing in the original portrait renders. Rebuild from those stills and turntables with src/creator/tools/grade-fallback.py.

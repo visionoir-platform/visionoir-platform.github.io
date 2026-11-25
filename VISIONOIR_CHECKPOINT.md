@@ -92,3 +92,9 @@ La libreria di FREQUENCY riapre il documento modificabile incluso negli ZIP espo
 I preset del Visual Rack e le impostazioni visive delle scene viaggiano con il progetto. Il proiettore segue qualità e assegnazioni agli strumenti, anche quando il trasporto è fermo. La sezione Master del mixer apre gli inserti. Ogni slot può richiamare un preset di fabbrica. L'EQ parametrico offre frequenza, guadagno e Q indipendenti. Il Rumble dispone di un controllo dei bassi dopo la distorsione. I valori precedenti vengono conservati alla riapertura delle sessioni esistenti. I crediti editoriali del sito, del gioco e dello studio includono la direzione di Flavio Giorgio Guarini.
 
 In una prova di quattro ore della precedente build `frequency-2d63855e8b3907`, il segnale Web Audio a 48 kHz è stato presente in tutti i 47.999 campionamenti effettuati su Chrome per macOS. La prova ha attraversato otto cambi scena. L'ascolto fisico e le versioni successive hanno collaudi distinti.
+
+## Ritratto a sei finiture e misuratori del mixer
+
+Quando WebGL è indisponibile, il ritratto metallico del creatore segue ciascuna delle sei tracce anche nella rotazione a 24 viste. Il caricamento riguarda la finitura scelta. Nel mixer, i sei bus misurano la somma stereo dopo il fader. Il silenzio o un canale privo di segnale danno una correlazione indefinita, indicata da «—». L’indicatore CLIP rileva anche i sovraccarichi nella dissolvenza fra due scene.
+
+La [PR 17](https://github.com/visionoir-platform/visionoir-platform.github.io/pull/17) ha superato 114 test automatici. Sul sito pubblico è stato possibile impostare lo studio offline, scollegare la rete del browser, riaprire uno ZIP esportato, recuperare il salvataggio precedente dopo un guasto simulato e ricaricare il progetto. Il [formato nativo](frequency/FORMAT.md) descrive come conservare e leggere i progetti fuori dal sito.

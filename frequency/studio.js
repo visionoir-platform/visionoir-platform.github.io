@@ -498,7 +498,7 @@ export async function startStudio() {
         signal.voices.fill(0);
         signal.level = signal.bass = signal.mid = signal.high = 0;
         signal.buses = [];
-        tick = { ...tick, levels: [], peaks: [], buses: [], masterPeak: [0, 0], masterRms: [0, 0], clipped: false };
+        tick = { ...tick, levels: [], peaks: [], buses: [], masterPeak: [0, 0], masterRms: [0, 0], correlation: null, clipped: false };
         updateTransport();
         setState();
         drawTick();

@@ -24,6 +24,8 @@ In **Impostazioni → Interfaccia e tastiera** scegli la dimensione dei controll
 
 ## Salva, esporta, usa offline
 
+Il [formato di progetto](FORMAT.md) documenta i campi, le unità di misura e la lettura locale con Node.js.
+
 Il browser conserva il progetto corrente e il salvataggio precedente in IndexedDB. **Libreria → Salva +** conserva una copia nominata. **Esporta → .vfreq** comprende pattern, mixer, impostazioni visive e campioni importati. **Importa file** riapre un progetto .vfreq, JSON o uno ZIP esportato da FREQUENCY, anche con gli stem WAV. Il browser recupera il documento modificabile con i campioni incorporati e verifica la sua integrità. **Cancella dati locali** richiede conferma. I browser possono liberare spazio locale: conserva una copia `.vfreq` separata.
 
 **Esporta** comprende WAV PCM 16/24 bit o float 32 bit, AIFF e FLAC 16/24 bit, MP3, MIDI e un archivio ZIP. Il FLAC impiega blocchi lossless verbatim e può avere dimensioni simili al WAV. Scegli mix, traccia o bus e imposta intervallo, frequenza, mastering e coda degli effetti. WAV/AIFF/FLAC supportano sei frequenze da 44,1 a 192 kHz. MP3 supporta 44,1 e 48 kHz, con 128, 192, 256 o 320 kbps. Per passare a un’altra DAW, esporta gli stem, importa i file WAV dal medesimo punto iniziale e importa il MIDI alle stesse impostazioni di tempo. Le scene native, i preset e la sintesi si riaprono tramite `.vfreq`.

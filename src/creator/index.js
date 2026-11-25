@@ -2,6 +2,7 @@ import './portrait.css';
 import { bindPortraitOrbit } from './orbit.js';
 import { createPortraitSpin, turnDuration } from './spin.js';
 import { makeTurntable } from './turntable.js';
+import { fallbackMaterial } from './fallback-material.js';
 import { deviceTilt, recenterDeviceTilt } from '../device-tilt.js';
 
 const base = import.meta.env?.BASE_URL || '/';
@@ -45,13 +46,15 @@ export function mountCreator(
     clearTimeout(timer);
     timer = 0;
     if (host.dataset.render === 'webgl' || !posterURL.endsWith('/creator/poster.webp')) return;
-    const acid = getMode() === 'acid';
-    const variant = (acid ? '-acid' : '') + (look === 'metal' ? '' : '-' + look);
-    const next = base + 'creator/poster' + variant + '.webp';
+    const fallback = flat || host.dataset.render === 'context-lost';
+    const track = getMode();
+    // Keep the initial poster while WebGL starts. The extra grades are fetched only in fallback.
+    const material = fallbackMaterial(fallback || track === 'acid' ? track : 'chrome', look);
+    const next = base + 'creator/poster' + material.poster + '.webp';
     if (poster.getAttribute('src') !== next) poster.setAttribute('src', next);
-    if (flat || host.dataset.render === 'context-lost') {
+    if (fallback) {
       // The natural material uses its photographed colours in every track.
-      atlas.show(yaw(), look === 'natural' ? '-natural' : variant);
+      atlas.show(yaw(), material.atlas);
       if (spin.running) timer = setTimeout(() => { syncPoster(); orbit?.updateReadout(); }, turnDuration / 48);
     }
   }
