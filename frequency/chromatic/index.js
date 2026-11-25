@@ -50,6 +50,8 @@ export async function mountChromatic(
   let stage,
     outputWin = null,
     outputKey = '',
+    outputVisible = false,
+    lastFrame = -Infinity,
     timer = 0,
     disposed = false,
     lastSentState = null;
@@ -105,20 +107,36 @@ export async function mountChromatic(
     }
     return frame;
   }
+  function stopOutputFrames() {
+    clearInterval(timer);
+    timer = 0;
+    outputVisible = false;
+  }
   function tellOutput(force = false) {
+    if (!outputVisible) return;
     if (!outputWin || outputWin.closed) {
-      clearInterval(timer);
-      timer = 0;
+      stopOutputFrames();
       return;
     }
-    const signal = getFrame();
     if (!force && lastSentState === visual && visual.freeze) return;
-    const packet = { type: 'visionoir.visual.frame', id: outputKey, signal };
+    const now = performance.now();
+    if (!force && now - lastFrame < 50) return;
+    lastFrame = now;
+    const packet = { type: 'visionoir.visual.frame', id: outputKey, signal: getFrame() };
     if (force || lastSentState !== visual) {
       packet.state = visual;
       lastSentState = visual;
     }
     outputWin.postMessage(packet, location.origin);
+  }
+  function trigger(index, value = 1) {
+    if (!Number.isInteger(index) || index < 0 || index >= instruments.length || !Number.isFinite(value))
+      return;
+    value = unit(value);
+    stage?.trigger(index, value);
+    if (outputVisible && outputWin && !outputWin.closed) {
+      outputWin.postMessage({ type: 'visionoir.visual.hit', id: outputKey, index, value }, location.origin);
+    }
   }
   function external() {
     if (outputWin && !outputWin.closed) {
@@ -137,17 +155,18 @@ export async function mountChromatic(
       return;
     }
     message.textContent = '';
-    clearInterval(timer);
-    timer = setInterval(tellOutput, 55);
+    stopOutputFrames();
+    lastSentState = null;
   }
   const outputReady = (e) => {
-    if (
-      e.origin === location.origin &&
-      e.source === outputWin &&
-      e.data?.type === 'visionoir.visual.ready' &&
-      e.data.id === outputKey
-    )
+    if (e.origin !== location.origin || e.source !== outputWin || e.data?.id !== outputKey) return;
+    if (e.data.type !== 'visionoir.visual.ready' && e.data.type !== 'visionoir.visual.visibility') return;
+    stopOutputFrames();
+    outputVisible = e.data.visible === true;
+    if (outputVisible) {
       tellOutput(true);
+      timer = setInterval(tellOutput, 55);
+    }
   };
   window.addEventListener('message', outputReady);
   const exitExpanded = button('×', () => surface.classList.remove('is-expanded'));
@@ -210,7 +229,7 @@ export async function mountChromatic(
     heading.append(modeSelect);
     for (const [k, action] of Object.entries({
       freeze: () => toggle('freeze'),
-      trigger: () => stage?.trigger(routeIndex, 1),
+      trigger: () => trigger(routeIndex, 1),
       fullscreen,
       output: external,
     })) {
@@ -323,7 +342,8 @@ export async function mountChromatic(
       lang = v;
       renderControls();
     },
-    trigger: (i, v) => stage?.trigger(i, v),
+    trigger,
+    sendOutputFrame: tellOutput,
     setMotion: (v) => mutate({ reduced: !v }, false),
     handleCC,
     dispose() {
@@ -349,14 +369,15 @@ export async function mountVJ(host) {
     frame = normalizeSignal(),
     stage;
   const receive = (e) => {
-    if (
-      e.origin !== location.origin ||
-      e.source !== window.opener ||
-      !key ||
-      e.data?.type !== 'visionoir.visual.frame' ||
-      e.data.id !== key
-    )
+    if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
+    if (e.data.type === 'visionoir.visual.hit') {
+      const { index, value } = e.data;
+      if (Number.isInteger(index) && index >= 0 && index < instruments.length && Number.isFinite(value)) {
+        stage?.trigger(index, unit(value));
+      }
       return;
+    }
+    if (e.data.type !== 'visionoir.visual.frame') return;
     if (e.data.state) state = normalizeVisual(e.data.state);
     frame = normalizeSignal(e.data.signal || {}, frame);
     stage?.invalidate();
@@ -367,8 +388,23 @@ export async function mountVJ(host) {
   };
   box.addEventListener('dblclick', full);
   stage = await buildStage(surface, { getState: () => state, getSignal: () => frame });
-  window.opener?.postMessage({ type: 'visionoir.visual.ready', id: key }, location.origin);
+  const reportVisibility = (type) =>
+    window.opener?.postMessage(
+      {
+        type,
+        id: key,
+        visible: !document.hidden && stage.getRenderState() === 'webgl',
+      },
+      location.origin,
+    );
+  const visibility = () => reportVisibility('visionoir.visual.visibility');
+  const renderObserver = new MutationObserver(visibility);
+  renderObserver.observe(surface, { attributes: true, attributeFilter: ['data-render'] });
+  document.addEventListener('visibilitychange', visibility);
+  reportVisibility('visionoir.visual.ready');
   const clean = () => {
+    renderObserver.disconnect();
+    document.removeEventListener('visibilitychange', visibility);
     window.removeEventListener('message', receive);
     window.removeEventListener('pagehide', clean);
     box.removeEventListener('dblclick', full);

@@ -389,7 +389,7 @@ export async function buildStage(
     if (!failed) {
       canvas.style.visibility = 'visible';
       fallback.hidden = true;
-      host.dataset.render = 'webgl';
+      if (host.dataset.render !== 'webgl') host.dataset.render = 'webgl';
     }
     if (!simple && !frozen && state.quality === 'auto') {
       slowFrames = interval > 35 ? Math.min(60, slowFrames + 1) : Math.max(0, slowFrames - 0.35);
