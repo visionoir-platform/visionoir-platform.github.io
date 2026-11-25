@@ -1,4 +1,4 @@
-/** Native FREQUENCY session v1. MIDI pitches, 16th-note time, normalized synth parameters. */
+/** FREQUENCY editing model. MIDI pitches, 16th-note time, normalized synth parameters. */
 import { validateAutomation } from './automation.js';
 import { validateRegions } from './regions.js';
 import { additionalSession, EXTRA_DEMOS } from './library.js';
@@ -461,6 +461,8 @@ function validNote(n, kind) {
     (!n.locks || instrumentValues(n.locks, kind))
   );
 }
+const MAX_PATTERN_STEPS = 128;
+const MAX_PROJECT_STEPS = 350000;
 export function validateProject(p) {
   if (
     !plain(p) ||
@@ -573,10 +575,10 @@ export function validateProject(p) {
       if (
         !plain(pat) ||
         !Number.isInteger(pat.length) ||
-        !finite(pat.length, 1, 128) ||
+        !finite(pat.length, 1, MAX_PATTERN_STEPS) ||
         !Array.isArray(pat.steps) ||
         pat.steps.length < pat.length ||
-        pat.steps.length > 128
+        pat.steps.length > MAX_PATTERN_STEPS
       )
         throw Error('project.pattern');
       cells += pat.steps.length;
@@ -584,7 +586,7 @@ export function validateProject(p) {
     }
   }
   if (
-    cells > 350000 ||
+    cells > MAX_PROJECT_STEPS ||
     !Array.isArray(p.arrangement) ||
     !p.arrangement.length ||
     p.arrangement.length > 2048 ||
@@ -617,12 +619,73 @@ export function validateProject(p) {
 export function totalBars(p) {
   return p.arrangement.reduce((n, a) => n + a.bars, 0);
 }
-export function projectFile(p) {
-  validateProject(p);
-  return new Blob([JSON.stringify(p)], { type: 'application/json' });
-}
 export const MAX_PROJECT_BYTES = 80e6;
+export const NATIVE_FILE_VERSION = 2;
+
+// Only the file representation is packed. The editor, IndexedDB and DSP keep addressable cells.
+function packPattern(pattern) {
+  const steps = [];
+  let rests = 0;
+  for (const note of pattern.steps) {
+    if (note === null) {
+      rests++;
+    } else {
+      if (rests) steps.push(rests);
+      rests = 0;
+      steps.push(note);
+    }
+  }
+  if (rests) steps.push(rests);
+  return { ...pattern, steps };
+}
+
+export function projectFile(project, version = NATIVE_FILE_VERSION) {
+  validateProject(project);
+  let data = project;
+  if (version === 2) {
+    const scenes = project.scenes.map(scene => ({ ...scene, patterns: scene.patterns.map(packPattern) }));
+    data = { ...project, version, scenes };
+  } else if (version !== 1) {
+    throw Error('project.version');
+  }
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  if (blob.size > MAX_PROJECT_BYTES) throw Error('project.size');
+  return blob;
+}
+
+function unpackProject(data) {
+  if (data?.version === 1) return validateProject(data);
+  if (data?.version !== 2) throw Error('project.version');
+  if (!Array.isArray(data.tracks) || data.tracks.length < 1 || data.tracks.length > 32 ||
+      !Array.isArray(data.scenes) || data.scenes.length < 1 || data.scenes.length > 128) {
+    throw Error('project.size');
+  }
+  let cells = 0;
+  for (const scene of data.scenes) {
+    if (!Array.isArray(scene?.patterns) || scene.patterns.length !== data.tracks.length) throw Error('project.scene');
+    for (const pattern of scene.patterns) {
+      if (!Array.isArray(pattern?.steps) || pattern.steps.length > MAX_PATTERN_STEPS) throw Error('project.pattern');
+      const steps = [];
+      for (const token of pattern.steps) {
+        const isRest = typeof token === 'number';
+        const count = isRest ? token : 1;
+        if (!Number.isInteger(count) || count < 1 || steps.length + count > MAX_PATTERN_STEPS) throw Error('project.pattern');
+        cells += count;
+        if (cells > MAX_PROJECT_STEPS) throw Error('project.size');
+        if (isRest) {
+          for (let i = 0; i < count; i++) steps.push(null);
+        } else {
+          steps.push(token);
+        }
+      }
+      pattern.steps = steps;
+    }
+  }
+  data.version = 1;
+  return validateProject(data);
+}
+
 export async function readProject(file) {
   if (file.size > MAX_PROJECT_BYTES) throw Error('project.size');
-  return validateProject(JSON.parse(await file.text()));
+  return unpackProject(JSON.parse(await file.text()));
 }

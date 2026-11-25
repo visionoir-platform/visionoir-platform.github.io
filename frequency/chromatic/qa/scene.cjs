@@ -82,8 +82,8 @@ fs.mkdirSync(proof, { recursive: true });
         getSignal: () => ({
           ...window.input,
           bpm: 144,
-          beat: 2,
-          voices: Array.from({ length: 16 }, (_, i) => (i % 3 === 0 ? 0.7 : 0.15)),
+          beat: window.input.beat ?? 2,
+          voices: window.input.level ? Array.from({ length: 16 }, (_, i) => (i % 3 === 0 ? 0.7 : 0.15)) : [],
         }),
       });
     });
@@ -101,6 +101,39 @@ fs.mkdirSync(proof, { recursive: true });
       await page.waitForTimeout(1050);
       await page.locator('.chromatic-surface').screenshot({ path: path.join(proof, mode + '.png') });
     }
+    const phrases = await page.evaluate(async () => {
+      const gl = window.studio.getCanvas().getContext('webgl2');
+      const draw = gl.drawArrays;
+      const uniforms = new WeakMap();
+      const result = [];
+      try {
+        for (const [beat, expected, vertices] of [[56, 9, 116], [64, 6, 8]]) {
+          Object.assign(window.input, { beat, bass: 0, mid: 0, high: 0, level: 0 });
+          let shader = false, geometry = false;
+          gl.drawArrays = function (primitive, start, count) {
+            if (primitive === gl.LINE_STRIP && count === vertices) geometry = true;
+            if (!shader && primitive === gl.POINTS) {
+              const program = gl.getParameter(gl.CURRENT_PROGRAM);
+              if (!uniforms.has(program)) uniforms.set(program, [
+                gl.getUniformLocation(program, 'uNext'), gl.getUniformLocation(program, 'uMix'),
+              ]);
+              const [next, mix] = uniforms.get(program);
+              shader = next && mix && gl.getUniform(program, next) === expected && gl.getUniform(program, mix) >= 0.99;
+            }
+            return draw.call(this, primitive, start, count);
+          };
+          const deadline = performance.now() + 8000;
+          while (!(shader && geometry) && performance.now() < deadline)
+            await new Promise(resolve => requestAnimationFrame(resolve));
+          result.push({ beat, expected, shader: Boolean(shader), geometry });
+        }
+      } finally {
+        gl.drawArrays = draw;
+        Object.assign(window.input, { beat: 2, bass: 0.84, mid: 0.7, high: 0.74, level: 0.82 });
+      }
+      return result;
+    });
+    assert.ok(phrases.every(p => p.shader && p.geometry), JSON.stringify(phrases));
     await page.locator('.chromatic-rack summary').click();
     await page.getByRole('button', { name: 'Apprendi MIDI' }).click();
     const midi = await page.evaluate(() => {
@@ -145,7 +178,7 @@ fs.mkdirSync(proof, { recursive: true });
         {
           browser: browser.version(),
           device: 'Chromium desktop with software WebGL2',
-          names,
+          names, phrases,
           errors,
           midi: true,
           userPreset: true,

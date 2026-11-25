@@ -9,7 +9,7 @@ project.name = 'Cantiere · 工房';
 project.tracks.find(track => track.instrument === 'sampler').sample = {
   name: 'Take.wav', rate: 48000, pcm: Buffer.from([0, 0, 1, 0, 3, 0, 5, 0]).toString('base64'),
 };
-const document = projectFile(project);
+const document = projectFile(project, 1);
 const projectBundle = () => zipFiles([{ name: 'project.vfreq', blob: document }, ...midiBundleFiles(project)]);
 
 test('open the exported MIDI and project bundle, as well as plain V1 JSON', async () => {
