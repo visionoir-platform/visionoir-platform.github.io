@@ -87,7 +87,9 @@ export class Voice {
     slide = false,
     accent = false,
     sample = null,
+    token,
   ) {
+    this.token = token;
     const p = this.p;
     Object.assign(p, defaults[kind], spec, locks || {});
     this.kind = kind;
@@ -119,7 +121,7 @@ export class Voice {
                 ? 0.001 + p.attack * 0.4
                 : 0.0017),
       );
-    this.gate = Math.max(1, Math.round(gate * this.rate));
+    this.gate = gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
     this.held = [2, 3, 4, 10, 11, 12, 13, 14, 15].includes(kind);
     if (kind === 15 && p.oneShot > 0.5 && p.loop <= 0.5) this.gate = this.rate * 95;
     this.release = envelope(
@@ -301,7 +303,7 @@ export class Voice {
         break;
       }
       case 13: {
-        const prog = Math.min(1, n / this.gate),
+        const prog = Math.min(1, n / (Number.isFinite(this.gate) ? Math.max(1, this.gate) : this.rate)),
           motion = p.sweep > 0.5 ? prog : 1 - prog;
         const fc = clamp(((0.003 + 0.48 * motion * motion) * 48000) / this.rate, 0.001, 0.65);
         this.lp += fc * this.bp;

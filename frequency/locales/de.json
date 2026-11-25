@@ -141,5 +141,12 @@
   "sceneFade": "Szenenüberblendung",
   "device": "Gerät",
   "cpuBudget": "DSP-Auslastung",
-  "latency": "Latenz"
+  "latency": "Latenz",
+  "audioRegion": "Audioregion",
+  "part": "Abschnitt",
+  "trimStart": "Anfang im Sample",
+  "trimEnd": "Ende im Sample",
+  "regionImport": "Aufnahme in Mono importieren",
+  "regionBounds": "Das Ende muss hinter dem Anfang liegen.",
+  "regionProtect": "Dieses Sample wird im Arrangement verwendet. Importiere die neue Aufnahme über Audioregion."
 }

@@ -12,6 +12,7 @@ export class LiveRack {
     this.project = project;
     this.active = new DSP(project, rate);
     this.spare = null;
+    this.held = new Map();
     this.outgoing = null;
     this.queued = null;
     this.fade = 0;
@@ -43,6 +44,7 @@ export class LiveRack {
   }
   stop() {
     this.clearMeters();
+    this.held.clear();
     this.active.stop();
     this.outgoing?.stop();
     if (this.outgoing) this.spare = this.outgoing;
@@ -52,8 +54,15 @@ export class LiveRack {
   trigger(...args) {
     this.active.trigger(...args);
   }
-  release(...args) {
-    this.active.release(...args);
+  noteOn(track, pitch, velocity, token) {
+    if (!Number.isSafeInteger(token) || token < 1) return;
+    this.held.set(token, {track, pitch, velocity});
+    this.active.trigger(track, pitch, velocity, null, {voiceToken: token});
+  }
+  release(track, pitch, token) {
+    if (token !== undefined) this.held.delete(token);
+    this.active.release(track, pitch, token);
+    this.outgoing?.release(track, pitch, token);
   }
   queueScene(scene) {
     if (!Number.isInteger(scene) || !this.project.scenes[scene]) return;
@@ -114,6 +123,8 @@ export class LiveRack {
             this.fadeLength = Math.max(2, Math.round((beats * 60 * this.rate) / this.project.bpm));
             this.outgoing = this.active;
             this.active = this.spare;
+            for (const [token, note] of this.held)
+              this.active.trigger(note.track, note.pitch, note.velocity, null, {voiceToken: token});
             this.spare = null;
             this.queued = null;
             this.fade = 0;

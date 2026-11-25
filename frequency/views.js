@@ -1,3 +1,4 @@
+import { audioRegionList } from './region-editor.js';
 import {
   escape as h,
   attr,
@@ -82,7 +83,7 @@ export function renderEditor(state, t, audio) {
       .map((clip, i) => {
         const at = bar;
         bar += clip.bars;
-        return `<li class="clip"><span class="clip-no">${pad(at)}</span>${select(t('scene'), 'clip-scene:' + i, p.scenes.map((s, j) => option(j, s.name, j === clip.scene)).join(''))}${number(t('bars'), 'clip-bars:' + i, clip.bars, 1, 4096)}<div>${act('clip-up', '↑', { title: t('previous'), data: data('index', i), disabled: i === 0 })}${act('clip-down', '↓', { title: t('next'), data: data('index', i), disabled: i === p.arrangement.length - 1 })}${act('clip-duplicate', '⧉', { title: t('duplicate'), data: data('index', i) })}${act('clip-delete', '×', { title: t('remove'), data: data('index', i), disabled: p.arrangement.length === 1 })}</div></li>`;
+        return `<li class="clip"><span class="clip-no">${pad(at)}</span>${select(t('scene'), 'clip-scene:' + i, p.scenes.map((s, j) => option(j, s.name, j === clip.scene)).join(''))}${number(t('bars'), 'clip-bars:' + i, clip.bars, Math.max(1,...(clip.audioRegions || []).map(r=>Math.floor(r.step / 16)+1)), 4096)}<div>${act('clip-up', '↑', { title: t('previous'), data: data('index', i), disabled: i === 0 })}${act('clip-down', '↓', { title: t('next'), data: data('index', i), disabled: i === p.arrangement.length - 1 })}${act('clip-duplicate', '⧉', { title: t('duplicate'), data: data('index', i) })}${act('clip-delete', '×', { title: t('remove'), data: data('index', i), disabled: p.arrangement.length === 1 })}</div></li>`;
       })
       .join('');
     const timeline = scroller(
@@ -101,7 +102,7 @@ export function renderEditor(state, t, audio) {
     );
     return (
       head +
-      timeline +
+      timeline + audioRegionList(p, t) +
       `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('loop', t('loop'), { pressed: !!p.loop?.on })} ${number(t('start'), 'loop-start', (p.loop?.start ?? 0) + 1, 1, bar - 1)} ${number(t('end'), 'loop-end', p.loop?.end ?? bar - 1, 1, bar - 1)} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
     );
   }

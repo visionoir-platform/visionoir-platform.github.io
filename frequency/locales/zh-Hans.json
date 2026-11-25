@@ -141,5 +141,12 @@
   "sceneFade": "场景交叉淡化",
   "device": "设备",
   "cpuBudget": "DSP 负载",
-  "latency": "延迟"
+  "latency": "延迟",
+  "audioRegion": "音频片段",
+  "part": "段落",
+  "trimStart": "素材起点",
+  "trimEnd": "素材终点",
+  "regionImport": "以单声道导入录音",
+  "regionBounds": "终点必须晚于起点。",
+  "regionProtect": "时间线上已使用此采样。请从音频片段导入新录音。"
 }

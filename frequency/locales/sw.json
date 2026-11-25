@@ -141,5 +141,12 @@
   "sceneFade": "Mpito wa sehemu",
   "device": "Kifaa",
   "cpuBudget": "Mzigo wa DSP",
-  "latency": "Ucheleweshaji"
+  "latency": "Ucheleweshaji",
+  "audioRegion": "Kipande cha sauti",
+  "part": "Sehemu",
+  "trimStart": "Mwanzo wa sampuli",
+  "trimEnd": "Mwisho wa sampuli",
+  "regionImport": "Ingiza rekodi ya sauti ya mono",
+  "regionBounds": "Mwisho lazima ufuate mwanzo.",
+  "regionProtect": "Sampuli hii inatumika kwenye ratiba. Ingiza rekodi mpya kupitia Kipande cha sauti."
 }

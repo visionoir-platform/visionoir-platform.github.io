@@ -1,3 +1,5 @@
+import { createRegionEditor } from './region-editor.js';
+import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
 import { generateSession, genres } from './composer.js';
 import * as audio from './audio/index.js';
 import { translator, names, direction, getInitialLocale } from './i18n.js';
@@ -18,6 +20,8 @@ import {
   seededVariation,
 } from './ui-kit.js';
 import { renderEditor, masterPanel } from './views.js';
+
+import { visualSlotForChannel, collectVisualLevels } from './chromatic/channel-routing.js';
 
 export async function startStudio() {
   let lang = getInitialLocale(),
@@ -90,6 +94,17 @@ export async function startStudio() {
     if (!engine.context || engine.context.state !== 'running') await engine.prepare(s.p);
     return engine;
   };
+  const midiNotes = createMidiNotes({
+    ready: engineReady,
+    noteOn(track, pitch, velocity, token) {
+      engine.noteOn(track, pitch, velocity, token);
+      const slot = visualSlotForChannel(s.p.tracks, track);
+      if (slot !== undefined) visual?.trigger(slot, velocity);
+    },
+    noteOff: (track, pitch, token) => engine.release(track, pitch, token),
+    onError: fail,
+  });
+  let midiPorts;
   const sceneName = (i) => s.p.scenes[i]?.name || '';
   function say(message) {
     if (el('notice')) {
@@ -264,6 +279,7 @@ export async function startStudio() {
   let commandCount = 0;
   function stop() {
     commandCount++;
+    midiNotes.reset();
     engine.stop();
     playing = false;
     audioState = 'stopped';
@@ -292,7 +308,8 @@ export async function startStudio() {
   async function audition(ch, pitch, velocity = 0.85) {
     await engineReady();
     engine.trigger(ch, pitch, velocity);
-    visual?.trigger(ch, velocity);
+    const slot = visualSlotForChannel(s.p.tracks, ch);
+    if (slot !== undefined) visual?.trigger(slot, velocity);
   }
   function noteBase(i = s.channel) {
     return ['kick', 'rumble', 'sub', 'industrial'].includes(s.p.tracks[i].instrument)
@@ -301,7 +318,7 @@ export async function startStudio() {
         ? 60
         : 48;
   }
-  const signal = { voices: [], level: 0, bass: 0, mid: 0, high: 0, beat: 0, bpm: s.p.bpm, scene: 0 };
+  const signal = { voices: new Float32Array(audio.INSTRUMENTS.length), level: 0, bass: 0, mid: 0, high: 0, beat: 0, bpm: s.p.bpm, scene: 0 };
   const spectrum = new Uint8Array(512),
     wave = new Uint8Array(512);
   function drawTick() {
@@ -333,7 +350,7 @@ export async function startStudio() {
         updateTransport();
         setState();
       }
-      signal.voices = next.levels || [];
+      collectVisualLevels(s.p.tracks, next.levels, signal.voices);
       signal.beat = Math.max(
         0,
         (next.absoluteStep ?? (next.bar || 0) * 16 + ((next.step || 0) % 16)) / 4,
@@ -418,6 +435,7 @@ export async function startStudio() {
     }
     setTimeout(meter, document.hidden ? 700 : 70);
   }
+  const regionEditor = createRegionEditor({state:s, t:key=>t(key), audio, open, close, mutate, field:targetField, guardLive});
   function open(id, title, body) {
     const d = el('panel');
     if (!d.open) dialogTrigger = document.activeElement;
@@ -426,6 +444,7 @@ export async function startStudio() {
     if (!d.open) d.showModal();
   }
   function close() {
+    regionEditor.clear();
     if (el('panel').open) el('panel').close();
     activeDialog = undefined;
     if (dialogTrigger?.isConnected) dialogTrigger.focus();
@@ -1252,6 +1271,10 @@ export async function startStudio() {
       case 'add-clip':
         mutate(() => s.p.arrangement.push({ scene: s.scene, bars: 4 }));
         return;
+      case 'region-add': regionEditor.begin(0); return;
+      case 'region-edit': regionEditor.begin(i, Number(btn.dataset.region)); return;
+      case 'region-save': regionEditor.commit(); return;
+      case 'region-delete': regionEditor.commit(true); return;
       case 'clip-source': {
         s.clipIndex = i;
         s.lane = +btn.dataset.channel;
@@ -1640,7 +1663,9 @@ export async function startStudio() {
   }
   async function connectMidi() {
     if (!navigator.requestMIDIAccess) throw Error('MIDI');
-    midi = await navigator.requestMIDIAccess({ sysex: false });
+    const access = await navigator.requestMIDIAccess({ sysex: false });
+    midiPorts?.close();
+    midi = access;
     let previousClock,
       beats = 0;
     const hardwareToField = (id, x) => {
@@ -1659,7 +1684,7 @@ export async function startStudio() {
           editor();
         });
     };
-    function receive(message) {
+    function receive(message, inputId) {
       const [status, a, b] = message.data;
       if (status === 0xf8) {
         if (++beats % 24 === 0) {
@@ -1680,6 +1705,7 @@ export async function startStudio() {
       const channel = status & 15,
         cmd = status >> 4;
       if (cmd === 11) {
+        if (a === 120 || a === 123) midiNotes.reset(inputId, channel);
         visual?.handleCC?.(channel, a, b / 127);
         const k = channel + ':' + a;
         if (learn && pendingMidi) {
@@ -1692,18 +1718,15 @@ export async function startStudio() {
         }
         if (s.p.midiMappings?.[k]) hardwareToField(s.p.midiMappings[k], b / 127);
       } else if (cmd === 9 && b > 0) {
-        void audition(s.channel, a, b / 127).catch(fail);
-      } else if (cmd === 8 || (cmd === 9 && b === 0)) engine.release(s.channel, a);
+        void midiNotes.press(inputId, channel, a, s.channel, b / 127);
+      } else if (cmd === 8 || (cmd === 9 && b === 0)) midiNotes.release(inputId, channel, a);
       else if (status === 0xfa && s.midiClock) {
         void play(s.view === 'arrangement');
       } else if (status === 0xfc && s.midiClock) stop();
     }
-    function bind() {
-      for (const input of midi.inputs.values()) input.onmidimessage = receive;
-    }
-    bind();
+    midiPorts = bindMidiInputs(midi, receive, id => midiNotes.reset(id));
     midi.onstatechange = () => {
-      bind();
+      midiPorts.refresh();
       say([...midi.inputs.values()].map((v) => v.name).join(' · ') || t('unsupported'));
     };
   }
@@ -1796,6 +1819,7 @@ export async function startStudio() {
   root.addEventListener('pointerup', releasePad);
   root.addEventListener('pointercancel', releasePad);
   root.addEventListener('input', (e) => {
+    if (e.target.dataset.field === 'region-out' || e.target.dataset.field === 'region-in') targetField('region-out')?.setCustomValidity('');
     const f = e.target;
     if (f.type === 'range' && f.dataset.field) {
       const label = f.closest('.fader');
@@ -1817,10 +1841,15 @@ export async function startStudio() {
         if (file) await replace(await audio.readProject(file));
         return;
       }
+      if (node.hasAttribute('data-region-file')) { await regionEditor.importFile(node.files[0]); return; }
+      if (['region-source','region-part'].includes(node.dataset.field)) { regionEditor.change(node.dataset.field, node.value); return; }
       if (node.id === 'sample-file') {
         if (node.files[0]) {
           const target = track(),
             project = s.p;
+          if (project.arrangement.some(part => part.audioRegions?.some(r => r.track === target.id))) {
+            say(t('regionProtect')); return;
+          }
           const sampleTarget = { ...target };
           await audio.importSample(node.files[0], sampleTarget);
           if (s.p !== project || !project.tracks.includes(target)) return;
@@ -1874,6 +1903,8 @@ export async function startStudio() {
       clearTimeout(saveTimer);
       void save(s.p).catch(() => {});
     }
+    midiPorts?.close();
+    midiNotes.reset();
     engine.stop();
     visual?.dispose();
   });
@@ -1893,7 +1924,7 @@ export async function startStudio() {
   shell();
   el('panel').addEventListener('cancel', (e) => {
     if (exportController) e.preventDefault();
-    else activeDialog = undefined;
+    else { activeDialog = undefined; regionEditor.clear(); }
   });
   if (!storageAvailable) say(t('storage') + ' · ' + t('unsupported'));
   meter();

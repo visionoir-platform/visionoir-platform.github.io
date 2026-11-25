@@ -11,6 +11,7 @@ Create a project with `createProject('forge')`. Other primary IDs are `glass`, `
 - Arrangement entries set a scene and bar count. Per-track `trackScenes` entries select a different source scene, inherit with `null`, or silence with `-1`. An optional marker becomes an SMF marker. Loop bars use a zero-based, end-exclusive range.
 - To add a factory instrument, add its parameter schema and defaults in `model.js`, implement its signal generation in `voice.js`, then supply a targeted impulse/note test. To add a patch, edit the family or chain list in `library.js` and check that it changes the printed signal.
 - Imported samples are stored inside a session as base64 PCM16 mono. The importer bounds file size and duration. Preserve a separate copy of the source recording when stereo or archival precision is required.
+- Arrangement parts can contain optional `audioRegions`. Each region references a channel ID carrying an imported sample, a zero-based sixteenth-note `step`, and PCM frame bounds `from` (inclusive) and `to` (exclusive). Each part allows 64 regions, with 512 per session. Editing or moving a region preserves the original PCM. Playback follows tempo for placement and preserves source pitch and time after launch. Part boundaries stop a region. Its channel mixer, effects, master, audio stems and offline audio exports receive the same PCM. The notes-only MIDI format cannot represent recorded waveforms. Native projects and exported audio/stems preserve them.
 
 ## Playback and recording
 

@@ -141,5 +141,12 @@
   "sceneFade": "Scene crossfade",
   "device": "Device",
   "cpuBudget": "DSP load",
-  "latency": "Latency"
+  "latency": "Latency",
+  "audioRegion": "Audio region",
+  "part": "Arrangement part",
+  "trimStart": "Source in",
+  "trimEnd": "Source out",
+  "regionImport": "Import a mono recording",
+  "regionBounds": "The end must come after the start.",
+  "regionProtect": "This sample is used on the timeline. Import the new recording from Audio region."
 }

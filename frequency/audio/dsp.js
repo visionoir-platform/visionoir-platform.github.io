@@ -2,6 +2,7 @@ import { INSTRUMENTS, BUSSES, clamp, noteHz, totalBars } from './model.js';
 import { arrangementAt, planStep } from './sequencer.js';
 import { Effect } from './fx.js';
 import { MasterLimiter } from './limiter.js';
+import { regionPlayer, mixRegion } from './regions.js';
 import { Voice, decodePCM, factoryGlass } from './voice.js';
 const kinds = new Map(INSTRUMENTS.map((x, i) => [x.id, i]));
 const busIndex = Object.fromEntries(BUSSES.map((x, i) => [x, i]));
@@ -61,6 +62,7 @@ export class DSP {
         c = {
           id: t.id,
           kind: kinds.get(t.instrument),
+          regions: [],
           voices: Array.from({ length: 4 }, () => new Voice(this.rate)),
           peak: 0,
           energy: 0,
@@ -90,6 +92,10 @@ export class DSP {
       }
       return c;
     });
+    this.regionChannels = new Map(this.channels.map(c => [c.id, c]));
+    this.lastRegionPart = null;
+    this.hasRegions = p.arrangement.some(part => part.audioRegions?.length);
+    if (!this.hasRegions) for (const c of this.channels) c.regions.length = 0;
     this.masterFx = rack(p.master?.fx, this.masterFx, this.rate, p.bpm);
     this.ceil = clamp(p.master?.ceiling ?? 0.91, 0.1, 0.999);
     this.volume = clamp(p.master?.volume ?? 0.88, 0, 2);
@@ -108,9 +114,12 @@ export class DSP {
       this.p.bpm = value;
       const old = this.stepSamples;
       this.stepSamples = (this.rate * 15) / value;
-      if (this.running && old)
+      if (this.running && old) {
         this.nextBoundary =
           this.frame + (Math.max(0, this.nextBoundary - this.frame) * this.stepSamples) / old;
+        if (this.regionEndFrame > this.frame)
+          this.regionEndFrame = this.frame + (this.regionEndFrame - this.frame) * this.stepSamples / old;
+      }
       this.delay.configure({ amount: 0.43 }, value);
       this.reverb.configure({ amount: 0.47 }, value);
       for (const row of this.channels)
@@ -174,6 +183,7 @@ export class DSP {
     this.limiter.reset();
     this.events.length = 0;
     for (const c of this.channels) {
+      c.regions.length = 0;
       for (const v of c.voices) v.active = false;
       c.peak = 0;
       c.energy = 0;
@@ -235,11 +245,13 @@ export class DSP {
       event.slide,
       event.accent,
       c.sample,
+      event.voiceToken,
     );
     c.prevHz = noteHz(note);
   }
-  release(i, note) {
-    for (const voice of this.channels[i]?.voices || []) if (voice.note === note) voice.stopGate();
+  release(i, note, token) {
+    for (const voice of this.channels[i]?.voices || [])
+      if (voice.active && voice.note === note && voice.token === token) voice.stopGate();
   }
   position(step) {
     if (this.queue !== null && step >= this.queueAt)
@@ -279,6 +291,22 @@ export class DSP {
     );
     this.events.sort((a, b) => b.at - a.at);
   }
+  updateRegions(part, local) {
+    const resync = this.lastRegionPart !== part || local !== this.lastRegionStep + 1;
+    if (resync || !this.hasRegions || !part) for (const c of this.channels) c.regions.length = 0;
+    this.lastRegionPart = part;
+    this.lastRegionStep = local;
+    if (!part?.audioRegions) return;
+    this.regionEndFrame = this.frame + Math.round((part.bars * 16 - local) * this.stepSamples);
+    for (const region of part.audioRegions) {
+      if (region.step > local || (!resync && region.step !== local)) continue;
+      const channel = this.regionChannels.get(region.track);
+      if (!channel?.sample) continue;
+      const elapsed = Math.round((local - region.step) * this.stepSamples);
+      const player = regionPlayer(region, channel.sample, elapsed, this.rate);
+      if (player) channel.regions.push(player);
+    }
+  }
   boundary() {
     this.step++;
     this.bar = Math.floor(this.step / 16);
@@ -289,6 +317,7 @@ export class DSP {
       this.queue = null;
     }
     const at = this.position(this.step);
+    if (this.hasRegions || this.lastRegionPart) this.updateRegions(this.arranging ? at?.clip : null, at?.local);
     if (!at) {
       this.running = false;
       this.ended = true;
@@ -327,6 +356,11 @@ export class DSP {
         const c = channels[i],
           t = c.t;
         let signal = 0;
+        if (this.running) for (let k = c.regions.length - 1; k >= 0; k--) {
+          const region = c.regions[k];
+          signal += mixRegion(region, this.regionEndFrame - this.frame);
+          if (region.remaining === 0) c.regions.splice(k, 1);
+        }
         for (let k = 0; k < c.voices.length; k++) {
           const v = c.voices[k];
           if (v.active) signal += v.next();

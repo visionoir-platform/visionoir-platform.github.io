@@ -141,5 +141,12 @@
   "sceneFade": "Fundido entre escenas",
   "device": "Dispositivo",
   "cpuBudget": "Carga DSP",
-  "latency": "Latencia"
+  "latency": "Latencia",
+  "audioRegion": "Región de audio",
+  "part": "Sección",
+  "trimStart": "Inicio de la fuente",
+  "trimEnd": "Fin de la fuente",
+  "regionImport": "Importar una grabación en mono",
+  "regionBounds": "El final debe ser posterior al inicio.",
+  "regionProtect": "Esta muestra se usa en la línea de tiempo. Importa la nueva grabación desde Región de audio."
 }

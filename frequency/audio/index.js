@@ -4,7 +4,7 @@ export { createEngine, importSample } from './engine.js';
 export { renderMidi, zipFiles } from './formats.js';
 export { estimateExport, SAMPLE_RATES, BIT_DEPTHS } from './offline.js';
 import { projectFile } from './model.js';
-import { renderMidi, zipFiles } from './formats.js';
+import { midiBundleFiles, zipFiles } from './formats.js';
 function render(project, options) {
   const { signal, onProgress, ...settings } = options;
   if (signal?.aborted) return Promise.reject(new DOMException('Cancelled', 'AbortError'));
@@ -42,7 +42,7 @@ export const renderMp3 = (project, options = {}) => render(project, { ...options
 export async function renderZip(project, files = []) {
   return zipFiles([
     { name: 'project.vfreq', blob: projectFile(project) },
-    { name: 'sequence.mid', blob: renderMidi(project) },
+    ...midiBundleFiles(project),
     ...files,
   ]);
 }

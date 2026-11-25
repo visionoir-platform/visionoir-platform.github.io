@@ -141,5 +141,12 @@
   "sceneFade": "Transiziun tranter scenas",
   "device": "Apparat",
   "cpuBudget": "Chargia dal DSP",
-  "latency": "Latenza"
+  "latency": "Latenza",
+  "audioRegion": "Regiun audio",
+  "part": "Part",
+  "trimStart": "Cumenzament da la funtauna",
+  "trimEnd": "Fin da la funtauna",
+  "regionImport": "Importar ina registraziun en mono",
+  "regionBounds": "La fin sto suandar il cumenzament.",
+  "regionProtect": "Questa prova da tun vegn duvrada en l’arranschament. Importescha la nova registraziun en Regiun audio."
 }

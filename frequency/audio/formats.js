@@ -77,7 +77,7 @@ function vlq(n) {
   return r;
 }
 const encoder = new TextEncoder();
-export function renderMidi(p) {
+function midiTrackChunks(p) {
   validateProject(p);
   const ppqn = 480,
     stepTicks = ppqn / 4,
@@ -93,15 +93,22 @@ export function renderMidi(p) {
     { tick: 0, bytes: [255, 88, 4, 4, 2, 24, 8] },
   );
   const channel = (i) => i % 16;
-  p.tracks.forEach((t, i) =>
-    tracks[i].push(
-      { tick: 0, bytes: text(t.name, 3) },
+  p.tracks.forEach((t, i) => {
+    const events = tracks[i];
+    events.push({ tick: 0, bytes: text(t.name, 3) });
+    if (p.tracks.length > 16) {
+      const port = Math.floor(i / 16);
+      events.push({ tick: 0, bytes: text(`FREQUENCY ${port + 1}`, 9) });
+      events.push({ tick: 0, bytes: [255, 33, 1, port] });
+    }
+    events.push(
       { tick: 0, bytes: [176 | channel(i), 7, Math.round(t.volume * 127)] },
       { tick: 0, bytes: [176 | channel(i), 10, Math.round((t.pan + 1) * 63.5)] },
-    ),
-  );
+    );
+  });
   const end = totalBars(p) * 16;
   if (end > 300000) throw Error('export.midiSize');
+  let endTick = end * stepTicks;
   for (let step = 0; step < end; step++) {
     const { scene, local, clip } = arrangementAt(p, step);
     if (local === 0)
@@ -115,27 +122,17 @@ export function renderMidi(p) {
         const at = Math.max(0, Math.round((step + offset) * stepTicks)),
           note = clamp(Math.round(s.note), 0, 127),
           on = clamp(Math.round(velocity * (s.accent ? 1.17 : 1) * 127), 1, 127);
+        const off = at + Math.max(1, Math.round(gate * stepTicks));
+        endTick = Math.max(endTick, off);
         tracks[i].push(
           { tick: at, bytes: [144 | channel(i), note, on] },
-          { tick: at + Math.max(1, Math.round(gate * stepTicks)), bytes: [128 | channel(i), note, 0] },
+          { tick: off, bytes: [128 | channel(i), note, 0] },
         );
       },
       clip,
     );
   }
-  const chunks = [
-    Uint8Array.from([
-      ...encoder.encode('MThd'),
-      0,
-      0,
-      0,
-      6,
-      0,
-      1,
-      ...u16be(tracks.length + 1),
-      ...u16be(ppqn),
-    ]),
-  ];
+  const chunks = [];
   for (const events of [meta, ...tracks]) {
     events.sort((a, b) => a.tick - b.tick);
     let prev = 0;
@@ -144,13 +141,31 @@ export function renderMidi(p) {
       bytes.push(...vlq(e.tick - prev), ...e.bytes);
       prev = e.tick;
     }
-    bytes.push(0, 255, 47, 0);
-    chunks.push(
+    bytes.push(...vlq(endTick - prev), 255, 47, 0);
+    chunks.push(new Blob([
       Uint8Array.from([...encoder.encode('MTrk'), ...u32be(bytes.length)]),
       Uint8Array.from(bytes),
-    );
+    ]));
   }
-  return new Blob(chunks, { type: 'audio/midi' });
+  return { chunks, ppqn };
+}
+function midiFile(chunks, ppqn) {
+  const header = Uint8Array.from([...encoder.encode('MThd'), 0, 0, 0, 6, 0, 1, ...u16be(chunks.length), ...u16be(ppqn)]);
+  return new Blob([header, ...chunks], { type: 'audio/midi' });
+}
+export function renderMidi(project) {
+  const { chunks, ppqn } = midiTrackChunks(project);
+  return midiFile(chunks, ppqn);
+}
+export function midiBundleFiles(project) {
+  const { chunks, ppqn } = midiTrackChunks(project);
+  const files = [{ name: 'sequence.mid', blob: midiFile(chunks, ppqn) }];
+  if (project.tracks.length > 16) {
+    for (let first = 1, port = 1; first < chunks.length; first += 16, port++) {
+      files.push({ name: `midi/port-${port}.mid`, blob: midiFile([chunks[0], ...chunks.slice(first, first + 16)], ppqn) });
+    }
+  }
+  return files;
 }
 const crcTable = Uint32Array.from({ length: 256 }, (_, n) => {
   let c = n;

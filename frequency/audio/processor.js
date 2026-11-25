@@ -31,8 +31,12 @@ class FrequencyProcessor extends AudioWorkletProcessor {
             this.dsp?.trigger(m.track, m.note, m.velocity, m.gate);
             this.awake = sampleRate * 9;
             break;
+          case 'held-note':
+            this.dsp?.noteOn(m.track, m.note, m.velocity, m.token);
+            this.awake = sampleRate * 9;
+            break;
           case 'off':
-            this.dsp?.release(m.track, m.note);
+            this.dsp?.release(m.track, m.note, m.token);
             break;
         }
       } catch (e) {
@@ -46,14 +50,14 @@ class FrequencyProcessor extends AudioWorkletProcessor {
   }
   process(_ins, outs) {
     const channels = outs[0];
-    if (!channels.length || !this.dsp || (!this.awake && !this.dsp.running)) return true;
+    if (!channels.length || !this.dsp || (!this.awake && !this.dsp.running && !this.dsp.held.size)) return true;
     const started = globalThis.performance?.now();
     this.dsp.render(channels[0], channels[1] || channels[0]);
     if (started !== undefined) {
       const ratio = ((performance.now() - started) * sampleRate) / (1000 * channels[0].length);
       this.dspLoad = this.dspLoad === undefined ? ratio : this.dspLoad * 0.95 + ratio * 0.05;
     }
-    if (this.dsp.running) this.awake = sampleRate * 6;
+    if (this.dsp.running || this.dsp.held.size) this.awake = sampleRate * 9;
     else this.awake = Math.max(0, this.awake - channels[0].length);
     this.meterCount += channels[0].length;
     if (this.meterCount >= sampleRate / 24) {

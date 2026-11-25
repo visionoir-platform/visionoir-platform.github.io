@@ -141,5 +141,12 @@
   "sceneFade": "Przenikanie scen",
   "device": "Urządzenie",
   "cpuBudget": "Obciążenie DSP",
-  "latency": "Opóźnienie"
+  "latency": "Opóźnienie",
+  "audioRegion": "Region audio",
+  "part": "Sekcja",
+  "trimStart": "Początek próbki",
+  "trimEnd": "Koniec próbki",
+  "regionImport": "Importuj nagranie w mono",
+  "regionBounds": "Koniec musi następować po początku.",
+  "regionProtect": "Ta próbka jest używana na osi czasu. Zaimportuj nowe nagranie przez opcję Region audio."
 }

@@ -141,5 +141,12 @@
   "sceneFade": "シーンのクロスフェード",
   "device": "デバイス",
   "cpuBudget": "DSP 負荷",
-  "latency": "レイテンシー"
+  "latency": "レイテンシー",
+  "audioRegion": "オーディオリージョン",
+  "part": "セクション",
+  "trimStart": "素材の開始位置",
+  "trimEnd": "素材の終了位置",
+  "regionImport": "録音をモノラルで読み込む",
+  "regionBounds": "終了位置は開始位置より後に設定してください。",
+  "regionProtect": "このサンプルはタイムラインで使用中です。新しい録音はオーディオリージョンから読み込んでください。"
 }

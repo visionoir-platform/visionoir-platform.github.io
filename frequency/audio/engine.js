@@ -77,18 +77,22 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
                 dsp?.trigger(m.track, m.note, m.velocity, m.gate);
                 tail = target.sampleRate * 9;
                 break;
+              case 'held-note':
+                dsp?.noteOn(m.track, m.note, m.velocity, m.token);
+                tail = target.sampleRate * 9;
+                break;
               case 'off':
-                dsp?.release(m.track, m.note);
+                dsp?.release(m.track, m.note, m.token);
                 break;
             }
           };
           node.onaudioprocess = ({ outputBuffer: o }) => {
-            if (!dsp || (!dsp.running && !tail)) return;
+            if (!dsp || (!dsp.running && !tail && !dsp.held.size)) return;
             const start = performance.now();
             dsp.render(o.getChannelData(0), o.getChannelData(1));
             const ratio = ((performance.now() - start) * target.sampleRate) / (1000 * o.length);
             dspLoad = dspLoad === undefined ? ratio : dspLoad * 0.95 + ratio * 0.05;
-            tail = dsp.running ? target.sampleRate * 6 : Math.max(0, tail - o.length);
+            tail = dsp.running || dsp.held.size ? target.sampleRate * 9 : Math.max(0, tail - o.length);
             count += o.length;
             if (count > target.sampleRate / 24) {
               count = 0;
@@ -135,8 +139,11 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     trigger(track, note, velocity = 0.85, gate = 0.55) {
       post('note', { track, note: clamp(note, 0, 127), velocity: clamp(velocity, 0, 1), gate });
     },
-    release(track, note) {
-      post('off', { track, note });
+    noteOn(track, note, velocity, token) {
+      post('held-note', { track, note: clamp(note, 0, 127), velocity: clamp(velocity, 0, 1), token });
+    },
+    release(track, note, token) {
+      post('off', { track, note, token });
     },
     stop() {
       version++;
