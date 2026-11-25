@@ -5,19 +5,27 @@ import { wavHeader, wavPCM, Dither } from './formats.js';
 import { flacHeader, flacFrame, aiffHeader, bigPCM } from './lossless.js';
 export const SAMPLE_RATES = [44100, 48000, 88200, 96000, 176400, 192000];
 export const BIT_DEPTHS = [16, 24, 32];
+export function exportLoop(project) {
+  const loop = project.loop;
+  if (!loop || !Number.isInteger(loop.start) || !Number.isInteger(loop.end) ||
+      loop.start < 0 || loop.end <= loop.start || loop.end > totalBars(project)) return null;
+  return loop;
+}
 export function estimateExport(project, opt = {}) {
   const sampleRate = opt.sampleRate ?? 48000,
     channels = opt.channels ?? 2,
     bits = opt.bits ?? 24;
   if (!SAMPLE_RATES.includes(sampleRate) || !BIT_DEPTHS.includes(bits) || ![1, 2].includes(channels))
     throw Error('export.format');
+  const loop = opt.region === 'loop' ? exportLoop(project) : null;
+  if (opt.region === 'loop' && !loop) throw Error('export.loop');
   const length = totalBars(project),
-    scene = opt.scene ?? null,
-    startBar = Number(opt.startBar ?? 0);
+    scene = loop ? null : opt.scene ?? null,
+    startBar = loop ? loop.start : Number(opt.startBar ?? 0);
   if (scene !== null && (!Number.isInteger(scene) || !project.scenes[scene]))
     throw Error('export.scene');
-  const bars = Number(opt.bars ?? (scene === null ? length - startBar : 1)),
-    tail = Number(opt.tail ?? 0.35);
+  const bars = loop ? loop.end - loop.start : Number(opt.bars ?? (scene === null ? length - startBar : 1)),
+    tail = Number(opt.tail ?? (loop ? 0 : 0.35));
   if (
     !Number.isFinite(bars) ||
     bars <= 0 ||
@@ -41,6 +49,15 @@ export function estimateExport(project, opt = {}) {
   const params = {frames, sampleRate, bits, channels, ...tags};
   const headerBytes = wav ? wavHeader({...params, rf64:opt.rf64}).length :
     opt.format === 'aiff' ? aiffHeader(params).length : opt.format === 'flac' ? flacHeader(params).length : 44;
+  let bytes = headerBytes + pcmBytes + (wav ? pcmBytes % 2 : 0);
+  if (opt.format === 'mp3') {
+    const bitrate = opt.bitrate ?? 320;
+    if (![128,192,256,320].includes(bitrate) || ![44100,48000].includes(sampleRate))
+      throw Error('export.mp3Format');
+    // MPEG-1 Layer III groups PCM into 1152-frame packets, including encoder priming and final padding.
+    const packets = Math.ceil((frames + 1152) / 1152);
+    bytes = id3Tag(tags).length + Math.ceil(packets * 144000 * bitrate / sampleRate);
+  }
   return {
     sampleRate,
     channels,
@@ -51,7 +68,7 @@ export function estimateExport(project, opt = {}) {
     ...tags,
     musical,
     seconds: frames / sampleRate,
-    bytes: headerBytes + pcmBytes + (wav ? pcmBytes % 2 : 0),
+    bytes,
   };
 }
 const block = 8192;
@@ -213,12 +230,6 @@ export async function renderOffline(project, opt = {}, progress = () => {}, outp
     (['aiff', 'flac'].includes(format) && opt.bits === 32)
   )
     throw Error('export.format');
-  if (
-    mp3 &&
-    (![128, 192, 256, 320].includes(opt.bitrate ?? 320) ||
-      (opt.sampleRate && ![44100, 48000].includes(opt.sampleRate)))
-  )
-    throw Error('export.mp3Format');
   const spec = estimateExport(project, opt);
   if (format === 'aiff' && spec.bytes >= 0xffffffff - 65536)
     throw Error('export.riffLimit');

@@ -1,4 +1,5 @@
 {
+  "estimatedSize": "Geschätzte Grösse",
   "close": "Schliessen",
   "liveWiring": "Dreh fürs Live-Set den Mixer leise. Schliesse das Audiointerface per USB an und verbinde den linken und rechten Ausgang mit zwei Line-Eingängen. Wähle das Interface im System oder Browser, starte ein Pattern und erhöhe den Pegel langsam. Nutze für präzises Timing kabelgebundene Kopfhörer."
 }

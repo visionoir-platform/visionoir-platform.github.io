@@ -113,7 +113,13 @@ ${t('skip','a','class="skip" href="#contenuto"')}
 <footer class="footer">
  <div class="footer-sign"><span lang="en">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
  <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="#unseen-door">unseen.</a></span>
- <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a></details>
+ <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a>
+  <div id="home-preferences" hidden>
+   ${t('prefsInfo','p')}
+   <div class="prefs-actions">${t('prefsExport','button','type="button" data-prefs="export"')}${t('prefsErase','button','type="button" data-prefs="erase" aria-controls="prefs-review" aria-expanded="false"')}</div>
+   <div id="prefs-review" data-prefs-review hidden>${t('prefsQuestion','p')}<div class="prefs-actions">${t('close','button','type="button" data-prefs="cancel"')}${t('prefsErase','button','type="button" data-prefs="confirm"')}</div></div>
+   <p role="status" aria-live="polite"></p>
+  </div></details>
  <details>${t('credits','summary')}${t('logoCredit','p')}${t('musicCredit','p')}${enabledTracks.includes('alloy')||enabledTracks.includes('aura')?t('creditsNew','p'):''}${t('rights','p')}<a class="underlink" href="${asset('AUDIO-LICENSE.txt')}">${t('license')} · 01–04</a>${enabledTracks.includes('alloy')? ` <a class="underlink" href="${asset('AUDIO-PREMIUM-LICENSE.txt')}">${t('license')} · 05–06</a>` : ''}</details>
 </footer>
 <aside class="player js-only" ${a11y('audio')}>

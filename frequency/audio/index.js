@@ -2,7 +2,7 @@ export { PATCHES, CHAINS, EXTRA_DEMOS } from './library.js';
 export * from './model.js';
 export { createEngine, importSample } from './engine.js';
 export { renderMidi, zipFiles } from './formats.js';
-export { estimateExport, SAMPLE_RATES, BIT_DEPTHS } from './offline.js';
+export { estimateExport, exportLoop, SAMPLE_RATES, BIT_DEPTHS } from './offline.js';
 import { estimateExport } from './offline.js';
 import { projectFile } from './model.js';
 import { midiBundleFiles, zipFiles } from './formats.js';

@@ -38,3 +38,30 @@ test('GeoIP falls back offline, does not retain IP, and ignores late results',as
   assert.equal(JSON.parse(stored).country,'BR');
   assert.equal(JSON.parse(stored).ip,undefined);
 });
+
+test('only saved home preferences are exported and erased', async () => {
+  const {readHomePreferences,eraseHomePreferences} = await import('../src/home-preferences.js');
+  const values = new Map([['visionoir-language','ar'],['visionoir-silent','1'],['visionoir-motion','off'],
+    ['visionoir-country-v1','{"country":"CH"}'],['unseen-save','stage7'],['other','private']]);
+  const store = {getItem:key=>values.get(key) ?? null,removeItem:key=>values.delete(key)};
+  const {values:exported} = readHomePreferences(store);
+  assert.equal(Object.keys(exported).length,4);
+  assert.equal(exported['visionoir-language'],'ar');
+  assert.equal(exported['unseen-save'],undefined);
+  assert.equal(eraseHomePreferences(store),true);
+  assert.deepEqual([...values],[['unseen-save','stage7'],['other','private']]);
+  assert.deepEqual(readHomePreferences(store).values,{});
+});
+
+test('deleting preferences while a country lookup is in flight prevents repopulating storage', async () => {
+  const saved = new Map();
+  globalThis.localStorage = {setItem:(k,v)=>saved.set(k,v),getItem:k=>saved.get(k)};
+  let finish;
+  globalThis.fetch = () => new Promise(done=>{ finish=done; });
+  const controller = new AbortController();
+  const country = approximateCountry('https://example.invalid',100,controller.signal);
+  controller.abort();
+  finish({ok:true,json:async()=>({country:'ES'})});
+  assert.equal(await country,null);
+  assert.equal(saved.size,0);
+});

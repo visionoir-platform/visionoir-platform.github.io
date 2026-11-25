@@ -1,5 +1,6 @@
 import './style.css';
 import './ecosystem/style.css';
+import { bindHomePreferences } from './home-preferences.js';
 import { mountDeviceTilt } from './device-tilt.js';
 import { bindFrequencyDoor } from './frequency-door.js';
 import { localePath, names, resolveLocale } from './locales.js';
@@ -43,8 +44,13 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   let audioError = null;
   let immersive = false;
   let inquiry;
+  const countryLookup = new AbortController();
   let idleTimer;
   const t = key => dictionary[key] || q(`[data-text="${key}"]`)?.textContent || '';
+  const preferences = bindHomePreferences({t,onErase() {
+    manualRevision++;
+    countryLookup.abort();
+  }});
   const langOfPath = () => {
     const path = location.pathname.slice(base.length).replace(/(?:index\.html)?\/?$/,'');
     return available.find(code => code.toLowerCase()===path);
@@ -118,6 +124,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
     }
     for (const error of document.querySelectorAll('.error[data-error]')) error.textContent=t(error.dataset.error);
     inquiry?.refresh();
+    preferences.refresh();
     syncControls();
   }
   async function changeLanguage(next,{manual=false}={}) {
@@ -283,7 +290,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   const saved = storageValue(localeKey);
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
   void (async()=>{
-    const country = explicit || saved ? null : await approximateCountry(geoEndpoint);
+    const country = explicit || saved ? null : await approximateCountry(geoEndpoint,420,countryLookup.signal);
     if (manualRevision || navigationRevision !== startRevision) return;
     const next = resolveLocale({explicit,saved,country,languages,available});
     if (next!==lang) await changeLanguage(next);

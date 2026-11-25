@@ -96,7 +96,8 @@ export function pianoView(state, t, commands, header) {
     );
   }).join('');
   const activeTool = state.pianoTool || 'shift';
-  const sel = [...state.selected].filter((pos) => pat.steps[pos]).length || (event ? 1 : 0);
+  const selectedCount = [...state.selected].filter((pos) => pos >= 0 && pos < pat.length && pat.steps[pos]).length;
+  const sel = selectedCount || (event ? 1 : 0);
   return (
     header +
     commands +
@@ -133,7 +134,8 @@ export function pianoView(state, t, commands, header) {
         option(n, noteName(60 + n).replace(/-?\d+$/, ''), n === tonic % 12),
       ).join(''),
     ) +
-    act('scale-notes', t('quantize') + ' ♩') +
+    act('piano-quantize', t('quantize') + ' · 1/16', { disabled: !selectedCount }) +
+    act('piano-quantize-scale', t('quantize') + ' · ' + t('scale'), { disabled: !selectedCount }) +
     '</div>' +
     '<div class="scroll-zone" tabindex="0"><div dir="ltr" class="piano" data-tool="' +
     activeTool +
@@ -169,6 +171,36 @@ export function pianoView(state, t, commands, header) {
     act('edit-step', t('edit') + ' · ' + t('note')) +
     '</div>'
   );
+}
+
+function nearestScaleNote(note, root, scale) {
+  const allowed = n => n >= 0 && n <= 127 && scale.includes(((n - root) % 12 + 12) % 12);
+  for (let distance = 0; distance < 12; distance++) {
+    if (allowed(note - distance)) return note - distance;
+    if (allowed(note + distance)) return note + distance;
+  }
+  return note;
+}
+
+// Microtiming is less than half a sixteenth. The nearest grid point is the
+// event's own step; swing remains a property of the transport.
+export function planQuantization(pattern, positions, scale, root = 0) {
+  const updates = [];
+  for (const pos of positions) {
+    const event = pattern.steps[pos];
+    if (!event || pos < 0 || pos >= pattern.length) continue;
+    if (!scale) {
+      if (event.offset) updates.push([pos, 'offset', 0]);
+      continue;
+    }
+    // The pattern tool tunes the root of each onset, preserving its chord voicing.
+    const pitch = nearestScaleNote(event.note, root, scale);
+    if (pitch !== event.note) updates.push([pos, 'note', pitch]);
+  }
+  if (!updates.length) return null;
+  return () => {
+    for (const [pos, field, value] of updates) pattern.steps[pos][field] = value;
+  };
 }
 
 // All selected voices keep their relative intervals. Refuse overlaps instead of deleting another onset.
