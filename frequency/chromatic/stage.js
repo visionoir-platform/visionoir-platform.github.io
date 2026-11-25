@@ -7,6 +7,7 @@ import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.j
 import { vertex, fragment } from './shaders.js';
 import { makeHistory } from './history.js';
 import { spatialScore } from './spatial.js';
+import { advanceBlend, phraseMode, unseenMode } from './visual-score.js';
 import { defaultVisual, mixVisualVoices, modes, normalizeSignal, unit } from './model.js';
 
 const base = import.meta.env?.BASE_URL || '/';
@@ -163,10 +164,6 @@ export async function buildStage(
     last = 0,
     drawnTiltX = 0,
     drawnTiltY = 0,
-    logicalMode = 0,
-    fromMode = 0,
-    mix = 1,
-    tweenTime = 0.66,
     lastState = null,
     quality = 1,
     slowFrames = 0,
@@ -185,6 +182,7 @@ export async function buildStage(
   const scores = new Map(),
     envelope = new Float32Array(16),
     hits = new Float32Array(16);
+  const blend = { from: 0, to: 0, mix: 1 };
   const tempBands = new T.Vector4(),
     colorA = new T.Color(),
     colorB = new T.Color();
@@ -290,12 +288,6 @@ export async function buildStage(
       modes.findIndex((m) => m[0] === state.mode),
     );
     if (host.dataset.visualMode !== state.mode) host.dataset.visualMode = state.mode;
-    if (index !== logicalMode) {
-      fromMode = mix > 0.5 ? logicalMode : fromMode;
-      logicalMode = index;
-      mix = 0;
-      tweenTime = 0.45 + (1 - state.rebuild) * 0.85;
-    }
     const changed = state !== lastState || simple !== reduced;
     if (simple && !changed && now - lastTimeToken < 220) {
       request();
@@ -303,13 +295,19 @@ export async function buildStage(
     }
     lastTimeToken = now;
     if (!frozen || changed) {
-      mix = simple ? 1 : Math.min(1, mix + dt / tweenTime);
+      const inScore = !creator && !simple && index === unseenMode;
+      const target = inScore ? phraseMode(s.beat, s.scene) : index;
+      const transition = 0.45 + (1 - state.rebuild) * 0.85;
+      // Phrase changes take up to two beats, even during a quiet passage.
+      const duration = inScore ? Math.min(transition, 120 / s.bpm) : transition;
+      advanceBlend(blend, target, simple ? 1 : dt / duration);
+      const { from: fromMode, to: nextMode, mix } = blend;
       if (!frozen && !simple) elapsed += dt;
       const t = elapsed * (state.sync ? Math.min(2.4, s.bpm / 125) : 1);
       u.uTime.value = t;
       u.uPhase.value = state.phase + (state.sync ? (s.beat % 4) * 0.025 : 0);
       u.uMode.value = fromMode;
-      u.uNext.value = logicalMode;
+      u.uNext.value = nextMode;
       u.uMix.value = mix;
       const decay = Math.exp(-dt * (3.5 + (1 - state.decay) * 8));
       for (let i = 0; i < 6; i++) u.uBuses.value[i] = Math.max(u.uBuses.value[i] * decay, s.buses[i]);
@@ -337,11 +335,11 @@ export async function buildStage(
       u.uLight.value = state.light;
       u.uDepth.value = state.depth;
       colorA.set(modes[fromMode][2]);
-      colorB.set(modes[logicalMode][2]);
+      colorB.set(modes[nextMode][2]);
       u.uTint.value.copy(colorA.lerp(colorB, mix));
       if (state.color) u.uTint.value.set(state.color);
       const ghost =
-        (Number(fromMode === 9) * (1 - mix) + Number(logicalMode === 9) * mix) *
+        (Number(fromMode === 9) * (1 - mix) + Number(nextMode === 9) * mix) *
         (!simple && mood !== 'natural' ? 1 : 0);
       for (let i = 0; i < echoes.length; i++) echoes[i].visible = ghost > (i + 1) * 0.18;
       points.setDrawRange(
@@ -352,23 +350,16 @@ export async function buildStage(
         ),
       );
       if (!creator) {
-        // The Unseen moves between physical states on musical phrase boundaries.
-        if (logicalMode === 15 && s.level > 0.005) {
-          const seq = [7, 5, 4, 1, 10, 2, 3, 9];
-          const part = Math.floor((s.beat + s.scene * 4) / 8);
-          u.uNext.value = seq[part % seq.length];
-          u.uMode.value = seq[(part + seq.length - 1) % seq.length];
-          u.uMix.value = Math.min(1, (s.beat % 8) * 0.85);
-        }
         for (const [i, score] of scores) {
-          if (i !== logicalMode && i !== fromMode) {
+          if (i !== nextMode && i !== fromMode) {
             score.dispose();
             scene.remove(score.group);
             scores.delete(i);
           }
         }
-        selectScore(fromMode).update(1 - mix, t, u.uActive.value, u.uTint.value, state.depth);
-        selectScore(logicalMode).update(mix, t, u.uActive.value, u.uTint.value, state.depth);
+        if (fromMode !== nextMode)
+          selectScore(fromMode).update(1 - mix, t, u.uActive.value, u.uTint.value, state.depth);
+        selectScore(nextMode).update(mix, t, u.uActive.value, u.uTint.value, state.depth);
       }
       world.rotation.y = creator
         ? -0.24 + Math.sin(t * 0.22) * 0.08 * state.camera
@@ -393,7 +384,7 @@ export async function buildStage(
     lastState = state;
     reduced = simple;
     const persistent =
-      !creator && !simple && state.quality !== 'low' && quality > 0.71 && [9, 14, 15].includes(logicalMode);
+      !creator && !simple && state.quality !== 'low' && quality > 0.71 && [9, 14, unseenMode].includes(index);
     if (persistent) {
       history.render(scene, camera, box.width, box.height, 0.65 + 0.17 * state.decay);
       historyOn = true;

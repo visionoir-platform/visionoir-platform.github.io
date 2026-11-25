@@ -104,3 +104,9 @@ La [PR 17](https://github.com/visionoir-platform/visionoir-platform.github.io/pu
 In **Guida e info** si può ascoltare la scena corrente, modificare i primi sedici passi del canale scelto, salvare una copia nella libreria e ritrovare lo stesso canale nel sequencer. Una prova a 360 px, in italiano e in arabo, ha verificato suono digitale, annulla/ripristina, focus della tastiera e riapertura della copia.
 
 Le dodici sessioni di fabbrica aggiuntive hanno sequenze di sezioni, durate, organici e finali specifici. Ogni arrangiamento ha da 85 a 94 battute. Un test ricarica anche un progetto salvato con il precedente arrangiamento a otto scene e confronta i dati modificati dal musicista.
+
+## Progetti portabili, sampler e transizioni visive
+
+Il formato nativo FREQUENCY 2 raggruppa le pause della griglia. Il lettore apre progetti v1 e v2 e l'esportazione JSON v1 consente lo scambio con vecchie installazioni. Una copia di Furnace Ledger generata dalla prima versione dello studio è passata da 86.344 a 71.894 byte. La conversione di ritorno ha ripristinato tutti i byte originali. Su una scena a 48 kHz il confronto dei primi 48.000 frame stereo ha prodotto lo stesso PCM.
+
+Pitch e Reverse del sampler possono agire su una nota già in esecuzione. In THE UNSEEN, la frase musicale regola insieme geometria, materiale, echi e palette. Nella scultura del creatore la disgregazione segue una piega continua della manica. La soglia condivisa dalla superficie e dai frammenti consente al metallo di ricomporsi quando il segnale scende.

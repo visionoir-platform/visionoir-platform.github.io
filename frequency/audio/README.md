@@ -1,6 +1,6 @@
 # FREQUENCY audio
 
-One project describes both a live performance and a reproducible offline bounce. `model.js` exposes the four main compositions, the empty session and the validated version 1 session format. `library.js` implements 124 instrument patches, 28 effect chains and 12 additional editable sessions. The built-in sounds use original synthesis, including the struck-glass factory sample. No microphone or network request is required to play them.
+One project describes both a live performance and a reproducible offline bounce. `model.js` exposes the four main compositions, the empty session and the version 1 editing model and the reader for native file versions 1 and 2. `library.js` implements 124 instrument patches, 28 effect chains and 12 additional editable sessions. The built-in sounds use original synthesis, including the struck-glass factory sample. No microphone or network request is required to play them.
 
 ## Editing
 
@@ -37,7 +37,7 @@ The AudioWorklet schedules by sample position. A buffered fallback exists where 
 | AIFF | Big-endian 16/24-bit PCM at the same six rates. |
 | MP3 | LAME at 128, 192, 256 or 320 kbit/s, mono or stereo, 44.1 or 48 kHz. The encoder is loaded on demand. |
 | MIDI | Standard MIDI File type 1 with per-track notes, CC7/10, song tempo and scene markers. Timbres and audio effects travel in the native session. |
-| Native | JSON `.vfreq` preserves project data and embedded samples. ZIP packages can include a session, MIDI and individual WAV stems. |
+| Native | Version 2 `.vfreq` packs adjacent rests. The JSON export writes version 1 for older installations. Both preserve project data and embedded samples. ZIP packages can include a session, MIDI and individual WAV stems. |
 
 Exports allow a scene, bar range, track or bus, tail and optional two-pass peak normalization. A separate worker renders at the target sample rate. Large WAV prints automatically use RF64 when the classic RIFF size would overflow. The header includes 64-bit data size, RIFF size and frame count. FLAC/AIFF/ZIP have separate format limits. Large WAVs need a writable file or sufficient origin-private file storage. The Node CLI streams to a temporary sibling file and renames it after success. ZIP32 rejects oversized stem archives before rendering; export their tracks individually. Browser quota estimates and write errors can still limit the usable duration. [EBU RF64 specification](https://tech.ebu.ch/publications/tech3306). Integer renders are dithered, whereas float preserves the computed level. Stems processed through separate nonlinear chains need not sum to a mastered stereo print. Combine unmastered stems before applying a common master chain.
 

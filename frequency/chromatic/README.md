@@ -14,6 +14,8 @@ The renderer stops when offscreen, hidden, paused for motion reduction, or unabl
 
 The ordinals in `model.js` are file-format and routing identifiers. Keep their meaning stable. A preset has a material/deformation in `shaders.js` and a physical score in `spatial.js`. Point seeds are deterministic samples on the real mesh. In `stage.js`, master bands and voice envelopes drive separate uniform values and converge towards the reference rest shape in silence. `history.js` supplies a bounded feedback pass to three presets when quality permits.
 
+In The Unseen, the transport selects a chapter every eight beats. The arrangement scene offsets the sixteen-chapter cycle in `visual-score.js`. Each transition blends the material and its surrounding geometry together, including palette and echoes. Reduced motion holds The Unseen’s signature look.
+
 For the Creator, first verify the cleared source file. Generate static levels with:
 
 ```sh

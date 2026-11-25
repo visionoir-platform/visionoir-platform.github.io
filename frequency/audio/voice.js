@@ -168,15 +168,19 @@ export class Voice {
       const len = sample.pcm.length;
       this.lo = clamp(Math.floor(len * (p.start + (p.slice || 0) * 0.35)), 0, Math.max(0, len - 2));
       this.hi = clamp(Math.floor(len * p.end), this.lo + 1, len);
-      this.step =
-        (sample.rate / this.rate) *
-        2 ** ((note - 60 + (p.pitch - 0.5) * 24) / 12) *
-        (p.reverse > 0.5 ? -1 : 1);
+      this.updatePlaybackRate();
       this.idx = this.step < 0 ? this.hi - 1 : this.lo;
-      pcmReader(sample, this.step, this.lo, this.hi, this.reader);
     }
     if (kind === 0)
       this.kickInc = ((32 + 39 * p.pitch) * 2 ** ((note - 36 + (p.tuning - 0.5) * 12) / 12)) / this.rate;
+  }
+  updatePlaybackRate() {
+    const p = this.p;
+    this.step =
+      (this.sample.rate / this.rate) *
+      2 ** ((this.note - 60 + (p.pitch - 0.5) * 24) / 12) *
+      (p.reverse > 0.5 ? -1 : 1);
+    pcmReader(this.sample, this.step, this.lo, this.hi, this.reader);
   }
   setRumbleBassEq(value) {
     // A first-order +/-9 dB low shelf, with its half-gain frequency at 100 Hz.
@@ -187,6 +191,13 @@ export class Voice {
   }
   control(key, value) {
     this.p[key] = value;
+    if (this.kind === 15 && this.sample && (key === 'pitch' || key === 'reverse')) {
+      const previousStep = this.step;
+      this.updatePlaybackRate();
+      // A turn between the last valid sample and the next render stays at this end.
+      if (previousStep > 0 && this.step < 0 && this.idx >= this.hi) this.idx = this.hi - 1;
+      if (previousStep < 0 && this.step > 0 && this.idx < this.lo) this.idx = this.lo;
+    }
     if (this.kind === 1 && key === 'bassEq') this.setRumbleBassEq(value);
     if (this.kind === 9 && key === 'noiseFilter') {
       this.rideCut = rideNoiseCoefficient(value, this.rate);

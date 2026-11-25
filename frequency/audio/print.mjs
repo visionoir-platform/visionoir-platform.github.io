@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /** Offline studio CLI. Prints a named original demo or an existing local session. */
-import { writeFile, readFile, open, rename, unlink, stat } from 'node:fs/promises';
+import { writeFile, open, rename, unlink, stat } from 'node:fs/promises';
+import { openAsBlob } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
-import { createProject, validateProject, DEMOS, projectFile } from './model.js';
+import { createProject, DEMOS, projectFile, NATIVE_FILE_VERSION } from './model.js';
+import { readProjectFile } from './project-archive.js';
 import { EXTRA_DEMOS } from './library.js';
 import { renderOffline } from './offline.js';
 import { renderMidi } from './formats.js';
@@ -27,12 +29,12 @@ export async function run(args) {
   const [source, filename, ...flags] = args;
   if (!source || !filename)
     throw Error(
-      'Usage: node print.mjs <demo-id | project.vfreq> <out.wav|flac|aiff|mp3|mid|vfreq> [--scene N] [--bars N] [--startBar N] [--track N] [--sampleRate HZ] [--bits N] [--bitrate N] [--channels N] [--tail SEC]',
+      'Usage: node print.mjs <demo-id | project.vfreq | project.json | project.zip> <out.wav|flac|aiff|mp3|mid|vfreq|json> [--scene N] [--bars N] [--startBar N] [--track N] [--sampleRate HZ] [--bits N] [--bitrate N] [--channels N] [--tail SEC]',
     );
   const ids = ['blank', ...DEMOS.map((x) => x.id), ...EXTRA_DEMOS.map((x) => x.id)];
   const p = ids.includes(source)
     ? createProject(source)
-    : validateProject(JSON.parse(await readFile(source, 'utf8')));
+    : await readProjectFile(await openAsBlob(source));
   const opts = {};
   for (let i = 0; i < flags.length; i += 2) {
     const key = flags[i].slice(2);
@@ -58,7 +60,7 @@ export async function run(args) {
   switch (ext) {
     case 'vfreq':
     case 'json':
-      blob = projectFile(p);
+      blob = projectFile(p, ext === 'json' ? 1 : NATIVE_FILE_VERSION);
       break;
     case 'mid':
       blob = renderMidi(p);

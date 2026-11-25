@@ -14,8 +14,16 @@ float flake(vec3 p){
   vec3 cell=floor(p*mix(55.,31.,step(3.5,uProfile)* (1.-step(4.5,uProfile))));
   return fract(sin(dot(cell,vec3(12.1,71.7,34.2)))*4375.15);
 }
-float releaseAmount(vec3 p) {
-  return releaseEdge(p)*min(.91,uScatter*(.64+.38*uLiquid));
+// An advancing front winds around the folds of the sleeve. Fine grain only
+// chips the boundary. Negative distances release both the cloth and its shards.
+float fractureMargin(vec3 p) {
+  float edge=releaseEdge(p);
+  if(edge<=0. || uScatter<=0.)return 1.;
+  float bend=.9*sin(p.y*3.7-p.z*5.2);
+  float fold=abs(sin(p.y*8.5+p.z*4.-p.x*3.3+bend));
+  float threshold=.06+.68*(1.-edge)+.22*fold+.075*(flake(p)-.5);
+  float advance=uScatter*(.75+.25*uLiquid)*smoothstep(0.,.18,edge);
+  return threshold-advance;
 }
 `;
 const deformation = /* glsl */ `
@@ -67,6 +75,8 @@ varying vec3 vPos,vNorm,vEye; varying vec2 vUv;
 ${shell}
 float stripe(float x,float center,float width){float d=(x-center)/width;return exp(-d*d);}
 void main(){
+ float margin=fractureMargin(vPos);
+ if(margin<0.)discard;
  vec3 N=normalize(vNorm), V=normalize(vEye), K=normalize(vec3(-.58,.76,.6));
  vec3 albedo=texture2D(uSkin,vUv).rgb;
  float tone=dot(albedo,vec3(.2126,.7152,.0722));
@@ -139,8 +149,11 @@ void main(){
  float graphite=dot(skin,vec3(.23,.65,.12));
  vec3 editorial=mix(vec3(graphite)*vec3(.91,.98,1.02),skin,.23);
  editorial+=vec3(.12,.15,.17)*smoothstep(.65,1.,edge)*(1.-face);
- if(uScatter>0. && flake(P)<releaseAmount(P))discard;
  vec3 color=mix(coated,editorial,natural);
+ // A narrow molten lip follows the surviving material and cools on release.
+ float lip=(1.-smoothstep(0.,.045+.015*liquid,margin))*smoothstep(.035,.30,uScatter);
+ vec3 lipColor=mix(mix(uAccent,vec3(1.,.94,.85),.52),vec3(.85,.89,.91),natural);
+ color=mix(color,lipColor,lip*(.53-.32*natural))+lipColor*lip*(.28-.21*natural);
  gl_FragColor=vec4(color,1.);
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
@@ -190,8 +203,7 @@ export function makeShards(geometry, uniforms, mobile) {
     ${shell}
     ${deformation}
     void main(){
-      float release=releaseAmount(position);
-      float distanceOut=max(0.,release-flake(position));
+      float distanceOut=max(0.,-fractureMargin(position));
       vec3 p=displaced(position);
       float t=uTime*.9;
       vec3 drift=vec3(.96,.22+.44*sin(seed*31.+t),.18)+normal*.35;

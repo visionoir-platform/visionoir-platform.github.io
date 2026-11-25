@@ -91,10 +91,22 @@ export class DSP {
           fx: [],
         };
       }
-      const previousMono = c.params?.mono;
+      const previousParams = c.params;
       c.t = t;
       c.params = { ...INSTRUMENTS[c.kind].params, ...t.params };
-      if (c.kind === 11 && c.params.mono >= 0.5 && !(previousMono >= 0.5)) narrowLeadToOneVoice(c);
+      if (c.kind === 11 && c.params.mono >= 0.5 && !(previousParams?.mono >= 0.5)) narrowLeadToOneVoice(c);
+      if (c.kind === 15 && previousParams) {
+        // A project update also carries unrelated edits. Keep held per-note locks on those updates.
+        const pitchChanged = c.params.pitch !== previousParams.pitch;
+        const reverseChanged = c.params.reverse !== previousParams.reverse;
+        if (pitchChanged || reverseChanged) {
+          for (const voice of c.voices) {
+            if (!voice.active) continue;
+            if (pitchChanged) voice.control('pitch', c.params.pitch);
+            if (reverseChanged) voice.control('reverse', c.params.reverse);
+          }
+        }
+      }
       c.b = busIndex[t.bus] ?? 3;
       c.sidechain = busIndex[t.sidechainBus] ?? 0;
       if (c.kind === 1) {
