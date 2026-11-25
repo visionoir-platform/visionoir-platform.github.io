@@ -1,15 +1,17 @@
+import { musicTags } from './metadata.js';
 import { totalBars, clamp, validateProject } from './model.js';
 import { midiAutomation } from './automation.js';
 import { arrangementAt, planStep } from './sequencer.js';
 const ascii = (view, off, text) => {
   for (let i = 0; i < text.length; i++) view.setUint8(off + i, text.charCodeAt(i));
 };
-export function wavHeader({ frames, sampleRate, bits, channels, title = '', rf64 = false }) {
+export function wavHeader({ frames, sampleRate, bits, channels, title = '', artist = '', rf64 = false }) {
   const data = frames * channels * (bits / 8);
   if (!Number.isSafeInteger(frames) || frames < 0 || !Number.isSafeInteger(data))
     throw Error('export.riffLimit');
-  const name = new TextEncoder().encode(title.slice(0, 240) + '\0');
-  const titleLen = name.length + (name.length % 2), info = title ? 20 + titleLen : 0;
+  const fields = [['INAM', title], ['IART', artist]].filter(([, value]) => value)
+    .map(([id, value]) => [id, encoder.encode(value.slice(0, 240) + '\0')]);
+  const info = fields.length ? fields.reduce((n, [, b]) => n + 8 + b.length + b.length % 2, 12) : 0;
   const classicRiffSize = 36 + info + data + data % 2;
   const extended = rf64 || classicRiffSize >= 0xffffffff;
   const ds64 = extended ? 36 : 0, fact = extended && bits === 32 ? 12 : 0;
@@ -44,11 +46,15 @@ export function wavHeader({ frames, sampleRate, bits, channels, title = '', rf64
   }
   if (info) {
     ascii(v, at, 'LIST');
-    v.setUint32(at + 4, 12 + titleLen, true);
-    ascii(v, at + 8, 'INFOINAM');
-    v.setUint32(at + 16, name.length, true);
-    bytes.set(name, at + 20);
-    at += info;
+    v.setUint32(at + 4, info - 8, true);
+    ascii(v, at + 8, 'INFO');
+    at += 12;
+    for (const [id, value] of fields) {
+      ascii(v, at, id);
+      v.setUint32(at + 4, value.length, true);
+      bytes.set(value, at + 8);
+      at += 8 + value.length + value.length % 2;
+    }
   }
   ascii(v, at, 'data');
   v.setUint32(at + 4, extended ? 0xffffffff : data, true);
@@ -113,6 +119,9 @@ function midiTrackChunks(p) {
     { tick: 0, bytes: [255, 81, 3, tempo >>> 16, (tempo >>> 8) & 255, tempo & 255] },
     { tick: 0, bytes: [255, 88, 4, 4, 2, 24, 8] },
   );
+  const {title, artist} = musicTags(p);
+  if (title) meta.push({tick: 0, bytes: text(title, 3)});
+  if (artist) meta.push({tick: 0, bytes: text('Artist: ' + artist, 1)});
   const channel = (i) => i % 16;
   p.tracks.forEach((t, i) => {
     const events = tracks[i];
@@ -196,64 +205,101 @@ const crcTable = Uint32Array.from({ length: 256 }, (_, n) => {
   for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
   return c >>> 0;
 });
-async function crc(blob) {
-  let c = 0xffffffff;
+function updateCrc(c, bytes) {
+  for (let i = 0; i < bytes.length; i++) c = crcTable[(c ^ bytes[i]) & 255] ^ (c >>> 8);
+  return c;
+}
+export async function readBlob(blob, consume) {
   const reader = blob.stream().getReader();
   try {
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
-      for (const b of value) c = crcTable[(c ^ b) & 255] ^ (c >>> 8);
+      await consume(value);
     }
   } finally {
     reader.releaseLock();
   }
-  return (c ^ 0xffffffff) >>> 0;
 }
-export async function zipFiles(files) {
-  if (files.length > 65535) throw Error('export.zipLimit');
-  const out = [],
-    central = [],
-    names = new Set();
-  let head = 0,
-    dirSize = 0;
-  for (const { name, blob } of files) {
+function zipLayout(entries, deferred) {
+  if (entries.length > 65535) throw Error('export.zipLimit');
+  const names = new Set(), headers = [];
+  let head = 0, dirSize = 0;
+  for (const { name, size } of entries) {
     if (!name || name.includes('..') || name.startsWith('/') || name.includes('\\') || names.has(name))
       throw Error('export.zipName');
     names.add(name);
     const file = encoder.encode(name);
-    const projected = head + 30 + file.length + blob.size + dirSize + 46 + file.length + 22;
-    if (file.length > 65535 || projected >= 0xffffffff) throw Error('export.zipLimit');
-    const sum = await crc(blob);
-    const loc = new Uint8Array(30 + file.length),
-      v = new DataView(loc.buffer);
+    const loc = new Uint8Array(30 + file.length), cen = new Uint8Array(46 + file.length);
+    const v = new DataView(loc.buffer), w = new DataView(cen.buffer);
+    if (!Number.isSafeInteger(size) || size < 0 || file.length > 65535 ||
+        head + loc.length + size + (deferred ? 16 : 0) + dirSize + cen.length + 22 >= 0xffffffff)
+      throw Error('export.zipLimit');
     v.setUint32(0, 0x04034b50, true);
     v.setUint16(4, 20, true);
-    v.setUint16(6, 2048, true);
+    v.setUint16(6, deferred ? 0x0808 : 0x0800, true);
     v.setUint16(12, 33, true);
-    v.setUint32(14, sum, true);
-    v.setUint32(18, blob.size, true);
-    v.setUint32(22, blob.size, true);
     v.setUint16(26, file.length, true);
+    if (!deferred) {
+      v.setUint32(18, size, true);
+      v.setUint32(22, size, true);
+    }
     loc.set(file, 30);
-    const cen = new Uint8Array(46 + file.length),
-      w = new DataView(cen.buffer);
     w.setUint32(0, 0x02014b50, true);
     w.setUint16(4, 20, true);
     cen.set(loc.subarray(4, 30), 6);
+    w.setUint32(20, size, true);
+    w.setUint32(24, size, true);
     w.setUint32(42, head, true);
     cen.set(file, 46);
-    out.push(loc, blob);
-    central.push(cen);
-    head += loc.length + blob.size;
+    headers.push({ loc, cen });
+    head += loc.length + size + (deferred ? 16 : 0);
     dirSize += cen.length;
   }
-  const end = new Uint8Array(22),
-    v = new DataView(end.buffer);
+  const end = new Uint8Array(22), v = new DataView(end.buffer);
   v.setUint32(0, 0x06054b50, true);
-  v.setUint16(8, files.length, true);
-  v.setUint16(10, files.length, true);
+  v.setUint16(8, entries.length, true);
+  v.setUint16(10, entries.length, true);
   v.setUint32(12, dirSize, true);
   v.setUint32(16, head, true);
-  return new Blob([...out, ...central, end], { type: 'application/zip' });
+  return { headers, end };
+}
+export async function zipFiles(files) {
+  const entries = files.map(({name, blob}) => ({name, size: blob.size}));
+  const { headers, end } = zipLayout(entries, false), out = [];
+  for (const [i, {blob}] of files.entries()) {
+    let crc = 0xffffffff;
+    await readBlob(blob, bytes => { crc = updateCrc(crc, bytes); });
+    const {loc, cen} = headers[i];
+    new DataView(loc.buffer).setUint32(14, ~crc, true);
+    new DataView(cen.buffer).setUint32(16, ~crc, true);
+    out.push(loc, blob);
+  }
+  return new Blob([...out, ...headers.map(h => h.cen), end], { type: 'application/zip' });
+}
+// Each entry produces its payload with backpressure. A ZIP32 data descriptor
+// stores its checksum after the payload, so the destination never needs to seek.
+export async function writeZip(entries, write) {
+  const { headers, end } = zipLayout(entries, true);
+  for (const [i, entry] of entries.entries()) {
+    const { loc, cen } = headers[i];
+    await write(loc);
+    let crc = 0xffffffff, bytes = 0;
+    await entry.emit(async chunk => {
+      bytes += chunk.length;
+      if (bytes > entry.size) throw Error('export.zipSize');
+      crc = updateCrc(crc, chunk);
+      await write(chunk);
+    });
+    if (bytes !== entry.size) throw Error('export.zipSize');
+    new DataView(cen.buffer).setUint32(16, ~crc, true);
+    const descriptor = new Uint8Array(16), view = new DataView(descriptor.buffer);
+    view.setUint32(0, 0x08074b50, true);
+    view.setUint32(4, ~crc, true);
+    view.setUint32(8, bytes, true);
+    view.setUint32(12, bytes, true);
+    await write(descriptor);
+  }
+  for (const { cen } of headers) await write(cen);
+  await write(end);
 }

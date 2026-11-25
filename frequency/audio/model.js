@@ -472,6 +472,10 @@ export function validateProject(p) {
     p.scenes.length > 128
   )
     throw Error('project.size');
+  if (p.exportInfo !== undefined &&
+      (!plain(p.exportInfo) || ['title', 'artist', 'filename'].some(key =>
+        p.exportInfo[key] !== undefined && (typeof p.exportInfo[key] !== 'string' || p.exportInfo[key].length > 240))))
+    throw Error('project.header');
   if (p.metronome !== undefined && typeof p.metronome !== 'boolean') throw Error('project.header');
   if (
     p.loop !== undefined &&

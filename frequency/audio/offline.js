@@ -1,3 +1,4 @@
+import { musicTags, id3Tag } from './metadata.js';
 import { DSP } from './dsp.js';
 import { validateProject, totalBars, clamp } from './model.js';
 import { wavHeader, wavPCM, Dither } from './formats.js';
@@ -36,7 +37,10 @@ export function estimateExport(project, opt = {}) {
     frames = musical + Math.round(tail * sampleRate);
   const pcmBytes = (frames * channels * bits) / 8;
   const wav = !opt.format || opt.format === 'wav';
-  const headerBytes = wav ? wavHeader({frames,sampleRate,bits,channels,title:project.name,rf64:opt.rf64}).length : 44;
+  const tags = musicTags(project);
+  const params = {frames, sampleRate, bits, channels, ...tags};
+  const headerBytes = wav ? wavHeader({...params, rf64:opt.rf64}).length :
+    opt.format === 'aiff' ? aiffHeader(params).length : opt.format === 'flac' ? flacHeader(params).length : 44;
   return {
     sampleRate,
     channels,
@@ -44,6 +48,7 @@ export function estimateExport(project, opt = {}) {
     scene,
     start,
     frames,
+    ...tags,
     musical,
     seconds: frames / sampleRate,
     bytes: headerBytes + pcmBytes + (wav ? pcmBytes % 2 : 0),
@@ -97,10 +102,11 @@ function pass(project, spec, opt, consume, onProgress) {
     return peak;
   })();
 }
-async function openWriter(handle) {
-  if (typeof handle.createWritable === 'function') return handle.createWritable();
+export async function openWriter(handle, preferSync = false) {
+  if (typeof handle.createWritable === 'function' && !(preferSync && handle.createSyncAccessHandle))
+    return handle.createWritable();
   if (typeof handle.createSyncAccessHandle === 'function') {
-    // Available in a dedicated worker on browsers that only expose the OPFS synchronous API.
+    // Dedicated workers can stream directly into an origin-private file.
     const sync = await handle.createSyncAccessHandle();
     let offset = 0,
       closed = false;
@@ -198,7 +204,7 @@ async function makeSink(spec, mime, opt) {
     },
   };
 }
-export async function renderOffline(project, opt = {}, progress = () => {}) {
+export async function renderOffline(project, opt = {}, progress = () => {}, output = null) {
   validateProject(project);
   const format = opt.format ?? 'wav',
     mp3 = format === 'mp3';
@@ -217,9 +223,9 @@ export async function renderOffline(project, opt = {}, progress = () => {}) {
   if (format === 'aiff' && spec.bytes >= 0xffffffff - 65536)
     throw Error('export.riffLimit');
   // Reject an impossible large print before the optional normalization pass starts.
-  if (!opt.handle && spec.bytes > 192 * 1024 * 1024 && !globalThis.navigator?.storage?.getDirectory)
+  if (!output && !opt.handle && spec.bytes > 192 * 1024 * 1024 && !globalThis.navigator?.storage?.getDirectory)
     throw Error('export.storageRequired');
-  if (format === 'wav' && !opt.handle && spec.bytes >= 0xffffffff && globalThis.navigator?.storage?.estimate) {
+  if (format === 'wav' && !output && !opt.handle && spec.bytes >= 0xffffffff && globalThis.navigator?.storage?.estimate) {
     const budget = await navigator.storage.estimate().catch(() => null);
     if (Number.isFinite(budget?.quota) && Number.isFinite(budget.usage) && budget.quota - budget.usage < spec.bytes)
       throw Error('export.storageRequired');
@@ -235,15 +241,18 @@ export async function renderOffline(project, opt = {}, progress = () => {}) {
     encoder = new Mp3Encoder(spec.channels, spec.sampleRate, opt.bitrate ?? 320);
   }
   const mime = { mp3: 'audio/mpeg', wav: 'audio/wav', flac: 'audio/flac', aiff: 'audio/aiff' }[format];
-  const sink = await makeSink(spec, mime, opt);
+  const sink = output ?? (await makeSink(spec, mime, opt));
   try {
-    if (!mp3)
+    if (mp3) {
+      const tag = id3Tag(spec);
+      if (tag.length) await sink.write(tag);
+    } else
       await sink.write(
         format === 'flac'
           ? flacHeader(spec)
           : format === 'aiff'
             ? aiffHeader(spec)
-            : wavHeader({ ...spec, title: project.name, rf64:opt.rf64 }),
+            : wavHeader({ ...spec, rf64:opt.rf64 }),
       );
     let position = 0;
     const random = new Dither();

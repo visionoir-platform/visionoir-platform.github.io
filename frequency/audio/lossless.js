@@ -1,14 +1,24 @@
 /** Uncompressed AIFF and FLAC verbatim subframes with streamable checksums. */
+import { id3Tag } from './metadata.js';
+const utf8 = new TextEncoder();
 const tag = (b, n, s) => {
   for (let i = 0; i < s.length; i++) b[n + i] = s.charCodeAt(i);
 };
-export function aiffHeader({ channels, bits, sampleRate, frames }) {
+export function aiffHeader({ channels, bits, sampleRate, frames, title = '', artist = '' }) {
   const bytes = frames * channels * (bits / 8);
-  if (bytes > 0xffffffff - 64) throw Error('export.riffLimit');
-  const b = new Uint8Array(54),
+  // Traditional NAME/AUTH are ASCII. An ID3 chunk preserves Unicode in international credits.
+  const chunks = [['NAME', title], ['AUTH', artist]]
+    .filter(([, text]) => text && /^[ -~]+$/.test(text))
+    .map(([name, text]) => [name, utf8.encode(text)]);
+  const id3 = id3Tag({title, artist});
+  if (id3.length) chunks.push(['ID3 ', id3]);
+  const extra = chunks.reduce((sum, [, value]) => sum + 8 + value.length + value.length % 2, 0);
+  const formSize = bytes + bytes % 2 + 46 + extra;
+  if (formSize > 0xffffffff) throw Error('export.riffLimit');
+  const b = new Uint8Array(54 + extra),
     v = new DataView(b.buffer);
   tag(b, 0, 'FORM');
-  v.setUint32(4, bytes + (bytes % 2) + 46);
+  v.setUint32(4, formSize);
   tag(b, 8, 'AIFFCOMM');
   v.setUint32(16, 18);
   v.setUint16(20, channels);
@@ -17,8 +27,15 @@ export function aiffHeader({ channels, bits, sampleRate, frames }) {
   const power = Math.floor(Math.log2(sampleRate));
   v.setUint16(28, 16383 + power);
   v.setBigUint64(30, BigInt(sampleRate) << BigInt(63 - power));
-  tag(b, 38, 'SSND');
-  v.setUint32(42, bytes + 8);
+  let at = 38;
+  for (const [name, value] of chunks) {
+    tag(b, at, name);
+    v.setUint32(at + 4, value.length);
+    b.set(value, at + 8);
+    at += 8 + value.length + value.length % 2;
+  }
+  tag(b, at, 'SSND');
+  v.setUint32(at + 4, bytes + 8);
   return b;
 }
 export function bigPCM(data, bits) {
@@ -30,11 +47,15 @@ export function bigPCM(data, bits) {
   }
   return data;
 }
-export function flacHeader({ channels, bits, sampleRate, frames }) {
-  const b = new Uint8Array(42),
+export function flacHeader({ channels, bits, sampleRate, frames, title = '', artist = '' }) {
+  const comments = [['TITLE', title], ['ARTIST', artist]].filter(([, value]) => value)
+    .map(([key, value]) => utf8.encode(key + '=' + value));
+  const vendor = utf8.encode('VISIONOIR FREQUENCY');
+  const body = comments.reduce((n, comment) => n + 4 + comment.length, 8 + vendor.length);
+  const b = new Uint8Array(42 + (comments.length ? 4 + body : 0)),
     v = new DataView(b.buffer);
   tag(b, 0, 'fLaC');
-  b[4] = 128;
+  b[4] = comments.length ? 0 : 128;
   b[7] = 34;
   v.setUint16(8, 16);
   v.setUint16(10, 8192);
@@ -45,6 +66,20 @@ export function flacHeader({ channels, bits, sampleRate, frames }) {
       (BigInt(bits - 1) << 36n) |
       BigInt(frames),
   );
+  if (comments.length) {
+    b[42] = 0x84;
+    b[43] = body >>> 16; b[44] = body >>> 8; b[45] = body;
+    v.setUint32(46, vendor.length, true);
+    b.set(vendor, 50);
+    let pos = 50 + vendor.length;
+    v.setUint32(pos, comments.length, true);
+    pos += 4;
+    for (const comment of comments) {
+      v.setUint32(pos, comment.length, true);
+      b.set(comment, pos + 4);
+      pos += 4 + comment.length;
+    }
+  }
   return b;
 }
 function utf8Integer(n) {

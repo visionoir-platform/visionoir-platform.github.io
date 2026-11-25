@@ -5,6 +5,7 @@ export function mountCreator(
   host,
   {
     getSignal = () => ({}),
+    isPlaying = () => true,
     getMode = () => 'chrome',
     modelURL,
     posterURL = base + 'creator/poster.webp',
@@ -48,6 +49,7 @@ export function mountCreator(
         url: modelURL || base + 'creator/creator-' + (mobile ? 'mobile' : 'desktop') + '.glb',
         syncPoster,
         beat: getSignal,
+        playing: isPlaying,
         track: getMode,
         look: () => look,
         moving: () => motion,

@@ -12,7 +12,7 @@ import {
 import { labels } from './labels.js';
 import './styles.css';
 
-const presetKey = 'visionoir.frequency.chromatic.user-preset.v1';
+import {chromaticPresetKey as presetKey} from '../storage.js';
 const node = (name, cls) => {
   const n = document.createElement(name);
   if (cls) n.className = cls;

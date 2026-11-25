@@ -1,4 +1,5 @@
 import * as T from 'three';
+import outline from '../../public/assets/logo-geometry.json' with { type: 'json' };
 import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModifier.js';
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
 import { vertex, fragment } from './shaders.js';
@@ -7,10 +8,8 @@ import { spatialScore } from './spatial.js';
 import { defaultVisual, modes, normalizeVisual, normalizeSignal, routes, unit } from './model.js';
 
 const base = import.meta.env?.BASE_URL || '/';
-async function logoAsset(signal) {
-  const response = await fetch(base + 'assets/logo-geometry.json', { signal });
-  if (!response.ok) throw Error('Logo geometry unavailable');
-  const { contours } = await response.json();
+function logoAsset() {
+  const { contours } = outline;
   const xyz = (curve) => curve.map(([x, y]) => new T.Vector2(x, -y));
   const shape = new T.Shape(xyz(contours[0]));
   for (const hole of contours.slice(1)) shape.holes.push(new T.Path(xyz(hole)));

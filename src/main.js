@@ -279,7 +279,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   })();
   const creatorStage=q('#creator-stage');
   const mountSculpture=()=>import('./creator/index.js').then(({mountCreator})=>{
-    sculpture=mountCreator(creatorStage,{getSignal:()=>audio.getData(),getMode:()=>audio.currentTrack.id,reducedMotion:!motion});
+    sculpture=mountCreator(creatorStage,{getSignal:()=>audio.getData(),isPlaying:()=>audio.isPlaying,getMode:()=>audio.currentTrack.id,reducedMotion:!motion});
     const controls=q('.creator-looks');
     controls.hidden=false;
     controls.addEventListener('click',event=>{

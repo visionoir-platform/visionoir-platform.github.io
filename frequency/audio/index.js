@@ -33,7 +33,12 @@ function render(project, options) {
       close();
       reject(Error(e.message || 'export.worker'));
     };
-    worker.postMessage({ project, options: settings });
+    try {
+      worker.postMessage({ project, options: settings });
+    } catch (error) {
+      close();
+      reject(error);
+    }
   });
 }
 export const renderWav = (project, options = {}) => render(project, { ...options, format: 'wav' });
@@ -48,17 +53,39 @@ export async function renderZip(project, files = []) {
   ]);
 }
 export async function renderStems(project, options = {}) {
-  const spec = estimateExport(project, {...options,format:'wav'});
-  if (spec.bytes * project.tracks.length >= 0xffffffff) throw Error('export.zipLimit');
-  const files = [];
-  for (let i = 0; i < project.tracks.length; i++) {
-    const stem = await renderWav(project, {
-      ...options,
-      track: i,
-      onProgress: (step) => options.onProgress?.((i + step) / project.tracks.length),
-    });
-    const slug = project.tracks[i].name.replace(/[^a-zA-Z0-9_-]+/g, '-').slice(0, 70);
-    files.push({ name: 'stems/' + String(i + 1).padStart(2, '0') + '-' + slug + '.wav', blob: stem });
+  const spec = estimateExport(project, { ...options, format: 'wav' });
+  const bytes = spec.bytes * project.tracks.length;
+  if (bytes >= 0xffffffff) throw Error('export.zipLimit');
+  if (options.signal?.aborted) throw new DOMException('Cancelled', 'AbortError');
+  const snapshot = structuredClone(project);
+  let handle = options.handle, directory, name;
+  try {
+    if (!handle && bytes <= 64 * 1024 * 1024) {
+      try {
+        return await render(snapshot, { ...options, format: 'stems' });
+      } catch (error) {
+        // Embedded samples or the MIDI files can push a small PCM print over the memory budget.
+        if (error.message !== 'export.storageRequired') throw error;
+      }
+    }
+    if (!handle) {
+      const storage = globalThis.navigator?.storage;
+      if (!storage?.getDirectory) throw Error('export.storageRequired');
+      const root = await storage.getDirectory();
+      directory = await root.getDirectoryHandle('frequency-exports', { create: true });
+      for await (const [key] of directory) {
+        const created = /^stems-(\d+)-/.exec(key);
+        if (created && Number(created[1]) < Date.now() - 86400000)
+          await directory.removeEntry(key).catch(() => {});
+      }
+      const budget = await storage.estimate?.().catch(() => null);
+      if (budget && budget.quota - budget.usage < bytes) throw Error('export.storageRequired');
+      name = 'stems-' + Date.now() + '-' + crypto.randomUUID() + '.zip';
+      handle = await directory.getFileHandle(name, { create: true });
+    }
+    return await render(snapshot, { ...options, format: 'stems', handle, privateSink: !!name });
+  } catch (error) {
+    if (name) await directory.removeEntry(name).catch(() => {});
+    throw error;
   }
-  return renderZip(project, files);
 }

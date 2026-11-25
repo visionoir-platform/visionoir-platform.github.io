@@ -1,10 +1,11 @@
 import * as T from 'three';
 import { loadPortrait } from './portrait.js';
-import { makeFinish, makeShards } from './finish.js';
+import { makeEcho, makeFinish, makeShards } from './finish.js';
+import { portraitProfile, easePortrait, scatterTarget } from './material-motion.js';
 import { trackAccents } from '../palette.js';
 
 const clamp = (v) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0);
-export async function createPortraitStage(host, { url, beat, track, look, moving, signal, syncPoster }) {
+export async function createPortraitStage(host, { url, beat, playing, track, look, moving, signal, syncPoster }) {
   const gpu = new T.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
   const canvas = gpu.domElement;
   canvas.setAttribute('aria-hidden', 'true');
@@ -36,6 +37,10 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
   const u = {
     uLook: { value: 1 },
     uTime: { value: 0 },
+    uProfile: { value: 0 },
+    uScatter: { value: 0 },
+    uLiquid: { value: 0 },
+    uEcho: { value: 0 },
     uAcid: { value: 0 },
     uNoir: { value: 0 },
     uAccent: { value: new T.Color(trackAccents.chrome) },
@@ -47,7 +52,8 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
   group.add(solid);
   const mobile = window.matchMedia('(max-width:800px)').matches;
   const dust = makeShards(asset.geometry, u, mobile);
-  group.add(dust);
+  const echo = makeEcho(asset.geometry, u);
+  group.add(dust, echo);
   let visible = true,
     closed = false,
     lost = false,
@@ -97,13 +103,15 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
     }
     dirty = false;
     previous = now;
-    if (motion) elapsed += Math.min(80, dt) / 1000;
+    const seconds = Math.min(240, Math.max(16,dt)) / 1000;
     const mode = track(),
       value = look();
     u.uLook.value = value === 'natural' ? 0 : value === 'liquid' ? 2 : 1;
-    u.uTime.value = elapsed;
+    const liquidTarget = Number(value === 'liquid');
+    u.uLiquid.value = motion ? easePortrait(u.uLiquid.value, liquidTarget, seconds, .23) : liquidTarget;
     if (theme !== mode) {
       theme = mode;
+      u.uProfile.value = portraitProfile(mode);
       u.uAccent.value.set(trackAccents[mode] || trackAccents.chrome);
       u.uAcid.value = Number(mode === 'acid');
       u.uNoir.value = Number(mode === 'noir');
@@ -111,11 +119,21 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
     }
     const a = motion ? beat() || {} : {},
       current = u.uAudio.value;
-    const blend = motion ? 1 - Math.exp(-Math.max(16, Math.min(100, dt)) / 130) : 1;
-    current.x += (clamp(a.bass) - current.x) * blend;
-    current.y += (clamp(a.mid) - current.y) * blend;
-    current.z += (clamp(a.high) - current.z) * blend;
-    current.w += (clamp(a.level) - current.w) * blend;
+    current.x = motion ? easePortrait(current.x, clamp(a.bass), seconds, .11) : 0;
+    current.y = motion ? easePortrait(current.y, clamp(a.mid), seconds, .11) : 0;
+    current.z = motion ? easePortrait(current.z, clamp(a.high), seconds, .11) : 0;
+    current.w = motion ? easePortrait(current.w, clamp(a.level), seconds, .11) : 0;
+    const particles = scatterTarget(u.uProfile.value, current.x, current.y, current.z, current.w);
+    u.uScatter.value = motion ? easePortrait(u.uScatter.value, particles, seconds,
+      particles > u.uScatter.value ? .13 : .31) : 0;
+    dust.visible = u.uScatter.value > 0;
+    const trail = Math.min(1, .64 * current.x + .72 * current.w);
+    u.uEcho.value = motion && mode === 'afterimage'
+      ? easePortrait(u.uEcho.value, trail, seconds, .26) : 0;
+    echo.visible = u.uEcho.value > 0;
+    if (motion && (current.w || current.x || current.y || current.z)) elapsed += seconds;
+    else if (!u.uScatter.value && !u.uEcho.value) elapsed = 0;
+    u.uTime.value = elapsed;
     if (motion && dt > 70) {
       if (++slow === 25 && quality > 0.67) {
         quality *= 0.83;
@@ -125,7 +143,9 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
     } else slow = Math.max(0, slow - 1);
     gpu.render(scene, camera);
     host.dataset.render = 'webgl';
-    if (motion) schedule();
+    const settling = current.x || current.y || current.z || current.w ||
+      u.uScatter.value || echo.visible || u.uLiquid.value !== liquidTarget;
+    if (motion && (playing() || settling)) schedule();
   }
   function onLoss(e) {
     e.preventDefault();
@@ -167,6 +187,7 @@ export async function createPortraitStage(host, { url, beat, track, look, moving
       reduced.removeEventListener('change', invalidate);
       canvas.removeEventListener('webglcontextlost', onLoss);
       canvas.removeEventListener('webglcontextrestored', onRestore);
+      echo.material.dispose();
       dust.geometry.dispose();
       dust.material.dispose();
       finish.dispose();

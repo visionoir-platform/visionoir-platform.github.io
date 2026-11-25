@@ -21,8 +21,12 @@ async function run([name, engine, executablePath]) {
   try {
     const context = await browser.newContext({hasTouch:name!=='Firefox', viewport:{width:390,height:844},reducedMotion:'reduce'});
     const page = await context.newPage();
-    const external = new Set(), errors = [];
-    page.on('request',request=>{const target=new URL(request.url());if(/^https?:$/.test(target.protocol)&&target.origin!==url.origin)external.add(target.origin);});
+    const external = new Set(), errors = [], outlineRequests = [];
+    page.on('request',request=>{
+      const target = new URL(request.url());
+      if (/^https?:$/.test(target.protocol) && target.origin !== url.origin) external.add(target.origin);
+      if (target.pathname === '/assets/logo-geometry.json') outlineRequests.push(request.url());
+    });
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto(new URL('/it/',url).href);
     const logo = page.locator('#logo-scene');
@@ -57,6 +61,7 @@ async function run([name, engine, executablePath]) {
       assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'legal overflow '+width);
     }
     assert.deepEqual([...external],[]);assert.deepEqual(errors,[]);
+    assert.deepEqual(outlineRequests, [], 'Rapid navigation must not start a separate outline JSON request');
     report.push({name,version:browser.version(),touchEmulation:name!=='Firefox',pointerEntry:true,entryKeyboard:true,gameEntry:true,legalSupport:true,widths:[360,390,768,1024,1440,1920],external:[...external],errors});
   } finally {await browser.close();if(scratch)await fs.rm(scratch,{recursive:true,force:true,maxRetries:3}).catch(error=>{if(!['EACCES','EPERM'].includes(error.code))throw error;console.warn('macOS retained a system-protected file in the temporary Firefox profile');});}
 }

@@ -8,8 +8,9 @@ import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
 import { createMidiClock } from './midi-clock.js';
 import { generateSession, genres } from './composer.js';
 import * as audio from './audio/index.js';
+import { exportBasename, musicTags } from './audio/metadata.js';
 import { translator, names, direction, getInitialLocale } from './i18n.js';
-import { save, restore, library, loadNamed, removeSaved, previousProject } from './storage.js';
+import { save, restore, library, loadNamed, removeSaved, previousProject, eraseEvent } from './storage.js';
 import {
   escape as h,
   attr,
@@ -54,7 +55,7 @@ export async function startStudio() {
     multi: false,
     protect: false,
   };
-  let storageAvailable = true;
+  let storageAvailable = true, erasedSession = false, erasing = false;
   try {
     const previous = await restore(audio.validateProject);
     if (previous) s.p = previous;
@@ -122,7 +123,7 @@ export async function startStudio() {
   }
   function fail(err) {
     console.warn('[FREQUENCY]', err?.name || 'Operation');
-    const key =
+    const key = err?.message === 'storage.exportInUse' ? 'eraseBlocked' :
       err?.message?.startsWith('project.') || err?.name === 'SyntaxError'
         ? 'badProject'
         : err?.name === 'NotAllowedError'
@@ -245,7 +246,13 @@ export async function startStudio() {
     s.p.workspace = { ...s.p.workspace, scene: s.scene };
     if (!storageAvailable) return;
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => save(s.p).catch(fail), 550);
+    saveTimer = setTimeout(flushSave, 550);
+  }
+  function flushSave() {
+    if (!saveTimer || !storageAvailable) return;
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+    void save(s.p).catch(fail);
   }
   function changed({ draw = true } = {}) {
     if (playing || engine.analyser) engine.update(s.p);
@@ -511,6 +518,7 @@ export async function startStudio() {
     else if (focused) (d.querySelector(focused + ':not(:disabled)') || d.querySelector('button'))?.focus({preventScroll:true});
   }
   function close() {
+    if (erasing) return;
     regionEditor.clear();
     if (el('panel').open) el('panel').close();
     activeDialog = undefined;
@@ -683,10 +691,15 @@ export async function startStudio() {
   }
   function exportPane() {
     const bars = s.p.arrangement.reduce((n, e) => n + e.bars, 0);
+    const tags = musicTags(s.p);
+    const textField = (id, label, value) =>
+      `<label class="field"><span>${h(t(label))}</span><input type="text" data-field="export:${id}" maxlength="${id === 'filename' ? 100 : 240}" value="${attr(value)}"></label>`;
+    const credits = textField('filename', 'exportFilename', s.p.exportInfo?.filename ?? exportBasename(s.p)) +
+      textField('title', 'musicTitle', tags.title) + textField('artist', 'musicArtist', tags.artist);
     open(
       'export',
       t('export'),
-      `<div class="field-grid">${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq'], ['json', 'JSON'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number('FX tail · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
+      `<div class="field-grid">${credits}${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq'], ['json', 'JSON'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number('FX tail · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
     );
     exportFields();
   }
@@ -795,8 +808,7 @@ export async function startStudio() {
       };
     if (dest?.startsWith('t')) opts.track = Number(dest.slice(1));
     if (dest?.startsWith('b')) opts.bus = dest.slice(1);
-    const filename =
-      (s.p.name || 'Frequency').replace(/[^\p{L}\p{N} _-]+/gu, '').slice(0, 80) || 'Frequency';
+    const filename = exportBasename(s.p);
     const d = el('panel');
     exportController = new AbortController();
     opts.signal = exportController.signal;
@@ -822,24 +834,10 @@ export async function startStudio() {
         case 'zip':
           blob = await audio.renderZip(s.p);
           break;
-        case 'stems': {
-          const files = [],
-            p = structuredClone(s.p);
-          const expected = p.tracks.length * rate * count * (bits / 8) * ((bars * 240) / p.bpm + 2);
-          if (expected > 430 * 1024 * 1024) throw new RangeError(t('length') + ' / ' + t('bars'));
-          for (let i = 0; i < p.tracks.length; i++) {
-            const b = await audio.renderWav(p, {
-              ...opts,
-              bus: undefined,
-              track: i,
-              onProgress: (f) => progress((i + f) / p.tracks.length),
-            });
-            files.push({ name: pad(i + 1) + '-' + p.tracks[i].instrument + '.wav', blob: b });
-          }
-          blob = await audio.renderZip(p, files);
+        case 'stems':
+          blob = await audio.renderStems(s.p, { ...opts, flatNames: true });
           ext = 'zip';
           break;
-        }
         case 'flac':
           blob = await audio.renderFlac(s.p, opts);
           break;
@@ -1549,24 +1547,28 @@ export async function startStudio() {
         open(
           'erase',
           t('erase'),
-          `<div class="bar-tools">${act('confirm-erase', t('confirm'))}${act('close', t('cancel'))}</div>`,
+          `<p>${h(t('eraseScope'))}</p><div class="bar-tools">${act('cancel-erase', t('cancel'))}${act('confirm-erase', t('confirm'))}</div><p role="status"></p>`,
         );
+        el('panel').querySelector('[data-action="cancel-erase"]').focus();
         return;
-      case 'confirm-erase':
-        clearTimeout(saveTimer);
-        await removeSaved();
-        stop();
-        undo = [];
-        redo = [];
-        s.p = audio.createProject('blank');
-        resetSelection();
-        visual?.setState({});
-        updateTransport();
-        renderTabs();
-        editor();
+      case 'cancel-erase':
         close();
-        say(t('ready'));
         return;
+      case 'confirm-erase': {
+        if (!guardLive() || activeDialog !== 'erase' || exportController) return;
+        if (erasing) return;
+        const panel = el('panel');
+        const buttons = panel.querySelectorAll('button');
+        erasing = true;
+        buttons.forEach(button => { button.disabled = true; });
+        try {
+          await removeSaved(() => { panel.querySelector('[role=status]').textContent = t('eraseBlocked'); });
+        } finally {
+          erasing = false;
+          buttons.forEach(button => { button.disabled = false; });
+        }
+        return;
+      }
     }
   }
   function busSettings(key) {
@@ -1602,6 +1604,14 @@ export async function startStudio() {
         } else changed({ draw: false });
       } else mutate(fn, false);
     };
+    if (group === 'export' && ['title','artist','filename'].includes(index)) {
+      if (s.p.exportInfo?.[index] !== raw) {
+        remember();
+        s.p.exportInfo = { ...s.p.exportInfo, [index]: raw.slice(0, 240) };
+        saveSoon();
+      }
+      return;
+    }
     if (['auto-part','auto-track','auto-target','auto-select'].includes(id)) { automationEditor.change(id,raw); return; }
     if (id === 'ui-size' && interfaceScales.includes(v)) {
       controls.size=v;
@@ -2027,12 +2037,24 @@ export async function startStudio() {
     },
     onError:fail,
   });
+  window.addEventListener(eraseEvent, () => {
+    erasedSession = true;
+    storageAvailable = false;
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+    exportController?.abort();
+    recUnclosed = false;
+    if (recorder && recorder.state !== 'inactive') {
+      recorder.onstop = null;
+      recorder.stop();
+    }
+    performanceKeys.clear();
+    stop();
+    location.reload();
+  }, {once:true});
   window.addEventListener('pagehide', () => {
     performanceKeys.clear();
-    if (saveTimer && storageAvailable) {
-      clearTimeout(saveTimer);
-      void save(s.p).catch(() => {});
-    }
+    flushSave();
     scopeObserver.disconnect();
     midiPorts?.close();
     midiNotes.reset();
@@ -2040,16 +2062,13 @@ export async function startStudio() {
     visual?.dispose();
   });
   window.addEventListener('beforeunload', (e) => {
-    if (recUnclosed || exportController) {
+    if (!erasedSession && (recUnclosed || exportController)) {
       e.preventDefault();
       e.returnValue = '';
     }
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && storageAvailable) {
-      clearTimeout(saveTimer);
-      void save(s.p).catch(fail);
-    }
+    if (document.hidden) flushSave();
   });
   pageAttrs();
   shell();
