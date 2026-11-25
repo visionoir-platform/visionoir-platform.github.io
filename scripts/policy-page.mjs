@@ -29,7 +29,10 @@ export function policyPage(lang, d, base, endpoint) {
     ['ip', 'intellectual', '<p lang="en" dir="ltr">An independent VISIONOIR project.</p>'
       + '<p lang="en" dir="ltr">Copyright © 2026 Flavio Giorgio Guarini.</p>'
       + paragraphs(d.rights, d.logoCredit) + repoLink(titles.intellectual, 'ASSET_LICENSES.md')],
-    ['licenses', 'licenses', paragraphs(d.ecoRights) + repoLink('MIT · FREQUENCY', 'frequency/LICENSE')],
+    ['licenses', 'licenses', paragraphs(d.ecoRights) + references([
+      ['MIT · FREQUENCY', repo+'frequency/LICENSE'],
+      [titles.licenses+' · FREQUENCY', base+'frequency/licenses/index.html'],
+    ])],
     ['third-party', 'thirdParty', references([['Three.js · MIT', base+'frequency/licenses/Three-MIT.txt'], ['Earcut · ISC', base+'frequency/licenses/Earcut-ISC.txt'], ['Vite · MIT', base+'frequency/licenses/Vite-NOTICES.txt'], ['LAME / lamejs · LGPL', base+'frequency/licenses/MP3-encoder.txt'], ['Manrope · OFL', base+'frequency/licenses/Manrope-OFL.txt'], ['Bebas Neue · OFL', base+'frequency/licenses/Bebas-Neue-OFL.txt'], ['Anton · OFL', base+'frequency/licenses/Anton-OFL.txt']])],
     ['accessibility', 'accessibility', paragraphs(d.legal_access) + email],
     ['support', 'support', paragraphs(d.ecoSupportText, d.ecoClosed) + references([[d.ecoSupport, base+'support/'+lang.toLowerCase()+'/']])],
