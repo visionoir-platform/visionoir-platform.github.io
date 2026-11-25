@@ -52,3 +52,9 @@ Il tasto Play può ricostruire il processore audio dopo un errore del worklet. N
 Il file video registrato continua a ricevere fotogrammi quando il musicista scorre la pagina o apre il mixer. La registrazione verificata contiene 367 fotogrammi VP8 e oltre 15 secondi di audio stereo. Il collaudo riguarda la pagina in primo piano.
 
 Durante una prova con due build, il nuovo service worker ha atteso la chiusura dello studio mentre il master continuava a suonare. La nuova versione si è avviata offline alla riapertura. Il preflight distingue l’uscita confermata, quella scollegata e i casi in cui il browser non permette di verificare la periferica. La prova dei cambi di uscita usa dispositivi simulati.
+
+## Movimento del dispositivo e ritratto a 360° · 25 novembre 2026
+
+Nella home l’inclinazione guida il logo metallico, le orbite, la luce, la griglia e le superfici decorative. Il Chromatic Engine applica il movimento alla scena di FREQUENCY e trasmette lo spostamento visivo alla finestra VJ della stessa origine. Il modulo usa un orientamento relativo alla posizione iniziale. Quando il browser consegna già i dati, la reazione è automatica. Nei browser che richiedono un gesto, il controllo dedicato richiama il dialogo di sistema solo su richiesta del visitatore. I campioni del sensore restano in memoria e la lettura si sospende quando la pagina è nascosta o il movimento è ridotto.
+
+La scultura di The Creator ruota di un giro completo con il trascinamento, i pulsanti o la tastiera. Si può anche compiere il giro fisicamente quando il sensore fornisce la direzione relativa. In assenza di WebGL il trascinamento seleziona tra 24 viste ricavate dal modello originale. Il test Chromium desktop con sensore e touch emulati ha verificato il ritorno alla matrice iniziale dopo 360°, lo scroll verticale, il pinch-to-zoom e l’accesso a gioco e studio. I dispositivi fisici e l’uscita audio su impianto rimangono prove distinte.

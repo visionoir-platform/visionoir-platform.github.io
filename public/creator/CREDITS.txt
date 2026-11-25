@@ -1,7 +1,7 @@
 THE CREATOR — Flavio Giorgio Guarini
 Original subject and photographs: Flavio Giorgio Guarini.
 Original private model generated with Meshy on a paid plan, as confirmed by the creator.
-Static web editions: a single studio-authored pose baked into the original scanned geometry, with its original UVs and compressed textures. A continuous body turn, head tilt and shoulder line preserve connected garment seams. The mobile edition uses mesh simplification. Materials, lights, surface ripples, particles and rendered fallback posters were produced locally for VISIONOIR.
+Static web editions: a single studio-authored pose baked into the original scanned geometry, with its original UVs and compressed textures. A continuous body turn, head tilt and shoulder line preserve connected garment seams. The mobile edition uses mesh simplification. Materials, lights, surface ripples, particles and rendered fallback posters were produced locally for VISIONOIR. The interactive fallback uses 24 rendered views of the same public static mesh for each finish.
 No animation clips or skeleton are distributed in these web editions.
 The portrait, likeness, images and VISIONOIR identity are excluded from the open-source software licence. Display in this VISIONOIR experience is authorised by the creator. Other uses require permission from the applicable rights holder.
 Contact: visionoir.platform@gmail.com

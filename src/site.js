@@ -43,6 +43,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
    ${t('heroCopy','p')}
    <a class="cta" href="#contatto">${t('start')}${arrow}</a>
    <a class="support-link" data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a>
+   <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
   </div>
   <button type="button" id="logo-scene" ${a11y('ecoDoor')} style="touch-action:manipulation">
    <img class="scene-fallback poster" src="${asset('logo.svg')}" alt="" width="660" height="790" fetchpriority="high">
@@ -94,8 +95,16 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </form></section>
  <section class="section faq-section">${t('faq','h2')}<div>${['idea','remote','ai','delivery'].map(id=>`<details>${t(id+'Q','summary')}${t(id+'A','p')}</details>`).join('')}</div></section>
  <section class="section creator-section" id="creator" aria-labelledby="creator-name">
-   <div class="creator-visual"><div id="creator-stage" role="img" ${a11y('ecoPortrait')}><img src="${base}creator/poster.webp" width="894" height="1118" alt="" loading="lazy" decoding="async"></div>
+   <div class="creator-column"><div class="creator-visual"><div id="creator-stage" role="img" ${a11y('ecoPortrait')}><img src="${base}creator/poster.webp" width="894" height="1118" alt="" loading="lazy" decoding="async"></div>
     <div class="creator-looks" hidden><button type="button" data-look="natural" aria-pressed="false">${t('ecoModeNatural')}</button><button type="button" data-look="metal" aria-pressed="true">${t('chrome')}</button><button type="button" data-look="liquid" aria-pressed="false">${t('ecoModeMetal')}</button></div></div>
+    <div class="creator-orbit-controls" hidden>
+      ${t('orbitHint','small','id="creator-orbit-hint"')}
+      <div class="creator-orbit-actions" dir="ltr">
+        <button type="button" data-orbit="left" aria-controls="creator-stage" ${a11y('orbitLeft')}>←</button>
+        <button type="button" data-orbit="reset" aria-controls="creator-stage" ${a11y('orbitReset')}>↺</button>
+        <button type="button" data-orbit="right" aria-controls="creator-stage" ${a11y('orbitRight')}>→</button>
+      </div>
+    </div></div>
    <div class="creator-copy"><p class="kicker" lang="en">THE CREATOR</p><h2 id="creator-name">Flavio Giorgio Guarini</h2>
     ${t('ecoCreator','p','class="creator-title"')}<p class="creator-role" lang="en">Creator · Founder · Creative Technologist · Developer</p>
     ${t('bioA','p')}${t('bioB','p')}${t('bioC','p')}<small lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div>

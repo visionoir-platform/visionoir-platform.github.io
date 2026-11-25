@@ -1,3 +1,4 @@
+import { deviceTilt } from '../../src/device-tilt.js';
 import * as T from 'three';
 import outline from '../../public/assets/logo-geometry.json' with { type: 'json' };
 import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModifier.js';
@@ -99,6 +100,7 @@ export async function buildStage(
     creator = false,
     poster,
     canDraw = () => true,
+    tilt = deviceTilt,
   } = {},
 ) {
   const abort = new AbortController();
@@ -156,6 +158,8 @@ export async function buildStage(
   u.uBuses = { value: new Float32Array(6) };
   let elapsed = 0,
     last = 0,
+    drawnTiltX = 0,
+    drawnTiltY = 0,
     logicalMode = 0,
     fromMode = 0,
     mix = 1,
@@ -365,11 +369,18 @@ export async function buildStage(
         ? -0.24 + Math.sin(t * 0.22) * 0.08 * state.camera
         : -0.3 + Math.sin(t * 0.28) * state.rotation * 0.68;
       world.rotation.x = creator ? 0.015 : -0.095 + Math.sin(t * 0.3) * state.camera * 0.1;
+      // Freezing stops sensor delivery. Retain the pose that reached this renderer.
+      if (!frozen || simple) {
+        drawnTiltX = simple ? 0 : tilt.x;
+        drawnTiltY = simple ? 0 : tilt.y;
+      }
+      world.rotation.y += drawnTiltX * .48;
+      world.rotation.x += drawnTiltY * .26;
       world.rotation.z = creator ? 0 : -0.095 + Math.sin(t * 0.2) * state.rotation * 0.055;
       const portrait = box.width / box.height;
       camera.position.set(
-        creator ? 0.07 : 0,
-        creator ? 0.48 : 0,
+        (creator ? .07 : 0) + drawnTiltX * .33,
+        (creator ? .48 : 0) - drawnTiltY * .17,
         creator ? Math.max(3.34, 2.02 / portrait) : Math.max(6.85, 6.35 / portrait),
       );
       camera.lookAt(0, creator ? 0.24 : 0, 0);
