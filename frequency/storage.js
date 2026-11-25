@@ -1,5 +1,6 @@
 const DATABASE = 'visionoir-frequency-v1';
 const CURRENT = 'active';
+const PENDING = 'pending-edit';
 export const controlsKey = 'visionoir-frequency-controls-v1';
 export const chromaticPresetKey = 'visionoir.frequency.chromatic.user-preset.v1';
 export const eraseEvent = 'frequency-storage-erased';
@@ -52,7 +53,7 @@ async function read(key) {
   });
 }
 export async function restore(validate) {
-  for (const key of [CURRENT, 'previous']) {
+  for (const key of [PENDING, CURRENT, 'previous']) {
     const value = await read(key);
     if (value) {
       try {
@@ -76,12 +77,17 @@ export function loadNamed(id) {
 export async function save(project, { named = false } = {}) {
   const db = await database();
   return new Promise((resolve, reject) => {
+    // A tab can unload before the backup read below fires. Commit the recoverable
+    // edit without any request callbacks, then rotate the two normal snapshots.
+    // Enqueue both transactions in this task so other tabs cannot interleave them.
+    const staged = db.transaction('projects', 'readwrite');
+    staged.objectStore('projects').put(project, PENDING);
+    staged.commit?.();
     const tx = db.transaction('projects', 'readwrite');
     const store = tx.objectStore('projects');
     const previous = store.get(CURRENT);
-    // Queue the edited snapshot immediately after the read. Deferring this write
-    // until the read callback could lose an edit when the page was reloaded.
     store.put(project, CURRENT);
+    store.delete(PENDING);
     previous.onsuccess = () => {
       if (previous.result) store.put(previous.result, 'previous');
     };
