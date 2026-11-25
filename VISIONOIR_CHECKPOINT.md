@@ -25,3 +25,12 @@ La pagina Informazioni e diritti offre un indice con 19 argomenti nelle 19 local
 Il piano roll gestisce trascinamento delle note e delle durate. Il mixer supporta l’automazione di volume e pan per clip. Le sessioni si possono riaprire con le modifiche e gli accordi inseriti. Il sampler usa ricampionamento a banda limitata. I bounce WAV di grandi dimensioni possono utilizzare RF64. Il motore live adatta il lavoro ausiliario quando misura pressione persistente sul callback audio.
 
 Il ritratto The Creator ha una posa statica, un’illuminazione reattiva e immagini di riserva coordinate per finitura naturale, scultorea e metallica. Il gioco include esportazione ed eliminazione del salvataggio con conferma. Il collaudo di cancellazione ha controllato anche l’annullamento, il mantenimento delle impostazioni e la riapertura del gioco dal footer.
+
+
+## Controlli sul dominio del 25 novembre
+
+La [pubblicazione di c249ed8](https://github.com/visionoir-platform/visionoir-platform.github.io/actions/runs/45666026866) ha completato la distribuzione. Sono stati confrontati con la build undici file serviti da Pages, inclusi entrambi i modelli del creatore e il processore audio. Nel browser sono stati verificati l’apertura di un articolo in arabo a partire dalla stessa sezione italiana, le modifiche a note e clip, l’automazione del mixer e la riapertura della sessione musicale. La finestra di prova continuativa del motore audio ha un registro separato con l’identificativo della build.
+
+## Proiezione, MIDI e comandi dello studio
+
+Nel test con due finestre Chromium, il proiettore ha ricevuto sia i colpi manuali sia le variazioni di spettro quando la workstation era nascosta. La visibilità delle finestre è stata simulata. Un segnale sintetizzato a 15 kHz ha attivato la banda alta. Il test con due ingressi MIDI simulati ha verificato la selezione di una sola sorgente per il tempo. Le impostazioni di scala e dei tasti per trasporto e pad si conservano tra aperture dello studio. La guida spiega come preparare l’app offline e collegare le uscite di linea al mixer.

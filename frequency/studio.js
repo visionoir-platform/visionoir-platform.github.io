@@ -1,8 +1,11 @@
+import { createSpectrumMeter } from './visual-spectrum.js';
+import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
 import {createAutomationEditor} from './automation-editor.js';
 import { bindEditorDrags, changeChord, relocateNotes, scales, scaleNames } from './piano.js';
 import { createRegionEditor } from './region-editor.js';
 import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
+import { createMidiClock } from './midi-clock.js';
 import { generateSession, genres } from './composer.js';
 import * as audio from './audio/index.js';
 import { translator, names, direction, getInitialLocale } from './i18n.js';
@@ -29,6 +32,12 @@ import { visualSlotForChannel, collectVisualLevels } from './chromatic/channel-r
 export async function startStudio() {
   let lang = getInitialLocale(),
     t = await translator(lang);
+  const controls = readControls();
+  function applyScale() { document.documentElement.style.fontSize = controls.size + '%'; }
+  function uiPreferences() {
+    open('ui-preferences',t('interfaceTitle'),controlsForm(controls,t));
+  }
+  applyScale();
   const el = (id) => document.getElementById(id);
   const s = {
     p: audio.createProject('forge'),
@@ -100,7 +109,7 @@ export async function startStudio() {
     noteOff: (track, pitch, token) => engine.release(track, pitch, token),
     onError: fail,
   });
-  let midiPorts;
+  let midiPorts, clockInput;
   const sceneName = (i) => s.p.scenes[i]?.name || '';
   function say(message) {
     if (el('notice')) {
@@ -298,9 +307,10 @@ export async function startStudio() {
       starting = false;
     }
   }
-  async function audition(ch, pitch, velocity = 0.85) {
+  async function audition(ch, pitch, velocity = 0.85, token) {
     await engineReady();
-    engine.trigger(ch, pitch, velocity);
+    if (token === undefined) engine.trigger(ch, pitch, velocity);
+    else engine.noteOn(ch,pitch,velocity,token);
     const slot = visualSlotForChannel(s.p.tracks, ch);
     if (slot !== undefined) visual?.trigger(slot, velocity);
   }
@@ -312,8 +322,39 @@ export async function startStudio() {
         : 48;
   }
   const signal = { voices: new Float32Array(audio.INSTRUMENTS.length), level: 0, bass: 0, mid: 0, high: 0, beat: 0, bpm: s.p.bpm, scene: 0 };
-  const spectrum = new Uint8Array(512),
-    wave = new Uint8Array(512);
+  const wave = new Uint8Array(512);
+  let meterSource, spectrum, spectralData = false;
+  let lastSpectrum = -Infinity, lastAudioTick = -Infinity;
+  const visibleScope = { element: null, visible: false };
+  const scopeObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.target === visibleScope.element) visibleScope.visible = entry.isIntersecting;
+    }
+  });
+  // The analyser is a monitor tap. Each visible subscriber shares one read per 70 ms.
+  function readVisualSignal() {
+    const analyser = engine.analyser;
+    const now = performance.now();
+    const audibleTail = now - lastAudioTick < 1000 && tick.masterPeak?.some(peak => peak > 0.0001);
+    if (!analyser || engine.context?.state !== 'running' || !(playing || !off() || audibleTail)) {
+      if (spectralData) spectrum.bins.fill(0);
+      spectralData = false;
+      signal.bass = signal.mid = signal.high = signal.level = 0;
+      return signal;
+    }
+    if (meterSource !== analyser) {
+      meterSource = analyser;
+      spectrum = createSpectrumMeter(analyser);
+      lastSpectrum = -Infinity;
+    }
+    if (now - lastSpectrum >= 70 || !spectralData) {
+      spectrum.read(signal);
+      spectralData = true;
+      lastSpectrum = now;
+    }
+    if (!tick.masterRms?.length) signal.level = Math.max(signal.bass, signal.mid, signal.high);
+    return signal;
+  }
   const sceneTints = ['#c8e4ed','#bbcaff','#d5b6f4','#d6f68f','#ffb39f','#e8b68f','#a1e5cf','#d5dddf'];
   let shownScene, lastLight = -1;
   function setDeskLight() {
@@ -361,6 +402,9 @@ export async function startStudio() {
   engine = audio.createEngine({
     onTick: (next) => {
       tick = next;
+      lastAudioTick = performance.now();
+      const rms = next.masterRms;
+      if (rms?.length) signal.level = Math.min(1, Math.hypot(...rms) / Math.sqrt(rms.length));
       s.playScene = next.scene;
       if (next.ended && playing) {
         playing = false;
@@ -376,6 +420,8 @@ export async function startStudio() {
       signal.buses = next.buses || [];
       signal.bpm = s.p.bpm;
       signal.scene = next.scene;
+      // Audio tick messages can continue when background window timers are throttled.
+      if (document.hidden) visual?.sendOutputFrame();
       if (renderTask === undefined)
         renderTask = requestAnimationFrame(() => {
           renderTask = undefined;
@@ -393,35 +439,21 @@ export async function startStudio() {
   function meter() {
     const canvas = el('scope'),
       an = engine.analyser;
-    if (canvas && !document.hidden) {
+    if (canvas !== visibleScope.element) {
+      if (visibleScope.element) scopeObserver.unobserve(visibleScope.element);
+      visibleScope.element = canvas;
+      visibleScope.visible = false;
+      if (canvas) scopeObserver.observe(canvas);
+    }
+    if (canvas && visibleScope.visible && !document.hidden) {
+      readVisualSignal();
       const c = canvas.getContext('2d');
       if (s.analyser !== 'history') c.clearRect(0, 0, 320, 82);
-      const nums = playing || !off() || engine.analyser ? an : null;
-      if (nums) {
-        an.getByteFrequencyData(spectrum);
-        const band = (a, b) => {
-          let sum = 0;
-          for (let i = a; i < b; i++) sum += spectrum[i];
-          return sum / ((b - a) * 255);
-        };
-        signal.bass = band(1, 8);
-        signal.mid = band(8, 60);
-        signal.high = band(60, 220);
-        signal.level = tick.masterRms?.length
-          ? Math.min(
-              1,
-              Math.sqrt(tick.masterRms.reduce((sum, x) => sum + x * x, 0) / tick.masterRms.length),
-            )
-          : band(0, 220);
-        const vals = tick.masterPeak || tick.peaks || [],
-          peak = Math.max(0, ...vals);
-        el('db').textContent = peak > 0 ? (20 * Math.log10(peak)).toFixed(1) + ' dBFS' : '−∞ dBFS';
-      } else {
-        spectrum.fill(0);
-        signal.level = signal.bass = signal.mid = signal.high = 0;
-      }
+      const vals = tick.masterPeak || tick.peaks || [];
+      const peak = Math.max(0, ...vals);
+      el('db').textContent = spectralData && peak > 0 ? (20 * Math.log10(peak)).toFixed(1) + ' dBFS' : '−∞ dBFS';
       if (s.analyser === 'scope') {
-        if (nums) an.getByteTimeDomainData(wave);
+        if (spectralData) an.getByteTimeDomainData(wave);
         else wave.fill(128);
         c.strokeStyle = '#cfee9a';
         c.beginPath();
@@ -434,15 +466,13 @@ export async function startStudio() {
       } else if (s.analyser === 'history') {
         c.drawImage(canvas, 1, 0, 319, 82, 0, 0, 319, 82);
         for (let i = 0; i < 82; i++) {
-          const f = Math.min(511, Math.round(2 ** ((81 - i) / 9)));
-          const n = spectrum[f];
+          const n = Math.round((spectrum?.bucket(81 - i, 82) || 0) * 255);
           c.fillStyle = 'rgb(' + Math.round(n * 0.77) + ',' + n + ',' + Math.round(n * 0.54) + ')';
           c.fillRect(319, i, 1, 1);
         }
       } else
         for (let i = 0; i < 60; i++) {
-          const f = 1 + Math.round(Math.pow(i / 60, 2) * 350),
-            v = spectrum[f] / 255;
+          const v = spectrum?.bucket(i, 60) || 0;
           c.fillStyle = i < 36 ? '#bcc7b8' : '#d5f490';
           c.fillRect(i * 5.4, 81 - v * 78, 3.4, Math.max(1, v * 78));
         }
@@ -478,7 +508,7 @@ export async function startStudio() {
     open(
       'about',
       t('about'),
-      `<p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol><kbd>Space</kbd> ▶ / ■ · <kbd>Esc</kbd> Panic · <kbd>1–8</kbd> Pads<p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`,
+      `<p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}<p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`,
     );
   }
   async function projects() {
@@ -650,7 +680,7 @@ export async function startStudio() {
     open(
       'settings',
       t('settings'),
-      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('erase', t('erase'))}</div><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !navigator.mediaDevices?.selectAudioOutput || !engine.setOutput })}</div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
+      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('ui-preferences', t('interfaceTitle'))}${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('erase', t('erase'))}</div><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !navigator.mediaDevices?.selectAudioOutput || !engine.setOutput })}</div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
     );
   }
   async function preflight() {
@@ -714,6 +744,7 @@ export async function startStudio() {
       '<dl class="preflight">' +
         values.map(([k, v]) => `<div><dt>${h(k)}</dt><dd>${h(v)}</dd></div>`).join('') +
         '</dl>' +
+        '<p>' + h(t('liveWiring')) + '</p>' +
         act('save', t('save')),
     );
   }
@@ -1007,6 +1038,18 @@ export async function startStudio() {
         return;
       case 'library':
         if (guardLive()) await projects();
+        return;
+      case 'ui-preferences': uiPreferences(); return;
+      case 'enable-keys':
+        controls.enabled = !controls.enabled;
+        persistControls(controls);
+        uiPreferences();
+        return;
+      case 'reset-keys':
+        Object.assign(controls,defaultControls());
+        applyScale();
+        persistControls(controls);
+        uiPreferences();
         return;
       case 'settings':
         settings();
@@ -1467,6 +1510,7 @@ export async function startStudio() {
         return;
       case 'midi-clock':
         s.midiClock = !s.midiClock;
+        clockInput?.reset();
         settings();
         return;
       case 'learn':
@@ -1545,6 +1589,17 @@ export async function startStudio() {
       } else mutate(fn, false);
     };
     if (['auto-part','auto-track','auto-target','auto-select'].includes(id)) { automationEditor.change(id,raw); return; }
+    if (id === 'ui-size' && interfaceScales.includes(v)) {
+      controls.size=v;
+      applyScale();
+      persistControls(controls);
+      return;
+    }
+    if (id.startsWith('bind-')) {
+      if(assignKey(controls,Number(id.slice(5)),raw)) persistControls(controls);
+      uiPreferences();
+      return;
+    }
     if (id.startsWith('gen-')) return;
     if (id === 'lang') {
       if (!names[raw]) return;
@@ -1737,8 +1792,16 @@ export async function startStudio() {
     const access = await navigator.requestMIDIAccess({ sysex: false });
     midiPorts?.close();
     midi = access;
-    let previousClock,
-      beats = 0;
+    clockInput = createMidiClock({
+      tempo(bpm) {
+        s.p.bpm = bpm;
+        if (engine.control) engine.control('tempo', bpm);
+        else engine.update(s.p);
+        updateTransport();
+      },
+      start: () => { void play(s.view === 'arrangement'); },
+      stop,
+    });
     const hardwareToField = (id, x) => {
       const [group, idx, prop] = id.split(':');
       if (group === 'm') s.p.master.volume = x;
@@ -1757,20 +1820,8 @@ export async function startStudio() {
     };
     function receive(message, inputId) {
       const [status, a, b] = message.data;
-      if (status === 0xf8) {
-        if (++beats % 24 === 0) {
-          const now = performance.now();
-          if (previousClock && s.midiClock) {
-            const bpm = Math.round(60000 / (now - previousClock));
-            if (bpm >= 40 && bpm <= 300) {
-              s.p.bpm = bpm;
-              if (engine.control) engine.control('tempo', bpm);
-              else engine.update(s.p);
-              updateTransport();
-            }
-          }
-          previousClock = now;
-        }
+      if (status === 0xf8 || status === 0xfa || status === 0xfc) {
+        if (s.midiClock) clockInput.receive(inputId, message);
         return;
       }
       const channel = status & 15,
@@ -1791,11 +1842,11 @@ export async function startStudio() {
       } else if (cmd === 9 && b > 0) {
         void midiNotes.press(inputId, channel, a, s.channel, b / 127);
       } else if (cmd === 8 || (cmd === 9 && b === 0)) midiNotes.release(inputId, channel, a);
-      else if (status === 0xfa && s.midiClock) {
-        void play(s.view === 'arrangement');
-      } else if (status === 0xfc && s.midiClock) stop();
     }
-    midiPorts = bindMidiInputs(midi, receive, id => midiNotes.reset(id));
+    midiPorts = bindMidiInputs(midi, receive, id => {
+      midiNotes.reset(id);
+      clockInput.detach(id);
+    });
     midi.onstatechange = () => {
       midiPorts.refresh();
       say([...midi.inputs.values()].map((v) => v.name).join(' · ') || t('unsupported'));
@@ -1948,45 +1999,27 @@ export async function startStudio() {
       fail(err);
     }
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.repeat || e.target.closest('input,textarea,select,[contenteditable=true]')) return;
-    if (e.key === 'Escape') {
-      if (el('panel').open) return;
-      stop();
-      return;
-    }
-    if (el('panel').open) return;
-    if ((e.ctrlKey || e.metaKey) && ['s', 'z'].includes(e.key.toLowerCase())) {
-      e.preventDefault();
-      void action({
-        dataset: { action: e.key.toLowerCase() === 's' ? 'save' : e.shiftKey ? 'redo' : 'undo' },
-      }).catch(fail);
-      return;
-    }
-    if (e.code === 'Space' && !e.target.closest('button,a,summary')) {
-      e.preventDefault();
-      playing ? stop() : void play(s.view === 'arrangement');
-    }
-    if (/^Digit[1-8]$/.test(e.code)) {
-      const i = Number(e.code.slice(-1)) - 1;
-      if (s.p.tracks[i]) void audition(i, noteBase(i)).catch(fail);
-    }
-    if (e.key === 'Enter' && e.target.matches('[data-pad]')) {
-      const i = +e.target.dataset.pad;
-      void audition(i, noteBase(i)).catch(fail);
-    }
-  });
-  document.addEventListener('keyup', (e) => {
-    if (/^Digit[1-8]$/.test(e.code)) {
-      const i = Number(e.code.slice(-1)) - 1;
-      if (s.p.tracks[i]) engine.release(i, noteBase(i));
-    }
+  const performanceKeys = bindPerformanceKeys(document,{
+    getControls:()=>controls,
+    modal:()=>el('panel').open,
+    transport:()=>playing ? stop() : void play(s.view === 'arrangement'),
+    stop,
+    standard:command=>void action({dataset:{action:command}}).catch(fail),
+    async playPad(index,token){
+      if(!s.p.tracks[index]) return;
+      const pitch=noteBase(index);
+      await audition(index,pitch,.85,token);
+      return ()=>engine.release(index,pitch,token);
+    },
+    onError:fail,
   });
   window.addEventListener('pagehide', () => {
+    performanceKeys.clear();
     if (saveTimer && storageAvailable) {
       clearTimeout(saveTimer);
       void save(s.p).catch(() => {});
     }
+    scopeObserver.disconnect();
     midiPorts?.close();
     midiNotes.reset();
     engine.stop();
@@ -2017,7 +2050,7 @@ export async function startStudio() {
     visual = await mountChromatic(el('chromatic'), {
       locale: lang,
       state: s.p.visual,
-      getSignal: () => signal,
+      getSignal: readVisualSignal,
       onChange: (value) => {
         s.p.visual = value;
         saveSoon();
