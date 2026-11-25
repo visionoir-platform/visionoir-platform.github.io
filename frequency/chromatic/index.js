@@ -6,6 +6,8 @@ import { buildStage } from './stage.js';
 import {
   normalizeSignal,
   normalizeVisual,
+  readPresetBank,
+  sceneLook,
   defaultVisual,
   instruments,
   modes,
@@ -48,6 +50,7 @@ export async function mountChromatic(
   let visual = normalizeVisual(state),
     lang = locale,
     cueScene = -1,
+    autoPending = false,
     activeParam = 'intensity',
     routeIndex = 0,
     learning = false;
@@ -60,6 +63,18 @@ export async function mountChromatic(
     disposed = false,
     lastSentState = null;
   const currentSignal = normalizeSignal();
+  function loadBank(project) {
+    if (Array.isArray(project?.presetBank?.slots)) return readPresetBank(project.presetBank);
+    try {
+      return readPresetBank(JSON.parse(localStorage.getItem(presetKey)));
+    } catch {
+      return readPresetBank();
+    }
+  }
+  let bank = loadBank(state);
+  function projectVisual() {
+    return structuredClone(bank.slots.some(Boolean) ? {...visual, presetBank: bank} : visual);
+  }
   const shell = node('section', 'chromatic-panel'),
     surface = node('div', 'chromatic-surface'),
     heading = node('header', 'chromatic-head'),
@@ -92,9 +107,9 @@ export async function mountChromatic(
     tiltNotice.textContent = tilt.showControl && tilt.status === 'unavailable' ? text.tiltUnavailable : '';
   }
   const buttons = {};
-  let localized, parameterSelect, voiceSelect, routeSelect, slider, level, modeSelect, quality, colorInput;
+  let localized, parameterSelect, voiceSelect, routeSelect, slider, level, modeSelect, quality, colorInput, slotSelect;
+  let priorQuality = visual.quality;
   function update(notify = true) {
-    visual = normalizeVisual(visual);
     tilt.setEnabled(!visual.reduced && !visual.freeze);
     syncTilt();
     if (modeSelect) modeSelect.value = visual.mode;
@@ -108,8 +123,12 @@ export async function mountChromatic(
     }
     if (routeSelect) routeSelect.value = visual.mapping[routeIndex];
     if (colorInput) colorInput.value = visual.color || modes.find((x) => x[0] === visual.mode)[2];
+    if (priorQuality !== visual.quality) {
+      priorQuality = visual.quality;
+      stage?.resize?.();
+    }
     stage?.invalidate();
-    if (notify) onChange(structuredClone(visual));
+    if (notify) onChange(projectVisual());
   }
   function mutate(change, notify = true) {
     visual = { ...visual, ...change };
@@ -118,14 +137,22 @@ export async function mountChromatic(
   function toggle(k) {
     mutate({ [k]: !visual[k] });
   }
+  function syncScene(scene, running) {
+    if (visual.freeze || !Number.isInteger(scene) || scene < 0) return;
+    if (scene !== cueScene) {
+      cueScene = scene;
+      const cue = visual.automation.find((entry) => entry.scene === scene);
+      autoPending = !cue && visual.auto;
+      if (cue) mutate({ ...cue.look, mode: cue.mode });
+    }
+    if (autoPending && running) {
+      autoPending = false;
+      if (visual.auto) mutate({ mode: modes[scene % modes.length][0], color: '' });
+    }
+  }
   function getFrame() {
     const frame = normalizeSignal(getSignal() || {}, currentSignal);
-    if (frame.scene !== cueScene) {
-      cueScene = frame.scene;
-      const cue = visual.automation.find((x) => x.scene === cueScene);
-      if (cue) mutate({ mode: cue.mode });
-      else if (visual.auto && frame.level > 0.012) mutate({ mode: modes[cueScene % modes.length][0] });
-    }
+    syncScene(frame.scene, frame.level > 0.012);
     return frame;
   }
   function stopOutputFrames() {
@@ -136,6 +163,12 @@ export async function mountChromatic(
   function tellOutputMaterial() {
     if (!outputWin || outputWin.closed) return;
     outputWin.postMessage({type:'visionoir.visual.material', id:outputKey, logoNegative:negative()}, location.origin);
+  }
+  function attachOutputState(packet) {
+    // Cues and MIDI mappings are interpreted by the studio; the projector renders the resulting look.
+    const { automation, midi, ...renderState } = visual;
+    packet.state = renderState;
+    lastSentState = visual;
   }
   function tellOutput(force = false) {
     if (!outputVisible) return;
@@ -148,10 +181,7 @@ export async function mountChromatic(
     if (!force && now - lastFrame < 50) return;
     lastFrame = now;
     const packet = { type: 'visionoir.visual.frame', id: outputKey, signal: getFrame(), viewOffset: [deviceTilt.x,deviceTilt.y] };
-    if (force || lastSentState !== visual) {
-      packet.state = visual;
-      lastSentState = visual;
-    }
+    if (force || lastSentState !== visual) attachOutputState(packet);
     outputWin.postMessage(packet, location.origin);
   }
   function trigger(index, value = 1) {
@@ -160,7 +190,10 @@ export async function mountChromatic(
     value = unit(value);
     stage?.trigger(index, value);
     if (outputVisible && outputWin && !outputWin.closed) {
-      outputWin.postMessage({ type: 'visionoir.visual.hit', id: outputKey, index, value }, location.origin);
+      const packet = { type: 'visionoir.visual.hit', id: outputKey, index, value };
+      // A performer can remap a voice and tap it before the next periodic frame.
+      if (lastSentState !== visual) attachOutputState(packet);
+      outputWin.postMessage(packet, location.origin);
     }
   }
   function external() {
@@ -223,16 +256,27 @@ export async function mountChromatic(
       color: '',
     });
   }
-  function restorePreset() {
-    try {
-      const saved = localStorage.getItem(presetKey);
-      if (saved) {
-        visual = normalizeVisual(JSON.parse(saved));
-        update();
-      }
-    } catch {
-      /* private browsing */
+  function showBank() {
+    if (!slotSelect) return;
+    for (const [index, saved] of bank.slots.entries()) {
+      const name = modes.find(([id]) => id === saved?.mode)?.[1] || '—';
+      slotSelect.options[index].textContent = String(index + 1).padStart(2, '0') + ' / ' + name;
     }
+    slotSelect.selectedIndex = bank.selected;
+    buttons.recall.disabled = !bank.slots[bank.selected];
+  }
+  function storePreset() {
+    bank.slots[bank.selected] = normalizeVisual(visual);
+    try { localStorage.setItem(presetKey, JSON.stringify(bank)); }
+    catch { /* The bank is also included in the project and in .vfreq exports. */ }
+    showBank();
+    onChange(projectVisual());
+  }
+  function restorePreset() {
+    const saved = bank.slots[bank.selected];
+    if (!saved) return;
+    visual = normalizeVisual(saved);
+    update();
   }
   function renderControls() {
     localized = labels(lang);
@@ -245,6 +289,7 @@ export async function mountChromatic(
       const label = node('label'),
         t = node('span');
       t.textContent = localized[key];
+      control.setAttribute('aria-label', localized[key]);
       add(label, t, control);
       dest.append(label);
       return label;
@@ -288,15 +333,12 @@ export async function mountChromatic(
       ['low', localized.low],
       ['high', localized.high],
     ]);
-    quality.onchange = () => {
-      mutate({ quality: quality.value });
-      stage?.resize?.();
-    };
+    quality.onchange = () => mutate({ quality: quality.value });
     labeled(rack, 'quality', quality);
     for (const [k, action] of Object.entries({
       sync: () => toggle('sync'),
       reduced: () => toggle('reduced'),
-      auto: () => toggle('auto'),
+      auto: () => { cueScene = -1; toggle('auto'); },
       random: randomize,
       reset: () => {
         visual = defaultVisual();
@@ -325,22 +367,22 @@ export async function mountChromatic(
     };
     labeled(rack, 'response', routeSelect);
     const cue = button(localized.storeCue, () => {
-      const scene = getFrame().scene;
+      const scene = normalizeSignal(getSignal() || {}, currentSignal).scene;
       mutate({
-        automation: [...visual.automation.filter((v) => v.scene !== scene), { scene, mode: visual.mode }],
+        automation: [...visual.automation.filter((v) => v.scene !== scene), { scene, mode: visual.mode, look: sceneLook(visual) }],
       });
     });
     rack.append(cue);
-    rack.append(
-      button(localized.store, () => {
-        try {
-          localStorage.setItem(presetKey, JSON.stringify(visual));
-        } catch {
-          /* .vfreq export remains available */
-        }
-      }),
-      button(localized.recall, restorePreset),
-    );
+    slotSelect = select(bank.slots.map((_, index) => [String(index), '']));
+    slotSelect.onchange = () => {
+      bank.selected = slotSelect.selectedIndex;
+      showBank();
+      if (bank.slots.some(Boolean)) onChange(projectVisual());
+    };
+    labeled(rack, 'presetSlot', slotSelect);
+    buttons.recall = button(localized.recall, restorePreset);
+    rack.append(button(localized.store, storePreset), buttons.recall);
+    showBank();
     update(false);
   }
   renderControls();
@@ -359,11 +401,15 @@ export async function mountChromatic(
     return false;
   }
   return {
-    getState: () => structuredClone(visual),
+    getState: projectVisual,
     getCanvas: () => stage.captureCanvas?.() ?? null,
     startRecording: fps => stage.startRecording(fps),
     setState: (v) => {
       visual = normalizeVisual(v);
+      bank = loadBank(v);
+      cueScene = -1;
+      autoPending = false;
+      showBank();
       update(false);
     },
     setLocale: (v) => {
@@ -371,6 +417,7 @@ export async function mountChromatic(
       renderControls();
     },
     trigger,
+    syncScene,
     sendOutputFrame: tellOutput,
     setMotion: (v) => mutate({ reduced: !v }, false),
     handleCC,
@@ -400,6 +447,12 @@ export async function mountVJ(host) {
     frame = normalizeSignal(),
     stage;
   const projectedTilt = { x: 0, y: 0 };
+  function applyState(next) {
+    if (!next) return;
+    const previousQuality = state.quality;
+    state = normalizeVisual(next);
+    if (state.quality !== previousQuality) stage?.resize?.();
+  }
   const receive = (e) => {
     if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
     if (e.data.type === 'visionoir.visual.material') {
@@ -409,12 +462,13 @@ export async function mountVJ(host) {
     if (e.data.type === 'visionoir.visual.hit') {
       const { index, value } = e.data;
       if (Number.isInteger(index) && index >= 0 && index < instruments.length && Number.isFinite(value)) {
+        applyState(e.data.state);
         stage?.trigger(index, unit(value));
       }
       return;
     }
     if (e.data.type !== 'visionoir.visual.frame') return;
-    if (e.data.state) state = normalizeVisual(e.data.state);
+    applyState(e.data.state);
     frame = normalizeSignal(e.data.signal || {}, frame);
     const offset = e.data.viewOffset;
     if (Array.isArray(offset) && offset.length === 2 && offset.every(Number.isFinite)) {

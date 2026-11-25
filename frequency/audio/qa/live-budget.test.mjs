@@ -73,3 +73,28 @@ test('pressure reduces channel meter work, preserves sample output, exact master
   b.stop();
   assert.equal(b.status().dspLoad, undefined);
 });
+
+test('worklet meter buffers survive track changes while normal snapshots stay independent', () => {
+  const project = createProject('forge');
+  const rack = new LiveRack(project, 16000);
+  rack.start({ scene: 3 });
+  block(rack, 4096);
+  const tick = rack.status();
+  const sent = structuredClone(tick);
+  const arrays = Object.fromEntries(['masterPeak', 'masterRms', 'levels', 'peaks', 'buses'].map(key => [key, tick[key]]));
+  assert.ok(Math.max(...sent.masterPeak) > 0);
+  const expanded = structuredClone(project);
+  expanded.tracks.push(...expanded.tracks.map(track => ({ ...track, id: track.id + '-2' })));
+  rack.update(expanded);
+  assert.equal(rack.status(tick), tick);
+  assert.equal(tick.levels.length, expanded.tracks.length);
+  assert.equal(sent.levels.length, project.tracks.length);
+  rack.update(project);
+  rack.status(tick);
+  assert.equal(tick.peaks.length, project.tracks.length);
+  assert.equal(Math.max(...tick.masterPeak), 0);
+  for (const [key, ref] of Object.entries(arrays)) assert.equal(tick[key], ref);
+  const next = rack.status();
+  assert.notEqual(next, tick);
+  for (const key of Object.keys(arrays)) assert.notEqual(next[key], tick[key]);
+});

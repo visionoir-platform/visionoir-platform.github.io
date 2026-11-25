@@ -72,7 +72,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </section>
  <section class="section studio-section" id="studio">
   <div class="section-copy">${t('studio','p','class="kicker"')}${t('studioTitle','h2')}${t('studioCopy','p')}</div>
-  <div class="people"><div><h3>Flavio Giorgio Guarini</h3>${t('flavio','p')}</div><div><h3>Maria Bellini</h3>${t('maria','p')}</div></div>
+  <div class="people"><div><h3 lang="en" dir="ltr"><small>Created, designed and developed by </small>Flavio Giorgio Guarini.</h3>${t('flavio','p')}</div><div><h3>Maria Bellini</h3>${t('maria','p')}</div></div>
   <div class="method" id="metodo">${t('method','h3')}${t('methodCopy','p')}</div>
   <a class="social" href="https://www.instagram.com/visionoir_/" target="_blank" rel="noopener noreferrer">
     <span class="social-mark" aria-hidden="true">↗</span>
@@ -112,7 +112,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </section>
 </main>
 <footer class="footer">
- <div class="footer-sign"><span lang="en">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
+ <div class="footer-sign"><span itemprop="creditText" lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
  <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="#unseen-door">unseen.</a></span>
  <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a>
     <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>

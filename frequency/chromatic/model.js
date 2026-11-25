@@ -90,17 +90,20 @@ export const defaultVisual = () => ({
   midi: {},
 });
 export const unit = (v, f = 0) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : f);
+// A scene cue restores its look without changing performance controls, MIDI or the cue list.
+export function sceneLook(raw) {
+  const look = { color: /^#[\da-f]{6}$/i.test(raw.color) ? raw.color : '', sync: raw.sync !== false };
+  for (const [name, initial] of Object.entries(parameters)) look[name] = unit(raw[name], initial);
+  look.mapping = routes.map((normal, i) => routes.includes(raw.mapping?.[i]) ? raw.mapping[i] : normal);
+  return look;
+}
 export function normalizeVisual(raw = {}) {
   if (!raw || typeof raw !== 'object') raw = {};
-  const s = defaultVisual();
-  for (const [name, initial] of Object.entries(parameters)) s[name] = unit(raw[name], initial);
+  const s = { ...defaultVisual(), ...sceneLook(raw) };
   if (modes.some((m) => m[0] === raw.mode)) s.mode = raw.mode;
-  if (/^#[\da-f]{6}$/i.test(raw.color)) s.color = raw.color;
-  for (const name of ['sync', 'auto', 'freeze', 'reduced'])
+  for (const name of ['auto', 'freeze', 'reduced'])
     if (typeof raw[name] === 'boolean') s[name] = raw[name];
   if (['auto', 'low', 'high'].includes(raw.quality)) s.quality = raw.quality;
-  if (Array.isArray(raw.mapping))
-    s.mapping = s.mapping.map((normal, i) => (routes.includes(raw.mapping[i]) ? raw.mapping[i] : normal));
   if (Array.isArray(raw.automation))
     s.automation = raw.automation
       .slice(0, 256)
@@ -108,7 +111,9 @@ export function normalizeVisual(raw = {}) {
         (v) =>
           Number.isInteger(v?.scene) && v.scene >= 0 && v.scene <= 4095 && modes.some((m) => m[0] === v.mode),
       )
-      .map((v) => ({ scene: v.scene, mode: v.mode }));
+      .map((v) => v.look && typeof v.look === 'object'
+        ? { scene: v.scene, mode: v.mode, look: sceneLook(v.look) }
+        : { scene: v.scene, mode: v.mode });
   if (raw.midi && typeof raw.midi === 'object' && !Array.isArray(raw.midi)) {
     for (const [key, param] of Object.entries(raw.midi).slice(0, 128)) {
       if (
@@ -119,6 +124,29 @@ export function normalizeVisual(raw = {}) {
     }
   }
   return s;
+}
+export function readPresetBank(raw) {
+  const slots = Array(8).fill(null);
+  if (Array.isArray(raw?.slots)) {
+    raw.slots.slice(0, slots.length).forEach((value, i) => {
+      if (modes.some(([id]) => id === value?.mode)) slots[i] = normalizeVisual(value);
+    });
+  } else if (modes.some(([id]) => id === raw?.mode)) {
+    // The first local format held one full visual state in the same storage key.
+    slots[0] = normalizeVisual(raw);
+  }
+  const selected = Number.isInteger(raw?.selected) && raw.selected >= 0 && raw.selected < slots.length ? raw.selected : 0;
+  return { selected, slots };
+}
+export function mixVisualVoices(voice, envelope, hits, levels, state, decay) {
+  voice.fill(0);
+  for (let i = 0; i < instruments.length; i++) {
+    hits[i] *= decay;
+    envelope[i] = Math.max(envelope[i] * decay, levels[i], hits[i]);
+    const destination = routes.indexOf(state.mapping[i]);
+    const sensitivity = state.sensitivity * (i === 0 ? state.kick : 1);
+    voice[destination] = Math.max(voice[destination], envelope[i] * sensitivity);
+  }
 }
 export function normalizeSignal(
   raw = {},

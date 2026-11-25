@@ -31,6 +31,7 @@ const specs = [
     'bass',
     {
       tone: 0.32,
+      bassEq: 0.5,
       decay: 0.72,
       drive: 0.55,
       feedback: 0.32,
@@ -400,6 +401,10 @@ export function createProject(demoId = 'blank') {
 }
 const finite = (n, l, h) => Number.isFinite(n) && n >= l && n <= h;
 const effectNames = new Set(EFFECTS.map((f) => f.id));
+export const EQ_LIMITS = { frequency: [20, 20000], gain: [-18, 18], q: [0.1, 12] };
+export function macroEq(amount) {
+  return { frequency: 180 + amount * 3100, gain: (amount - 0.5) * 12, q: 0.7 };
+}
 const plain = (o) =>
   !!o &&
   typeof o === 'object' &&
@@ -425,6 +430,8 @@ function validRack(list) {
           plain(f) &&
           effectNames.has(f.id) &&
           finite(f.amount, 0, 1) &&
+          (f.eq === undefined || (f.id === 'eq' && plain(f.eq) &&
+            Object.entries(EQ_LIMITS).every(([key, bounds]) => finite(f.eq[key], ...bounds)))) &&
           (f.bypass === undefined || typeof f.bypass === 'boolean'),
       ))
   );
@@ -614,7 +621,8 @@ export function projectFile(p) {
   validateProject(p);
   return new Blob([JSON.stringify(p)], { type: 'application/json' });
 }
+export const MAX_PROJECT_BYTES = 80e6;
 export async function readProject(file) {
-  if (file.size > 80e6) throw Error('project.size');
+  if (file.size > MAX_PROJECT_BYTES) throw Error('project.size');
   return validateProject(JSON.parse(await file.text()));
 }

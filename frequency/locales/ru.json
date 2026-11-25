@@ -1,4 +1,8 @@
 {
+  "eqMacro": "Один регулятор",
+  "eqParametric": "Независимые регуляторы",
+  "eqFrequency": "Центральная частота",
+  "param_rumble_bassEq": "Эквалайзер баса (100 Hz)",
   "param_lead_mono": "Монофонический режим",
   "param_ride_noiseFilter": "Фильтр высоких частот для шума",
   "play": "Воспроизвести",

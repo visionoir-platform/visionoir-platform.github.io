@@ -1,4 +1,8 @@
 {
+  "eqMacro": "Kidhibiti kimoja",
+  "eqParametric": "Vidhibiti vinavyojitegemea",
+  "eqFrequency": "Masafa ya katikati",
+  "param_rumble_bassEq": "Usawazishaji wa besi (100 Hz)",
   "param_lead_mono": "Hali ya noti moja",
   "param_ride_noiseFilter": "Kichujio cha masafa ya juu cha kelele",
   "play": "Cheza",

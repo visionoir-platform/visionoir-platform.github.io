@@ -100,11 +100,13 @@ export class LiveRack {
     this.spare.meterStride = this.budget.protected ? 4 : 1;
     this.spare.start({ scene: this.queued.scene, absoluteStep: this.queued.step });
   }
-  status() {
-    const status = this.active.status(),
+  status(out) {
+    const status = this.active.status(out),
       n = Math.max(1, this.count);
-    status.masterPeak = [this.peakL, this.peakR];
-    status.masterRms = [Math.sqrt(this.powerL / n), Math.sqrt(this.powerR / n)];
+    status.masterPeak[0] = this.peakL;
+    status.masterPeak[1] = this.peakR;
+    status.masterRms[0] = Math.sqrt(this.powerL / n);
+    status.masterRms[1] = Math.sqrt(this.powerR / n);
     status.correlation =
       this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : 0;
     status.dspLoad = this.budget.load;

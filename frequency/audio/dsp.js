@@ -561,34 +561,33 @@ export class DSP {
       }
     }
   }
-  status() {
-    const n = Math.max(1, this.meterN),
-      masterPeak = this.masterPeak.slice(),
-      masterRms = [Math.sqrt(this.squareL / n), Math.sqrt(this.squareR / n)];
-    const correlation =
-        this.squareL && this.squareR
-          ? clamp(this.dot / Math.sqrt(this.squareL * this.squareR), -1, 1)
-          : 0,
-      clipped = this.clipped;
+  status(out = { masterPeak: [0, 0], masterRms: [0, 0], levels: [], peaks: [], buses: [] }) {
+    const n = Math.max(1, this.meterN);
+    out.masterPeak[0] = this.masterPeak[0];
+    out.masterPeak[1] = this.masterPeak[1];
+    out.masterRms[0] = Math.sqrt(this.squareL / n);
+    out.masterRms[1] = Math.sqrt(this.squareR / n);
+    out.correlation = this.squareL && this.squareR
+      ? clamp(this.dot / Math.sqrt(this.squareL * this.squareR), -1, 1) : 0;
+    out.clipped = this.clipped;
+    out.playing = this.running;
+    out.step = this.local ?? 0;
+    out.absoluteStep = this.step;
+    out.scene = this.scene;
+    out.bar = this.bar;
+    out.bpm = this.p.bpm;
+    out.levels.length = out.peaks.length = this.channels.length;
+    for (let i = 0; i < this.channels.length; i++) {
+      out.levels[i] = Math.sqrt(this.channels[i].energy);
+      out.peaks[i] = this.channels[i].peak;
+    }
+    out.buses.length = this.busLv.length;
+    for (let i = 0; i < this.busLv.length; i++) out.buses[i] = this.busLv[i];
+    out.queuedScene = this.queue;
+    out.ended = !!this.ended;
     this.masterPeak[0] = this.masterPeak[1] = 0;
     this.squareL = this.squareR = this.dot = this.meterN = 0;
     this.clipped = false;
-    return {
-      masterPeak,
-      masterRms,
-      correlation,
-      clipped,
-      playing: this.running,
-      step: this.local ?? 0,
-      absoluteStep: this.step,
-      scene: this.scene,
-      bar: this.bar,
-      bpm: this.p.bpm,
-      levels: this.channels.map((c) => Math.sqrt(c.energy)),
-      peaks: this.channels.map((c) => c.peak),
-      buses: Array.from(this.busLv),
-      queuedScene: this.queue,
-      ended: !!this.ended,
-    };
+    return out;
   }
 }

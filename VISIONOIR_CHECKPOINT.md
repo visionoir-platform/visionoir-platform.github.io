@@ -84,3 +84,11 @@ Il gesto è attivo all’ingresso nella home e all’apertura del Chromatic Engi
 ## Verifica Search Console
 
 La home include il meta tag di verifica della proprietà HTTPS con prefisso URL su GitHub Pages. Il tag è statico e leggibile anche senza JavaScript.
+
+## Ripresa di un progetto e controllo dei rack
+
+La libreria di FREQUENCY riapre il documento modificabile incluso negli ZIP esportati con MIDI o stem. La lettura verifica l'integrità del documento e carica soltanto la parte dell'archivio necessaria. Un file danneggiato lascia aperto il progetto in uso.
+
+I preset del Visual Rack e le impostazioni visive delle scene viaggiano con il progetto. Il proiettore segue qualità e assegnazioni agli strumenti, anche quando il trasporto è fermo. La sezione Master del mixer apre gli inserti. Ogni slot può richiamare un preset di fabbrica. L'EQ parametrico offre frequenza, guadagno e Q indipendenti. Il Rumble dispone di un controllo dei bassi dopo la distorsione. I valori precedenti vengono conservati alla riapertura delle sessioni esistenti. I crediti editoriali del sito, del gioco e dello studio includono la direzione di Flavio Giorgio Guarini.
+
+In una prova di quattro ore della precedente build `frequency-2d63855e8b3907`, il segnale Web Audio a 48 kHz è stato presente in tutti i 47.999 campionamenti effettuati su Chrome per macOS. La prova ha attraversato otto cambi scena. L'ascolto fisico e le versioni successive hanno collaudi distinti.

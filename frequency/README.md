@@ -1,5 +1,7 @@
 # VISIONOIR: FREQUENCY
 
+Created, designed and developed by Flavio Giorgio Guarini.
+
 ## Inizia a suonare
 
 Premi **Avvia** per ascoltare la scena selezionata. Toccando una cella inserisci o togli lo step. Le frecce della tastiera spostano il focus nella matrice. **Modifica step** imposta nota MIDI, durata, dinamica, probabilità, ripetizioni, accordo e automazione dei parametri. Ogni canale può avere una propria lunghezza fino a 128 step. In **Sequencer**, attiva **Seleziona · Step** nella barra sopra la matrice per ispezionare una cella mantenendone lo stato. In **Piano roll**, trascina la nota con il mouse o con il dito per cambiare posizione e altezza. Il movimento si arresta se la destinazione contiene un altro attacco. **Durata** modifica il gate trascinando in orizzontale. **Accordi** aggiunge o rimuove una voce sulla stessa colonna. Le voci di un accordo condividono durata e dinamica. La selezione multipla, le frecce, i campi numerici e i comandi di copia e duplicazione permettono le stesse modifiche da tastiera.
@@ -9,6 +11,8 @@ Premi **Avvia** per ascoltare la scena selezionata. Toccando una cella inserisci
 In **Arrangiamento**, aggiungi una scena, scegli la durata in battute e spostala con le frecce. Trascina la maniglia della parte per riordinarla oppure attivala da tastiera e scegli una posizione. Il pulsante di intestazione modifica il marker. In **Automazione** scegli parte, canale e parametro. Tocca il grafico per aggiungere un punto e trascinalo per spostarlo. Puoi anche impostare step e valore nei campi numerici e confermare con **Salva**. Il motore interpola volume e pan fra i punti durante la parte e riprende il valore del mixer alla sua fine. Ogni cella della timeline permette di usare lo strumento dalla scena predefinita, da un’altra scena o di silenziarlo. **Avvia · Arrangiamento** percorre la timeline. Scegli **+ Regione audio** per importare una registrazione mono fino a 90 secondi. Assegna la regione a una parte, posizionala sulla griglia a sedicesimi e imposta il tratto della registrazione da ascoltare. Ogni regione termina entro la parte che la contiene. Puoi spostarla, annullare la modifica e ritrovare la sorgente intatta nel file `.vfreq`. Il Sampler consente anche di suonare un campione tramite note del pattern.
 
 ## Suono, performance e registrazione
+
+Nel Rumble Engine, **EQ bassi (100 Hz)** regola i bassi dopo la distorsione, da −9 a +9 dB. Il centro della manopola mantiene il timbro originale.
 
 Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master. Queste letture non costituiscono una misura true peak o LUFS.
 
@@ -20,7 +24,7 @@ In **Impostazioni → Interfaccia e tastiera** scegli la dimensione dei controll
 
 ## Salva, esporta, usa offline
 
-Il browser conserva il progetto corrente e il salvataggio precedente in IndexedDB. **Libreria → Salva +** conserva una copia nominata. **Esporta → .vfreq** comprende pattern, mixer, impostazioni visive e campioni importati. **Importa file** riapre il progetto. **Cancella dati locali** richiede conferma. I browser possono liberare spazio locale: conserva una copia `.vfreq` separata.
+Il browser conserva il progetto corrente e il salvataggio precedente in IndexedDB. **Libreria → Salva +** conserva una copia nominata. **Esporta → .vfreq** comprende pattern, mixer, impostazioni visive e campioni importati. **Importa file** riapre un progetto .vfreq, JSON o uno ZIP esportato da FREQUENCY, anche con gli stem WAV. Il browser recupera il documento modificabile con i campioni incorporati e verifica la sua integrità. **Cancella dati locali** richiede conferma. I browser possono liberare spazio locale: conserva una copia `.vfreq` separata.
 
 **Esporta** comprende WAV PCM 16/24 bit o float 32 bit, AIFF e FLAC 16/24 bit, MP3, MIDI e un archivio ZIP. Il FLAC impiega blocchi lossless verbatim e può avere dimensioni simili al WAV. Scegli mix, traccia o bus e imposta intervallo, frequenza, mastering e coda degli effetti. WAV/AIFF/FLAC supportano sei frequenze da 44,1 a 192 kHz. MP3 supporta 44,1 e 48 kHz, con 128, 192, 256 o 320 kbps. Per passare a un’altra DAW, esporta gli stem, importa i file WAV dal medesimo punto iniziale e importa il MIDI alle stesse impostazioni di tempo. Le scene native, i preset e la sintesi si riaprono tramite `.vfreq`.
 

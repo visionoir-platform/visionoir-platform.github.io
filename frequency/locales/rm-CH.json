@@ -1,4 +1,8 @@
 {
+  "eqMacro": "In sulet regulatur",
+  "eqParametric": "Regulaturs independents",
+  "eqFrequency": "Frequenza centrala",
+  "param_rumble_bassEq": "Equalisaziun dals bass (100 Hz)",
   "param_lead_mono": "Modus monofonic",
   "param_ride_noiseFilter": "Filter passaaut per la ramur",
   "play": "Sunar",

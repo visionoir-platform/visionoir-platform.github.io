@@ -143,6 +143,12 @@ export class Voice {
       durations[kind] * (0.24 + 2.2 * (p.decay ?? 0.4)) * (kind === 0 ? 0.74 + p.tail : 1),
       this.rate,
     );
+    if (kind === 1) {
+      this.rumbleBassState = 0;
+      this.rumbleBassSlew = 1 - envelope(0.005, this.rate);
+      this.setRumbleBassEq(p.bassEq);
+      this.rumbleBassGain = this.rumbleBassTarget;
+    }
     if (kind === 9) this.rideCut = rideNoiseCoefficient(p.noiseFilter, this.rate);
     this.noise = seed | 1;
     this.lp = this.bp = this.hp = this.lastNoise = 0;
@@ -172,8 +178,16 @@ export class Voice {
     if (kind === 0)
       this.kickInc = ((32 + 39 * p.pitch) * 2 ** ((note - 36 + (p.tuning - 0.5) * 12) / 12)) / this.rate;
   }
+  setRumbleBassEq(value) {
+    // A first-order +/-9 dB low shelf, with its half-gain frequency at 100 Hz.
+    const gain = 10 ** ((value - 0.5) * 18 / 20);
+    const g = Math.tan(Math.PI * 100 / (this.rate * Math.sqrt(gain)));
+    this.rumbleBassPole = g / (1 + g);
+    this.rumbleBassTarget = gain - 1;
+  }
   control(key, value) {
     this.p[key] = value;
+    if (this.kind === 1 && key === 'bassEq') this.setRumbleBassEq(value);
     if (this.kind === 9 && key === 'noiseFilter') {
       this.rideCut = rideNoiseCoefficient(value, this.rate);
       if (!this.rideCut) this.lp = 0;
@@ -239,6 +253,11 @@ export class Voice {
         x = SAT(
           (this.lp + osc(phase * 0.5 + this.slow * p.delay) * p.feedback * 0.64) * (1 + 3 * p.drive),
         );
+        const delta = (x - this.rumbleBassState) * this.rumbleBassPole;
+        const bass = this.rumbleBassState + delta;
+        this.rumbleBassState = bass + delta;
+        this.rumbleBassGain += (this.rumbleBassTarget - this.rumbleBassGain) * this.rumbleBassSlew;
+        x += this.rumbleBassGain * bass;
         break;
       }
       case 2: {

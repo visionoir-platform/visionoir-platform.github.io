@@ -122,6 +122,10 @@ const engine = { chromium, webkit, firefox }[device];
     assert.equal(session.arrangement.length, n + 1);
     assert.equal(session.arrangement[0].marker, 'QA marker');
     assert.equal(session.arrangement[0].trackScenes[0], -1);
+    await field('format').selectOption('zip');
+    const bundleDownload = p.waitForEvent('download');
+    await act('render');
+    const bundlePath = await (await bundleDownload).path();
     const rendered = [];
     for (const fmt of device === 'chromium'
       ? ['midi', 'wav', 'mp3', 'aiff', 'flac']
@@ -156,6 +160,13 @@ const engine = { chromium, webkit, firefox }[device];
       buffer: fs.readFileSync(fp),
     });
     await p.waitForFunction(() => document.querySelector('#notice').textContent.includes('QA Memory'));
+    await act('library');
+    await field('name').fill('Before archive recovery');
+    await field('name').press('Tab');
+    const chooser = p.waitForEvent('filechooser');
+    await act('import');
+    await (await chooser).setFiles({ name: 'song.zip', mimeType: 'application/zip', buffer: fs.readFileSync(bundlePath) });
+    await p.waitForFunction(() => !document.querySelector('dialog[open]') && document.querySelector('#notice').textContent.includes('QA Memory'));
     await act('settings');
     await field('lang').selectOption('ar');
     await p.waitForFunction(() => document.documentElement.lang === 'ar');

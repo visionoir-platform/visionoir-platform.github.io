@@ -1,5 +1,7 @@
 # VISIONOIR
 
+Created, designed and developed by Flavio Giorgio Guarini.
+
 Creative direction, visual identity and sound on [VISIONOIR](https://visionoir-platform.github.io/).
 Static Vite and Three.js site with localized HTML, same-document language changes and progressive audio and 3D.
 
