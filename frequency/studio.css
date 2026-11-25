@@ -366,8 +366,15 @@ select {
   font-size: 1rem;
   letter-spacing: -0.025em;
 }
-.zone-options .field span {
-  display: none;
+/* Compact header controls keep their localized label in the accessibility tree. */
+.zone-options .field > span,
+.master-screen .field > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .zone-options select {
   font-size: 0.73rem;
@@ -1249,9 +1256,6 @@ dialog::backdrop {
 }
 .master-screen label {
   display: inline;
-}
-.master-screen .field > span {
-  display: none;
 }
 #render-estimate {
   display: block;
