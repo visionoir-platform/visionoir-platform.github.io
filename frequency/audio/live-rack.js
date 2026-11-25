@@ -1,6 +1,8 @@
 import { LiveBudget } from './live-budget.js';
 import { DSP } from './dsp.js';
 import { clamp } from './model.js';
+import { MasterAnalysis } from './master-analysis.js';
+import { VisualNotes } from './visual-notes.js';
 
 /**
  * Two live decks share a sample clock. Prepare the next deck when a scene is
@@ -12,7 +14,8 @@ export class LiveRack {
     this.rate = rate;
     this.budget = new LiveBudget(rate);
     this.project = project;
-    this.active = new DSP(project, rate);
+    this.visualNotes = new VisualNotes();
+    this.active = new DSP(project, rate, {visualNotes: this.visualNotes});
     this.spare = null;
     this.held = new Map();
     this.outgoing = null;
@@ -26,7 +29,11 @@ export class LiveRack {
   observeBudget(elapsed, frames) {
     const before = this.budget.protected;
     this.budget.observe(elapsed, frames);
-    if (before !== this.budget.protected) this.applyBudget();
+    if (before !== this.budget.protected) {
+      this.applyBudget();
+      // A decimated signal cannot supply valid LUFS/dBTP readings. Restart after recovery.
+      this.masterAnalysis?.reset();
+    }
   }
   applyBudget() {
     for (const dsp of [this.active, this.outgoing, this.spare]) {
@@ -47,19 +54,29 @@ export class LiveRack {
     this.outgoing?.update(project);
   }
   control(id, value) {
+    if (id === 'master-analysis') {
+      if (value) this.masterAnalysis ??= new MasterAnalysis(this.rate);
+      else this.masterAnalysis = null;
+      return;
+    }
     this.active.control(id, value);
     this.outgoing?.control(id, value);
     this.spare?.control(id, value);
   }
   start(options = {}) {
     this.stop();
+    this.masterAnalysis?.reset();
     this.active.start(options);
   }
   stop() {
+    this.masterAnalysis?.truePeak.flush();
     this.budget.reset();
     this.applyBudget();
     this.clearMeters();
     this.held.clear();
+    this.visualNotes.endDeck(this.active);
+    if (this.outgoing) this.visualNotes.endDeck(this.outgoing);
+    this.visualNotes.reset();
     this.active.stop();
     this.outgoing?.stop();
     if (this.outgoing) this.spare = this.outgoing;
@@ -97,7 +114,7 @@ export class LiveRack {
   }
   arm() {
     if (!this.queued) return;
-    this.spare ??= new DSP(this.project, this.rate);
+    this.spare ??= new DSP(this.project, this.rate, {visualNotes: this.visualNotes});
     this.spare.meterStride = this.budget.protected ? 4 : 1;
     this.spare.start({ scene: this.queued.scene, absoluteStep: this.queued.step });
   }
@@ -114,6 +131,12 @@ export class LiveRack {
     status.dspLoad = this.budget.load;
     status.meterStride = this.active.meterStride;
     status.queuedScene = this.queued?.scene ?? null;
+    const analysis = this.budget.protected ? null : this.masterAnalysis;
+    status.lufsMomentary = analysis?.momentary ?? null;
+    status.lufsShort = analysis?.shortTerm ?? null;
+    status.truePeakMax = analysis && analysis.frames ? 20 * Math.log10(analysis.truePeak.maximum) : null;
+    status.analysisPaused = Boolean(this.masterAnalysis && this.budget.protected);
+    status.visualNotes = this.visualNotes.read(this.active, this.outgoing, status.visualNotes);
     this.clearMeters();
     return status;
   }
@@ -145,6 +168,7 @@ export class LiveRack {
         }
         this.fade += count;
         if (this.fade === this.fadeLength) {
+          this.visualNotes.endDeck(this.outgoing);
           this.spare = this.outgoing;
           this.outgoing = null;
           this.arm();
@@ -185,5 +209,6 @@ export class LiveRack {
       this.count += count;
       offset += count;
     }
+    if (this.masterAnalysis && !this.budget.protected) this.masterAnalysis.consume(left,right,length);
   }
 }

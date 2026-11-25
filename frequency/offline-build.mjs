@@ -1,11 +1,11 @@
-import { mkdir, readdir, readFile, writeFile, copyFile, stat } from 'node:fs/promises';
+import { readdir, readFile, writeFile, copyFile, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeDistributionNotices } from './distribution-notices.mjs';
 import { applyPagesCsp } from '../scripts/pages-csp.mjs';
 
 const root = process.argv[2] || fileURLToPath(new URL('../dist/', import.meta.url));
-await applyPagesCsp(root);
 for (const name of ['manifest.webmanifest','icon-192.png','icon-512.png']) {
   await copyFile(new URL(name,import.meta.url), join(root,'frequency',name));
 }
@@ -13,19 +13,8 @@ for (const name of ['manifest.webmanifest','icon-192.png','icon-512.png']) {
 const page=join(root,'frequency/index.html');
 const html=await readFile(page,'utf8');
 await writeFile(page,html.replace(/<link rel="manifest" href="[^"]+">/,'<link rel="manifest" href="/frequency/manifest.webmanifest">'));
-// Distribute source and asset notices alongside the executable application.
-const notices = [
-  ['frequency/LICENSE','FREQUENCY-MIT.txt'],
-  ['ASSET_LICENSES.md','assets.txt'],
-  ['frequency/audio/vendor/NOTICE.md','MP3-encoder.txt'],
-  ['frequency/audio/vendor/LGPL-3.0.txt','LGPL-3.0.txt'],
-  ['frequency/audio/vendor/GPL-3.0.txt','GPL-3.0.txt'],
-  ['frequency/audio/vendor/LAME-NOTICE.txt','LAME-notice.txt'],
-  ['node_modules/three/LICENSE','Three-MIT.txt']
-];
-const noticeDir=join(root,'frequency/licenses');
-await mkdir(noticeDir,{recursive:true});
-for (const [source,name] of notices) await writeFile(join(noticeDir,name),await readFile(source));
+await writeDistributionNotices(join(root,'frequency/licenses'));
+await applyPagesCsp(root);
 const found = new Set();
 const candidates = new Map();
 async function walk(dir) {

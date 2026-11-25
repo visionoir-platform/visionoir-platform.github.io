@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "Gerar timbre",
+  "generatePattern": "Gerar padrão",
+  "generateScene": "Gerar cena",
+  "masterAnalysis": "Medição do master",
+  "truePeakMax": "Pico verdadeiro máximo",
   "quickHelp": "Guia e informações",
   "quickBeat": "O teu primeiro ritmo",
   "quickHint": "Carrega em reproduzir para ouvires a cena. Toca nos passos para acrescentares ou retirares batidas e guarda o projeto.",

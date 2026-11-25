@@ -1,4 +1,9 @@
 {
+  "generateTimbre": "음색 생성",
+  "generatePattern": "패턴 생성",
+  "generateScene": "씬 생성",
+  "masterAnalysis": "마스터 미터",
+  "truePeakMax": "최대 트루 피크",
   "quickHelp": "사용 안내 및 정보",
   "quickBeat": "나만의 첫 비트",
   "quickHint": "재생을 눌러 장면을 들어 보세요. 스텝을 눌러 소리를 넣거나 뺀 다음 프로젝트를 저장하세요.",

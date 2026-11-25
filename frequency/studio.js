@@ -7,7 +7,8 @@ import { bindEditorDrags, changeChord, planQuantization, relocateNotes, scales, 
 import { createRegionEditor } from './region-editor.js';
 import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
 import { createMidiClock } from './midi-clock.js';
-import { generateSession, genres } from './composer.js';
+import { designTimbre } from './timbre-design.js';
+import { generateSession, genres, sections, writeGeneratedPattern } from './composer.js';
 import * as audio from './audio/index.js';
 import { exportBasename, musicTags } from './audio/metadata.js';
 import { translator, names, direction, getInitialLocale } from './i18n.js';
@@ -33,7 +34,7 @@ import { renderEditor, masterPanel } from './views.js';
 import { factorySlotPresets, renderEffectSlot } from './fx-rack.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
-import { visualSlotForChannel, collectVisualLevels } from './chromatic/channel-routing.js';
+import { collectVisualLevels } from './chromatic/channel-routing.js';
 
 export async function startStudio() {
   let lang = getInitialLocale(),
@@ -122,11 +123,7 @@ export async function startStudio() {
   }
   const midiNotes = createMidiNotes({
     ready: engineReady,
-    noteOn(track, pitch, velocity, token) {
-      engine.noteOn(track, pitch, velocity, token);
-      const slot = visualSlotForChannel(s.p.tracks, track);
-      if (slot !== undefined) visual?.trigger(slot, velocity);
-    },
+    noteOn: (track, pitch, velocity, token) => engine.noteOn(track, pitch, velocity, token),
     noteOff: (track, pitch, token) => engine.release(track, pitch, token),
     onError: fail,
   });
@@ -192,7 +189,14 @@ export async function startStudio() {
   const href = (path) => path + '?lang=' + encodeURIComponent(lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+    const panel = el('master-analysis');
+    panel.addEventListener('toggle', () => {
+      tick.lufsMomentary = tick.lufsShort = tick.truePeakMax = null;
+      tick.analysisPaused = false;
+      engine.setMasterAnalysis(panel.open);
+      updateMasterReadings();
+    });
     updateTransport();
     renderTabs();
     editor();
@@ -257,6 +261,7 @@ export async function startStudio() {
     s.selected = new Set(v.selected);
     visual?.setState(s.p.visual || {});
     changed();
+    flushSave();
     updateTransport();
   }
   function remember() {
@@ -286,6 +291,7 @@ export async function startStudio() {
     remember();
     fn();
     changed({ draw });
+    flushSave();
   }
   function resetSelection() {
     s.scene = 0;
@@ -304,6 +310,7 @@ export async function startStudio() {
     if (Number.isInteger(selected) && p.scenes[selected]) s.scene = selected;
     visual?.setState(p.visual || {});
     changed();
+    flushSave();
     updateTransport();
     setState();
   }
@@ -341,8 +348,6 @@ export async function startStudio() {
     await engineReady();
     if (token === undefined) engine.trigger(ch, pitch, velocity);
     else engine.noteOn(ch,pitch,velocity,token);
-    const slot = visualSlotForChannel(s.p.tracks, ch);
-    if (slot !== undefined) visual?.trigger(slot, velocity);
   }
   function noteBase(i = s.channel) {
     return ['kick', 'rumble', 'sub', 'industrial'].includes(s.p.tracks[i].instrument)
@@ -402,6 +407,7 @@ export async function startStudio() {
     }
   }
   const dBFS = value => value > 0 ? (20 * Math.log10(value)).toFixed(1) : '−∞';
+  const levelReading = value => value === -Infinity ? '−∞' : Number.isFinite(value) ? value.toFixed(1) : '—';
   function showReading(id, text) {
     const output = el(id);
     if (output && output.textContent !== text) output.textContent = text;
@@ -412,6 +418,12 @@ export async function startStudio() {
     showReading('db', dBFS(peak) + ' dBFS');
     showReading('rms', dBFS(rms[0]) + ' / ' + dBFS(rms[1]));
     showReading('corr', Number.isFinite(tick.correlation) ? tick.correlation.toFixed(2) : '—');
+    if (el('master-analysis')?.open) {
+      showReading('lufs-m', levelReading(tick.lufsMomentary));
+      showReading('lufs-s', levelReading(tick.lufsShort));
+      showReading('tp-max', levelReading(tick.truePeakMax));
+      showReading('analysis-status', tick.analysisPaused ? t('protectedMode') : '');
+    }
     const lamp = el('clip-light');
     if (lamp) {
       const value = tick.clipped ? '1' : '0';
@@ -464,7 +476,11 @@ export async function startStudio() {
         updateTransport();
         setState();
       }
-      collectVisualLevels(s.p.tracks, next.levels, signal.voices);
+      const notes = next.visualNotes;
+      if (notes) {
+        for (let i = 0; i < signal.voices.length; i++)
+          signal.voices[i] = Math.max(notes.levels[i], .38 * notes.gates[i]);
+      } else collectVisualLevels(s.p.tracks, next.levels, signal.voices);
       signal.beat = Math.max(
         0,
         (next.absoluteStep ?? (next.bar || 0) * 16 + ((next.step || 0) % 16)) / 4,
@@ -473,6 +489,7 @@ export async function startStudio() {
       signal.bpm = s.p.bpm;
       signal.scene = playing ? next.scene : s.scene;
       visual?.syncScene(signal.scene, playing);
+      if (notes) visual?.noteEdges(notes);
       // Audio tick messages can continue when background window timers are throttled.
       if (document.hidden) visual?.sendOutputFrame();
       if (renderTask === undefined)
@@ -498,7 +515,7 @@ export async function startStudio() {
         signal.voices.fill(0);
         signal.level = signal.bass = signal.mid = signal.high = 0;
         signal.buses = [];
-        tick = { ...tick, levels: [], peaks: [], buses: [], masterPeak: [0, 0], masterRms: [0, 0], correlation: null, clipped: false };
+        tick = { ...tick, levels: [], peaks: [], buses: [], masterPeak: [0, 0], masterRms: [0, 0], correlation: null, clipped: false, lufsMomentary:null, lufsShort:null, truePeakMax:null, analysisPaused:false };
         updateTransport();
         setState();
         drawTick();
@@ -576,7 +593,7 @@ export async function startStudio() {
         title: t('step') + ' ' + (index + 1), pressed: !!note, disabled: s.protect || !off() }),
     ).join('');
     open('about', t('quickHelp'),
-      `<h3>${h(t('quickBeat'))}</h3><p>${h(t('quickHint'))}</p><div class="bar-tools">${act('guide-play',t(playing ? 'stop' : 'play'),{ icon: playing ? '■' : '▶', classes: 'play' })}</div><fieldset class="guide-rhythm"><legend>${h(track().name)} · ${h(sceneName(s.scene))}</legend><div class="guide-steps" dir="ltr">${buttons}</div></fieldset><div class="bar-tools">${act('guide-save',t('save') + ' · ' + t('library'),{disabled:!storageAvailable || guideSaving})}${act('guide-full',t('sequencer'))}</div><output class="guide-status" role="status"></output><details><summary>${h(t('about'))} · FREQUENCY</summary><p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}</details><p lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`);
+      `<h3>${h(t('quickBeat'))}</h3><p>${h(t('quickHint'))}</p><div class="bar-tools">${act('guide-play',t(playing ? 'stop' : 'play'),{ icon: playing ? '■' : '▶', classes: 'play' })}</div><fieldset class="guide-rhythm"><legend>${h(track().name)} · ${h(sceneName(s.scene))}</legend><div class="guide-steps" dir="ltr">${buttons}</div></fieldset><div class="bar-tools">${act('guide-save',t('save') + ' · ' + t('library'),{disabled:!storageAvailable || guideSaving})}${act('guide-full',t('sequencer'))}</div><output class="guide-status" role="status"></output><details><summary>${h(t('about'))} · FREQUENCY</summary><p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}</details><p lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a> · <a href="/frequency/licenses/index.html">MIT · LGPL · ISC · OFL</a>`);
   }
   async function projects() {
     const saved = await library().catch(() => []),
@@ -587,11 +604,15 @@ export async function startStudio() {
       `<label class="field wide"><span>${h(t('title'))}</span><input data-field="name" maxlength="160" value="${attr(p.name)}"></label><div class="bar-tools">${act('blank', t('newProject'), { icon: '+' })}${act('generator', t('generate'))}${act('import', t('importFile'))}${act('backup', '.vfreq ↓')}${act('save-as', t('save') + ' +')} ${act('recover-backup', t('recovery'))}</div><h3>${h(t('demo'))}</h3><div class="project-grid">${[...audio.DEMOS, ...(audio.EXTRA_DEMOS || [])].map((d, i) => act('demo', d.name + ' · ' + d.bpm + ' BPM', { data: 'data-id="' + attr(d.id) + '"', icon: pad(i + 1) })).join('')}</div><h3>${h(t('storage'))}</h3><div class="project-grid">${saved.map((x) => act('saved', x.name + ' · ' + new Date(x.date).toLocaleDateString(lang), { data: 'data-id="' + attr(x.id) + '"' })).join('')}</div>`,
     );
   }
-  function generator() {
+  function generator(target = 'session') {
+    const title = {session: 'generate', pattern: 'generatePattern', scene: 'generateScene'}[target];
+    const section = target === 'session'
+      ? number('BPM', 'gen-bpm', s.p.bpm, 40, 300, 0.1)
+      : select(t('source'), 'gen-section', sections.map((name, i) => option(i, name, i === 3)).join(''));
     open(
       'generator',
-      t('generate'),
-      `<div class="field-grid">${select(t('genre'), 'gen-genre', genres.map((g, i) => option(i, g)).join(''))}${number('BPM', 'gen-bpm', s.p.bpm, 40, 300, 0.1)}${number(t('seed'), 'gen-seed', s.p.seed, 1, 2147483647)}${number(t('pitch') + ' MIDI', 'gen-root', 36, 16, 84)}${select(t('scale'), 'gen-scale', scaleNames.map((v, i) => option(i, t(v), i === 1)).join(''))}${slider(t('intensity'), 'gen-intensity', 0.72)}${slider(t('complexity'), 'gen-complexity', 0.57)}</div>${act('compose', t('generate'), { classes: 'play' })}`,
+      t(title),
+      `<div class="field-grid">${select(t('genre'), 'gen-genre', genres.map((g, i) => option(i, g)).join(''))}${section}${number(t('seed'), 'gen-seed', s.p.seed, 1, 2147483647)}${number(t('pitch') + ' MIDI', 'gen-root', 36, 16, 84)}${select(t('scale'), 'gen-scale', scaleNames.map((v, i) => option(i, t(v), i === 1)).join(''))}${slider(t('intensity'), 'gen-intensity', 0.72)}${slider(t('complexity'), 'gen-complexity', 0.57)}</div>${act('compose', t(title), { classes: 'play', data: 'data-id="' + target + '"' })}`,
     );
   }
   function stepDialog() {
@@ -636,7 +657,7 @@ export async function startStudio() {
     open(
       'pattern',
       t('tools'),
-      `<div class="bar-tools">${act('copy', t('copy'))}${act('paste', t('paste'), { disabled: !clipboard })}${act('reverse', t('reverse'))}${act('double', t('duplicate'), { disabled: pattern().length > 64 })}${act('quant', t('quantize'))}</div><div class="field-grid">${number(t('seed'), 'seed', p.seed, 1, 2147483647)}${number(t('intensity'), 'intensity', s.intensity ?? 0.45, 0.01, 1, 0.01)}${number(t('pitch') + ' MIDI', 'root', s.root ?? 36, 0, 100)}${select(t('scale'), 'scale', scaleNames.map((v, i) => option(i, t(v), i === (s.scale ?? 1))).join(''))}</div><div class="bar-tools">${act('vary', t('vary'))}${act('scale-notes', t('quantize') + ' ♩')}${act('scene-copy', t('duplicate') + ' · ' + t('scene'))}</div>`,
+      `<div class="bar-tools">${act('copy', t('copy'))}${act('paste', t('paste'), { disabled: !clipboard })}${act('reverse', t('reverse'))}${act('double', t('duplicate'), { disabled: pattern().length > 64 })}${act('quant', t('quantize'))}</div><div class="field-grid">${number(t('seed'), 'seed', p.seed, 1, 2147483647)}${number(t('intensity'), 'intensity', s.intensity ?? 0.45, 0.01, 1, 0.01)}${number(t('pitch') + ' MIDI', 'root', s.root ?? 36, 0, 100)}${select(t('scale'), 'scale', scaleNames.map((v, i) => option(i, t(v), i === (s.scale ?? 1))).join(''))}</div><div class="bar-tools">${act('vary', t('vary'))}${act('scale-notes', t('quantize') + ' ♩')}${act('scene-copy', t('duplicate') + ' · ' + t('scene'))}</div><div class="bar-tools">${act('generator-pattern', t('generatePattern'))}${act('generator-scene', t('generateScene'))}</div>`,
     );
   }
   function presets() {
@@ -645,7 +666,7 @@ export async function startStudio() {
     open(
       'patches',
       tr.name + ' / ' + t('presets'),
-      `<div class="project-grid">${patches.map((v) => act('apply-patch', v.name, { data: 'data-id="' + attr(v.id) + '"' })).join('')}</div>`,
+      `<div class="field-grid">${number(t('seed'), 'gen-timbre-seed', s.patchSeed ?? s.p.seed, 1, 2147483647, 1, true)}</div><div class="bar-tools">${act('design-timbre', t('generateTimbre'))}${act('preview', t('audition'))}</div><output role="status" data-timbre-status></output><div class="project-grid">${patches.map((v) => act('apply-patch', v.name, { data: 'data-id="' + attr(v.id) + '"' })).join('')}</div>`,
     );
   }
   function fxPane(master = false) {
@@ -1177,14 +1198,16 @@ export async function startStudio() {
       case 'demo':
         if (guardLive()) await replace(audio.createProject(key));
         return;
+      case 'generator-pattern':
+      case 'generator-scene':
       case 'generator':
-        if (guardLive()) generator();
+        if (guardLive()) generator(id === 'generator' ? 'session' : id.slice(10));
         return;
       case 'compose':
         if (guardLive()) {
           const fields = el('panel').querySelectorAll('input[type=number]');
           for (const f of fields) if (!f.reportValidity()) return;
-          const project = generateSession(audio.createProject, {
+          const options = {
             seed: readNum('gen-seed', 81),
             root: readNum('gen-root', 36),
             genre: readNum('gen-genre', 0),
@@ -1192,9 +1215,23 @@ export async function startStudio() {
             intensity: readNum('gen-intensity', 0.72),
             complexity: readNum('gen-complexity', 0.57),
             scale: readNum('gen-scale', 1),
-          });
-          await replace(project);
-          chooseScene(3);
+          };
+          const project = generateSession(audio.createProject, options);
+          if (key === 'pattern' || key === 'scene') {
+            const part = readNum('gen-section', 3);
+            mutate(() => {
+              s.p.tracks.forEach((tr, channel) => {
+                if (key === 'scene' || channel === s.channel) {
+                  writeGeneratedPattern(project, part, tr.instrument, s.p.scenes[s.scene].patterns[channel], options, key === 'pattern');
+                }
+              });
+              s.selected.clear();
+            });
+            close();
+          } else {
+            await replace(project);
+            chooseScene(3);
+          }
         }
         return;
       case 'blank':
@@ -1517,11 +1554,22 @@ export async function startStudio() {
       case 'patches':
         presets();
         return;
+      case 'design-timbre': {
+        const input = el('panel').querySelector('[data-field="gen-timbre-seed"]');
+        if (!guardLive() || !input.reportValidity()) return;
+        s.patchSeed = Number(input.value);
+        const params = designTimbre(track().instrument, s.patchSeed);
+        if (Object.entries(params).some(([name, value]) => track().params[name] !== value)) {
+          mutate(() => Object.assign(track().params, params));
+        }
+        el('panel').querySelector('[data-timbre-status]').textContent = track().name + ' · ' + t('seed') + ' ' + s.patchSeed;
+        return;
+      }
       case 'apply-patch': {
         const preset = (audio.PATCHES || []).find(
           (v) => v.id === key && v.instrument === track().instrument,
         );
-        if (preset) mutate(() => Object.assign(track().params, preset.params));
+        if (preset && guardLive()) mutate(() => { track().params = { ...audio.PARAMETER_BANK[track().instrument], ...preset.params }; });
         close();
         return;
       }
@@ -1720,6 +1768,9 @@ export async function startStudio() {
       const analyser = targetField('analyser');
       analyser.closest('label').querySelector('span').textContent = t('output');
       for (const op of analyser.options) op.textContent = t(op.value);
+      showReading('analysis-caption', t('masterAnalysis'));
+      showReading('tp-caption', t('truePeakMax'));
+      updateMasterReadings();
       visual?.setLocale(lang);
       setState();
       settings();

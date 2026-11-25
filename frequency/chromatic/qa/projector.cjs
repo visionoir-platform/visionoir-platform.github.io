@@ -56,6 +56,8 @@ async function main() {
         return;
       if (e.data.type === 'visionoir.visual.hit')
         counts.hits.push({ index: e.data.index, value: e.data.value });
+      if (e.data.type === 'visionoir.visual.notes')
+        e.data.attacks.forEach((value, index) => { if (value > 0) counts.hits.push({ index, value }); });
       if (e.data.type === 'visionoir.visual.frame') {
         const s = e.data.signal;
         counts.frames++;

@@ -282,6 +282,7 @@ export class DSP {
       c.sample,
       event.voiceToken,
     );
+    this.options.visualNotes?.start(this, c, voice, event.accent);
     c.prevHz = noteHz(note);
   }
   release(i, note, token) {

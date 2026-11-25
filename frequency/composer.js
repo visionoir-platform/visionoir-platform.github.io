@@ -11,8 +11,9 @@ export const genres = [
   'Hardgroove',
   'Industrial techno',
   'Neo rave',
+  'Dark electro',
 ];
-const sections = ['Ingress', 'Pressure', 'Build', 'Drop', 'Break', 'Rebuild', 'Peak', 'Exit'];
+export const sections = ['Ingress', 'Pressure', 'Build', 'Drop', 'Break', 'Rebuild', 'Peak', 'Exit'];
 const shapes = [
   [4, 4, 8, 16, 4, 4, 16, 4],
   [4, 8, 4, 8, 8, 4, 16, 4],
@@ -22,6 +23,7 @@ const shapes = [
   [8, 16, 4, 8, 8, 8, 16, 8],
   [4, 8, 8, 12, 8, 4, 16, 4],
   [4, 8, 8, 16, 8, 8, 16, 4],
+  [8, 8, 4, 12, 8, 4, 16, 8],
 ];
 function random(seed) {
   let state = seed >>> 0;
@@ -51,7 +53,7 @@ export function generateSession(
   p.seed = seed;
   p.bpm = bpm;
   p.name = genres[g] + ' · ' + seed;
-  p.swing = [0.035, 0.075, 0.125, 0.17, 0.027, 0.19, 0.065, 0.041][g];
+  p.swing = [0.035, 0.075, 0.125, 0.17, 0.027, 0.19, 0.065, 0.041, 0.12][g];
   for (const tr of p.tracks) {
     for (const prop of ['cutoff', 'color', 'tone', 'body', 'drift', 'metal', 'detune'])
       if (prop in tr.params) tr.params[prop] = clamp(tr.params[prop] + (rng() - 0.5) * 0.28, 0.05, 0.95);
@@ -69,6 +71,11 @@ export function generateSession(
   } else if (g === 7) {
     Object.assign(p.tracks[10].params, { detune: 0.54, chord: 0.76, color: 0.78 });
     Object.assign(p.tracks[11].params, { detune: 0.42, cutoff: 0.78, wave: 0.27 });
+  }
+  if (g === 8) {
+    Object.assign(p.tracks[0].params, { sweep: 0.46, punch: 0.84, decay: 0.28 });
+    Object.assign(p.tracks[3].params, { ratio: 0.36, mod: 0.66, cutoff: 0.32, decay: 0.25 });
+    Object.assign(p.tracks[14].params, { ratio: 0.64, index: 0.47, decay: 0.44 });
   }
   p.scenes.forEach((scene, k) => {
     const air = [0.23, 0.48, 0.66, 0.93, 0.21, 0.59, 1, 0.37][k] * drive;
@@ -197,6 +204,19 @@ export function generateSession(
           note = root + 24 + degrees[(turn * 2 + Math.floor(beat / 4)) % degrees.length];
           gate = breakdown ? 4.8 : 1.6;
         }
+        if (g === 8) {
+          if (i === 0) on = !breakdown && (beat === 0 || (k > 0 && [7, 10].includes(beat)) || (peak && beat === 14));
+          if (i === 3) {
+            on = !breakdown && [2, 5, 9, 12, 15].includes(beat);
+            note = root + [0, 0, degrees[2], 7, 12][[2, 5, 9, 12, 15].indexOf(beat)];
+            gate = beat === 5 ? 1.4 : 0.48;
+          }
+          if (i === 14) {
+            on = k > 0 && [1, 6, 13].includes(beat);
+            note = root + 12 + degrees[(turn + Math.floor(beat / 5)) % degrees.length];
+            gate = breakdown ? 3.2 : 0.62;
+          }
+        }
         if (!on) continue;
         const e = newNote(note);
         e.gate = gate;
@@ -228,4 +248,49 @@ export function generateSession(
   p.arrangement = shapes[g].map((bars, scene) => ({ scene, bars, marker: sections[scene] }));
   p.workspace = { scene: 3 };
   return p;
+}
+
+
+// A part may intentionally leave a voice out. When the editor asks for a single
+// phrase, give that voice a lead-in on its own rhythmic grid, in the requested key.
+function featuredPhrase(instrument, options, length) {
+  const { root, seed, scale, complexity, intensity } = options;
+  const rhythm = {
+    kick:[0,4,8,12], rumble:[1,5,9,13], acid:[0,3,6,10,15], industrial:[1,4,7,11,14],
+    sub:[0,6,10], schranz:[0,3,7,10,13], closed:[0,2,4,6,8,10,12,14],
+    open:[2,6,10,14], snare:[4,12], ride:[2,7,10,14], stab:[2,10,13],
+    lead:[0,3,6,12], atmos:[0], noise:[6,14], fm:[1,6,9,15], sampler:[3,11,14],
+  }[instrument];
+  const voices = ['rumble','acid','industrial','sub','stab','lead','fm','atmos'];
+  const intervals = scale === 2 ? [0,4,7,9] : [0,3,7,scale === 3 ? 8 : 10];
+  const rng = random(seed);
+  const steps = Array(length).fill(null);
+  for (let n = 0; n < length; n++) {
+    const rank = rhythm.indexOf((n + (length <= rhythm[0] ? rhythm[0] : 0)) % 16);
+    if (rank < 0 || (rank > 0 && rng() > 0.5 + complexity * 0.5)) continue;
+    const register = ['lead','stab','fm','atmos'].includes(instrument) ? 12 : 0;
+    const interval = rank ? intervals[Math.floor(rng() * intervals.length)] : 0;
+    const pitch = voices.includes(instrument) ? root + register + interval : instrument === 'kick' ? 36 : 60;
+    const note = newNote(pitch);
+    note.velocity = 0.44 + 0.37 * intensity + 0.13 * rng();
+    note.gate = instrument === 'atmos' ? 12 : instrument === 'sub' ? 2.5 : 0.48 + 0.45 * rng();
+    note.accent = rank === 0;
+    if (instrument === 'acid') {
+      note.slide = rank % 3 === 2;
+      note.locks = { cutoff: 0.2 + 0.45 * rng() };
+    }
+    steps[n] = note;
+  }
+  return {length, steps};
+}
+
+// Match the actual instrument even if channels were renamed, duplicated or reordered.
+// Keep the destination loop length and preserve notes outside its currently active range.
+export function writeGeneratedPattern(composition, section, instrument, destination, options, featured) {
+  const channel = composition.tracks.findIndex(track => track.instrument === instrument);
+  let source = composition.scenes[section].patterns[channel];
+  if (featured && !source.steps.slice(0, Math.min(source.length, destination.length)).some(Boolean)) source = featuredPhrase(instrument, options, destination.length);
+  for (let step = 0; step < destination.length; step++) {
+    destination.steps[step] = structuredClone(source.steps[step % source.length]);
+  }
 }

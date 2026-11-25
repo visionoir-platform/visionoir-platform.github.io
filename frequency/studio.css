@@ -1269,6 +1269,31 @@ dialog::backdrop {
   color: #ffb49b;
   font-weight: bold;
 }
+.master-analysis {
+  margin-block-start: 10px;
+  border-block-start: 1px solid #434a42;
+  font: 0.72rem var(--mono);
+}
+.master-analysis summary {
+  padding-block: 10px;
+  cursor: pointer;
+}
+.master-analysis dl {
+  display: grid;
+  margin: 0;
+  gap: 4px;
+}
+.master-analysis dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.master-analysis dd {
+  margin: 0;
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
 .master-screen select {
   font-size: 0.65rem;
   max-width: 110px;

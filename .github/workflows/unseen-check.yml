@@ -39,3 +39,11 @@ jobs:
           VISIONOIR_ALL_LOCALES: '1'
       - run: node game/qa/release.mjs
       - run: node scripts/check-frequency-release.mjs
+      - name: Play, edit, meter and reopen a project in Chrome
+        run: |
+          python -m http.server 4173 --bind 127.0.0.1 --directory dist >"${RUNNER_TEMP}/studio-http.log" 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          curl --retry 8 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4173/frequency/
+          FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/guided-composition.cjs http://127.0.0.1:4173
+          PLAYWRIGHT_MODULE=playwright-core BROWSER_BIN="$(command -v google-chrome)" CHROMATIC_ORIGIN=http://127.0.0.1:4173 node frequency/chromatic/qa/playing-notes.cjs
