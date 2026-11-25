@@ -34,3 +34,12 @@ La [pubblicazione di c249ed8](https://github.com/visionoir-platform/visionoir-pl
 ## Proiezione, MIDI e comandi dello studio
 
 Nel test con due finestre Chromium, il proiettore ha ricevuto sia i colpi manuali sia le variazioni di spettro quando la workstation era nascosta. La visibilità delle finestre è stata simulata. Un segnale sintetizzato a 15 kHz ha attivato la banda alta. Il test con due ingressi MIDI simulati ha verificato la selezione di una sola sorgente per il tempo. Le impostazioni di scala e dei tasti per trasporto e pad si conservano tra aperture dello studio. La guida spiega come preparare l’app offline e collegare le uscite di linea al mixer.
+
+
+## Esportazione, scultura reattiva e gestione dei dati locali
+
+Il pannello di esportazione consente di scegliere nome del file, titolo musicale e artista. I crediti Unicode sono stati letti nei file WAV, AIFF, FLAC e MP3 prodotti. La prova completa di Furnace Ledger ha generato 16 stem stereo a 48 kHz e 24 bit in un archivio da 629.612.291 byte. Tutti i WAV sono stati decodificati fino alla fine.
+
+Nella sezione The Creator la traccia controlla sei comportamenti della superficie. Le prove Chrome hanno misurato la deformazione e la ricostruzione della sagoma in pausa. WebKit ha verificato gli ingressi a FREQUENCY e al gioco con passaggi rapidi in italiano e arabo. I contorni originali del logo sono ora inclusi nel modulo grafico che li usa.
+
+Il comando di cancellazione dello studio rimuove anche preferenze, preset personali e stampe temporanee. Il test su più schede ha controllato l’annullamento, la protezione dai salvataggi obsoleti e la possibilità di iniziare un nuovo progetto. Il gioco conserva il proprio salvataggio. I file scaricati sul dispositivo rimangono disponibili.

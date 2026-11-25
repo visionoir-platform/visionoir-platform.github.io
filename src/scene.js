@@ -1,5 +1,6 @@
 import { trackAccents } from './palette.js';
 import * as THREE from 'three';
+import outline from '../public/assets/logo-geometry.json' with { type: 'json' };
 
 const BANDS = ['bass', 'mid', 'high', 'level'];
 const MODES = ['chrome', 'acid', 'noir', 'alloy', 'aura'];
@@ -148,13 +149,9 @@ export async function initScene(container, getAudioData = () => ({})) {
     object.geometry?.dispose();
     if (object.material) for (const material of Array.isArray(object.material) ? object.material : [object.material]) material.dispose();
   });
-  const abort = new AbortController();
-  const fetchTimeout = setTimeout(() => abort.abort(), 12000);
   try {
     restoreEnvironment();
-    const response = await fetch(assetURL('logo-geometry.json'), { signal: abort.signal });
-    if (!response.ok) throw new Error('logo-unavailable');
-    const { contours } = await response.json();
+    const { contours } = outline;
     if (!Array.isArray(contours) || !contours.length) throw new Error('logo-unavailable');
     const shape = new THREE.Shape(contours[0].map(([x, y]) => new THREE.Vector2(x, -y)));
     for (const contour of contours.slice(1)) shape.holes.push(new THREE.Path(contour.map(([x, y]) => new THREE.Vector2(x, -y))));
@@ -171,7 +168,7 @@ export async function initScene(container, getAudioData = () => ({})) {
     metal.dispose(); edge.dispose(); envTarget?.dispose();
     renderer.domElement.removeEventListener('webglcontextlost', captureEarlyLoss); renderer.dispose(); renderer.domElement.remove();
     return passiveAPI;
-  } finally { clearTimeout(fetchTimeout); }
+  }
   mark.rotation.set(-.08, -.28, -.1);
   scene.add(new THREE.HemisphereLight(0xffffff, 0x282828, 1.2));
   const key = new THREE.DirectionalLight(0xffffff, 4); key.position.set(-3, 6, 5); scene.add(key);
@@ -367,7 +364,7 @@ export async function initScene(container, getAudioData = () => ({})) {
     setAudioEnabled(value) { audioEnabled = !!value; invalidate(); },
     dispose() {
       if (disposed) return;
-      disposed = true; stop(); abort.abort(); resizeObserver?.disconnect(); intersectionObserver?.disconnect();
+      disposed = true; stop(); resizeObserver?.disconnect(); intersectionObserver?.disconnect();
       window.removeEventListener('resize', resize); window.removeEventListener('scroll', onScroll);
       window.visualViewport?.removeEventListener('resize', resize); window.removeEventListener('pageshow', onPageShow); window.removeEventListener('pagehide', suspend);
       document.removeEventListener('visibilitychange', onVisibility); reduced.removeEventListener?.('change', onReduce);

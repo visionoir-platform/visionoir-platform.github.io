@@ -49,7 +49,7 @@ async function discover(url) {
   }
 }
 await discover('/frequency/index.html');
-for(const url of ['/favicon.svg','/assets/logo.svg','/assets/manrope.woff2','/assets/display.woff2','/assets/logo-geometry.json','/frequency/manifest.webmanifest','/frequency/icon-192.png','/frequency/icon-512.png']) await discover(url);
+for(const url of ['/favicon.svg','/assets/logo.svg','/assets/manrope.woff2','/assets/display.woff2','/frequency/manifest.webmanifest','/frequency/icon-192.png','/frequency/icon-512.png']) await discover(url);
 for(const url of candidates.keys()) if (url.startsWith('/frequency/') && !url.endsWith('/sw.js')) await discover(url);
 const digest = createHash('sha256');
 for(const url of [...found].sort()) { digest.update(url); digest.update(await readFile(candidates.get(url))); }

@@ -1,20 +1,41 @@
 const DATABASE = 'visionoir-frequency-v1';
 const CURRENT = 'active';
-let opening;
+export const controlsKey = 'visionoir-frequency-controls-v1';
+export const chromaticPresetKey = 'visionoir.frequency.chromatic.user-preset.v1';
+export const eraseEvent = 'frequency-storage-erased';
+let opening, sessionVersion;
+let invalidated = false;
+
+function invalidate() {
+  if (invalidated) return;
+  invalidated = true;
+  window.dispatchEvent(new Event(eraseEvent));
+}
 function database() {
+  if (invalidated) return Promise.reject(new Error('Studio was erased'));
   if (!opening) {
     opening = new Promise((resolve, reject) => {
-      const req = indexedDB.open(DATABASE, 1);
+      const req = indexedDB.open(DATABASE);
       req.onupgradeneeded = () => req.result.createObjectStore('projects');
       req.onsuccess = () => {
         const db = req.result;
-        db.onversionchange = () => {
+        if (sessionVersion !== undefined && sessionVersion !== db.version) {
+          db.close();
+          invalidate();
+          reject(new Error('Studio was erased'));
+          return;
+        }
+        sessionVersion = db.version;
+        db.onversionchange = (event) => {
           db.close();
           opening = undefined;
+          if (event.newVersion === null) { invalidate(); return; }
+          // This open is queued behind the upgrade. Only a committed erasure invalidates the tab.
+          void database().catch(() => {});
         };
         resolve(db);
       };
-      req.onerror = req.onblocked = () => reject(req.error || new Error('Storage unavailable'));
+      req.onerror = () => reject(req.error || new Error('Storage unavailable'));
     }).catch((e) => {
       opening = undefined;
       throw e;
@@ -73,12 +94,43 @@ export async function save(project, { named = false } = {}) {
     tx.onerror = tx.onabort = () => reject(tx.error || new Error('Save failed'));
   });
 }
-export async function removeSaved() {
+async function clearTemporaryExports() {
+  if (!navigator.storage?.getDirectory) return;
+  const root = await navigator.storage.getDirectory();
+  try {
+    await root.removeEntry('frequency-exports', { recursive: true });
+  } catch (error) {
+    if (error.name === 'NotFoundError') return;
+    if (error.name === 'NoModificationAllowedError' || error.name === 'InvalidStateError') {
+      throw Error('storage.exportInUse', { cause: error });
+    }
+    throw error;
+  }
+}
+// Bumping the schema version on deliberate erasure fences old tabs, including previous v1 releases.
+export async function removeSaved(onBlocked) {
   const db = await database();
+  // An active file writer can lock this directory. Preserve the project if cleanup cannot begin.
+  await clearTemporaryExports();
+  const nextVersion = db.version + 1;
+  db.close();
+  opening = undefined;
   await new Promise((resolve, reject) => {
-    const tx = db.transaction('projects', 'readwrite');
-    tx.objectStore('projects').clear();
-    tx.oncomplete = resolve;
-    tx.onerror = tx.onabort = () => reject(tx.error);
+    const req = indexedDB.open(DATABASE, nextVersion);
+    req.onblocked = () => onBlocked?.();
+    req.onupgradeneeded = () => {
+      req.transaction.objectStore('projects').clear();
+      try {
+        localStorage.removeItem(controlsKey);
+        localStorage.removeItem(chromaticPresetKey);
+      } catch (error) {
+        // When access is denied, the current page cannot tell whether an earlier preference exists.
+        req.transaction.abort();
+        reject(error);
+      }
+    };
+    req.onsuccess = () => { req.result.close(); resolve(); };
+    req.onerror = () => reject(req.error || new Error('Erasure failed'));
   });
+  invalidate();
 }

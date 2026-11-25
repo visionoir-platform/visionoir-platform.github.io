@@ -1,6 +1,6 @@
 import { act, escape as h, option, select } from './ui-kit.js';
 
-const SETTINGS_KEY = 'visionoir-frequency-controls-v1';
+import {controlsKey} from './storage.js';
 export const scales = [85, 100, 115, 130, 150];
 const commands = ['transport', ...Array.from({ length: 8 }, (_, i) => 'pad' + i)];
 const defaults = ['Space', ...Array.from({ length: 8 }, (_, i) => 'Digit' + (i + 1))];
@@ -16,7 +16,7 @@ export function defaultControls() {
 export function readControls() {
   const fallback = defaultControls();
   try {
-    const data = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+    const data = JSON.parse(localStorage.getItem(controlsKey));
     if (!data) return fallback;
     if (scales.includes(data.size)) fallback.size = data.size;
     if (typeof data.enabled === 'boolean') fallback.enabled = data.enabled;
@@ -35,7 +35,7 @@ export function readControls() {
 }
 export function persistControls(settings) {
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    localStorage.setItem(controlsKey, JSON.stringify(settings));
   } catch {}
 }
 
