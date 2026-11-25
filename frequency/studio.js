@@ -1,3 +1,4 @@
+import { createOutputRoute } from './audio-output.js';
 import { createSpectrumMeter } from './visual-spectrum.js';
 import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
@@ -80,7 +81,6 @@ export async function startStudio() {
     saveTimer,
     midi,
     learn = false,
-    outputDevice,
     motion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let languageRequest = 0;
   let activeDialog,
@@ -97,9 +97,25 @@ export async function startStudio() {
   let noticeTimer;
   const off = () => !(recorder && recorder.state === 'recording');
   const engineReady = async () => {
-    if (!engine.context || engine.context.state !== 'running') await engine.prepare(s.p);
+    if (!engine.context || engine.context.state !== 'running' || engine.mode === 'failed') await engine.prepare(s.p);
     return engine;
   };
+  const outputRoute = createOutputRoute({
+    devices: navigator.mediaDevices, getContext: () => engine.context,
+    prepare: engineReady, apply: id => engine.setOutput(id),
+    changed() {
+      const value = document.querySelector('[data-current-output]');
+      if (value) value.textContent = outputLabel();
+    },
+  });
+  function outputLabel() {
+    const state = outputRoute.status();
+    return state.label || t(state.key);
+  }
+  function canChooseOutput() {
+    const Audio = window.AudioContext || window.webkitAudioContext;
+    return !!(navigator.mediaDevices?.selectAudioOutput && Audio?.prototype.setSinkId);
+  }
   const midiNotes = createMidiNotes({
     ready: engineReady,
     noteOn(track, pitch, velocity, token) {
@@ -123,7 +139,9 @@ export async function startStudio() {
   }
   function fail(err) {
     console.warn('[FREQUENCY]', err?.name || 'Operation');
-    const key = err?.message === 'storage.exportInUse' ? 'eraseBlocked' :
+    const key = err?.message === 'audio.outputDenied' ? 'outputDenied' :
+      err?.message === 'audio.outputFailed' ? 'outputFailed' :
+      err?.message === 'audio.processorError' ? 'audioRetry' : err?.message === 'storage.exportInUse' ? 'eraseBlocked' :
       err?.message?.startsWith('project.') || err?.name === 'SyntaxError'
         ? 'badProject'
         : err?.name === 'NotAllowedError'
@@ -457,12 +475,29 @@ export async function startStudio() {
         });
     },
     onState: (state) => {
+      outputRoute.observe();
       if (state === 'interrupted' || state === 'suspended') {
         audioState = 'stopped';
         say(t('audioOff'));
       }
     },
-    onError: fail,
+    onError(error) {
+      if (error.message === 'audio.processorError') {
+        commandCount++;
+        playing = false;
+        audioState = 'audioRetry';
+        midiNotes.reset();
+        lastAudioTick = -Infinity;
+        signal.voices.fill(0);
+        signal.level = signal.bass = signal.mid = signal.high = 0;
+        signal.buses = [];
+        tick = { ...tick, levels: [], peaks: [], buses: [], masterPeak: [0, 0], masterRms: [0, 0], clipped: false };
+        updateTransport();
+        setState();
+        drawTick();
+      }
+      fail(error);
+    },
   });
   function meter() {
     const canvas = el('scope'),
@@ -707,7 +742,7 @@ export async function startStudio() {
     open(
       'settings',
       t('settings'),
-      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('ui-preferences', t('interfaceTitle'))}${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('erase', t('erase'))}</div><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !navigator.mediaDevices?.selectAudioOutput || !engine.setOutput })}</div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
+      `<div class="field-grid">${localeSelect()}${select(t('record'), 'record-mode', option('audio', 'Audio', s.recordMode !== 'video') + (visual?.getCanvas?.()?.captureStream && window.MediaRecorder ? option('video', 'Audio + Chromatic VJ', s.recordMode === 'video') : ''))}${slider(t('volume'), 'master:volume', s.p.master.volume)}${slider('Limiter', 'master:ceiling', s.p.master.ceiling, 0.1, 0.999, 0.001)}</div><div class="bar-tools">${act('ui-preferences', t('interfaceTitle'))}${act('motion', t('motion'), { pressed: motion })}${act('protect', t('protectedMode'), { pressed: s.protect })}${act('offline', t('offline') + ' ↓', { disabled: !('serviceWorker' in navigator) })}${act('erase', t('erase'))}</div><p>${h(t('storageHelp'))} ${h(t('offlineHelp'))}</p><h3>MIDI / Audio I/O</h3><div class="bar-tools">${act('preflight', t('check'))}${act('midi', 'MIDI · ' + t('connect'), { disabled: !navigator.requestMIDIAccess })}${act('learn', 'MIDI ' + t('learn'), { pressed: learn, disabled: !midi })} ${act('midi-clock', 'MIDI clock', { pressed: !!s.midiClock, disabled: !midi })}${act('audio-output', t('output'), { disabled: !canChooseOutput() })}<output data-current-output aria-live="polite">${h(outputLabel())}</output></div><p id="midi-state">${midi ? h([...midi.inputs.values()].map((v) => v.name).join(' · ')) : !navigator.requestMIDIAccess ? t('unsupported') : ''}</p>${act('about', t('help'))} <a href="${href('/legal/')}">© VISIONOIR</a>`,
     );
   }
   async function preflight() {
@@ -761,7 +796,7 @@ export async function startStudio() {
         s.p.tracks.filter((tr) => tr.sample?.pcm).length + ' · ' + (valid ? ready : t('badProject')),
       ],
       ['MIDI', midi ? [...midi.inputs.values()].map((x) => x.name).join(', ') || '0' : unknown],
-      [t('output'), outputDevice?.label || t('device')],
+      [t('output'), outputLabel(), true],
       [t('storage'), storageAvailable ? ready : no],
       [t('offline'), registered?.active ? ready : unknown],
     ];
@@ -769,11 +804,12 @@ export async function startStudio() {
       'preflight',
       t('check'),
       '<dl class="preflight">' +
-        values.map(([k, v]) => `<div><dt>${h(k)}</dt><dd>${h(v)}</dd></div>`).join('') +
+        values.map(([k, v, output]) => `<div><dt>${h(k)}</dt><dd${output ? ' data-current-output aria-live="polite"' : ''}>${h(v)}</dd></div>`).join('') +
         '</dl>' +
         '<p>' + h(t('liveWiring')) + '</p>' +
         act('save', t('save')),
     );
+    void outputRoute.refresh();
   }
   function targetField(id) {
     return document.querySelector('[data-field="' + id + '"]');
@@ -883,12 +919,11 @@ export async function startStudio() {
     let picture;
     try {
       if (video) {
-        const canvas = visual?.getCanvas?.();
-        if (!canvas?.captureStream) throw Error('Video');
-        picture = canvas.captureStream(24);
+        picture = visual?.startRecording(24);
+        if (!picture) throw Error('Video');
       }
       const stream = video
-        ? new MediaStream([...audioStream.getAudioTracks(), ...picture.getVideoTracks()])
+        ? new MediaStream([...audioStream.getAudioTracks(), ...picture.stream.getVideoTracks()])
         : audioStream;
       const formats = video
         ? ['video/webm;codecs=vp8,opus', 'video/mp4', 'video/webm']
@@ -901,7 +936,7 @@ export async function startStudio() {
         if (e.data.size) chunks.push(e.data);
       };
       current.onstop = () => {
-        picture?.getTracks().forEach((x) => x.stop());
+        picture?.stop();
         const mime = current.mimeType;
         if (chunks.length)
           download(
@@ -917,7 +952,7 @@ export async function startStudio() {
       recUnclosed = true;
       updateTransport();
     } catch (err) {
-      picture?.getTracks().forEach((x) => x.stop());
+      picture?.stop();
       throw err;
     }
   }
@@ -1532,11 +1567,13 @@ export async function startStudio() {
         if (learn) close();
         return;
       case 'audio-output':
-        if (engine.setOutput && navigator.mediaDevices?.selectAudioOutput) {
-          await engineReady();
-          outputDevice = await navigator.mediaDevices.selectAudioOutput();
-          await engine.setOutput(outputDevice.deviceId);
-          say(outputDevice.label);
+        if (canChooseOutput()) {
+          try {
+            if (await outputRoute.choose()) say(outputLabel());
+          } catch (error) {
+            fail(Error(error.name === 'NotAllowedError' || error.name === 'SecurityError'
+              ? 'audio.outputDenied' : 'audio.outputFailed'));
+          }
         }
         return;
       case 'offline':
@@ -2052,7 +2089,8 @@ export async function startStudio() {
     stop();
     location.reload();
   }, {once:true});
-  window.addEventListener('pagehide', () => {
+  window.addEventListener('pagehide', event => {
+    if (!event.persisted) outputRoute.dispose();
     performanceKeys.clear();
     flushSave();
     scopeObserver.disconnect();
