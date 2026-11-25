@@ -43,11 +43,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
    ${t('heroCopy','p')}
    <a class="cta" href="#contatto">${t('start')}${arrow}</a>
    <a class="support-link" data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a>
-   <div class="logo-gesture-controls" hidden>
-    <button type="button" id="logo-negative-toggle" class="underlink" data-logo-negative aria-pressed="false">${t('negativeLogo')}</button>
-    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
-    <div class="tilt-opt-in" hidden><button type="button" id="device-shake-enable" class="underlink">${t('shakeEnable')}</button><span aria-live="polite" id="device-shake-status"></span></div>
-   </div>
+
   </div>
   <button type="button" id="logo-scene" ${a11y('ecoDoor')} style="touch-action:manipulation">
    <img class="scene-fallback poster" src="${asset('logo.svg')}" alt="" width="660" height="790" fetchpriority="high">
@@ -119,6 +115,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  <div class="footer-sign"><span lang="en">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
  <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="#unseen-door">unseen.</a></span>
  <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a>
+    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
   <div id="home-preferences" hidden>
    ${t('prefsInfo','p')}
    <div class="prefs-actions">${t('prefsExport','button','type="button" data-prefs="export"')}${t('prefsErase','button','type="button" data-prefs="erase" aria-controls="prefs-review" aria-expanded="false"')}</div>
@@ -134,7 +131,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  <label class="volume"><span class="sr-only">${t('volume')}</span><input id="volume" type="range" min="0" max="100" value="23" ${a11y('volume')}></label>
  <button id="motion-toggle" type="button" aria-pressed="false">${escape(dict.motionOff)}</button></div>
 </aside>
-<section id="immersive-view" hidden><button type="button" class="cta cta-secondary immersive-negative" data-logo-negative aria-pressed="false">${t('negativeLogo')}</button><button type="button" class="cta cta-secondary" id="exit-immersive">${t('exit')} <span aria-hidden="true">×</span></button></section>
+<section id="immersive-view" hidden><button type="button" class="cta cta-secondary" id="exit-immersive">${t('exit')} <span aria-hidden="true">×</span></button></section>
 <dialog id="brief-dialog" aria-labelledby="brief-heading">
  ${t('inquiryReview','h2','id="brief-heading"')}
  <pre id="brief-text" dir="auto"></pre>

@@ -1,8 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createShakeDetector, mountDeviceShake} from '../src/device-shake.js';
-import {tiltLabels} from '../src/tilt-labels.js';
-import {names} from '../src/locales.js';
 
 const linear = (x,y=0,z=0) => ({acceleration:{x,y,z}});
 const gravity = (x,y,z) => ({acceleration:{x:null,y:null,z:null},accelerationIncludingGravity:{x,y,z}});
@@ -64,49 +62,32 @@ function fakeDevice({permissions,expose=true,secure=true}={}) {
     win.dispatchEvent(event);
   },close(){delete globalThis.window;delete globalThis.document;}};
 }
-test('passive acquisition, hidden/resume, disabled and disposed scopes',()=>{
-  const sim=fakeDevice(); let toggles=0,statusChanges=0;
-  const m=mountDeviceShake({onToggle:()=>toggles++,onStatus:()=>statusChanges++});
+test('two shakes toggle without a click or permission request; partial gestures reset when hidden',()=>{
+  const sim=fakeDevice({permissions:()=>Promise.resolve('denied')});
+  let toggles=0;
+  const m=mountDeviceShake({onToggle:()=>toggles++});
   try{
-    assert.equal(statusChanges,0);
-    assert.equal(m.status,'automatic');assert.equal(m.showControl,false);
-    sim.send(20,0);sim.send(-20,90);
-    sim.win.dispatchEvent(new Event('pagehide'));sim.send(20,180);
-    sim.win.dispatchEvent(new Event('pageshow'));sim.send(20,200);
-    assert.equal(toggles,0);
-    sim.send(-20,295);sim.send(20,390);
-    assert.equal(toggles,1);assert.equal(m.status,'receiving');
-    m.setEnabled(false);sim.send(-20,480);sim.send(20,570);sim.send(-20,660);
+    sim.send(20,0);sim.send(-20,90);sim.send(20,180);
     assert.equal(toggles,1);
-    m.setEnabled(true);sim.doc.hidden=true;sim.doc.dispatchEvent(new Event('visibilitychange'));
-    sim.send(20,750);sim.send(-20,840);sim.send(20,930);
-    assert.equal(toggles,1);
+    for (let t=200;t<900;t+=20) sim.send(0,t);
+    sim.send(-20,920);sim.send(20,1010);sim.send(-20,1100);
+    assert.equal(toggles,2);
+    sim.doc.hidden=true;sim.doc.dispatchEvent(new Event('visibilitychange'));
+    sim.send(20,1400);sim.send(-20,1500);sim.send(20,1600);assert.equal(toggles,2);
     sim.doc.hidden=false;sim.doc.dispatchEvent(new Event('visibilitychange'));
-    sim.send(20,1000);sim.send(-20,1100);sim.send(20,1200);assert.equal(toggles,2);
-    m.dispose();sim.send(20,1400);sim.send(-20,1500);sim.send(20,1600);assert.equal(toggles,2);
+    sim.send(20,1800);sim.send(-20,1900);
+    sim.win.dispatchEvent(new Event('pagehide'));sim.win.dispatchEvent(new Event('pageshow'));
+    sim.send(20,2000);assert.equal(toggles,2);
+    sim.send(-20,2100);sim.send(20,2200);assert.equal(toggles,3);
+    assert.equal(sim.perms(),0);
+    m.dispose();sim.send(-20,2300);sim.send(20,2400);sim.send(-20,2500);assert.equal(toggles,3);
   }finally{m.dispose();sim.close();}
 });
-test('permission is never requested on entry, deduplicates requests and ignores stale results',async()=>{
-  let settle;const sim=fakeDevice({permissions:()=>new Promise(ok=>{settle=ok;})});
-  const m=mountDeviceShake();
-  try{
-    assert.equal(sim.perms(),0);assert.equal(m.status,'ask');assert.equal(m.showControl,true);
-    const a=m.request();await m.request();assert.equal(sim.perms(),1);
-    m.setEnabled(false);settle('granted');await a;assert.equal(m.showControl,false);
-    m.setEnabled(true);const b=m.request();settle('denied');await b;assert.equal(m.status,'unavailable');
-    const c=m.request();settle('granted');await c;assert.equal(m.status,'waiting');
-    sim.send(0,0);assert.equal(m.status,'receiving');assert.equal(m.showControl,false);
-  } finally{m.dispose();sim.close();}
-  for(const options of [{expose:false},{secure:false}]){
-    const env=fakeDevice(options),unavailable=mountDeviceShake();
-    try{assert.equal(unavailable.status,'unavailable');assert.equal(unavailable.showControl,false);await unavailable.request();}
-    finally{unavailable.dispose();env.close();}
-  }
-});
-test('nineteen locales expose independent shake controls and tilt labels',()=>{
-  for(const lang of Object.keys(names)){
-    const labels=tiltLabels(lang);
-    for(const key of ['shakeEnable','shakeUnavailable','tiltEnable','tiltUnavailable','negativeLogo']) assert.ok(labels[key].trim(),lang);
-    assert.notEqual(labels.shakeEnable,labels.tiltEnable);
+test('unsupported and insecure contexts do not react to motion',()=>{
+  for(const args of [{expose:false},{secure:false}]){
+    const sim=fakeDevice(args);let toggles=0;
+    const m=mountDeviceShake({onToggle:()=>toggles++});
+    try{sim.send(20,0);sim.send(-20,90);sim.send(20,180);assert.equal(toggles,0);}
+    finally{m.dispose();sim.close();}
   }
 });
