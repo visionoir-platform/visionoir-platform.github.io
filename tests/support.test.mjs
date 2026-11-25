@@ -24,3 +24,24 @@ test('Local contributions handle repeated actions, failure and refund without a 
  s.preview('b','0.01');assert.equal(s.transition('b','failed').state,'failed');assert.throws(()=>s.transition('b','refunded'));
  assert.equal(s.preview('review','1000').state,'contact');assert.throws(()=>s.transition('review','succeeded'));
 });
+
+import {readFileSync} from 'node:fs';
+import {parseCatalogue, parents} from '../src/locales.js';
+import {policyPage} from '../scripts/policy-page.mjs';
+test('Legal notices have 19 stable accessible targets, translated offline, across locales', () => {
+  const catalog = lang => parseCatalogue(readFileSync(new URL('../src/locales/' + lang + '.txt', import.meta.url), 'utf8'));
+  let expected;
+  for (const lang of Object.keys(names)) {
+    const d = {...(parents[lang] ? catalog(parents[lang]) : {}), ...catalog(lang), ...ecosystemLocale(lang)};
+    const html = policyPage(lang, d, '/', true);
+    const articles = [...html.matchAll(/<article id="([^"]+)" tabindex="-1">/g)].map(m => m[1]);
+    const anchors = [...html.matchAll(/<li><a href="#([^"]+)"/g)].map(m => m[1]);
+    expected ??= articles;
+    assert.equal(new Set(articles).size, 19);
+    assert.deepEqual(articles, expected);
+    assert.deepEqual(anchors, articles);
+    assert.ok(articles.includes('requests'));
+    assert.ok(html.includes('/' + lang.toLowerCase() + '/#contatto'));
+    assert.ok(!html.includes('undefined'));
+  }
+});

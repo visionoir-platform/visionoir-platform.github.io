@@ -148,5 +148,7 @@
   "trimEnd": "素材终点",
   "regionImport": "以单声道导入录音",
   "regionBounds": "终点必须晚于起点。",
-  "regionProtect": "时间线上已使用此采样。请从音频片段导入新录音。"
+  "regionProtect": "时间线上已使用此采样。请从音频片段导入新录音。",
+  "automation": "自动化",
+  "point": "控制点"
 }

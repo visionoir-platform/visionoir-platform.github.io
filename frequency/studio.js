@@ -1,3 +1,6 @@
+import {validateAutomation} from './audio/automation.js';
+import {createAutomationEditor} from './automation-editor.js';
+import { bindEditorDrags, changeChord, relocateNotes, scales, scaleNames } from './piano.js';
 import { createRegionEditor } from './region-editor.js';
 import { createMidiNotes, bindMidiInputs } from './midi-notes.js';
 import { generateSession, genres } from './composer.js';
@@ -78,13 +81,6 @@ export async function startStudio() {
     pendingMidi,
     exportController;
   const $ = (q) => document.querySelector(q);
-  const scaleNames = ['chromatic', 'minor', 'major', 'phrygian'];
-  const scales = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    [0, 2, 3, 5, 7, 8, 10],
-    [0, 2, 4, 5, 7, 9, 11],
-    [0, 1, 3, 5, 7, 8, 10],
-  ];
   const track = () => s.p.tracks[s.channel];
   const pattern = () => s.p.scenes[s.scene].patterns[s.channel];
   const event = () => pattern().steps[s.step];
@@ -191,26 +187,23 @@ export async function startStudio() {
         .join('') +
       `<div class="history">${act('undo', '↶', { title: t('undo'), disabled: !undo.length })}${act('redo', '↷', { title: t('redo'), disabled: !redo.length })}</div>`;
   }
+  function focusSelector(node) {
+    if (!node?.dataset) return '';
+    return Object.entries(node.dataset)
+      .filter(([key]) => ['action', 'field', 'index', 'id', 'pos', 'note', 'channel', 'tab'].includes(key))
+      .map(([key, value]) => '[data-' + key + '="' + CSS.escape(value) + '"]')
+      .join('');
+  }
   function editor() {
-    const root = el('editor'),
-      old = document.activeElement;
-    const labels = root.contains(old)
-      ? Object.entries(old.dataset).filter(([key]) =>
-          ['action', 'field', 'index', 'id', 'pos', 'note', 'channel'].includes(key),
-        )
-      : [];
+    const root = el('editor');
+    const selector = root.contains(document.activeElement) && focusSelector(document.activeElement);
     const scroll = [...root.querySelectorAll('.scroll-zone')].map((z) => z.scrollLeft);
     root.innerHTML = renderEditor(s, t, audio);
     drawTick();
     root.querySelectorAll('.scroll-zone').forEach((z, i) => {
       if (scroll[i]) z.scrollLeft = scroll[i];
     });
-    if (labels.length)
-      root
-        .querySelector(
-          labels.map(([key, val]) => '[data-' + key + '="' + CSS.escape(val) + '"]').join(''),
-        )
-        ?.focus({ preventScroll: true });
+    if (selector) root.querySelector(selector)?.focus({ preventScroll: true });
   }
   function snapshot() {
     // Embedded PCM can be several MB. It is immutable after import, so history
@@ -321,8 +314,24 @@ export async function startStudio() {
   const signal = { voices: new Float32Array(audio.INSTRUMENTS.length), level: 0, bass: 0, mid: 0, high: 0, beat: 0, bpm: s.p.bpm, scene: 0 };
   const spectrum = new Uint8Array(512),
     wave = new Uint8Array(512);
+  const sceneTints = ['#c8e4ed','#bbcaff','#d5b6f4','#d6f68f','#ffb39f','#e8b68f','#a1e5cf','#d5dddf'];
+  let shownScene, lastLight = -1;
+  function setDeskLight() {
+    const scene = playing ? tick.scene : s.scene;
+    const desk = el('studio');
+    if (scene !== shownScene) {
+      desk.style.setProperty('--scene-light', sceneTints[scene % sceneTints.length] || sceneTints[0]);
+      shownScene = scene;
+    }
+    const light = motion ? 0 : Math.min(7, Math.round((signal.level || 0)*16));
+    if (light !== lastLight) {
+      desk.style.setProperty('--lamp', String(.10 + .07*light));
+      lastLight = light;
+    }
+  }
   function drawTick() {
     if (!el('clock')) return;
+    setDeskLight();
     const step = Math.max(0, tick.step || 0);
     el('clock').textContent =
       String((tick.bar || 0) + 1).padStart(3, '0') +
@@ -335,6 +344,15 @@ export async function startStudio() {
       document
         .querySelectorAll('[data-beat="' + (step % 16) + '"]')
         .forEach((n) => n.classList.add('now'));
+    if (s.view === 'live') {
+      for (const pad of el('editor').querySelectorAll('.scene-pad')) {
+        const index = Number(pad.dataset.index);
+        const queued = playing && Number.isInteger(tick.queuedScene) && tick.queuedScene === index;
+        pad.classList.toggle('queued', queued);
+        const active = playing ? tick.scene === index : s.scene === index;
+        if (pad.getAttribute('aria-pressed') !== String(active)) pad.setAttribute('aria-pressed', String(active));
+      }
+    }
     document.querySelectorAll('meter[data-meter]').forEach((m) => {
       const [mode, id] = m.dataset.meter.split(':');
       m.value = (mode === 'peak' ? tick.peaks : mode === 'bus' ? tick.buses : tick.levels)?.[id] || 0;
@@ -428,6 +446,7 @@ export async function startStudio() {
           c.fillStyle = i < 36 ? '#bcc7b8' : '#d5f490';
           c.fillRect(i * 5.4, 81 - v * 78, 3.4, Math.max(1, v * 78));
         }
+      setDeskLight();
       const db = (n) => (n > 0 ? (20 * Math.log10(n)).toFixed(1) : '−∞');
       el('rms').textContent = (tick.masterRms || [0, 0]).map(db).join(' / ');
       el('corr').textContent = Number.isFinite(tick.correlation) ? tick.correlation.toFixed(2) : '—';
@@ -435,19 +454,25 @@ export async function startStudio() {
     }
     setTimeout(meter, document.hidden ? 700 : 70);
   }
+  const automationEditor = createAutomationEditor({state:s,t:key=>t(key),open,mutate,field:targetField,say});
   const regionEditor = createRegionEditor({state:s, t:key=>t(key), audio, open, close, mutate, field:targetField, guardLive});
   function open(id, title, body) {
     const d = el('panel');
     if (!d.open) dialogTrigger = document.activeElement;
+    const focused = d.open && activeDialog === id && d.contains(document.activeElement)
+      ? focusSelector(document.activeElement) : '';
     activeDialog = id;
     d.innerHTML = `<div class="dialog-inner"><header><h2>${h(title)}</h2>${act('close', '×', { title: t('close') })}</header>${body}</div>`;
     if (!d.open) d.showModal();
+    else if (focused) (d.querySelector(focused + ':not(:disabled)') || d.querySelector('button'))?.focus({preventScroll:true});
   }
   function close() {
     regionEditor.clear();
     if (el('panel').open) el('panel').close();
     activeDialog = undefined;
-    if (dialogTrigger?.isConnected) dialogTrigger.focus();
+    const selector = focusSelector(dialogTrigger);
+    const trigger = dialogTrigger?.isConnected ? dialogTrigger : selector && el('studio').querySelector(selector);
+    if (trigger) trigger.focus({preventScroll:true});
   }
   function help() {
     open(
@@ -478,7 +503,7 @@ export async function startStudio() {
     s.step = pos;
     const ev = event();
     const children = ev
-      ? `<div class="field-grid">${number(t('pitch') + ' MIDI', 'note:note', ev.note, 0, 127)}${number(t('velocity'), 'note:velocity', ev.velocity, 0, 1, 0.01)}${number(t('gate'), 'note:gate', ev.gate ?? 1, 0.05, 64, 0.05)}${number(t('probability'), 'note:probability', ev.probability ?? 1, 0, 1, 0.01)}${number('Ratchet', 'note:ratchet', ev.ratchet ?? 1, 1, 8)}${number('Microtiming', 'note:offset', ev.offset ?? 0, -0.49, 0.49, 0.01)}${number('1× / N', 'note:condition', ev.condition ?? 1, 1, 16)} ${select(
+      ? `<div class="field-grid">${number(t('pitch') + ' MIDI', 'note:note', ev.note, 0, 127)}${number(t('velocity'), 'note:velocity', ev.velocity, 0, 1, 0.01)}${number(t('gate'), 'note:gate', ev.gate ?? 0.8, 0.01, 128, 'any')}${number(t('probability'), 'note:probability', ev.probability ?? 1, 0, 1, 0.01)}${number('Ratchet', 'note:ratchet', ev.ratchet ?? 1, 1, 8)}${number('Microtiming', 'note:offset', ev.offset ?? 0, -0.49, 0.49, 0.01)}${number('1× / N', 'note:condition', ev.condition ?? 1, 1, 16)} ${select(
           t('chords'),
           'chord',
           [
@@ -891,27 +916,20 @@ export async function startStudio() {
         if (pat.steps[i]) fn(pat.steps[i], i, pat);
     });
   }
-  function moveNotes(delta) {
-    const pat = pattern(),
-      set = [...(s.selected.size ? s.selected : [s.step])].filter((i) => pat.steps[i]);
-    if (
-      !set.length ||
-      set.some(
-        (i) =>
-          i + delta < 0 ||
-          i + delta >= pat.length ||
-          (pat.steps[i + delta] && !set.includes(i + delta)),
-      )
-    )
-      return;
-    const values = set.map((i) => pat.steps[i]);
+  function moveNotes(delta, pitch = 0, duplicate = false, origin = s.step) {
+    const selected = s.selected.has(origin) ? [...s.selected] : [origin];
+    const apply = relocateNotes(pattern(), selected, delta, pitch, duplicate);
+    if (!apply) return;
     mutate(() => {
-      for (const i of set) pat.steps[i] = null;
-      set.forEach((i, j) => (pat.steps[i + delta] = values[j]));
-      s.selected = new Set(set.map((i) => i + delta));
-      s.step += delta;
+      s.selected = new Set(apply());
+      s.step = origin + delta;
       s.page = Math.floor(s.step / 16);
     });
+  }
+  function reorderClip(from, to) {
+    const items = s.p.arrangement;
+    if (from === to || !items[from] || !items[to]) return;
+    mutate(() => items.splice(to, 0, items.splice(from, 1)[0]));
   }
   async function action(btn) {
     const id = btn.dataset.action,
@@ -1078,10 +1096,13 @@ export async function startStudio() {
       case 'audition':
         await audition(s.channel, Number(btn.dataset.note));
         return;
+      case 'inspect-step':
+        s.inspectStep = !s.inspectStep; editor(); return;
       case 'step': {
         s.channel = Number(btn.dataset.channel);
         s.step = Number(btn.dataset.pos);
         s.selected = new Set([s.step]);
+        if (s.inspectStep) { editor(); stepDialog(); return; }
         mutate(() => {
           const p = pattern();
           p.steps[s.step] = p.steps[s.step] ? null : newNote(noteBase());
@@ -1092,18 +1113,41 @@ export async function startStudio() {
         const pos = Number(btn.dataset.pos),
           pitch = Number(btn.dataset.note),
           pat = pattern();
-        s.step = pos;
-        if (s.multi && pat.steps[pos]?.note === pitch) {
-          s.selected.has(pos) ? s.selected.delete(pos) : s.selected.add(pos);
-          editor();
+        const displayed = btn.hasAttribute('data-origin') ? Number(btn.dataset.origin) : null;
+        if (s.pianoTool === 'chords' && pat.steps[pos]) {
+          const old = pat.steps[pos];
+          const chord = changeChord(old, pitch);
+          if (chord === old) return;
+          s.step = pos; s.selected = new Set([pos]);
+          mutate(() => { pat.steps[pos] = chord; });
+          if (!playing && chord) await audition(s.channel,pitch);
           return;
         }
+        if (displayed !== null && s.pianoTool !== 'chords') {
+          s.step = displayed;
+          if (s.multi) {
+            if (s.selected.delete(displayed)) {
+              // Keep the inspector and the keyboard move command on a selected note.
+              if (s.selected.size) s.step = [...s.selected].at(-1);
+            } else s.selected.add(displayed);
+          } else s.selected = new Set([displayed]);
+          editor();
+          if (!playing && !s.multi) await audition(s.channel,pitch);
+          return;
+        }
+        s.step = pos;
         s.selected = new Set([pos]);
         mutate(() => {
           if (pat.steps[pos]) pat.steps[pos].note = pitch;
           else pat.steps[pos] = newNote(pitch);
         });
         if (!playing) await audition(s.channel, pitch);
+        return;
+      }
+      case 'duplicate-notes': {
+        const notes = [...(s.selected.size ? s.selected : [s.step])].filter(i => pattern().steps[i]);
+        if (!notes.length) return;
+        moveNotes(Math.max(...notes) - Math.min(...notes) + 1, 0, true, Math.min(...notes));
         return;
       }
       case 'multi':
@@ -1269,8 +1313,13 @@ export async function startStudio() {
         editor();
         return;
       case 'add-clip':
+        if (s.p.arrangement.length >= 2048) {say(t('maxSize'));return;}
         mutate(() => s.p.arrangement.push({ scene: s.scene, bars: 4 }));
         return;
+      case 'auto-open': automationEditor.begin(Math.min(s.clipIndex || 0,s.p.arrangement.length-1)); return;
+      case 'auto-add':
+      case 'auto-save':
+      case 'auto-delete': automationEditor.action(id); return;
       case 'region-add': regionEditor.begin(0); return;
       case 'region-edit': regionEditor.begin(i, Number(btn.dataset.region)); return;
       case 'region-save': regionEditor.commit(); return;
@@ -1296,6 +1345,12 @@ export async function startStudio() {
         );
         return;
       }
+      case 'clip-move-to': {
+        s.clipIndex = i;
+        open('clip-position',t('shift')+' · '+t('clip'),select(t('position'),'clip-position',
+          s.p.arrangement.map((part,j)=>option(j,(j+1)+' · '+(part.marker || sceneName(part.scene)),j===i)).join('')));
+        return;
+      }
       case 'clip-up':
       case 'clip-down':
         mutate(() => {
@@ -1304,9 +1359,14 @@ export async function startStudio() {
           [a[i], a[j]] = [a[j], a[i]];
         });
         return;
-      case 'clip-duplicate':
-        mutate(() => s.p.arrangement.splice(i + 1, 0, structuredClone(s.p.arrangement[i])));
+      case 'clip-duplicate': {
+        if (s.p.arrangement.length >= 2048) {say(t('maxSize'));return;}
+        const copy = structuredClone(s.p.arrangement[i]);
+        try { validateAutomation([...s.p.arrangement,copy],s.p.tracks); }
+        catch { say(t('maxSize'));return; }
+        mutate(() => s.p.arrangement.splice(i+1,0,copy));
         return;
+      }
       case 'clip-delete':
         if (s.p.arrangement.length > 1) mutate(() => s.p.arrangement.splice(i, 1));
         return;
@@ -1484,6 +1544,7 @@ export async function startStudio() {
         } else changed({ draw: false });
       } else mutate(fn, false);
     };
+    if (['auto-part','auto-track','auto-target','auto-select'].includes(id)) { automationEditor.change(id,raw); return; }
     if (id.startsWith('gen-')) return;
     if (id === 'lang') {
       if (!names[raw]) return;
@@ -1561,6 +1622,16 @@ export async function startStudio() {
     }
     if (id === 'channel') {
       selectCh(v);
+      return;
+    }
+    if (id === 'clip-position') { reorderClip(s.clipIndex, v); close(); return; }
+    if (id === 'piano-tool') { s.pianoTool = raw; editor(); return; }
+    if (id === 'piano-root' || id === 'piano-scale') {
+      if (id === 'piano-root') s.root = 36+v; else s.scale = v;
+      editor(); return;
+    }
+    if (id === 'piano-gate' || id === 'piano-velocity') {
+      writeNotes(note => {if (id === 'piano-gate') note.gate = v; else note.velocity = v/100;});
       return;
     }
     if (id === 'octave') {
@@ -1752,6 +1823,19 @@ export async function startStudio() {
     say(t('offlineReady'));
   }
   const root = el('studio');
+  automationEditor.bind(root);
+  bindEditorDrags(root, {
+    noteDrop(from,to) {
+      const origin = Number(from.dataset.origin), end = Number(to.dataset.pos);
+      if (s.pianoTool === 'gate') {
+        const gate = Math.min(128, Math.max(1, end - origin + 1));
+        if (pattern().steps[origin]?.gate === gate) return;
+        s.step = origin; s.selected = new Set([origin]);
+        mutate(() => { pattern().steps[origin].gate = gate; });
+      } else moveNotes(end - Number(from.dataset.pos), Number(to.dataset.note) - Number(from.dataset.note), false, origin);
+    },
+    clipDrop: reorderClip,
+  });
   root.addEventListener('click', (e) => {
     if (e.target === el('panel')) {
       const rect = el('panel').getBoundingClientRect();
@@ -1923,8 +2007,8 @@ export async function startStudio() {
   pageAttrs();
   shell();
   el('panel').addEventListener('cancel', (e) => {
-    if (exportController) e.preventDefault();
-    else { activeDialog = undefined; regionEditor.clear(); }
+    e.preventDefault();
+    if (!exportController) close();
   });
   if (!storageAvailable) say(t('storage') + ' · ' + t('unsupported'));
   meter();

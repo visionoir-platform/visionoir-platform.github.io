@@ -15,7 +15,7 @@ const safe=(s)=>String(s).replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&am
 const el=(selector)=>root.querySelector(selector);
 const button=(id,label,attributes='')=>'<button type="button" data-act="'+id+'" '+attributes+'>'+label+'</button>';
 const mainKey='visionoir-unseen-save-v1',settingsKey='visionoir-unseen-settings-v1';
-const storage={read(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}};
+const storage={read(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch{return false;}}};
 const bounded=(x,a,b,otherwise)=>typeof x==='number'&&Number.isFinite(x)?Math.max(a,Math.min(b,x)):otherwise;
 const saved=storage.read(settingsKey)||{};
 const settings={volume:bounded(saved.volume,0,100,40),music:bounded(saved.music,0,100,82),sfx:bounded(saved.sfx,0,100,80),scale:bounded(saved.scale,75,120,100),opacity:bounded(saved.opacity,35,100,88),side:!!saved.side,mute:!!saved.mute,motion:saved.motion??!matchMedia('(prefers-reduced-motion: reduce)').matches,keys:{...defaultKeys},pad:{...defaultPad}};
@@ -141,7 +141,20 @@ function heroes(){
 }
 function options(){
   const slider=(key,min,max)=>'<label>'+safe(t(key))+'<input type="range" data-set="'+key+'" min="'+min+'" max="'+max+'" value="'+settings[key]+'"></label>';
-  return '<div class="page">'+header(t('options'))+'<div class="options-grid"><section><h2>'+t('volume')+'</h2>'+slider('volume',0,100)+slider('music',0,100)+slider('sfx',0,100)+button('mute',t('mute'),'aria-pressed="'+settings.mute+'"')+'</section><section><h2>'+t('controls')+'</h2>'+slider('scale',75,120)+slider('opacity',35,100)+button('side',t('side'),'aria-pressed="'+settings.side+'"')+button('motion',t('movement'),'aria-pressed="'+settings.motion+'"')+'</section><section class="keys">'+Object.keys(defaultKeys).map(k=>button('bind-'+k,'<span>'+t(k)+'</span><kbd>'+safe(settings.keys[k].replace(/^Key/,''))+' / '+settings.pad[k]+'</kbd>')).join('')+'</section><section>'+button('lab',t('lab'))+button('export',t('save'))+'<label class="file">'+t('load')+'<input type="file" id="import" accept=".json,application/json"></label></section></div></div>';
+  return '<div class="page">'+header(t('options'))+'<div class="options-grid"><section><h2>'+t('volume')+'</h2>'+slider('volume',0,100)+slider('music',0,100)+slider('sfx',0,100)+button('mute',t('mute'),'aria-pressed="'+settings.mute+'"')+'</section><section><h2>'+t('controls')+'</h2>'+slider('scale',75,120)+slider('opacity',35,100)+button('side',t('side'),'aria-pressed="'+settings.side+'"')+button('motion',t('movement'),'aria-pressed="'+settings.motion+'"')+'</section><section class="keys">'+Object.keys(defaultKeys).map(k=>button('bind-'+k,'<span>'+t(k)+'</span><kbd>'+safe(settings.keys[k].replace(/^Key/,''))+' / '+settings.pad[k]+'</kbd>')).join('')+'</section><section>'+button('lab',t('lab'))+button('export',t('save'))+'<label class="file">'+t('load')+'<input type="file" id="import" accept=".json,application/json"></label>'+button('erase-save',t('eraseSave'))+'</section></div></div>';
+}
+function confirmErase(){
+  return '<div class="page">'+header(t('eraseSave'))+'<p>'+safe(t('eraseWarning'))+'</p><div class="bottom-actions">'
+    +button('keep-save',t('keepSave'),'class="primary"')+button('confirm-erase',t('eraseSave'))+'</div></div>';
+}
+function resetRunAfterSaveChange(){
+  run=null;
+  portalReturn=null;
+  loadMark=false;
+  hero=progress.lastHero;
+  target=progress.lastStage;
+  mode='story';
+  go('menu',{track:2});
 }
 function extras(){
   const stageIds=[...new Set(progress.cleared)];
@@ -173,7 +186,7 @@ function render(localized=false){
   if(page==='lab'){
     root.dataset.page=page;lab=mountLab({node:root,audio,t,button,html:safe,back,settings,volume,notify,prior:labValues,effectName:id=>effectNames[id]||id});return;
   }
-  const surfaces={title,menu,scene,stages:stageList,heroes,extras,options,credits,records,result,
+  const surfaces={title,menu,scene,stages:stageList,heroes,extras,options,confirmErase,credits,records,result,
     pause:()=>'<div class="page pause-page">'+header(t('pause'))+'<h2>'+safe(run.stage.title)+'</h2><div class="bottom-actions">'+['resume','retry','options','leave'].map(k=>button(k,t(k==='leave'?'exit':k),k==='resume'?'class="primary"':'')).join('')+'</div></div>'};
   root.innerHTML=surfaces[page]();root.dataset.page=page;
   if(page==='scene'){
@@ -183,6 +196,7 @@ function render(localized=false){
   }
 }
 function back(){
+  if(page==='confirmErase'){go('options');el('[data-act=erase-save]')?.focus();return;}
   if(page==='title')return home.click();
   if(page==='play')return pauseRun();
   if(page==='pause')return resumeRun();
@@ -219,9 +233,18 @@ function saveFile(){
 }
 async function importFile(file){
   if(!file)return;
+  const fromRevision=revision;
   try{if(file.size>150000)throw Error();const data=JSON.parse(await file.text());
     if(data?.version!==1||!Array.isArray(data.cleared)||!Array.isArray(data.cores)||!data.records||typeof data.records!=='object')throw Error();
-    progress=sanitizeProgress(data);savedMark=data.checkpoint||null;saveProgress();notify(t('saved'));
+    if(revision!==fromRevision)return;
+    const imported=sanitizeProgress(data), mark=data.checkpoint;
+    const checkpoint=mark && Number.isInteger(mark.stage) && canEnter(imported,mark.stage)
+      && Number.isInteger(mark.hero) && HEROES[mark.hero] && Number.isInteger(mark.marker) && mark.marker>=0 ? mark : null;
+    if(!storage.write(mainKey,{...imported,checkpoint})){notify(t('error'));return;}
+    progress=imported;savedMark=checkpoint;
+    if(run)resetRunAfterSaveChange();
+    else hero=progress.lastHero;
+    notify(t('saved'));
   }catch{notify(t('badSave'));}
 }
 root.addEventListener('input',event=>{const k=event.target.dataset.set;if(k&&['volume','music','sfx','scale','opacity'].includes(k)){settings[k]=+event.target.value;applySettings();}});
@@ -258,6 +281,15 @@ root.addEventListener('click',event=>{
   if(action==='leave'){if(portalReturn){const r=portalReturn;portalReturn=null;return startRun(r.stageId,r);}run=null;return go('menu',{track:2});}
   if(action==='after')return continueAfter();
   if(['side','mute','motion'].includes(action)){settings[action]=!settings[action];applySettings();render();el('[data-act="'+action+'"]')?.focus();return;}
+  if(action==='erase-save' && page==='options'){
+    go('confirmErase');el('[data-act=keep-save]')?.focus();return;
+  }
+  if(action==='keep-save' && page==='confirmErase')return back();
+  if(action==='confirm-erase' && page==='confirmErase'){
+    try{localStorage.removeItem(mainKey);}catch{notify(t('error'));return;}
+    progress=sanitizeProgress(null);savedMark=null;
+    resetRunAfterSaveChange();notify(t('erasedSave'));return;
+  }
   if(action==='export')return saveFile();
   if(action.startsWith('bind-')){notify(t('rebind'));input.rebind(action.slice(5));}
 });

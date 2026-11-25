@@ -1,37 +1,58 @@
 import { totalBars, clamp, validateProject } from './model.js';
+import { midiAutomation } from './automation.js';
 import { arrangementAt, planStep } from './sequencer.js';
 const ascii = (view, off, text) => {
   for (let i = 0; i < text.length; i++) view.setUint8(off + i, text.charCodeAt(i));
 };
-export function wavHeader({ frames, sampleRate, bits, channels, title = '' }) {
+export function wavHeader({ frames, sampleRate, bits, channels, title = '', rf64 = false }) {
   const data = frames * channels * (bits / 8);
-  if (data > 0xffffffff - 65536) throw Error('export.riffLimit');
-  const name = new TextEncoder().encode(title.slice(0, 240) + '\0'),
-    titleLen = name.length + (name.length % 2),
-    extra = title ? 20 + titleLen : 0;
-  const pad = data % 2,
-    buf = new Uint8Array(44 + extra),
-    v = new DataView(buf.buffer);
-  ascii(v, 0, 'RIFF');
-  v.setUint32(4, 36 + extra + data + pad, true);
-  ascii(v, 8, 'WAVEfmt ');
-  v.setUint32(16, 16, true);
-  v.setUint16(20, bits === 32 ? 3 : 1, true);
-  v.setUint16(22, channels, true);
-  v.setUint32(24, sampleRate, true);
-  v.setUint32(28, (sampleRate * channels * bits) / 8, true);
-  v.setUint16(32, (channels * bits) / 8, true);
-  v.setUint16(34, bits, true);
-  if (extra) {
-    ascii(v, 36, 'LIST');
-    v.setUint32(40, 12 + titleLen, true);
-    ascii(v, 44, 'INFOINAM');
-    v.setUint32(52, name.length, true);
-    buf.set(name, 56);
+  if (!Number.isSafeInteger(frames) || frames < 0 || !Number.isSafeInteger(data))
+    throw Error('export.riffLimit');
+  const name = new TextEncoder().encode(title.slice(0, 240) + '\0');
+  const titleLen = name.length + (name.length % 2), info = title ? 20 + titleLen : 0;
+  const classicRiffSize = 36 + info + data + data % 2;
+  const extended = rf64 || classicRiffSize >= 0xffffffff;
+  const ds64 = extended ? 36 : 0, fact = extended && bits === 32 ? 12 : 0;
+  const bytes = new Uint8Array(44 + ds64 + fact + info), v = new DataView(bytes.buffer);
+  ascii(v, 0, extended ? 'RF64' : 'RIFF');
+  v.setUint32(4, extended ? 0xffffffff : classicRiffSize, true);
+  ascii(v, 8, 'WAVE');
+  if (extended) {
+    // EBU Tech 3306: riffSize excludes the first eight bytes and includes the final alignment byte.
+    ascii(v, 12, 'ds64');
+    v.setUint32(16, 28, true);
+    v.setBigUint64(20, BigInt(classicRiffSize + ds64 + fact), true);
+    v.setBigUint64(28, BigInt(data), true);
+    v.setBigUint64(36, BigInt(frames), true);
+    v.setUint32(44, 0, true);
   }
-  ascii(v, 36 + extra, 'data');
-  v.setUint32(40 + extra, data, true);
-  return buf;
+  let at = 12 + ds64;
+  ascii(v, at, 'fmt ');
+  v.setUint32(at + 4, 16, true);
+  v.setUint16(at + 8, bits === 32 ? 3 : 1, true);
+  v.setUint16(at + 10, channels, true);
+  v.setUint32(at + 12, sampleRate, true);
+  v.setUint32(at + 16, sampleRate * channels * (bits / 8), true);
+  v.setUint16(at + 20, channels * (bits / 8), true);
+  v.setUint16(at + 22, bits, true);
+  at += 24;
+  if (fact) {
+    ascii(v, at, 'fact');
+    v.setUint32(at + 4, 4, true);
+    v.setUint32(at + 8, Math.min(frames, 0xffffffff), true);
+    at += fact;
+  }
+  if (info) {
+    ascii(v, at, 'LIST');
+    v.setUint32(at + 4, 12 + titleLen, true);
+    ascii(v, at + 8, 'INFOINAM');
+    v.setUint32(at + 16, name.length, true);
+    bytes.set(name, at + 20);
+    at += info;
+  }
+  ascii(v, at, 'data');
+  v.setUint32(at + 4, extended ? 0xffffffff : data, true);
+  return bytes;
 }
 export function wavPCM(l, r, n, bits, channels, scale, random) {
   const b = new Uint8Array((n * channels * bits) / 8),
@@ -108,6 +129,9 @@ function midiTrackChunks(p) {
   });
   const end = totalBars(p) * 16;
   if (end > 300000) throw Error('export.midiSize');
+  midiAutomation(p, stepTicks, (i,tick,cc,value) => {
+    tracks[i].push({tick, bytes: [176 | channel(i), cc, value]});
+  });
   let endTick = end * stepTicks;
   for (let step = 0; step < end; step++) {
     const { scene, local, clip } = arrangementAt(p, step);
@@ -197,9 +221,10 @@ export async function zipFiles(files) {
     if (!name || name.includes('..') || name.startsWith('/') || name.includes('\\') || names.has(name))
       throw Error('export.zipName');
     names.add(name);
-    const file = encoder.encode(name),
-      sum = await crc(blob);
-    if (blob.size + head > 0xffffffff) throw Error('export.zipLimit');
+    const file = encoder.encode(name);
+    const projected = head + 30 + file.length + blob.size + dirSize + 46 + file.length + 22;
+    if (file.length > 65535 || projected >= 0xffffffff) throw Error('export.zipLimit');
+    const sum = await crc(blob);
     const loc = new Uint8Array(30 + file.length),
       v = new DataView(loc.buffer);
     v.setUint32(0, 0x04034b50, true);

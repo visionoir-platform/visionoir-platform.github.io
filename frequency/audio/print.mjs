@@ -1,11 +1,28 @@
 #!/usr/bin/env node
 /** Offline studio CLI. Prints a named original demo or an existing local session. */
-import { writeFile, readFile } from 'node:fs/promises';
+import { writeFile, readFile, open, rename, unlink, stat } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { createProject, validateProject, DEMOS, projectFile } from './model.js';
 import { EXTRA_DEMOS } from './library.js';
 import { renderOffline } from './offline.js';
 import { renderMidi } from './formats.js';
+function fileSink(filename) {
+  const temporary = filename + '.' + randomUUID() + '.partial';
+  return {
+    async createWritable() {
+      const file = await open(temporary, 'wx');
+      return {
+        write: chunk => file.writeFile(chunk),
+        async close() { await file.close(); await rename(temporary, filename); },
+        async abort() {
+          try { await file.close(); } finally { await unlink(temporary).catch(() => {}); }
+        },
+      };
+    },
+    getFile: () => stat(filename),
+  };
+}
 export async function run(args) {
   const [source, filename, ...flags] = args;
   if (!source || !filename)
@@ -50,8 +67,11 @@ export async function run(args) {
     case 'mp3':
     case 'flac':
     case 'aiff':
-      blob = await renderOffline(p, { ...opts, format: ext });
-      break;
+      {
+        const file = await renderOffline(p, { ...opts, format: ext, handle: fileSink(filename) });
+        console.log(JSON.stringify({ project: p.name, file: filename, bytes: file.size }));
+        return;
+      }
     default:
       throw Error('Unknown output format');
   }

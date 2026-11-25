@@ -73,7 +73,8 @@ ${alternates}`;
     .replace('<!-- VISIONOIR:CONFIG -->',()=>`<script type="application/json" id="site-config">${config}</script>`);
   await writeFile(resolve(output,route.slice(1),'index.html'),html);
 }
-await writeFile(resolve(output,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${variants.map(({route})=>`<url><loc>${new URL(route,site)}</loc></url>`).join('\n')}\n</urlset>\n`);
+const publicRoutes = variants.flatMap(({route}) => [route, '/legal' + route, '/support' + route]);
+await writeFile(resolve(output,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${publicRoutes.map(route=>`<url><loc>${new URL(route,site)}</loc></url>`).join('\n')}\n</urlset>\n`);
 await writeFile(resolve(output,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${site}sitemap.xml\n`);
 console.log(`Prerendered ${variants.length} pages, ${available.length} locales, ${enabledTracks.length} tracks`);
 

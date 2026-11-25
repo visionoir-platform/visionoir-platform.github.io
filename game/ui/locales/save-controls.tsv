@@ -1,0 +1,17 @@
+code	eraseSave	eraseWarning	keepSave	erasedSave
+it	Elimina il salvataggio	Questo elimina da questo browser i progressi, i record e il checkpoint. Per conservarli, esporta prima il salvataggio.	Mantieni il salvataggio	Salvataggio eliminato.
+en	Delete saved game	This removes your progress, records and checkpoint from this browser. Export your save first if you want to keep it.	Keep saved game	Saved game deleted.
+es	Eliminar partida guardada	Se eliminarán de este navegador el progreso, los récords y el punto de control. Exporta primero la partida si quieres conservarla.	Conservar partida	Partida eliminada.
+de	Spielstand löschen	Damit werden Fortschritt, Rekorde und Kontrollpunkt aus diesem Browser entfernt. Exportiere vorher den Spielstand, wenn du ihn behalten möchtest.	Spielstand behalten	Spielstand gelöscht.
+fr	Effacer la sauvegarde	Cette action efface la progression, les records et le point de contrôle dans ce navigateur. Pour les conserver, exportez d’abord la sauvegarde.	Conserver la sauvegarde	Sauvegarde effacée.
+pt-PT	Apagar o jogo guardado	Esta ação apaga o progresso, os recordes e o ponto de controlo neste navegador. Exporta primeiro o jogo se o quiseres guardar.	Manter o jogo guardado	Jogo guardado apagado.
+pt-BR	Excluir o jogo salvo	Isso exclui o progresso, os recordes e o ponto de controle deste navegador. Exporte o jogo antes se quiser guardá-lo.	Manter o jogo salvo	Jogo salvo excluído.
+ru	Удалить сохранение	Прогресс, рекорды и контрольная точка будут удалены из этого браузера. Чтобы сохранить их, сначала экспортируйте сохранение.	Оставить сохранение	Сохранение удалено.
+uk	Видалити збереження	Прогрес, рекорди та контрольну точку буде видалено з цього браузера. Щоб їх зберегти, спочатку експортуйте збереження.	Залишити збереження	Збереження видалено.
+pl	Usuń zapis gry	Postęp, rekordy i punkt kontrolny zostaną usunięte z tej przeglądarki. Jeśli chcesz je zachować, najpierw wyeksportuj zapis gry.	Zachowaj zapis	Zapis gry usunięty.
+zh-Hans	删除游戏存档	此操作将从当前浏览器中删除游戏进度、纪录和检查点。如需保留，请先导出存档。	保留存档	存档已删除。
+ja	セーブデータを削除	このブラウザーにある進行状況、記録、チェックポイントを削除します。残したい場合は先にセーブデータを書き出してください。	セーブデータを残す	セーブデータを削除しました。
+ko	저장 기록 삭제	이 브라우저에서 진행 상황, 기록, 체크포인트를 삭제합니다. 보관하려면 먼저 저장 파일을 내보내세요.	저장 기록 유지	저장 기록을 삭제했습니다.
+ar	حذف اللعبة المحفوظة	سيُحذف تقدّمك وأرقامك القياسية ونقطة الحفظ من هذا المتصفح. صدّر ملف الحفظ أولاً إذا أردت الاحتفاظ به.	الاحتفاظ باللعبة المحفوظة	حُذفت اللعبة المحفوظة.
+sw	Futa mchezo uliohifadhiwa	Hatua hii inafuta maendeleo yako, rekodi na sehemu ya kuendelea katika kivinjari hiki. Hamisha faili la mchezo kwanza ukitaka kulihifadhi.	Hifadhi mchezo uliohifadhiwa	Mchezo uliohifadhiwa umefutwa.
+rm-CH	Stizzar il gieu memorisà	Questa acziun stizza en quest navigatur il progress, ils records ed il punct da controlla. Exportescha ordavant il gieu sche ti al vuls conservar.	Mantegnair il gieu memorisà	Gieu memorisà stizzà.

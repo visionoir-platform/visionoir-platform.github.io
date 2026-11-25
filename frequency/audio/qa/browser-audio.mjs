@@ -43,6 +43,9 @@ document.querySelector('button').onclick=async()=>{
    const pcm=buf.getChannelData(0);let peak=0;for(const v of pcm)peak=Math.max(peak,Math.abs(v));
    Object.assign(results[k],{channels:buf.numberOfChannels,frames:buf.length,peak});}catch(e){results[k].decoderError=e.message;}
   }
+  const large=a.createProject('blank');large.arrangement=[{scene:0,bars:512}];
+  try{await a.renderStems(large,{sampleRate:192000,channels:2,bits:32});}
+  catch(e){results.largeStems=e.message;}
   d.queueScene(6);results.queued=true;
  }catch(e){results.err=e.message;}
 };
@@ -90,6 +93,7 @@ try {
   const r = await page.evaluate(() => window.results);
   assert(!r.err, r.err);
   assert.equal(r.mode, 'worklet');
+  assert.equal(r.largeStems,'export.zipLimit');
   assert(r.tick.masterPeak.some((v) => v > 0.001));
   for (const k of ['wav', 'flac', 'aiff', 'mp3']) {
     const file = join(dest, 'print.' + k);
@@ -124,6 +128,8 @@ try {
       worklet: r.mode,
       rate: r.rate,
       crossfadeTo: r.tick.scene,
+      measuredRenderShare: r.tick.dspLoad ?? null,
+      channelMeterStride: r.tick.meterStride,
       nativeDecoders: Object.fromEntries(
         ['wav', 'flac', 'aiff', 'mp3'].map((k) => [k, !r[k].decoderError]),
       ),

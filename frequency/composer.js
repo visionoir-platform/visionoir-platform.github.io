@@ -2,13 +2,26 @@ import { newNote } from './ui-kit.js';
 
 // Build an editable session from one motif. The PRNG affects ornamentation; section
 // roles, downbeats, voice-leading and harmonic destinations remain explicit.
-export const genres = ['Hard techno', 'Acid techno', 'Warehouse dub', 'Broken beat'];
+export const genres = [
+  'Hard techno',
+  'Acid techno',
+  'Warehouse dub',
+  'Broken beat',
+  'Schranz',
+  'Hardgroove',
+  'Industrial techno',
+  'Neo rave',
+];
 const sections = ['Ingress', 'Pressure', 'Build', 'Drop', 'Break', 'Rebuild', 'Peak', 'Exit'];
 const shapes = [
   [4, 4, 8, 16, 4, 4, 16, 4],
   [4, 8, 4, 8, 8, 4, 16, 4],
   [8, 8, 4, 8, 8, 8, 8, 8],
   [4, 8, 4, 8, 4, 4, 8, 4],
+  [8, 8, 4, 16, 4, 8, 16, 8],
+  [8, 16, 4, 8, 8, 8, 16, 8],
+  [4, 8, 8, 12, 8, 4, 16, 4],
+  [4, 8, 8, 16, 8, 8, 16, 4],
 ];
 function random(seed) {
   let state = seed >>> 0;
@@ -20,7 +33,7 @@ export function generateSession(
   { seed = 81, genre = 0, bpm = 155, root = 36, intensity = 0.7, complexity = 0.55, scale = 1 } = {},
 ) {
   const p = createProject('blank'),
-    g = clamp(genre | 0, 0, 3),
+    g = clamp(genre | 0, 0, genres.length - 1),
     rng = random(seed),
     modes = [
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
@@ -38,17 +51,41 @@ export function generateSession(
   p.seed = seed;
   p.bpm = bpm;
   p.name = genres[g] + ' · ' + seed;
-  p.swing = [0.035, 0.075, 0.125, 0.17][g];
+  p.swing = [0.035, 0.075, 0.125, 0.17, 0.027, 0.19, 0.065, 0.041][g];
   for (const tr of p.tracks) {
     for (const prop of ['cutoff', 'color', 'tone', 'body', 'drift', 'metal', 'detune'])
-      if (prop in tr.params)
-        tr.params[prop] = clamp(tr.params[prop] + (rng() - 0.5) * 0.28, 0.05, 0.95);
+      if (prop in tr.params) tr.params[prop] = clamp(tr.params[prop] + (rng() - 0.5) * 0.28, 0.05, 0.95);
+  }
+  // Set distinct source timbres as well as rhythms. All parameter values remain editable in the rack.
+  if (g === 4) {
+    Object.assign(p.tracks[0].params, { drive: 0.83, tail: 0.3, punch: 0.92 });
+    Object.assign(p.tracks[5].params, { metal: 0.82, decay: 0.21, drive: 0.88 });
+  } else if (g === 5) {
+    Object.assign(p.tracks[3].params, { drive: 0.22, cutoff: 0.51, decay: 0.26 });
+    Object.assign(p.tracks[6].params, { metal: 0.18, decay: 0.24, color: 0.72 });
+  } else if (g === 6) {
+    Object.assign(p.tracks[14].params, { ratio: 0.73, algorithm: 0.85, index: 0.82 });
+    Object.assign(p.tracks[1].params, { feedback: 0.57, drive: 0.81, width: 0.35 });
+  } else if (g === 7) {
+    Object.assign(p.tracks[10].params, { detune: 0.54, chord: 0.76, color: 0.78 });
+    Object.assign(p.tracks[11].params, { detune: 0.42, cutoff: 0.78, wave: 0.27 });
   }
   p.scenes.forEach((scene, k) => {
     const air = [0.23, 0.48, 0.66, 0.93, 0.21, 0.59, 1, 0.37][k] * drive;
     scene.name = sections[k];
     scene.patterns = scene.patterns.map((_, i) => {
-      const span = i >= 10 ? 32 : i === 2 && density > 0.5 ? 32 : i === 5 && density > 0.75 ? 15 : 16;
+      const span =
+        g === 6 && i === 5
+          ? 14
+          : g === 4 && i === 5
+            ? 15
+            : i >= 10
+              ? 32
+              : i === 2 && density > 0.5
+                ? 32
+                : i === 5 && density > 0.75
+                  ? 15
+                  : 16;
       const steps = Array(span).fill(null);
       for (let n = 0; n < span; n++) {
         const beat = n % 16,
@@ -57,18 +94,15 @@ export function generateSession(
           build = k === 2 || k === 5,
           breakdown = k === 4;
         const deg = motif[(Math.floor(n / (g === 1 ? 2 : 4)) + turn + (k % 4 === 3 ? 2 : 0)) % 8];
-        const pulses = new Set([0, 4, 8, 12]);
-        if (g === 3) {
-          pulses.delete(4);
-          pulses.add(6);
-          if (peak) pulses.add(11);
-        }
         let on = false,
           note = root,
           gate = 0.74;
         switch (i) {
           case 0:
-            on = !breakdown && pulses.has(beat) && (k !== 0 || beat % 8 === 0);
+            on =
+              !breakdown &&
+              (g === 3 ? [0, 6, 8, 12].includes(beat) || (peak && beat === 11) : beat % 4 === 0) &&
+              (k !== 0 || beat % 8 === 0);
             note = 36;
             break;
           case 1:
@@ -140,6 +174,29 @@ export function generateSession(
             note = 60 + deg;
             break;
         }
+        if (g === 4 && i === 5) {
+          on = !breakdown && (beat % 3 === 0 || (peak && beat % 3 === 2));
+          note = [41, 53, 47, 42, 59][Math.floor(beat / 3)];
+        } else if (g === 5 && i === 5) {
+          on = !breakdown && [0, 3, 6, 10, 12].includes(beat);
+          note = [51, 55, 48, 58, 53][[0, 3, 6, 10, 12].indexOf(beat)] ?? 48;
+        } else if (g === 5 && i === 3) {
+          on = air > 0.26 && [1, 4, 7, 11, 14].includes(beat);
+          note = root + (beat === 11 ? 7 : degrees[beat === 7 ? 2 : 0]);
+          gate = beat === 14 ? 1.6 : 0.57;
+        } else if (g === 6 && i === 14) {
+          on = k > 0 && [0, 5, 9, 15].includes(n % 16);
+          note = root + 12 + degrees[(turn * 3 + (beat === 9 ? 4 : 0)) % degrees.length];
+          gate = beat === 9 ? 2.5 : 0.34;
+        } else if (g === 7 && i === 10) {
+          on = (peak || build) && [0, 3, 6, 10, 14].includes(beat);
+          note = root + 12 + degrees[turn ? 4 : 0];
+          gate = beat === 10 ? 2.25 : 0.7;
+        } else if (g === 7 && i === 11) {
+          on = (peak || breakdown) && [2, 6, 9, 14].includes(beat);
+          note = root + 24 + degrees[(turn * 2 + Math.floor(beat / 4)) % degrees.length];
+          gate = breakdown ? 4.8 : 1.6;
+        }
         if (!on) continue;
         const e = newNote(note);
         e.gate = gate;
@@ -151,6 +208,16 @@ export function generateSession(
           e.locks = { cutoff: clamp(0.2 + air * 0.45 + deg / 24, 0.1, 0.94) };
           e.probability = beat % 4 === 0 ? 1 : 0.83 + density * 0.16;
         }
+        if (g === 4 && i === 5) {
+          e.accent = beat % 3 === 0;
+          e.ratchet = build && beat === 12 ? 4 : 1;
+        }
+        if (g === 5 && i === 5) {
+          e.offset = beat === 3 || beat === 10 ? -0.08 : 0.04;
+          e.velocity *= beat === 6 ? 0.65 : 1;
+        }
+        if (g === 6 && i === 14) e.locks = { index: beat === 9 ? 0.9 : 0.42 };
+        if (g === 7 && i === 10) e.chord = [degrees[2], 7];
         if (i === 10 && g === 2) e.chord = [3, 7];
         if (i === 8 && g === 3 && beat === 12) e.flam = true;
         steps[n] = e;

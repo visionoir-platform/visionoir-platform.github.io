@@ -2,6 +2,7 @@ import { INSTRUMENTS, BUSSES, clamp, noteHz, totalBars } from './model.js';
 import { arrangementAt, planStep } from './sequencer.js';
 import { Effect } from './fx.js';
 import { MasterLimiter } from './limiter.js';
+import { setSegment } from './automation.js';
 import { regionPlayer, mixRegion } from './regions.js';
 import { Voice, decodePCM, factoryGlass } from './voice.js';
 const kinds = new Map(INSTRUMENTS.map((x, i) => [x.id, i]));
@@ -25,6 +26,7 @@ export class DSP {
     this.step = -1;
     this.frame = 0;
     this.masterPeak = [0, 0];
+    this.meterStride = 1;
     this.squareL = this.squareR = this.dot = this.meterN = 0;
     this.clipped = false;
     this.running = false;
@@ -63,6 +65,8 @@ export class DSP {
           id: t.id,
           kind: kinds.get(t.instrument),
           regions: [],
+          volumeLane: {value:null, increment:0},
+          panLane: {value:null, increment:0},
           voices: Array.from({ length: 4 }, () => new Voice(this.rate)),
           peak: 0,
           energy: 0,
@@ -81,18 +85,22 @@ export class DSP {
         c.echoOffset = Math.max(4, Math.round((0.03 + 0.19 * c.params.delay) * this.rate));
         c.verbOffset = Math.max(4, Math.round(0.04721 * this.rate));
       }
-      c.to = t.mute || (solo && !t.solo) ? 0 : t.volume * (t.gain ?? 1);
+      c.mixGain = t.mute || (solo && !t.solo) ? 0 : (t.gain ?? 1);
+      c.to = t.volume * c.mixGain;
       c.lp = Math.cos(((t.pan + 1) * Math.PI) / 4);
       c.rp = Math.sin(((t.pan + 1) * Math.PI) / 4);
       c.fx = rack(t.fx, c.fx, this.rate, p.bpm);
       if (c.kind === 15 && !t.sample) c.sample = factoryGlass();
-      if (c.pcm !== t.sample?.pcm) {
+      if (c.pcm !== t.sample?.pcm || c.sampleRate !== t.sample?.rate) {
         c.sample = decodePCM(t.sample) ?? factoryGlass();
         c.pcm = t.sample?.pcm;
+        c.sampleRate = t.sample?.rate;
       }
       return c;
     });
     this.regionChannels = new Map(this.channels.map(c => [c.id, c]));
+    this.hasAutomation = p.arrangement.some(part => part.automation?.length);
+    this.refreshAutomation();
     this.lastRegionPart = null;
     this.hasRegions = p.arrangement.some(part => part.audioRegions?.length);
     if (!this.hasRegions) for (const c of this.channels) c.regions.length = 0;
@@ -120,6 +128,7 @@ export class DSP {
         if (this.regionEndFrame > this.frame)
           this.regionEndFrame = this.frame + (this.regionEndFrame - this.frame) * this.stepSamples / old;
       }
+      this.refreshAutomation();
       this.delay.configure({ amount: 0.43 }, value);
       this.reverb.configure({ amount: 0.47 }, value);
       for (const row of this.channels)
@@ -180,6 +189,7 @@ export class DSP {
   stop() {
     this.running = false;
     this.clickFrames = 0;
+    this.setAutomation(null, 0);
     this.limiter.reset();
     this.events.length = 0;
     for (const c of this.channels) {
@@ -187,10 +197,10 @@ export class DSP {
       for (const v of c.voices) v.active = false;
       c.peak = 0;
       c.energy = 0;
-      c.prevHz = 0;
+      c.prevHz = c.voice = c.g = 0;
       if (c.rumble) {
         c.rumble.buffer.fill(0);
-        c.rumble.low = 0;
+        c.rumble.low = c.rumble.head = 0;
       }
     }
     for (const effect of [
@@ -199,18 +209,7 @@ export class DSP {
       ...this.masterFx,
       ...this.channels.flatMap((c) => c.fx),
     ]) {
-      effect.bufL?.fill(0);
-      effect.bufR?.fill(0);
-      effect.env =
-        effect.lastL =
-        effect.lastR =
-        effect.lowL =
-        effect.lowR =
-        effect.highL =
-        effect.highR =
-        effect.zL =
-        effect.zR =
-          0;
+      effect.reset();
     }
     this.histL = this.histR = this.dcL = this.dcR = 0;
     this.busInput.fill(0);
@@ -291,6 +290,30 @@ export class DSP {
     );
     this.events.sort((a, b) => b.at - a.at);
   }
+  refreshAutomation() {
+    if (this.running && this.arranging && this.step >= 0 && this.hasAutomation) {
+      const pos = this.position(this.step);
+      if (pos) {
+        const elapsed = clamp(1 - (this.nextBoundary - this.frame) / this.stepSamples, 0, 1);
+        this.setAutomation(pos.clip, pos.local + elapsed);
+        return;
+      }
+    }
+    this.setAutomation(null, 0);
+  }
+  setAutomation(part, position) {
+    if (!this.activeAutomation && !part?.automation?.length) return;
+    for (const c of this.channels) {
+      c.volumeLane.value = c.panLane.value = null;
+      c.volumeLane.increment = c.panLane.increment = 0;
+    }
+    this.activeAutomation = !!part?.automation?.length;
+    if (!this.activeAutomation) return;
+    for (const lane of part.automation) {
+      const c = this.regionChannels.get(lane.track);
+      if (c) setSegment(lane.target === 'volume' ? c.volumeLane : c.panLane, lane.points, position, this.stepSamples);
+    }
+  }
   updateRegions(part, local) {
     const resync = this.lastRegionPart !== part || local !== this.lastRegionStep + 1;
     if (resync || !this.hasRegions || !part) for (const c of this.channels) c.regions.length = 0;
@@ -317,6 +340,7 @@ export class DSP {
       this.queue = null;
     }
     const at = this.position(this.step);
+    if (this.hasAutomation || this.activeAutomation) this.setAutomation(this.arranging ? at?.clip : null, at?.local);
     if (this.hasRegions || this.lastRegionPart) this.updateRegions(this.arranging ? at?.clip : null, at?.local);
     if (!at) {
       this.running = false;
@@ -352,6 +376,7 @@ export class DSP {
         vr = 0;
       const masterDetector = this.previousBusInput[0];
       const channels = this.channels;
+      const meterFrame = this.meterStride === 1 || (this.frame & 3) === 0;
       for (let i = 0; i < channels.length; i++) {
         const c = channels[i],
           t = c.t;
@@ -367,7 +392,15 @@ export class DSP {
         }
         const detector = this.previousBusInput[c.sidechain];
         if (c.kind === 1 || c.kind === 4) signal /= 1 + detector * (c.params.sidechain || 0) * 7;
-        c.g += (c.to - c.g) * this.gSmooth;
+        const level = c.volumeLane;
+        const target = level.value === null ? c.to : level.value * c.mixGain;
+        if (level.increment) level.value += level.increment;
+        c.g += (target - c.g) * this.gSmooth;
+        if (!meterFrame && signal === 0 && !c.rumble && c.fx.length === 0) {
+          // No signal or insert tail can reach a send or detector; keep the automation cursor moving.
+          if (c.panLane.value !== null) c.panLane.value += c.panLane.increment;
+          continue;
+        }
         let stereoReturn = 0;
         if (c.rumble) {
           const b = c.rumble,
@@ -383,8 +416,16 @@ export class DSP {
           signal += tail;
         }
         const dry = signal * c.g * (t.invert ? -1 : 1);
-        let x = dry * c.lp + stereoReturn,
-          y = dry * c.rp - stereoReturn;
+        let leftPan = c.lp, rightPan = c.rp;
+        const balance = c.panLane;
+        if (balance.value !== null) {
+          const angle = (balance.value + 1) * Math.PI / 4;
+          leftPan = Math.cos(angle);
+          rightPan = Math.sin(angle);
+          balance.value += balance.increment;
+        }
+        let x = dry * leftPan + stereoReturn,
+          y = dry * rightPan - stereoReturn;
         for (let k = 0; k < c.fx.length; k++) {
           const fx = c.fx[k];
           fx.step(x, y, detector);
@@ -398,15 +439,17 @@ export class DSP {
           x = m + s;
           y = m - s;
         }
-        const power = (x * x + y * y) * 0.5;
-        c.energy += (power - c.energy) * 0.0015;
-        c.peak = Math.max(Math.abs(x), Math.abs(y), c.peak * 0.9997);
+        if (meterFrame) {
+          const power = (x * x + y * y) * 0.5;
+          c.energy += (power - c.energy) * (this.meterStride === 1 ? 0.0015 : 0.0059865);
+          c.peak = Math.max(Math.abs(x), Math.abs(y), c.peak * (this.meterStride === 1 ? 0.9997 : 0.99880054));
+          this.busLv[c.b] = Math.max(this.busLv[c.b] * (this.meterStride === 1 ? 0.9992 : 0.99680384), Math.abs(x), Math.abs(y));
+        }
         this.busInput[c.b] = Math.max(
           this.busInput[c.b],
           Math.abs(x) * this.busGain[c.b],
           Math.abs(y) * this.busGain[c.b],
         );
-        this.busLv[c.b] = Math.max(this.busLv[c.b] * 0.9992, Math.abs(x), Math.abs(y));
         if (
           (selected != null && selected !== i) ||
           (busFilter && busFilter !== 'returns' && t.bus !== busFilter)
@@ -464,7 +507,7 @@ export class DSP {
       }
       left[j] = l;
       right[j] = r;
-      if (!this.options.offline) {
+      if (!this.options.offline && this.meterStride === 1) {
         this.masterPeak[0] = Math.max(this.masterPeak[0], Math.abs(l));
         this.masterPeak[1] = Math.max(this.masterPeak[1], Math.abs(r));
         this.squareL += l * l;

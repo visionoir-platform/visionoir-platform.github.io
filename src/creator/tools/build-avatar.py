@@ -1,4 +1,4 @@
-"""Build static web LODs from a creator-supplied GLB. Requires Pillow and Blender."""
+"""Build static web LODs from a creator-supplied GLB. Requires NumPy, Pillow and Blender."""
 import argparse
 import copy
 import hashlib
@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 
 from PIL import Image
+from static_pose import bake_pose
 
 def read_glb(path):
     data = path.read_bytes()
@@ -78,6 +79,7 @@ def main():
     args=cli.parse_args()
     args.destination.mkdir(parents=True,exist_ok=True)
     d,b=read_glb(args.source)
+    b=bake_pose(d,b)
     with tempfile.TemporaryDirectory() as temp:
         full=Path(temp)/'sculpture.glb'; pack_static(d,b,full,1536)
         desktop=args.destination/'creator-desktop.glb'
@@ -90,4 +92,6 @@ def main():
         counts=[out['accessors'][p['indices']]['count']//3 for m in out['meshes'] for p in m['primitives']]
         print(file.name,file.stat().st_size,sum(counts),'triangles',hashlib.sha256(file.read_bytes()).hexdigest())
 
-if __name__=='__main__': main()
+
+if __name__ == '__main__':
+    main()

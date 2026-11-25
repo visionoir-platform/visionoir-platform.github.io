@@ -47,7 +47,7 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
         } catch (error) {
           if (!target.createScriptProcessor) throw error;
           const { LiveRack } = await import('./live-rack.js');
-          let dspLoad;
+          const { renderClock } = await import('./live-budget.js');
           let dsp = null,
             count = 0,
             tail = 0;
@@ -88,16 +88,15 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
           };
           node.onaudioprocess = ({ outputBuffer: o }) => {
             if (!dsp || (!dsp.running && !tail && !dsp.held.size)) return;
-            const start = performance.now();
+            const start = renderClock.now();
             dsp.render(o.getChannelData(0), o.getChannelData(1));
-            const ratio = ((performance.now() - start) * target.sampleRate) / (1000 * o.length);
-            dspLoad = dspLoad === undefined ? ratio : dspLoad * 0.95 + ratio * 0.05;
+            dsp.observeBudget(renderClock.now() - start, o.length);
             tail = dsp.running || dsp.held.size ? target.sampleRate * 9 : Math.max(0, tail - o.length);
             count += o.length;
             if (count > target.sampleRate / 24) {
               count = 0;
               playing = dsp.running;
-              onTick({ ...dsp.status(), dspLoad });
+              onTick(dsp.status());
             }
           };
         }

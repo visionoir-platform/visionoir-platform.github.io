@@ -16,8 +16,8 @@ export function act(
 ) {
   return `<button type="button" class="${classes}" data-action="${attr(id)}" ${data} ${title ? 'title="' + attr(title) + '" aria-label="' + attr(title) + '"' : ''} ${pressed === undefined ? '' : 'aria-pressed="' + Boolean(pressed) + '"'} ${disabled ? 'disabled' : ''}>${icon ? '<b aria-hidden="true">' + escape(icon) + '</b> ' : ''}${escape(label)}</button>`;
 }
-export function number(label, id, value, min, max, step = 1) {
-  return `<label class="field"><span>${escape(label)}</span><input type="number" data-field="${attr(id)}" value="${attr(value)}" min="${min}" max="${max}" step="${step}"></label>`;
+export function number(label, id, value, min, max, step = 1, required = false) {
+  return `<label class="field"><span>${escape(label)}</span><input type="number" data-field="${attr(id)}" value="${attr(value)}" min="${min}" max="${max}" step="${step}"${required ? ' required' : ''}></label>`;
 }
 export function slider(label, id, value, min = 0, max = 1, step = 0.01) {
   const pos = ((value - min) / (max - min)) * 100;

@@ -148,5 +148,7 @@
   "trimEnd": "Fim da fonte",
   "regionImport": "Importar uma gravação em mono",
   "regionBounds": "O fim tem de ser posterior ao início.",
-  "regionProtect": "Esta amostra está na linha temporal. Importa a nova gravação em Região de áudio."
+  "regionProtect": "Esta amostra está na linha temporal. Importa a nova gravação em Região de áudio.",
+  "automation": "Automação",
+  "point": "Ponto"
 }

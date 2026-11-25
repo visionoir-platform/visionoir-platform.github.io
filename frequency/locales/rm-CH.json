@@ -148,5 +148,7 @@
   "trimEnd": "Fin da la funtauna",
   "regionImport": "Importar ina registraziun en mono",
   "regionBounds": "La fin sto suandar il cumenzament.",
-  "regionProtect": "Questa prova da tun vegn duvrada en l’arranschament. Importescha la nova registraziun en Regiun audio."
+  "regionProtect": "Questa prova da tun vegn duvrada en l’arranschament. Importescha la nova registraziun en Regiun audio.",
+  "automation": "Automatisaziun",
+  "point": "Punct"
 }

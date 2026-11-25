@@ -13,11 +13,19 @@ Create a project with `createProject('forge')`. Other primary IDs are `glass`, `
 - Imported samples are stored inside a session as base64 PCM16 mono. The importer bounds file size and duration. Preserve a separate copy of the source recording when stereo or archival precision is required.
 - Arrangement parts can contain optional `audioRegions`. Each region references a channel ID carrying an imported sample, a zero-based sixteenth-note `step`, and PCM frame bounds `from` (inclusive) and `to` (exclusive). Each part allows 64 regions, with 512 per session. Editing or moving a region preserves the original PCM. Playback follows tempo for placement and preserves source pitch and time after launch. Part boundaries stop a region. Its channel mixer, effects, master, audio stems and offline audio exports receive the same PCM. The notes-only MIDI format cannot represent recorded waveforms. Native projects and exported audio/stems preserve them.
 
+### Arrangement automation and sampling
+
+Each arrangement part can store `automation` lanes. A lane identifies a channel by its stable `track` ID, a `target` of `volume` (0–1) or `pan` (−1 through +1), and sorted `points` with integer `step` and numeric `value`. A part accepts up to 64 distinct lanes, each with up to 128 points. A session accepts 8,192 points total. Track controls apply before the first point. The mixer interpolates adjacent points per sample, holds the last value through the part and restores the manual mix at its end. Automation reaches wet sends, audio exports and stems. MIDI exports represent the ramp with seven-bit CC7 and CC10 events.
+
+The sampler and audio regions use the same band-limited interpolator. It filters the source before decimation. Octave levels prepared at sample decode bound the filtering work for transposed material. Trim boundaries restrict reads to the selected original frames. Reverse playback and short loops preserve fractional position on wrap. The Freeze insert waits for audible input before capturing its tempo-sized window. Disable and enable the insert to capture a new window.
+
+The local composer offers Hard techno, Acid techno, Warehouse dub, Broken beat, Schranz, Hardgroove, Industrial techno and Neo rave. Seed, tempo, tonality, intensity and complexity are editable. Generated notes, rhythm, timbre and arrangement stay in the native session.
+
 ## Playback and recording
 
-Construct `createEngine({onState,onTick,onError})`. Start from an actual user gesture with `await engine.play(project,{scene:0})` or `{arrangement:true}`. Use `engine.update(project)` after a valid edit. For high-rate MIDI gestures, `engine.control(id,value)` updates master, track or synth parameters without cloning the full session. `engine.queueScene(index)` switches at the next bar using two decks, an equal-power fade and reusable effect buffers. Set `project.crossfadeBeats` between zero and four. The default is one beat. Use `engine.trigger(track,pitch,velocity,gateSeconds)` and `engine.release(track,pitch)` for live notes.
+Construct `createEngine({onState,onTick,onError})`. Start from an actual user gesture with `await engine.play(project,{scene:0})` or `{arrangement:true}`. Use `engine.update(project)` after a valid edit. For high-rate MIDI gestures, `engine.control(id,value)` updates master, track or synth parameters without cloning the full session. `engine.queueScene(index)` switches at the next bar using two decks, an equal-power fade and reusable effect buffers. Set `project.crossfadeBeats` between zero and four. The default is one beat. Use `engine.trigger(track,pitch,velocity,gateSeconds)` for timed cues. The MIDI input gateway uses token-owned held notes and releases the original voice even after a track change.
 
-The AudioWorklet schedules by sample position. A buffered fallback exists where the browser exposes ScriptProcessor. The analyser and stereo MediaStream are available on `engine.analyser` and `engine.stream`. Meters report channel peaks/RMS, master stereo correlation and an overload flag measured before the output limiter. A physical output device may impose its own latency and interruption policy. Dispose the engine to release the audio context and stream.
+The AudioWorklet schedules by sample position. A buffered fallback exists where the browser exposes ScriptProcessor. The analyser and stereo MediaStream are available on `engine.analyser` and `engine.stream`. Meters report channel peaks/RMS, master stereo correlation and an overload flag measured before the output limiter. The live rack measures render-callback wall time against the sample budget in half-second windows. Three consecutive windows using at least 78% switch track and bus display meters to one sample in four and skip mathematically silent channel work. Twelve consecutive windows at or below 50% restore full resolution. Master peaks, overload detection, sidechains, notes, releases, timing, FX and exports retain their signal path. The worklet accepts the coarse wall clock only after observing short nonzero measurements. Unavailable timing leaves the load unknown. A physical output device may impose its own latency and interruption policy. Dispose the engine to release the audio context and stream.
 
 ## Files
 
@@ -30,7 +38,7 @@ The AudioWorklet schedules by sample position. A buffered fallback exists where 
 | MIDI | Standard MIDI File type 1 with per-track notes, CC7/10, song tempo and scene markers. Timbres and audio effects travel in the native session. |
 | Native | JSON `.vfreq` preserves project data and embedded samples. ZIP packages can include a session, MIDI and individual WAV stems. |
 
-Exports allow a scene, bar range, track or bus, tail and optional two-pass peak normalization. A separate worker renders at the target sample rate. Long prints use origin-private file storage when supported. Available storage, RIFF size and browser memory are checked before committing to large buffers. Integer renders are dithered, whereas float preserves the computed level. Stems processed through separate nonlinear chains need not sum to a mastered stereo print. Combine unmastered stems before applying a common master chain.
+Exports allow a scene, bar range, track or bus, tail and optional two-pass peak normalization. A separate worker renders at the target sample rate. Large WAV prints automatically use RF64 when the classic RIFF size would overflow. The header includes 64-bit data size, RIFF size and frame count. FLAC/AIFF/ZIP have separate format limits. Large WAVs need a writable file or sufficient origin-private file storage. The Node CLI streams to a temporary sibling file and renames it after success. ZIP32 rejects oversized stem archives before rendering; export their tracks individually. Browser quota estimates and write errors can still limit the usable duration. [EBU RF64 specification](https://tech.ebu.ch/publications/tech3306). Integer renders are dithered, whereas float preserves the computed level. Stems processed through separate nonlinear chains need not sum to a mastered stereo print. Combine unmastered stems before applying a common master chain.
 
 From the repository root with Node.js, FFmpeg, ffprobe and unzip installed:
 
@@ -40,6 +48,7 @@ node frequency/audio/print.mjs glass glass-scene.flac --scene 6 --bars 4 --bits 
 node frequency/audio/print.mjs rift arrangement.mid
 node frequency/audio/qa/dsp.test.mjs
 node frequency/audio/qa/live.test.mjs
+node --test frequency/audio/qa/{arrangement-mix,audio-fidelity,composition,live-budget,rf64}.test.mjs
 node frequency/audio/qa/master-review.mjs /path/to/private/masters
 ```
 

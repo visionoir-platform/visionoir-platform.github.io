@@ -3,21 +3,29 @@
   isolation: isolate;
   overflow: hidden;
   min-width: 0;
-  background: radial-gradient(ellipse at 50% 43%, #151c24, #080a0d 63%, #040507);
+  background: radial-gradient(ellipse at 62% 41%, #101322 0%, #080910 40%, #030406 74%);
+  background: radial-gradient(
+    ellipse at 62% 41%,
+    color-mix(in srgb, var(--portrait-light, #a7d1ff) 9%, #05050b),
+    #080910 40%,
+    #030406 74%
+  );
 }
-.creator-render-surface > .chromatic-canvas,
-.creator-render-surface > .chromatic-poster {
+.creator-render-surface .creator-poster,
+.creator-render-surface .chromatic-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
   pointer-events: none;
 }
-.creator-render-surface > .chromatic-poster[hidden] {
-  display: none;
+#creator-stage .creator-poster {
+  object-fit: cover;
 }
-.creator-render-surface[data-render='webgl'] > img:not(.chromatic-poster) {
+.creator-render-surface[data-render='webgl'] .creator-poster {
+  visibility: hidden;
+}
+.creator-render-surface:not([data-render='webgl']) .chromatic-canvas {
   visibility: hidden;
 }

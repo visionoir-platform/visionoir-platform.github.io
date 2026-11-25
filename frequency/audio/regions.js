@@ -1,3 +1,4 @@
+import { pcmReader, readPCM } from './resample.js';
 // Region bounds are source PCM frames, end exclusive. Placement is in sixteenth notes of the arrangement part.
 export function sampleFrameCount(sample) {
   if (!sample?.pcm) return 0;
@@ -40,19 +41,15 @@ export function regionPlayer(region, sample, elapsed, outputRate) {
   const frames = Math.ceil((region.to - cursor) / ratio);
   if (frames <= 0) return null;
   return {
-    pcm: sample.pcm,
+    reader: pcmReader(sample,ratio,region.from,region.to),
     cursor,
     ratio,
-    last: region.to - 1,
     remaining: frames,
     age: elapsed,
     fade: Math.max(1, Math.round(outputRate * 0.003)),
   };
 }
 export function mixRegion(player, partFramesRemaining) {
-  const i = Math.floor(player.cursor),
-    a = player.pcm[i],
-    b = player.pcm[Math.min(i + 1, player.last)];
   const gain = Math.max(
     0,
     Math.min(
@@ -61,7 +58,7 @@ export function mixRegion(player, partFramesRemaining) {
       (Math.min(player.remaining, partFramesRemaining) - 1) / player.fade,
     ),
   );
-  const sample = a + (b - a) * (player.cursor - i);
+  const sample = readPCM(player.reader,player.cursor);
   player.cursor += player.ratio;
   player.age++;
   player.remaining--;

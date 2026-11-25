@@ -1,3 +1,4 @@
+import { renderClock } from './live-budget.js';
 import { LiveRack } from './live-rack.js';
 class FrequencyProcessor extends AudioWorkletProcessor {
   constructor() {
@@ -46,17 +47,14 @@ class FrequencyProcessor extends AudioWorkletProcessor {
   }
   report() {
     if (this.dsp)
-      this.port.postMessage({ type: 'tick', data: { ...this.dsp.status(), dspLoad: this.dspLoad } });
+      this.port.postMessage({ type: 'tick', data: this.dsp.status() });
   }
   process(_ins, outs) {
     const channels = outs[0];
     if (!channels.length || !this.dsp || (!this.awake && !this.dsp.running && !this.dsp.held.size)) return true;
-    const started = globalThis.performance?.now();
+    const started = renderClock.now();
     this.dsp.render(channels[0], channels[1] || channels[0]);
-    if (started !== undefined) {
-      const ratio = ((performance.now() - started) * sampleRate) / (1000 * channels[0].length);
-      this.dspLoad = this.dspLoad === undefined ? ratio : this.dspLoad * 0.95 + ratio * 0.05;
-    }
+    this.dsp.observeBudget(renderClock.now() - started, channels[0].length);
     if (this.dsp.running || this.dsp.held.size) this.awake = sampleRate * 9;
     else this.awake = Math.max(0, this.awake - channels[0].length);
     this.meterCount += channels[0].length;

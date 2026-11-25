@@ -148,5 +148,7 @@
   "trimEnd": "Fin de la source",
   "regionImport": "Importer un enregistrement en mono",
   "regionBounds": "La fin doit suivre le début.",
-  "regionProtect": "Cet échantillon figure dans le montage. Importe le nouvel enregistrement depuis Région audio."
+  "regionProtect": "Cet échantillon figure dans le montage. Importe le nouvel enregistrement depuis Région audio.",
+  "automation": "Automation",
+  "point": "Point"
 }

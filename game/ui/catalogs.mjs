@@ -4,7 +4,7 @@ import { names } from '../../src/locales.js';
 
 export async function catalogs() {
   const rows = {};
-  for (const name of ['ui','story','extra','encounters','hud']) {
+  for (const name of ['ui','story','extra','encounters','hud','save-controls']) {
     const lines=(await readFile(new URL('locales/'+name+'.tsv',import.meta.url),'utf8')).trim().split(/\r?\n/);
     const keys=lines.shift().split('\t').slice(1);
     for(const line of lines) {

@@ -1,3 +1,4 @@
+import { LiveBudget } from './live-budget.js';
 import { DSP } from './dsp.js';
 import { clamp } from './model.js';
 
@@ -9,6 +10,7 @@ import { clamp } from './model.js';
 export class LiveRack {
   constructor(project, rate) {
     this.rate = rate;
+    this.budget = new LiveBudget(rate);
     this.project = project;
     this.active = new DSP(project, rate);
     this.spare = null;
@@ -20,6 +22,16 @@ export class LiveRack {
     this.left = new Float32Array(1024);
     this.right = new Float32Array(1024);
     this.clearMeters();
+  }
+  observeBudget(elapsed, frames) {
+    const before = this.budget.protected;
+    this.budget.observe(elapsed, frames);
+    if (before !== this.budget.protected) this.applyBudget();
+  }
+  applyBudget() {
+    for (const dsp of [this.active, this.outgoing, this.spare]) {
+      if (dsp) dsp.meterStride = this.budget.protected ? 4 : 1;
+    }
   }
   clearMeters() {
     this.peakL = this.peakR = this.powerL = this.powerR = this.cross = this.count = 0;
@@ -43,6 +55,8 @@ export class LiveRack {
     this.active.start(options);
   }
   stop() {
+    this.budget.reset();
+    this.applyBudget();
     this.clearMeters();
     this.held.clear();
     this.active.stop();
@@ -74,6 +88,7 @@ export class LiveRack {
   arm() {
     if (!this.queued) return;
     this.spare ??= new DSP(this.project, this.rate);
+    this.spare.meterStride = this.budget.protected ? 4 : 1;
     this.spare.start({ scene: this.queued.scene, absoluteStep: this.queued.step });
   }
   status() {
@@ -83,6 +98,8 @@ export class LiveRack {
     status.masterRms = [Math.sqrt(this.powerL / n), Math.sqrt(this.powerR / n)];
     status.correlation =
       this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : 0;
+    status.dspLoad = this.budget.load;
+    status.meterStride = this.active.meterStride;
     status.queuedScene = this.queued?.scene ?? null;
     this.clearMeters();
     return status;

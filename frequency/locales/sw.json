@@ -148,5 +148,7 @@
   "trimEnd": "Mwisho wa sampuli",
   "regionImport": "Ingiza rekodi ya sauti ya mono",
   "regionBounds": "Mwisho lazima ufuate mwanzo.",
-  "regionProtect": "Sampuli hii inatumika kwenye ratiba. Ingiza rekodi mpya kupitia Kipande cha sauti."
+  "regionProtect": "Sampuli hii inatumika kwenye ratiba. Ingiza rekodi mpya kupitia Kipande cha sauti.",
+  "automation": "Uendeshaji otomatiki",
+  "point": "Nukta"
 }
