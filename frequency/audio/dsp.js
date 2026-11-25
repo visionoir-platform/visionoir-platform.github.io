@@ -58,6 +58,8 @@ export class DSP {
     this.previousBusInput = new Float32Array(BUSSES.length);
     this.busGain = new Float32Array(BUSSES.length);
     this.busLv = new Float32Array(BUSSES.length);
+    this.meterBusL = new Float64Array(BUSSES.length);
+    this.meterBusR = new Float64Array(BUSSES.length);
     this.update(project);
   }
   update(p) {
@@ -403,9 +405,7 @@ export class DSP {
         dl = 0,
         dr = 0,
         vl = 0,
-        vr = 0,
-        directReturnL = 0,
-        directReturnR = 0;
+        vr = 0;
       const masterDetector = this.previousBusInput[0];
       const channels = this.channels;
       const meterFrame = this.meterStride === 1 || (this.frame & 3) === 0;
@@ -476,26 +476,19 @@ export class DSP {
           const power = (x * x + y * y) * 0.5;
           c.energy += (power - c.energy) * (this.meterStride === 1 ? 0.0015 : 0.0059865);
           c.peak = Math.max(Math.abs(x), Math.abs(y), c.peak * (this.meterStride === 1 ? 0.9997 : 0.99880054));
-          if (c.b !== returns) {
-            this.busLv[c.b] = Math.max(this.busLv[c.b] * (this.meterStride === 1 ? 0.9992 : 0.99680384), Math.abs(x), Math.abs(y));
-          }
         }
-        this.busInput[c.b] = Math.max(
-          this.busInput[c.b],
-          Math.abs(x) * this.busGain[c.b],
-          Math.abs(y) * this.busGain[c.b],
-        );
+        x *= this.busGain[c.b];
+        y *= this.busGain[c.b];
+        this.busInput[c.b] = Math.max(this.busInput[c.b], Math.abs(x), Math.abs(y));
+        if (meterFrame) {
+          this.meterBusL[c.b] += x;
+          this.meterBusR[c.b] += y;
+        }
         if (
           (selected != null && selected !== i) ||
           (busFilter && busFilter !== 'returns' && t.bus !== busFilter)
         )
           continue;
-        x *= this.busGain[c.b];
-        y *= this.busGain[c.b];
-        if (c.b === returns) {
-          directReturnL += x;
-          directReturnR += y;
-        }
         if (busFilter !== 'returns' || c.b === returns) {
           l += x;
           r += y;
@@ -510,10 +503,14 @@ export class DSP {
       const retL = (this.delay.L - dl + (this.reverb.L - vl)) * this.busGain[returns],
         retR = (this.delay.R - dr + (this.reverb.R - vr)) * this.busGain[returns];
       this.busInput[returns] = Math.max(this.busInput[returns], Math.abs(retL), Math.abs(retR));
-      // Returns combines directly routed channels and both wet tails after its fader.
       if (meterFrame) {
-        const peak = Math.max(Math.abs(directReturnL + retL), Math.abs(directReturnR + retR));
-        this.busLv[returns] = Math.max(this.busLv[returns] * (this.meterStride === 1 ? 0.9992 : 0.99680384), peak);
+        this.meterBusL[returns] += retL;
+        this.meterBusR[returns] += retR;
+        const release = this.meterStride === 1 ? 0.9992 : 0.99680384;
+        for (let b = 0; b < this.busLv.length; b++) {
+          this.busLv[b] = Math.max(this.busLv[b] * release, Math.abs(this.meterBusL[b]), Math.abs(this.meterBusR[b]));
+          this.meterBusL[b] = this.meterBusR[b] = 0;
+        }
       }
       l += retL;
       r += retR;
@@ -568,7 +565,7 @@ export class DSP {
     out.masterRms[0] = Math.sqrt(this.squareL / n);
     out.masterRms[1] = Math.sqrt(this.squareR / n);
     out.correlation = this.squareL && this.squareR
-      ? clamp(this.dot / Math.sqrt(this.squareL * this.squareR), -1, 1) : 0;
+      ? clamp(this.dot / Math.sqrt(this.squareL * this.squareR), -1, 1) : null;
     out.clipped = this.clipped;
     out.playing = this.running;
     out.step = this.local ?? 0;

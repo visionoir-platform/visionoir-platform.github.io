@@ -46,7 +46,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
-      - run: node --test tests/*.test.mjs frequency/audio/qa/*.test.mjs frequency/qa/*.test.mjs frequency/chromatic/qa/*.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
+      - run: node --test tests/*.test.mjs src/creator/tools/*.test.mjs frequency/audio/qa/*.test.mjs frequency/qa/*.test.mjs frequency/chromatic/qa/*.test.mjs game/engine/engine.test.mjs game/qa/checkpoint.test.mjs
       - name: Build localized pages
         env:
           VISIONOIR_CONTACT_ENDPOINT: ${{ vars.VISIONOIR_CONTACT_ENDPOINT }}
