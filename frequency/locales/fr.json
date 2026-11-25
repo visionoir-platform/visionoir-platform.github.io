@@ -1,4 +1,7 @@
 {
+  "quickHelp": "Guide et infos",
+  "quickBeat": "Votre premier rythme",
+  "quickHint": "Lancez la lecture pour écouter la scène. Touchez les pas pour ajouter ou retirer des frappes, puis enregistrez le projet.",
   "eqMacro": "Commande unique",
   "eqParametric": "Réglages indépendants",
   "eqFrequency": "Fréquence centrale",

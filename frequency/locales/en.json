@@ -1,4 +1,7 @@
 {
+  "quickHelp": "Guide & info",
+  "quickBeat": "Your first beat",
+  "quickHint": "Press Play to hear the scene. Tap steps to add or remove hits, then save your project.",
   "eqMacro": "Single control",
   "eqParametric": "Independent controls",
   "eqFrequency": "Centre frequency",

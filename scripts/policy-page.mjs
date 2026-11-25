@@ -26,7 +26,9 @@ export function policyPage(lang, d, base, endpoint) {
     ['storage', 'storage', paragraphs(d.ecoLocalData, d.legal_availability, copy.storage)],
     ['terms', 'terms', paragraphs(copy.use, copy.commission)],
     ['operator', 'operator', paragraphs(d.studioCopy) + email],
-    ['ip', 'intellectual', paragraphs(d.rights, d.logoCredit) + repoLink(titles.intellectual, 'ASSET_LICENSES.md')],
+    ['ip', 'intellectual', '<p lang="en" dir="ltr">An independent VISIONOIR project.</p>'
+      + '<p lang="en" dir="ltr">Copyright © 2026 Flavio Giorgio Guarini.</p>'
+      + paragraphs(d.rights, d.logoCredit) + repoLink(titles.intellectual, 'ASSET_LICENSES.md')],
     ['licenses', 'licenses', paragraphs(d.ecoRights) + repoLink('MIT · FREQUENCY', 'frequency/LICENSE')],
     ['third-party', 'thirdParty', references([['Three.js · MIT', repo+'THIRD_PARTY_NOTICES.md'], ['LAME / lamejs · LGPL', repo+'frequency/audio/vendor/NOTICE.md'], ['Manrope · Bebas Neue · Anton (OFL)', repo+'public/assets/']])],
     ['accessibility', 'accessibility', paragraphs(d.legal_access) + email],

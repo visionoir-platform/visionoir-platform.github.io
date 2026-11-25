@@ -1,4 +1,7 @@
 {
+  "quickHelp": "Guida e info",
+  "quickBeat": "Il tuo primo ritmo",
+  "quickHint": "Premi Avvia per ascoltare la scena. Tocca i passi per aggiungere o togliere colpi, poi salva il progetto.",
   "eqMacro": "Controllo singolo",
   "eqParametric": "Controlli indipendenti",
   "eqFrequency": "Frequenza centrale",
