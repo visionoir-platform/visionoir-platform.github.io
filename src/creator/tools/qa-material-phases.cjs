@@ -1,10 +1,12 @@
 /* Run against a served Italian site build. Write private captures outside the repository. */
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
 
-const url = new URL(process.env.CREATOR_URL || 'http://127.0.0.1:4181/it/');
+const acidOnly = process.argv.includes('--acid');
+const url = new URL(process.env.CREATOR_URL || (acidOnly ? 'http://127.0.0.1:4173/it/' : 'http://127.0.0.1:4181/it/'));
 const output = process.env.CREATOR_PROOF;
 const tracks = [
   ['chrome', 'visionoir-cromo.mp3'],
@@ -126,7 +128,7 @@ async function inspect(browser, mobile, results) {
     const stage = page.locator('#creator-stage');
     const sound = page.locator('#sound-toggle');
     const select = page.locator('#track-select');
-    const wait = (predicate, arg) => page.waitForFunction(predicate, arg, { timeout: 20000 });
+    const wait = (predicate, arg) => page.waitForFunction(predicate, arg, { timeout: acidOnly ? 45000 : 20000 });
     const capture = label => stage.screenshot({ path: path.join(output, name + '-' + label + '.png') });
     async function silhouette() {
       // Re-selecting the current finish is a real invalidation, also when the resting renderer is asleep.
@@ -139,9 +141,36 @@ async function inspect(browser, mobile, results) {
     await stage.scrollIntoViewIfNeeded();
     await wait(() => document.querySelector('#creator-stage').dataset.render === 'webgl' && window.portraitQA.current.uProfile === 0);
     // Keep the viewing angle fixed while measuring deformation from audio alone.
-    await page.locator('[data-orbit="spin"]').click();
+    await page.locator('[data-orbit="reset"]').click();
+    assert.equal(await stage.getAttribute('aria-valuenow'), '0');
 
     assert.deepEqual(report.models, [['/creator/creator-' + name + '.glb', 200]]);
+
+    if (acidOnly) {
+      await select.selectOption('acid');
+      await wait(() => window.portraitQA.current.uProfile === 1);
+      await sound.click();
+      await stage.scrollIntoViewIfNeeded();
+      const frame = await page.waitForFunction(file => {
+        const media = [...document.querySelectorAll('audio')].filter(item => !item.paused);
+        const { uProfile, uAudio, uScatter } = window.portraitQA.current;
+        if (media.length !== 1 || uProfile !== 1 || !(uScatter > .04) || !(uAudio?.[1] > .04)) return false;
+        const [audio] = media;
+        if (!audio.currentSrc.endsWith('/' + file) || audio.muted || !audio.volume ||
+            audio.currentTime < 1 || audio.readyState < 2) return false;
+        return { file, time: audio.currentTime, bands: uAudio, scatter: uScatter };
+      }, tracks[1][1], { timeout: 45000 });
+      report.tracks.push(await frame.jsonValue());
+      await frame.dispose();
+      await capture('acid-audio');
+      const metrics = execFileSync(process.env.PYTHON || 'python3', [
+        path.join(__dirname, 'qa-acid-reflections.py'), path.join(output, name + '-acid-audio.png'),
+      ], { encoding: 'utf8' });
+      report.grade = JSON.parse(metrics);
+      assert.deepEqual(report.errors, []);
+      console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade }));
+      return;
+    }
 
     // Compare a material transition at the same camera angle with all bands silent.
     if (!mobile) {
@@ -236,6 +265,9 @@ async function inspect(browser, mobile, results) {
     assert.deepEqual(after, { clock: before.clock, echo: before.echo });
     report.reducedMotion = true;
     assert.deepEqual(report.errors, []);
+  } catch (error) {
+    report.failure = error.message;
+    throw error;
   } finally {
     await context.close();
   }
@@ -245,16 +277,17 @@ async function main() {
   assert.ok(output, 'Set CREATOR_PROOF to a private output directory');
   assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname), 'Use a local build');
   await fs.mkdir(output, { recursive: true });
-  const browser = await chromium.launch({ headless: true, executablePath: process.env.BROWSER_BIN,
-    args: ['--enable-unsafe-swiftshader', '--mute-audio'] });
+  const args = ['--enable-unsafe-swiftshader', '--mute-audio'];
+  if (acidOnly && process.platform === 'linux') args.push('--use-gl=angle', '--use-angle=swiftshader');
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.BROWSER_BIN, args });
   const results = { browser: browser.version(), url: url.href, profiles: [] };
   try {
     await inspect(browser, false, results.profiles);
-    await inspect(browser, true, results.profiles);
+    if (!acidOnly) await inspect(browser, true, results.profiles);
   } finally {
     await browser.close();
     await fs.writeFile(path.join(output, 'material-phases.json'), JSON.stringify(results, null, 2));
   }
-  console.log('Portrait material checks passed for desktop and mobile viewport.');
+  console.log(acidOnly ? 'Acid portrait verified in desktop Chrome.' : 'Portrait material checks passed for desktop and mobile viewport.');
 }
 main().catch(e => { console.error(e); process.exitCode = 1; });
