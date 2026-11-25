@@ -27,7 +27,7 @@ const policies = new Map(policyLines.map(([code,...cells])=>{
 }));
 export function ecosystemLocale(lang) {
   const code=copyMap.has(lang)?lang:parents[lang];
-  if (!bios.has(code)||!copyMap.has(code)||!legal.has(code)||!inquiry.has(code)) throw Error('Unknown ecosystem locale '+lang);
+  if (!bios.has(code)||!copyMap.has(code)||!legal.has(code)||!inquiry.has(code)||!policies.has(code)) throw Error('Unknown ecosystem locale '+lang);
   const fields={...policies.get(code),...copyMap.get(code),...bios.get(code),...legal.get(code),...inquiry.get(code)};
   if(lang==='de-CH')for(const key of Object.keys(fields))fields[key]=fields[key].replaceAll('ß','ss');
   return fields;
