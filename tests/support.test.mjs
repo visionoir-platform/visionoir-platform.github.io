@@ -41,6 +41,7 @@ test('Legal notices have 19 stable accessible targets, translated offline, acros
     assert.deepEqual(articles, expected);
     assert.deepEqual(anchors, articles);
     assert.ok(articles.includes('requests'));
+    assert.ok(html.includes('href="/frequency/licenses/index.html"'));
     assert.ok(html.includes('/' + lang.toLowerCase() + '/#contatto'));
     assert.ok(!html.includes('undefined'));
   }
