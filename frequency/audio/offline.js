@@ -1,0 +1,77 @@
+import {DSP} from './dsp.js';
+import {validateProject,totalBars,clamp} from './model.js';
+import {wavHeader,wavPCM,Dither} from './formats.js';
+import {flacHeader,flacFrame,aiffHeader,bigPCM} from './lossless.js';
+export const SAMPLE_RATES=[44100,48000,88200,96000,176400,192000];
+export const BIT_DEPTHS=[16,24,32];
+export function estimateExport(project,opt={}){
+ const sampleRate=opt.sampleRate??48000,channels=opt.channels??2,bits=opt.bits??24;
+ if(!SAMPLE_RATES.includes(sampleRate)||!BIT_DEPTHS.includes(bits)||![1,2].includes(channels))throw Error('export.format');
+ const length=totalBars(project),scene=opt.scene??null,startBar=Number(opt.startBar??0);
+ if(scene!==null&&(!Number.isInteger(scene)||!project.scenes[scene]))throw Error('export.scene');
+ const bars=Number(opt.bars??(scene===null?length-startBar:1)),tail=Number(opt.tail??.35);
+ if(!Number.isFinite(bars)||bars<=0||bars>65536||!Number.isFinite(startBar)||startBar<0||!Number.isFinite(tail)||tail<0||tail>30||scene===null&&startBar+bars>length+.000001)throw Error('export.range');
+ if(opt.track!=null&&(!Number.isInteger(opt.track)||!project.tracks[opt.track]))throw Error('export.track');
+ const start=Math.round(startBar*240/project.bpm*sampleRate),musical=Math.round((startBar+bars)*240/project.bpm*sampleRate)-start,frames=musical+Math.round(tail*sampleRate);
+ return {sampleRate,channels,bits,scene,start,frames,musical,seconds:frames/sampleRate,bytes:44+frames*channels*bits/8};
+}
+const block=8192;
+function pass(project,spec,opt,consume,onProgress){
+ const d=new DSP(project,spec.sampleRate,{track:opt.track,bus:opt.bus,mastering:opt.mastering,offline:true});
+ d.start({scene:spec.scene??0,arrangement:spec.scene===null});const l=new Float32Array(block),r=new Float32Array(block);
+ return (async()=>{
+  let advanced=0,peak=0,reported=-1;const total=spec.start+spec.frames;
+  while(advanced<total){
+   const isTail=advanced>=spec.start+spec.musical;
+   if(isTail&&d.running){d.running=false;d.events.length=0;}
+   const next=advanced<spec.start?spec.start:!isTail?spec.start+spec.musical:total;
+   const n=Math.min(block,next-advanced,total-advanced);d.render(l,r,n);
+   if(advanced>=spec.start){
+    if(consume){await consume(l,r,n);}
+    else for(let i=0;i<n;i++){const val=spec.channels===1?Math.abs((l[i]+r[i])*.5):Math.max(Math.abs(l[i]),Math.abs(r[i]));peak=Math.max(peak,val);}
+   }
+   advanced+=n;const pct=Math.floor(advanced/total*100);if(pct!==reported){reported=pct;onProgress(advanced/total);}
+  }
+  return peak;
+ })();
+}
+async function makeSink(spec,mime,opt){
+ if(opt.handle){
+  const writer=await opt.handle.createWritable();return {write:chunk=>writer.write(chunk),finish:async()=>{await writer.close();return opt.handle.getFile();},abort:()=>writer.abort()};
+ }
+ if(spec.bytes>64*1024*1024&&globalThis.navigator?.storage?.getDirectory){
+  const root=await navigator.storage.getDirectory(),dir=await root.getDirectoryHandle('frequency-exports',{create:true});
+  for await(const [key,handle] of dir){if(handle.kind==='file'&&key.startsWith('print-')&&Number(key.split('-')[1])<Date.now()-86400000)await dir.removeEntry(key).catch(()=>{});}
+  const name='print-'+Date.now()+'-'+crypto.randomUUID()+'.'+({'audio/mpeg':'mp3','audio/wav':'wav','audio/flac':'flac','audio/aiff':'aiff'}[mime]);
+  const fh=await dir.getFileHandle(name,{create:true}),writer=await fh.createWritable();
+  return {write:b=>writer.write(b),finish:async()=>{await writer.close();return fh.getFile();},abort:async()=>{await writer.abort().catch(()=>{});await dir.removeEntry(name).catch(()=>{});}};
+ }
+ if(spec.bytes>192*1024*1024)throw Error('export.storageRequired');
+ const chunks=[];return {write:b=>{chunks.push(b);},finish:()=>new Blob(chunks,{type:mime}),abort:()=>{chunks.length=0;}};
+}
+export async function renderOffline(project,opt={},progress=()=>{}){
+ validateProject(project);const format=opt.format??'wav',mp3=format==='mp3';
+ if(!['wav','mp3','flac','aiff'].includes(format)||['aiff','flac'].includes(format)&&opt.bits===32)throw Error('export.format');
+ if(mp3&&(![128,192,256,320].includes(opt.bitrate??320)||opt.sampleRate&&![44100,48000].includes(opt.sampleRate)))throw Error('export.mp3Format');
+ const spec=estimateExport(project,opt);if((format==='wav'||format==='aiff')&&spec.bytes>=0xffffffff-65536)throw Error('export.riffLimit');
+ let gain=1,encoder=null;
+ if(opt.normalize){const peak=await pass(project,spec,opt,null,v=>progress(v*.5));if(peak>0)gain=.94/peak;}
+ if(mp3){const {Mp3Encoder}=await import('./vendor/lamejs.js');encoder=new Mp3Encoder(spec.channels,spec.sampleRate,opt.bitrate??320);}
+ const mime={mp3:'audio/mpeg',wav:'audio/wav',flac:'audio/flac',aiff:'audio/aiff'}[format];
+ const sink=await makeSink(spec,mime,opt);
+ try{
+  if(!mp3)await sink.write(format==='flac'?flacHeader(spec):format==='aiff'?aiffHeader(spec):wavHeader({...spec,title:project.name}));
+  let position=0;
+  const random=new Dither();
+  await pass(project,spec,opt,async(l,r,n)=>{
+   if(!mp3){const pcm=wavPCM(l,r,n,spec.bits,spec.channels,gain,random);
+    await sink.write(format==='flac'?flacFrame(pcm,spec.bits,spec.channels,n,position):format==='aiff'?bigPCM(pcm,spec.bits):pcm);position+=n;return;}
+   const left=new Int16Array(n),right=spec.channels===1?null:new Int16Array(n);
+   for(let i=0;i<n;i++){left[i]=clamp(Math.round((right?l[i]:(l[i]+r[i])*.5)*gain*32768),-32768,32767);if(right)right[i]=clamp(Math.round(r[i]*gain*32768),-32768,32767);}
+   const data=encoder.encodeBuffer(left,right||undefined);if(data.length)await sink.write(data);
+  },v=>progress(opt.normalize?.5+.5*v:v));
+  if(mp3){const last=encoder.flush();if(last.length)await sink.write(last);}
+  else if(format!=='flac'&&(spec.frames*spec.channels*spec.bits/8)%2)await sink.write(new Uint8Array(1));
+  return await sink.finish();
+ }catch(e){await sink.abort();throw e;}
+}

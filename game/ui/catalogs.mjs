@@ -1,4 +1,5 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { ecosystemLocale } from '../../scripts/ecosystem-locales.mjs';
 import { names } from '../../src/locales.js';
 
 export async function catalogs() {
@@ -15,6 +16,10 @@ export async function catalogs() {
   rows['de-CH']=Object.fromEntries(Object.entries(rows.de).map(([k,v])=>[k,v.replaceAll('ß','ss')]));
   rows['fr-CH']={...rows.fr};rows['it-CH']={...rows.it};
   for(const locale of Object.keys(names)) if(Object.keys(rows[locale]||{}).length!==Object.keys(rows.it).length)throw Error(locale+' missing game translations');
+  for (const [lang, dictionary] of Object.entries(rows)) {
+    const labels = ecosystemLocale(lang);
+    Object.assign(dictionary, { supportPortal: labels.ecoSupport, legalPortal: labels.ecoLegal });
+  }
   return rows;
 }
 if(process.argv[1]?.endsWith('catalogs.mjs')){

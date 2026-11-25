@@ -1,0 +1,27 @@
+import {DSP} from './dsp.js';
+class FrequencyProcessor extends AudioWorkletProcessor {
+ constructor(){
+  super();this.dsp=null;this.meterCount=0;this.awake=0;
+  this.port.onmessage=({data:m})=>{try{
+   switch(m.type){
+    case 'project':if(this.dsp)this.dsp.update(m.project);else this.dsp=new DSP(m.project,sampleRate);break;
+    case 'play':this.dsp.start(m.options);this.awake=1;break;
+    case 'stop':this.dsp?.stop();this.awake=0;this.report();break;
+    case 'queue':this.dsp?.queueScene(m.scene);break;
+    case 'note':this.dsp?.trigger(m.track,m.note,m.velocity,m.gate);this.awake=sampleRate*9;break;
+    case 'off':this.dsp?.release(m.track,m.note);break;
+   }
+  }catch(e){this.port.postMessage({type:'error',message:e.message});}};
+ }
+ report(){if(this.dsp)this.port.postMessage({type:'tick',data:this.dsp.status()});}
+ process(_ins,outs){
+  const channels=outs[0];
+  if(!channels.length||!this.dsp||(!this.awake&&!this.dsp.running))return true;
+  this.dsp.render(channels[0],channels[1]||channels[0]);
+  if(this.dsp.running)this.awake=sampleRate*6;else this.awake=Math.max(0,this.awake-channels[0].length);
+  this.meterCount+=channels[0].length;
+  if(this.meterCount>=sampleRate/24){this.meterCount=0;this.report();}
+  return true;
+ }
+}
+registerProcessor('frequency-rack-v1',FrequencyProcessor);

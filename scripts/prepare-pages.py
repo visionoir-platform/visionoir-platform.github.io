@@ -15,7 +15,7 @@ paths = [
     "scripts/synthesize-premium.py", "scripts/audio-premium-requirements.txt",
     "public/favicon.svg", "tools/editor-visionoir.html",
 ]
-paths += [str(file.relative_to(root)) for file in (root/"src").rglob("*") if file.is_file()]
+paths += [str(file.relative_to(root)) for file in (root/"src").rglob("*") if file.is_file() and not file.is_symlink() and "__pycache__" not in file.parts and not file.name.startswith(".")]
 paths += [
     str(file.relative_to(root)) for file in (root/"public/assets").glob("*")
     if file.suffix in {".jpg",".webp",".woff2",".svg",".txt",".json"}
@@ -30,6 +30,15 @@ for directory, suffixes in (
     for file in sorted((root / directory).rglob("*")):
         if file.is_file() and (file.suffix in suffixes or file.name=="LICENSE") and "__pycache__" not in file.parts:
             paths.append(str(file.relative_to(root)))
+# Stage the music application and its original distributable assets separately from the private masters.
+for fixed in ("support/index.html", "scripts/ecosystem-locales.mjs", "scripts/portals.mjs", "tests/support.test.mjs", "tests/frequency-door.test.mjs", "scripts/support-sandbox.mjs", "scripts/qa-ecosystem.cjs", "scripts/check-frequency-release.mjs",
+              "LICENSE", "COPYRIGHT.md", "TRADEMARKS.md", "CREDITS.md", "ASSET_LICENSES.md", "ASSET_PROVENANCE.md",
+              "THIRD_PARTY_NOTICES.md", "USER_CONTENT_POLICY.md", "CONTRIBUTING.md", "SECURITY.md", "SBOM.json"):
+    paths.append(fixed)
+for directory in ("frequency", "public/creator"):
+    for item in (root / directory).rglob("*"):
+        if item.is_file() and not item.is_symlink() and not any(part.startswith(".") or part in {"node_modules", "__pycache__"} for part in item.parts) and item.suffix.casefold() not in {".blend", ".wav", ".zip", ".als", ".log", ".pyc"}:
+            paths.append(str(item.relative_to(root)))
 for rel in paths:
     source = root/rel
     output = target/rel

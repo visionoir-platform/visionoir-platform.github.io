@@ -1,4 +1,6 @@
 import './style.css';
+import './ecosystem/style.css';
+import { bindFrequencyDoor } from './frequency-door.js';
 import { localePath, names, resolveLocale } from './locales.js';
 import { money, updateMetadata, contact } from './site.js';
 import { approximateCountry, storageValue } from './geo.js';
@@ -31,6 +33,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   let manualRevision = 0;
   let navigationRevision = 0;
   let scene;
+  let sculpture;
   let trail;
   let mute = storageValue(silentKey)==='1';
   let volume = 23;
@@ -79,6 +82,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
       button.setAttribute('aria-pressed',String(button.dataset.track===mode));
     }
     html.style.setProperty('--track-accent',trackAccents[mode]);
+    sculpture?.setMotion(motion);
     scene?.setMode(mode);
     scene?.setMotion(motion);
     scene?.setAudioEnabled?.(!mute && audio.isPlaying);
@@ -89,6 +93,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     lang = next;
     dictionary = dict;
     updateMetadata(lang,dict,explicit);
+    document.querySelectorAll('[data-portal]').forEach(link=>link.href=base+link.dataset.portal+'/?lang='+encodeURIComponent(lang));
     for (const node of document.querySelectorAll('[data-text]')) node.textContent=dict[node.dataset.text];
     for (const node of document.querySelectorAll('[data-label]')) node.setAttribute('aria-label',dict[node.dataset.label]);
     for (const node of document.querySelectorAll('[data-alt]')) node.alt=dict[node.dataset.alt];
@@ -142,6 +147,19 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
   q('#navigation').addEventListener('click',()=>setMenu(false));
 
   let returningSound = false;
+  bindFrequencyDoor(sceneContainer,{onOpen(){
+    returningSound=audio.isPlaying;
+    html.classList.add('entering-frequency');
+    const duration=motion?300:0;
+    const start=performance.now(), previous=mute?0:volume/100;
+    function enter(){
+      const progress=duration?Math.min(1,(performance.now()-start)/duration):1;
+      audio.setVolume(previous*(1-progress));
+      if(progress<1)requestAnimationFrame(enter);
+      else {audio.pause();location.assign(base+'frequency/?lang='+encodeURIComponent(lang));}
+    }
+    enter();
+  }});
   const door = q('#unseen-door');
   door.addEventListener('click', event => {
     if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -154,7 +172,8 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     setTimeout(() => enterFromFooter(base + 'unseen/?lang=' + encodeURIComponent(lang)), motion ? 190 : 0);
   });
   window.addEventListener('pageshow', event => {
-    html.classList.remove('entering-unseen');
+    html.classList.remove('entering-unseen','entering-frequency');
+    audio.setVolume(mute?0:volume/100);
     scene?.setMotion(motion);
     if(event.persisted && returningSound && !mute)void audio.selectTrack(audio.currentTrack.id,{automatic:true});
     returningSound=false;
@@ -310,6 +329,24 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, initial }) {
     const next = resolveLocale({explicit,saved,country,languages,available});
     if (next!==lang) await changeLanguage(next);
   })();
+  const creatorStage=q('#creator-stage');
+  const mountSculpture=()=>import('./creator/index.js').then(({mountCreator})=>{
+    sculpture=mountCreator(creatorStage,{getSignal:()=>audio.getData(),getMode:()=>audio.currentTrack.id,reducedMotion:!motion});
+    const controls=q('.creator-looks');
+    controls.hidden=false;
+    controls.addEventListener('click',event=>{
+      const button=event.target.closest('[data-look]');
+      if(!button)return;
+      sculpture.setLook(button.dataset.look);
+      for(const choice of controls.querySelectorAll('button'))choice.setAttribute('aria-pressed',String(choice===button));
+    });
+  }).catch(()=>{ /* The authored portrait is available as a local poster. */ });
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();void mountSculpture();}
+    },{rootMargin:'180px'});
+    observer.observe(creatorStage);
+  }
   const loadScene = () => import('./scene.js').then(async ({initScene})=>{
     scene = await initScene(sceneContainer,()=>audio.getData());
     syncControls();
