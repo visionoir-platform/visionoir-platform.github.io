@@ -169,7 +169,7 @@ export async function startStudio() {
   const href = (path) => path + '?lang=' + encodeURIComponent(lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('about'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header><strong>MASTER</strong>${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms">−∞</output></span><span>φ <output id="corr">—</output></span><span id="clip-light">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,application/json">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('about'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header><strong>MASTER</strong>${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,application/json">`;
     updateTransport();
     renderTabs();
     editor();
@@ -370,8 +370,29 @@ export async function startStudio() {
       lastLight = light;
     }
   }
+  const dBFS = value => value > 0 ? (20 * Math.log10(value)).toFixed(1) : '−∞';
+  function showReading(id, text) {
+    const output = el(id);
+    if (output && output.textContent !== text) output.textContent = text;
+  }
+  function updateMasterReadings() {
+    const peak = Math.max(0, ...(tick.masterPeak || tick.peaks || []));
+    const rms = tick.masterRms || [0, 0];
+    showReading('db', dBFS(peak) + ' dBFS');
+    showReading('rms', dBFS(rms[0]) + ' / ' + dBFS(rms[1]));
+    showReading('corr', Number.isFinite(tick.correlation) ? tick.correlation.toFixed(2) : '—');
+    const lamp = el('clip-light');
+    if (lamp) {
+      const value = tick.clipped ? '1' : '0';
+      if (lamp.getAttribute('aria-valuenow') !== value) {
+        lamp.setAttribute('aria-valuenow', value);
+        lamp.classList.toggle('clipping', !!tick.clipped);
+      }
+    }
+  }
   function drawTick() {
     if (!el('clock')) return;
+    updateMasterReadings();
     setDeskLight();
     const step = Math.max(0, tick.step || 0);
     el('clock').textContent =
@@ -449,9 +470,6 @@ export async function startStudio() {
       readVisualSignal();
       const c = canvas.getContext('2d');
       if (s.analyser !== 'history') c.clearRect(0, 0, 320, 82);
-      const vals = tick.masterPeak || tick.peaks || [];
-      const peak = Math.max(0, ...vals);
-      el('db').textContent = spectralData && peak > 0 ? (20 * Math.log10(peak)).toFixed(1) + ' dBFS' : '−∞ dBFS';
       if (s.analyser === 'scope') {
         if (spectralData) an.getByteTimeDomainData(wave);
         else wave.fill(128);
@@ -477,10 +495,6 @@ export async function startStudio() {
           c.fillRect(i * 5.4, 81 - v * 78, 3.4, Math.max(1, v * 78));
         }
       setDeskLight();
-      const db = (n) => (n > 0 ? (20 * Math.log10(n)).toFixed(1) : '−∞');
-      el('rms').textContent = (tick.masterRms || [0, 0]).map(db).join(' / ');
-      el('corr').textContent = Number.isFinite(tick.correlation) ? tick.correlation.toFixed(2) : '—';
-      el('clip-light').classList.toggle('clipping', !!tick.clipped);
     }
     setTimeout(meter, document.hidden ? 700 : 70);
   }
