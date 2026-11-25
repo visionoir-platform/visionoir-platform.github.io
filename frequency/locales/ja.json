@@ -1,4 +1,8 @@
 {
+  "eqMacro": "単一コントロール",
+  "eqParametric": "個別調整",
+  "eqFrequency": "中心周波数",
+  "param_rumble_bassEq": "低域EQ (100 Hz)",
   "param_lead_mono": "モノフォニックモード",
   "param_ride_noiseFilter": "ノイズのハイパスフィルター",
   "play": "再生",

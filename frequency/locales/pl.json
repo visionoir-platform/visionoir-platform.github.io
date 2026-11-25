@@ -1,4 +1,8 @@
 {
+  "eqMacro": "Jedno pokrętło",
+  "eqParametric": "Niezależne ustawienia",
+  "eqFrequency": "Częstotliwość środkowa",
+  "param_rumble_bassEq": "Korekcja basu (100 Hz)",
   "param_lead_mono": "Tryb monofoniczny",
   "param_ride_noiseFilter": "Filtr górnoprzepustowy szumu",
   "play": "Odtwórz",

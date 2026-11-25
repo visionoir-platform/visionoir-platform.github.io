@@ -6,6 +6,10 @@ export { estimateExport, exportLoop, SAMPLE_RATES, BIT_DEPTHS } from './offline.
 import { estimateExport } from './offline.js';
 import { projectFile } from './model.js';
 import { midiBundleFiles, zipFiles } from './formats.js';
+export async function readProject(file) {
+  const { readProjectFile } = await import('./project-archive.js');
+  return readProjectFile(file);
+}
 function render(project, options) {
   const { signal, onProgress, ...settings } = options;
   if (signal?.aborted) return Promise.reject(new DOMException('Cancelled', 'AbortError'));

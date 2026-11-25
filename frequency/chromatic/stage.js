@@ -7,7 +7,7 @@ import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.j
 import { vertex, fragment } from './shaders.js';
 import { makeHistory } from './history.js';
 import { spatialScore } from './spatial.js';
-import { defaultVisual, modes, normalizeVisual, normalizeSignal, routes, unit } from './model.js';
+import { defaultVisual, mixVisualVoices, modes, normalizeSignal, unit } from './model.js';
 
 const base = import.meta.env?.BASE_URL || '/';
 function logoAsset() {
@@ -220,6 +220,7 @@ export async function buildStage(
     fallback.hidden = false;
   }
   function hit(i, v) {
+    if (getState()?.freeze) return;
     if (Number.isInteger(i) && i >= 0 && i < 16) hits[i] = Math.max(hits[i], unit(v, 1));
     request();
   }
@@ -313,13 +314,7 @@ export async function buildStage(
       const decay = Math.exp(-dt * (3.5 + (1 - state.decay) * 8));
       for (let i = 0; i < 6; i++) u.uBuses.value[i] = Math.max(u.uBuses.value[i] * decay, s.buses[i]);
       const voice = u.uVoices.value;
-      voice.fill(0);
-      for (let i = 0; i < 16; i++) {
-        hits[i] *= decay;
-        envelope[i] = Math.max(envelope[i] * decay, s.voices[i], hits[i]);
-        const route = routes.indexOf(state.mapping?.[i] || routes[i]);
-        if (route >= 0) voice[route] = Math.max(voice[route], envelope[i] * state.sensitivity);
-      }
+      mixVisualVoices(voice, envelope, hits, s.voices, state, decay);
       tempBands.set(
         unit(s.bass * state.bass * 1.35 * state.sensitivity),
         unit(s.mid * state.sensitivity),
@@ -327,7 +322,6 @@ export async function buildStage(
         unit(s.level * state.sensitivity),
       );
       u.uSound.value.lerp(tempBands, simple ? 1 : 1 - Math.exp(-dt * 16));
-      voice[0] *= state.kick;
       const peak = voice.reduce((a, b) => Math.max(a, b), 0);
       u.uActive.value =
         state.intensity *

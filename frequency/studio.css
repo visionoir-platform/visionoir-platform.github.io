@@ -817,13 +817,32 @@ dialog::backdrop {
 }
 .effect-stack > div {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 5px;
   margin: 8px 0;
 }
-.effect-stack .fader {
-  flex: 1;
+.effect-stack .fader,
+.effect-stack .field {
+  flex: 1 1 9rem;
+  min-inline-size: 0;
 }
+.effect-stack .field select {
+  max-inline-size: 100%;
+}
+.fx-slot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.fx-eq-settings {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 2 1 18rem;
+  gap: 6px;
+}
+.fx-eq-settings .field { flex: 1 1 5rem; }
+.fx-eq-settings input { inline-size: 100%; }
 .import-sample {
   font-size: 0.75rem;
 }

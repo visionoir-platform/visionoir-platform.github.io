@@ -1,4 +1,8 @@
 {
+  "eqMacro": "تحكم واحد",
+  "eqParametric": "عناصر تحكم مستقلة",
+  "eqFrequency": "التردد المركزي",
+  "param_rumble_bassEq": "معادلة الجهير (100 Hz)",
   "param_lead_mono": "وضع النغمة الواحدة",
   "param_ride_noiseFilter": "مرشح الترددات العالية للضجيج",
   "play": "تشغيل",

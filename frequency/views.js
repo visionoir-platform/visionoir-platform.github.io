@@ -153,9 +153,9 @@ export function channelColor(i) {
     '#e1bd9c',
   ][i % 16];
 }
-export function masterPanel(state, t) {
+export function masterPanel(state, t, showRackButton = true) {
   const m = state.p.master;
-  return `<section class="instrument-panel"><div class="panelhead"><h3>${h(t('master'))}</h3><span class="meter-label">L / R</span></div><div class="knobs">${slider(t('volume'), 'master:volume', m.volume)}${slider('Limiter', 'master:ceiling', m.ceiling, 0.1, 0.999, 0.001)}</div>${act('master-fx', 'Master FX')}</section>`;
+  return `<section class="instrument-panel"><div class="panelhead"><h3>${h(t('master'))}</h3><span class="meter-label">L / R</span></div><div class="knobs">${slider(t('volume'), 'master:volume', m.volume)}${slider('Limiter', 'master:ceiling', m.ceiling, 0.1, 0.999, 0.001)}</div>${showRackButton ? act('master-fx', t('master') + ' FX') : ''}</section>`;
 }
 function instrumentPanel(state, t, audio) {
   const tr = state.p.tracks[state.channel],

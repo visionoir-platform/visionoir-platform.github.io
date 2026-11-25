@@ -102,7 +102,7 @@ function startScene({title,cards,zone=0,track=1,next,kind=null,boss=0}){
 }
 function scene(){
   const card=storyCards[sceneIndex];
-  return '<section class="cinema" style="--sky:url(/unseen/art/sky-'+sceneArt+'.png);--far:url(/unseen/art/scenery-'+sceneArt+'-0.png);--near:url(/unseen/art/scenery-'+sceneArt+'-1.png)"><div class="scene-far"></div><div class="scene-near"></div><canvas class="film" width="480" height="270" aria-hidden="true"></canvas><div class="dialogue">'+(typeof card.actor==='number'?photo(card.actor):'')+'<div><p class="over">'+safe(typeof card.actor==='number'?heroNames[card.actor]:card.actor||sceneTitle)+'</p><h2>'+safe(t(card.line))+'</h2><p class="scene-nav">'+button('scene-next',t('next')+' →','class="primary"')+button('scene-skip',t('skip'))+'</p></div></div></section>';
+  return '<section class="cinema" style="--sky:url(/unseen/art/sky-'+sceneArt+'.png);--far:url(/unseen/art/scenery-'+sceneArt+'-0.png);--near:url(/unseen/art/scenery-'+sceneArt+'-1.png)"><div class="scene-far"></div><div class="scene-near"></div><canvas class="film" width="480" height="270" aria-hidden="true"></canvas><div class="dialogue">'+(typeof card.actor==='number'?photo(card.actor):'')+'<div><p class="over">'+safe(typeof card.actor==='number'?heroNames[card.actor]:card.actor||sceneTitle)+'</p><h2>'+safe(t(card.line))+'</h2>'+(card.line==='post'?creatorSignature:'')+'<p class="scene-nav">'+button('scene-next',t('next')+' →','class="primary"')+button('scene-skip',t('skip'))+'</p></div></div></section>';
 }
 function sceneFor(stage){return stage.special?objectiveLine(stage.id):zoneKeys[stage.zone];}
 function stageIntro(id,withHero=true){
@@ -124,7 +124,7 @@ function resumeRun(){
   if(run.boss){music(run.boss.track||((run.boss.id===15)?28:23));}else if(audio?.state().id)audio.resume().catch(()=>notify(t('error')));else music(run.stage.track);
 }
 function newStory(){loadMark=false;mode='story';target=0;hero=progress.lastHero;portalReturn=null;go('heroes',{track:3,from:'story'});}
-const creatorSignature='<small lang="en" class="creator-signature">Created, designed and developed by Flavio Giorgio Guarini.</small>';
+const creatorSignature='<small itemprop="creditText" lang="en" dir="ltr" class="creator-signature">Created, designed and developed by Flavio Giorgio Guarini.</small>';
 function projectLinks(){return '<div class="project-links"><a href="/support/?lang='+encodeURIComponent(lang)+'">'+safe(t('supportPortal'))+'</a><a href="/legal/?lang='+encodeURIComponent(lang)+'">'+safe(t('legalPortal'))+'</a></div>';}
 function footerReturn(){return '<a class="back-site" href="/'+lang.toLowerCase()+'/#unseen-door">↗ VISIONOIR</a>';}
 function title(){

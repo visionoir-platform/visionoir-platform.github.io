@@ -1,4 +1,8 @@
 {
+  "eqMacro": "Einzelregler",
+  "eqParametric": "Unabhängige Regler",
+  "eqFrequency": "Mittenfrequenz",
+  "param_rumble_bassEq": "Bass-EQ (100 Hz)",
   "param_lead_mono": "Monophoner Modus",
   "param_ride_noiseFilter": "Hochpass für den Rauschanteil",
   "play": "Abspielen",

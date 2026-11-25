@@ -89,6 +89,7 @@ h3{font-size:clamp(1.2rem,1.65vw,1.6rem);line-height:1.22}
 .studio-art figcaption{position:absolute;inset-inline-start:1rem;inset-block-end:1rem;background:#111;padding:.3rem .6rem;font:600 .76rem var(--mono)}
 .studio-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);gap:2rem 5vw}
 .people{display:grid;gap:1.2rem;align-content:center}
+.people h3 small{display:block;font-size:.75em;font-weight:400}
 .people>div,.method{border-block-start:1px solid var(--line);padding-block-start:1rem}
 .social{display:flex;align-items:center;gap:1rem;padding:.9rem;background:linear-gradient(120deg,#2c2c2c,#181818);border:1px solid #494949;border-radius:.4rem;perspective:420px;min-block-size:72px}
 .social .arrow{margin-inline-start:auto;color:var(--highlight)}

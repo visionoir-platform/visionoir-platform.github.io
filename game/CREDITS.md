@@ -1,5 +1,7 @@
 # The Unseen Protocol
 
+Created, designed and developed by Flavio Giorgio Guarini.
+
 Project Creator & Creative Director: Flavio Giorgio Guarini
 An independent VISIONOIR production.
 

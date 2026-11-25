@@ -1,4 +1,8 @@
 {
+  "eqMacro": "Control único",
+  "eqParametric": "Controles independientes",
+  "eqFrequency": "Frecuencia central",
+  "param_rumble_bassEq": "EQ de graves (100 Hz)",
   "param_lead_mono": "Modo monofónico",
   "param_ride_noiseFilter": "Filtro paso alto del ruido",
   "play": "Reproducir",

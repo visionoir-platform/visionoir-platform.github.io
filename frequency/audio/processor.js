@@ -5,6 +5,7 @@ class FrequencyProcessor extends AudioWorkletProcessor {
     super();
     this.dsp = null;
     this.meterCount = 0;
+    this.tick = { type: 'tick', data: undefined };
     this.awake = 0;
     this.port.onmessage = ({ data: m }) => {
       try {
@@ -46,8 +47,10 @@ class FrequencyProcessor extends AudioWorkletProcessor {
     };
   }
   report() {
-    if (this.dsp)
-      this.port.postMessage({ type: 'tick', data: this.dsp.status() });
+    if (!this.dsp) return;
+    // postMessage clones each reading before the audio thread reuses these arrays.
+    this.tick.data = this.dsp.status(this.tick.data);
+    this.port.postMessage(this.tick);
   }
   process(_ins, outs) {
     const channels = outs[0];

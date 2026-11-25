@@ -1,4 +1,4 @@
-import { clamp } from './model.js';
+import { clamp, macroEq } from './model.js';
 
 const tau = Math.PI * 2;
 const soft = (x) => x / (1 + Math.abs(x));
@@ -49,16 +49,24 @@ export class Effect {
     this.amount = clamp(Number.isFinite(spec.amount) ? spec.amount : 0.4, 0, 1);
     this.beat = 60 / bpm;
     this.block = Math.max(16, Math.round(this.beat * this.rate * (this.amount > 0.55 ? 0.25 : 0.5)));
-    const center = 180 + this.amount * 3100,
-      w = (2 * Math.PI * center) / this.rate,
-      A = 10 ** (((this.amount - 0.5) * 12) / 40),
-      alpha = Math.sin(w) / 1.4,
-      a0 = 1 + alpha / A;
-    this.b0 = (1 + alpha * A) / a0;
-    this.b1 = (-2 * Math.cos(w)) / a0;
-    this.b2 = (1 - alpha * A) / a0;
-    this.a1 = this.b1;
-    this.a2 = (1 - alpha / A) / a0;
+    if (this.id === 'eq') {
+      const settings = spec.eq ?? macroEq(this.amount);
+      const frequency = spec.eq ? Math.min(settings.frequency, this.rate * 0.49) : settings.frequency;
+      if (frequency !== this.eqFrequency || settings.gain !== this.eqGain || settings.q !== this.eqQ) {
+        this.eqFrequency = frequency;
+        this.eqGain = settings.gain;
+        this.eqQ = settings.q;
+        const w = (2 * Math.PI * frequency) / this.rate;
+        const A = 10 ** (settings.gain / 40);
+        const alpha = Math.sin(w) / (2 * settings.q);
+        const a0 = 1 + alpha / A;
+        this.b0 = (1 + alpha * A) / a0;
+        this.b1 = (-2 * Math.cos(w)) / a0;
+        this.b2 = (1 - alpha * A) / a0;
+        this.a1 = this.b1;
+        this.a2 = (1 - alpha / A) / a0;
+      }
+    }
     this.cut = 1 - Math.exp((-tau * (160 + this.amount * this.amount * 12000)) / this.rate);
     this.hicut = 1 - Math.exp((-tau * 2800) / this.rate);
     this.locut = 1 - Math.exp((-tau * 180) / this.rate);

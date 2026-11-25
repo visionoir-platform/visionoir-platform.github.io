@@ -1,4 +1,8 @@
 {
+  "eqMacro": "단일 조절",
+  "eqParametric": "개별 조절",
+  "eqFrequency": "중심 주파수",
+  "param_rumble_bassEq": "저역 EQ (100 Hz)",
   "param_lead_mono": "단음 모드",
   "param_ride_noiseFilter": "노이즈 하이패스 필터",
   "play": "재생",

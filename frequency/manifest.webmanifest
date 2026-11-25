@@ -1,5 +1,7 @@
 {
   "id":"/frequency/","name":"VISIONOIR: FREQUENCY","short_name":"FREQUENCY",
+  "lang":"en",
+  "description":"Electronic music workstation, sequencer and live instrument. Created, designed and developed by Flavio Giorgio Guarini.",
   "scope":"/frequency/","start_url":"/frequency/","display":"standalone",
   "background_color":"#101113","theme_color":"#101113",
   "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]

@@ -1,4 +1,8 @@
 {
+  "eqMacro": "单一控制",
+  "eqParametric": "独立调节",
+  "eqFrequency": "中心频率",
+  "param_rumble_bassEq": "低频均衡 (100 Hz)",
   "param_lead_mono": "单音模式",
   "param_ride_noiseFilter": "噪声高通滤波器",
   "play": "播放",

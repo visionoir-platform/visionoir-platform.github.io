@@ -30,6 +30,8 @@ import {
   seededVariation,
 } from './ui-kit.js';
 import { renderEditor, masterPanel } from './views.js';
+import { factorySlotPresets, renderEffectSlot } from './fx-rack.js';
+import { EQ_LIMITS, macroEq } from './audio/model.js';
 
 import { visualSlotForChannel, collectVisualLevels } from './chromatic/channel-routing.js';
 
@@ -190,7 +192,7 @@ export async function startStudio() {
   const href = (path) => path + '?lang=' + encodeURIComponent(lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('about'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header><strong>MASTER</strong>${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,application/json">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('about'))} <a href="${href('/support/')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
     updateTransport();
     renderTabs();
     editor();
@@ -306,6 +308,7 @@ export async function startStudio() {
     setState();
   }
   let commandCount = 0;
+  let latestImport = 0;
   function stop() {
     commandCount++;
     midiNotes.reset();
@@ -360,6 +363,7 @@ export async function startStudio() {
   });
   // The analyser is a monitor tap. Each visible subscriber shares one read per 70 ms.
   function readVisualSignal() {
+    signal.scene = playing ? tick.scene : s.scene;
     const analyser = engine.analyser;
     const now = performance.now();
     const audibleTail = now - lastAudioTick < 1000 && tick.masterPeak?.some(peak => peak > 0.0001);
@@ -467,7 +471,8 @@ export async function startStudio() {
       );
       signal.buses = next.buses || [];
       signal.bpm = s.p.bpm;
-      signal.scene = next.scene;
+      signal.scene = playing ? next.scene : s.scene;
+      visual?.syncScene(signal.scene, playing);
       // Audio tick messages can continue when background window timers are throttled.
       if (document.hidden) visual?.sendOutputFrame();
       if (renderTask === undefined)
@@ -567,7 +572,7 @@ export async function startStudio() {
     open(
       'about',
       t('about'),
-      `<p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}<p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`,
+      `<p class="about-brand">FREQUENCY</p><p>The Underground Is Your Instrument.</p><ol><li>${h(t('guide1'))}</li><li>${h(t('guide2'))}</li><li>${h(t('guide3'))}</li></ol>${keysHelp(controls,t)}<p lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('/legal/')}">© VISIONOIR · MIT</a>`,
     );
   }
   async function projects() {
@@ -646,14 +651,14 @@ export async function startStudio() {
     const fx = subject.fx || [];
     const section = master ? 'masterfx' : 'trackfx';
     const controls = master
-      ? masterPanel(s, t)
+      ? masterPanel(s, t, false)
       : `<div class="knobs">${slider(t('stereoWidth'), 'track:' + s.channel + ':width', tr.width ?? 1, 0, 2)}${slider(t('send') + ' Delay', 'track:' + s.channel + ':sendDelay', tr.sendDelay || 0)}${slider(t('send') + ' Reverb', 'track:' + s.channel + ':sendReverb', tr.sendReverb || 0)}</div>${select('Bus', 'routing', audio.BUSSES?.map((b) => option(b, b, b === tr.bus)).join('') || ['kick', 'drums', 'bass', 'synths', 'fx', 'returns'].map((b) => option(b, b, b === tr.bus)).join(''))}${select('Sidechain', 'sidechain-bus', audio.BUSSES.map((b) => option(b, b, b === (tr.sidechainBus || 'kick'))).join(''))}${act('invert', 'Ø', { title: t('phase'), pressed: tr.invert })}`;
     open(
       section,
-      master ? 'Master FX' : tr.name + ' · FX / I/O',
+      master ? t('master') + ' FX' : tr.name + ' · FX / I/O',
       controls +
-        `<div class="effect-stack">${fx.map((e, i) => `<div>${slider(audio.EFFECTS.find((f) => f.id === e.id)?.name || e.id, section + ':' + i, e.amount)}${act('fx-bypass', t('bypass'), { pressed: e.bypass, data: 'data-index="' + i + '"' })}${act('fx-up', '↑', { title: t('previous'), data: 'data-index="' + i + '"', disabled: i === 0 })}${act('fx-down', '↓', { title: t('next'), data: 'data-index="' + i + '"', disabled: i === fx.length - 1 })}${act('fx-remove', '×', { data: 'data-index="' + i + '"', title: t('remove') })}</div>`).join('')}</div><div class="bar-tools">${select('FX', 'fx-new', audio.EFFECTS.map((e) => option(e.id, e.name)).join(''))}${act('add-fx', '+ FX')} ${select(
-          'Preset',
+        `<div class="effect-stack">${fx.map((e, i) => renderEffectSlot(e, i, fx, section, t)).join('')}</div><div class="bar-tools">${select('FX', 'fx-new', audio.EFFECTS.map((e) => option(e.id, e.name)).join(''))}${act('add-fx', '+ FX')} ${select(
+          t('presets') + ' · FX',
           'chain',
           (audio.CHAINS || [])
             .filter((v) => v.scope === (master ? 'master' : 'track'))
@@ -993,6 +998,7 @@ export async function startStudio() {
     s.step = 0;
     s.page = 0;
     if (playing) engine.queueScene(i);
+    else visual?.syncScene(i, false);
     editor();
   }
   function writeNotes(fn) {
@@ -1796,8 +1802,44 @@ export async function startStudio() {
       });
       return;
     }
+    if (group === 'fx-slot-preset' || group === 'eq-mode' || group === 'eq-param') {
+      if (activeDialog !== 'masterfx' && activeDialog !== 'trackfx') return;
+      const master = activeDialog === 'masterfx';
+      const effect = (master ? s.p.master : track()).fx[index];
+      if (!effect) return;
+      if (group === 'eq-mode') {
+        if (effect.id !== 'eq' || !['macro', 'parametric'].includes(raw)) return;
+        if ((raw === 'parametric') !== !!effect.eq) {
+          mutate(() => {
+            if (raw === 'parametric') effect.eq = macroEq(effect.amount);
+            else delete effect.eq;
+          }, false);
+          fxPane(master);
+          targetField(id)?.focus();
+        }
+        return;
+      }
+      if (group === 'eq-param') {
+        if (effect.id === 'eq' && effect.eq && Object.hasOwn(EQ_LIMITS, prop) && v !== effect.eq[prop]) {
+          change(() => { effect.eq[prop] = v; });
+        }
+        return;
+      }
+      const preset = factorySlotPresets(effect.id).find(item => item.key === raw);
+      if (preset && (preset.amount !== effect.amount || effect.eq)) {
+        mutate(() => {
+          effect.amount = preset.amount;
+          if (effect.id === 'eq') delete effect.eq;
+        }, false);
+      }
+      fxPane(master);
+      return;
+    }
     if (group === 'trackfx' || group === 'masterfx') {
-      change(() => ((group === 'masterfx' ? s.p.master : track()).fx[index].amount = v));
+      const effect = (group === 'masterfx' ? s.p.master : track()).fx[index];
+      change(() => { effect.amount = v; });
+      const presets = targetField('fx-slot-preset:' + index);
+      if (presets) presets.value = factorySlotPresets(effect.id).find(item => item.amount === v)?.key || '';
       return;
     }
     if (id === 'clip-source') {
@@ -2025,7 +2067,14 @@ export async function startStudio() {
       if (node.id === 'project-file') {
         const file = node.files[0];
         node.value = '';
-        if (file) await replace(await audio.readProject(file));
+        if (!file || !guardLive()) return;
+        const request = ++latestImport, original = s.p, transport = commandCount;
+        try {
+          const loaded = await audio.readProject(file);
+          if (request === latestImport && original === s.p && transport === commandCount && guardLive()) await replace(loaded);
+        } catch (error) {
+          if (request === latestImport && original === s.p) fail(error);
+        }
         return;
       }
       if (node.hasAttribute('data-region-file')) { await regionEditor.importFile(node.files[0]); return; }

@@ -205,7 +205,7 @@ const crcTable = Uint32Array.from({ length: 256 }, (_, n) => {
   for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
   return c >>> 0;
 });
-function updateCrc(c, bytes) {
+export function updateCrc(c, bytes) {
   for (let i = 0; i < bytes.length; i++) c = crcTable[(c ^ bytes[i]) & 255] ^ (c >>> 8);
   return c;
 }

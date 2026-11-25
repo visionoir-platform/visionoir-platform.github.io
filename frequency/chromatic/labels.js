@@ -38,6 +38,13 @@ const responseNames = {
   sw: 'Mwitikio wa picha|Mgongano|Kuyeyuka|Wimbi la asidi|Mpasuko|Masi|Cheche|Mng’ao|Kifuatio|Wimbi la mshtuko|Mvua|Mlipuko|Msokoto|Ukungu|Kelele|Mawimbi ya FM|Mtawanyiko',
   rm: 'Reacziun visuala|Collisiun|Luentada|Unda acida|Fractura|Massa|Sbrinzlas|Sbrinzlida|Fastiz|Unda da schoc|Plievgia|Explosiun|Torsiun|Brentina|Canera|Undas FM|Dispersiun',
 };
+const presetSlots = {
+  it: 'Memoria preset', en: 'Preset slot', es: 'Memoria de preset', ru: 'Ячейка пресета',
+  de: 'Preset-Speicherplatz', zh: '预设存储位', ja: 'プリセット保存先', pt: 'Memória de predefinição',
+  'pt-br': 'Memória de preset', ko: '프리셋 저장 슬롯', pl: 'Miejsce zapisu presetu',
+  fr: 'Emplacement du préréglage', uk: 'Комірка пресета', ar: 'خانة الإعداد المسبق',
+  sw: 'Nafasi ya hifadhi', rm: 'Plaz da memoria',
+};
 export function labels(locale = 'en') {
   const tag = String(locale).toLowerCase();
   let raw = strings[tag.split('-')[0]] || strings.en;
@@ -55,5 +62,6 @@ export function labels(locale = 'en') {
   const [response, ...routeLabels] = (responseNames[tag.split('-')[0]] || responseNames.en)
     .replace('Rasto', tag === 'pt-br' ? 'Rastro' : 'Rasto')
     .split('|');
-  return { ...Object.fromEntries(keys.map((k, i) => [k, vals[i]])), response, routeLabels };
+  const presetSlot = presetSlots[tag] || presetSlots[tag.split('-')[0]] || presetSlots.en;
+  return { ...Object.fromEntries(keys.map((k, i) => [k, vals[i]])), response, routeLabels, presetSlot };
 }
