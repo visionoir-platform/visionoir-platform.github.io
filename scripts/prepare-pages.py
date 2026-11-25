@@ -31,7 +31,7 @@ for directory, suffixes in (
         if file.is_file() and (file.suffix in suffixes or file.name=="LICENSE") and "__pycache__" not in file.parts:
             paths.append(str(file.relative_to(root)))
 # Stage the music application and its original distributable assets separately from the private masters.
-for fixed in ("support/index.html", "scripts/ecosystem-locales.mjs", "scripts/portals.mjs", "tests/support.test.mjs", "tests/frequency-door.test.mjs", "scripts/support-sandbox.mjs", "scripts/qa-ecosystem.cjs", "scripts/check-frequency-release.mjs", "scripts/pages-csp.mjs", "scripts/qa-pages-privacy.cjs", "tests/pages-csp.test.mjs",
+for fixed in ("support/index.html", "scripts/ecosystem-locales.mjs", "scripts/portals.mjs", "scripts/policy-page.mjs", "tests/support.test.mjs", "tests/frequency-door.test.mjs", "scripts/support-sandbox.mjs", "scripts/qa-ecosystem.cjs", "scripts/check-frequency-release.mjs", "scripts/pages-csp.mjs", "scripts/qa-pages-privacy.cjs", "tests/pages-csp.test.mjs",
               "LICENSE", "COPYRIGHT.md", "TRADEMARKS.md", "CREDITS.md", "ASSET_LICENSES.md", "ASSET_PROVENANCE.md",
               "THIRD_PARTY_NOTICES.md", "USER_CONTENT_POLICY.md", "CONTRIBUTING.md", "SECURITY.md", "SBOM.json"):
     paths.append(fixed)

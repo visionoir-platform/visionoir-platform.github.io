@@ -20,3 +20,14 @@ if(root==='support'){
     if(!amount.disabled)amount.focus();
   });
 }
+
+if (root === 'legal') {
+  function keepSection() {
+    const hash = location.hash;
+    for (const link of document.querySelectorAll('.languages a[hreflang]')) {
+      link.hash = hash;
+    }
+  }
+  keepSection();
+  window.addEventListener('hashchange', keepSection);
+}

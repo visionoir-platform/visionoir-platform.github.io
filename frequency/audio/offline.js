@@ -34,6 +34,9 @@ export function estimateExport(project, opt = {}) {
   const start = Math.round(((startBar * 240) / project.bpm) * sampleRate),
     musical = Math.round((((startBar + bars) * 240) / project.bpm) * sampleRate) - start,
     frames = musical + Math.round(tail * sampleRate);
+  const pcmBytes = (frames * channels * bits) / 8;
+  const wav = !opt.format || opt.format === 'wav';
+  const headerBytes = wav ? wavHeader({frames,sampleRate,bits,channels,title:project.name,rf64:opt.rf64}).length : 44;
   return {
     sampleRate,
     channels,
@@ -43,7 +46,7 @@ export function estimateExport(project, opt = {}) {
     frames,
     musical,
     seconds: frames / sampleRate,
-    bytes: 44 + (frames * channels * bits) / 8,
+    bytes: headerBytes + pcmBytes + (wav ? pcmBytes % 2 : 0),
   };
 }
 const block = 8192;
@@ -66,6 +69,7 @@ function pass(project, spec, opt, consume, onProgress) {
       const isTail = advanced >= spec.start + spec.musical;
       if (isTail && d.running) {
         d.running = false;
+        d.setAutomation(null, 0);
         d.events.length = 0;
       }
       const next = advanced < spec.start ? spec.start : !isTail ? spec.start + spec.musical : total;
@@ -210,8 +214,16 @@ export async function renderOffline(project, opt = {}, progress = () => {}) {
   )
     throw Error('export.mp3Format');
   const spec = estimateExport(project, opt);
-  if ((format === 'wav' || format === 'aiff') && spec.bytes >= 0xffffffff - 65536)
+  if (format === 'aiff' && spec.bytes >= 0xffffffff - 65536)
     throw Error('export.riffLimit');
+  // Reject an impossible large print before the optional normalization pass starts.
+  if (!opt.handle && spec.bytes > 192 * 1024 * 1024 && !globalThis.navigator?.storage?.getDirectory)
+    throw Error('export.storageRequired');
+  if (format === 'wav' && !opt.handle && spec.bytes >= 0xffffffff && globalThis.navigator?.storage?.estimate) {
+    const budget = await navigator.storage.estimate().catch(() => null);
+    if (Number.isFinite(budget?.quota) && Number.isFinite(budget.usage) && budget.quota - budget.usage < spec.bytes)
+      throw Error('export.storageRequired');
+  }
   let gain = 1,
     encoder = null;
   if (opt.normalize) {
@@ -231,7 +243,7 @@ export async function renderOffline(project, opt = {}, progress = () => {}) {
           ? flacHeader(spec)
           : format === 'aiff'
             ? aiffHeader(spec)
-            : wavHeader({ ...spec, title: project.name }),
+            : wavHeader({ ...spec, title: project.name, rf64:opt.rf64 }),
       );
     let position = 0;
     const random = new Dither();

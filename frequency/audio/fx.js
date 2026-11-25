@@ -18,21 +18,6 @@ export class Effect {
   constructor(spec, rate, bpm) {
     this.id = spec.id;
     this.rate = rate;
-    this.lastL =
-      this.lastR =
-      this.lowL =
-      this.lowR =
-      this.highL =
-      this.highR =
-      this.zL =
-      this.zR =
-      this.env =
-      this.wet =
-      this.write =
-      this.phase =
-      this.head =
-      this.frame =
-        0;
     this.amount = clamp(Number(spec.amount) || 0, 0, 1);
     this.target = spec.bypass ? 0 : 1;
     this.bufL = this.bufR = null;
@@ -45,9 +30,21 @@ export class Effect {
       this.bufL = new Float32Array(Math.ceil(time * rate) + 3);
       this.bufR = new Float32Array(this.bufL.length);
     }
+    this.reset();
     this.configure(spec, bpm);
   }
+  reset() {
+    this.bufL?.fill(0);
+    this.bufR?.fill(0);
+    this.lastL = this.lastR = this.lowL = this.lowR = this.highL = this.highR = 0;
+    this.zL = this.zR = this.env = this.wet = this.L = this.R = 0;
+    this.write = this.phase = this.head = this.frame = 0;
+    this.freezeSize = this.captured = this.freezePos = 0;
+  }
   configure(spec, bpm) {
+    if (this.id === 'freeze' && this.target === 0 && !spec.bypass) {
+      this.freezeSize = this.captured = this.freezePos = 0;
+    }
     this.target = spec.bypass ? 0 : 1;
     this.amount = clamp(Number.isFinite(spec.amount) ? spec.amount : 0.4, 0, 1);
     this.beat = 60 / bpm;
@@ -159,6 +156,21 @@ export class Effect {
         x = this.lastL;
         y = this.lastR;
         break;
+      case 'freeze': {
+        if (this.freezeSize === 0 && Math.max(Math.abs(l), Math.abs(r)) > 0.0001)
+          this.freezeSize = Math.min(this.block, this.bufL.length);
+        if (this.captured < this.freezeSize) {
+          this.bufL[this.captured] = l;
+          this.bufR[this.captured++] = r;
+        } else if (this.freezeSize) {
+          const pos = this.freezePos;
+          const window = Math.min(1, pos / 32, (this.freezeSize - 1 - pos) / 32);
+          x = l * (1 - a) + a * this.bufL[pos] * window;
+          y = r * (1 - a) + a * this.bufR[pos] * window;
+          this.freezePos = (pos+1) % this.freezeSize;
+        }
+        break;
+      }
       case 'filter':
         this.lowL += this.cut * (l - this.lowL);
         this.lowR += this.cut * (r - this.lowR);
@@ -241,28 +253,20 @@ export class Effect {
             offR = rate * (this.id === 'reverb' ? 0.0497 : 0.1193);
             fb = 0.54 + 0.26 * a;
             wet = 0.2 + 0.4 * a;
-          } else if (['repeat', 'glitch', 'freeze'].includes(this.id)) {
+          } else if (this.id === 'repeat' || this.id === 'glitch') {
             const size = Math.min(this.block, n - 1),
               pos = this.frame % size;
             if (pos === 0) {
               const blockNumber = Math.floor(this.frame / size);
-              if (
-                this.id === 'freeze'
-                  ? this.frame <= size * 2
-                  : this.id === 'repeat'
-                    ? blockNumber % 4 === 0
-                    : blockNumber % 3 === 0
-              )
+              if (blockNumber % (this.id === 'repeat' ? 4 : 3) === 0)
                 this.head = (w - size + n) % n;
             }
             const window = Math.min(1, pos / 32, (size - pos) / 32);
             x = l * (1 - a) + a * this.bufL[(this.head + pos) % n] * window;
             y = r * (1 - a) + a * this.bufR[(this.head + pos) % n] * window;
-            if (this.id !== 'freeze' || this.frame <= size * 2) {
-              this.bufL[w] = l;
-              this.bufR[w] = r;
-              this.write = (w + 1) % n;
-            }
+            this.bufL[w] = l;
+            this.bufR[w] = r;
+            this.write = (w + 1) % n;
             break;
           }
           const dl = this.bufL[(w - Math.min(n - 1, Math.max(1, Math.round(offL))) + n) % n],

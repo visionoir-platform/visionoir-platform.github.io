@@ -1,3 +1,4 @@
+import { preparePCM, pcmReader, readPCM } from './resample.js';
 import { clamp, noteHz, PARAMETER_BANK } from './model.js';
 const TABLE = new Float32Array(8193);
 for (let i = 0; i < TABLE.length; i++) TABLE[i] = Math.sin((2 * Math.PI * i) / 8192);
@@ -25,9 +26,12 @@ const SAT = (x) => x / (1 + Math.abs(x));
 const durations = [
   0.17, 0.41, 0.16, 0.14, 0.19, 0.085, 0.035, 0.18, 0.095, 0.29, 0.13, 0.22, 0.74, 0.3, 0.19, 0.23,
 ];
+const decodedSources = new WeakMap();
 export function decodePCM(sample) {
   if (!sample) return null;
   const str = sample.pcm;
+  const cached = decodedSources.get(sample);
+  if (cached?.source === str && cached.decoded.rate === sample.rate) return cached.decoded;
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
   const bytes = new Uint8Array(
     (str.length >> 2) * 3 - (str.endsWith('==') ? 2 : str.endsWith('=') ? 1 : 0),
@@ -48,7 +52,9 @@ export function decodePCM(sample) {
   const view = new DataView(bytes.buffer),
     pcm = new Float32Array(bytes.length >> 1);
   for (let i = 0; i < pcm.length; i++) pcm[i] = view.getInt16(i * 2, true) / 32768;
-  return { rate: sample.rate, pcm };
+  const decoded = preparePCM({ rate: sample.rate, pcm });
+  decodedSources.set(sample,{source:str,decoded});
+  return decoded;
 }
 let factorySample;
 export function factoryGlass() {
@@ -65,7 +71,7 @@ export function factoryGlass() {
       0.22 * osc(t * 1671.3) * Math.exp(-34 * t);
     pcm[i] = (strike + ((0.16 * rnd) / 2147483648) * Math.exp(-130 * t)) * Math.min(1, i / 9);
   }
-  factorySample = { rate, pcm };
+  factorySample = preparePCM({ rate, pcm });
   return factorySample;
 }
 const defaults = Object.values(PARAMETER_BANK);
@@ -151,6 +157,7 @@ export class Voice {
         2 ** ((note - 60 + (p.pitch - 0.5) * 24) / 12) *
         (p.reverse > 0.5 ? -1 : 1);
       this.idx = this.step < 0 ? this.hi - 1 : this.lo;
+      this.reader = pcmReader(sample, this.step, this.lo, this.hi);
     }
     if (kind === 0)
       this.kickInc = ((32 + 39 * p.pitch) * 2 ** ((note - 36 + (p.tuning - 0.5) * 12) / 12)) / this.rate;
@@ -321,16 +328,16 @@ export class Voice {
       case 15: {
         if (this.sample) {
           if (this.idx < this.lo || this.idx >= this.hi) {
-            if (p.loop > 0.5) this.idx = this.step < 0 ? this.hi - 1 : this.lo;
+            if (p.loop > 0.5) {
+              const length = this.hi - this.lo;
+              this.idx = this.lo + (((this.idx-this.lo) % length) + length) % length;
+            }
             else {
               this.active = false;
               return 0;
             }
           }
-          const ix = Math.floor(this.idx),
-            f = this.idx - ix,
-            pcm = this.sample.pcm;
-          near = pcm[ix] + (pcm[Math.min(ix + 1, pcm.length - 1)] - pcm[ix]) * f;
+          near = readPCM(this.reader, this.idx);
           this.idx += this.step;
         } else {
           // Original struck-glass factory one-shot, no external recording.

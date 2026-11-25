@@ -1,3 +1,4 @@
+import { pianoView } from './piano.js';
 import { audioRegionList } from './region-editor.js';
 import {
   escape as h,
@@ -51,39 +52,17 @@ export function renderEditor(state, t, audio) {
           .sort((a, b) => a - b)
           .map((n) => option(n, n, n === pat.length))
           .join(''),
-      )}${act('edit-step', t('edit') + ' ' + t('step'))}${act('pattern-tools', t('tools'))}${act('add-channel', '+ ' + t('instrument'), { disabled: p.tracks.length >= 32 })}</div>` +
+      )}${act('edit-step', t('edit') + ' ' + t('step'))}${act('inspect-step',t('select') + ' · ' + t('step'),{pressed:!!state.inspectStep})}${act('pattern-tools', t('tools'))}${act('add-channel', '+ ' + t('instrument'), { disabled: p.tracks.length >= 32 })}</div>` +
       instrumentPanel(state, t, audio)
     );
-  if (view === 'piano') {
-    const start = state.octave * 12,
-      scale = [0, 2, 4, 5, 7, 9, 11];
-    const body = Array.from({ length: 12 }, (_, j) => {
-      const n = start + 11 - j;
-      return `<div class="piano-row ${scale.includes(n % 12) ? 'white' : 'black'}"><button data-action="audition" data-note="${n}">${noteName(n)}</button>${Array.from(
-        { length: 16 },
-        (_, i) => {
-          const pos = page * 16 + i,
-            ev = pat.steps[pos],
-            on = ev?.note === n;
-          return `<button class="piano-cell ${on ? 'note' : ''} ${on && state.selected.has(pos) ? 'picked' : ''}" data-action="piano-cell" data-pos="${pos}" data-note="${n}" data-beat="${i}" aria-label="${noteName(n)} · ${t('step')} ${pos + 1}" aria-pressed="${on}" ${pos >= pat.length ? 'disabled' : ''}>${on ? '●' : ''}</button>`;
-        },
-      ).join('')}</div>`;
-    }).join('');
-    return (
-      head +
-      ctrls +
-      `<div class="bar-tools">${select(t('instrument'), 'channel', p.tracks.map((c, i) => option(i, c.name, i === channel)).join(''))}${select(t('pitch'), 'octave', Array.from({ length: 9 }, (_, i) => option(i, noteName(i * 12) + '–' + noteName(i * 12 + 11), i === state.octave)).join(''))}${act('multi', t('multiSelection'), { pressed: state.multi })}</div>` +
-      scroller(`<div class="piano" dir="ltr">${body}</div>`) +
-      `<div class="bar-tools">${act('transpose-down', '−1 ♩', { title: t('transpose') + ' −1' })}${act('transpose-up', '+1 ♩', { title: t('transpose') + ' +1' })}${act('move-prev', '← ♩', { title: t('shift') + ' · ' + t('previous') })}${act('move-next', '♩ →', { title: t('shift') + ' · ' + t('next') })}${act('copy-notes', t('copy'))}${act('paste-notes', t('paste'))}${act('delete-notes', t('deleteStep'))}${act('edit-step', t('edit') + ' ' + t('note'))}</div>`
-    );
-  }
+  if (view === 'piano') return pianoView(state,t,ctrls,head);
   if (view === 'arrangement') {
     let bar = 1;
     const clips = p.arrangement
       .map((clip, i) => {
         const at = bar;
         bar += clip.bars;
-        return `<li class="clip"><span class="clip-no">${pad(at)}</span>${select(t('scene'), 'clip-scene:' + i, p.scenes.map((s, j) => option(j, s.name, j === clip.scene)).join(''))}${number(t('bars'), 'clip-bars:' + i, clip.bars, Math.max(1,...(clip.audioRegions || []).map(r=>Math.floor(r.step / 16)+1)), 4096)}<div>${act('clip-up', '↑', { title: t('previous'), data: data('index', i), disabled: i === 0 })}${act('clip-down', '↓', { title: t('next'), data: data('index', i), disabled: i === p.arrangement.length - 1 })}${act('clip-duplicate', '⧉', { title: t('duplicate'), data: data('index', i) })}${act('clip-delete', '×', { title: t('remove'), data: data('index', i), disabled: p.arrangement.length === 1 })}</div></li>`;
+        return `<li class="clip" data-arrange-index="${i}"><button type="button" class="clip-no clip-grip" data-action="clip-move-to" data-index="${i}" data-grip="${i}" title="${attr(t('shift') + ' · ' + t('clip'))}" aria-label="${attr(t('shift') + ' · ' + t('clip') + ' ' + (i+1))}">⠿ ${pad(at)}</button>${select(t('scene'), 'clip-scene:' + i, p.scenes.map((s, j) => option(j, s.name, j === clip.scene)).join(''))}${number(t('bars'), 'clip-bars:' + i, clip.bars, Math.max(1,...(clip.audioRegions || []).map(r=>Math.floor(r.step/16)+1),...(clip.automation||[]).map(l=>1+Math.floor(Math.max(0,...l.points.map(p=>p.step))/16))), 4096)}<div>${act('clip-up', '↑', { title: t('previous'), data: data('index', i), disabled: i === 0 })}${act('clip-down', '↓', { title: t('next'), data: data('index', i), disabled: i === p.arrangement.length - 1 })}${act('clip-duplicate', '⧉', { title: t('duplicate'), data: data('index', i) })}${act('clip-delete', '×', { title: t('remove'), data: data('index', i), disabled: p.arrangement.length === 1 })}</div></li>`;
       })
       .join('');
     const timeline = scroller(
@@ -102,7 +81,7 @@ export function renderEditor(state, t, audio) {
     );
     return (
       head +
-      timeline + audioRegionList(p, t) +
+      timeline + audioRegionList(p, t) + '<div class="bar-tools">'+act('auto-open',t('automation'))+'</div>' +
       `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('loop', t('loop'), { pressed: !!p.loop?.on })} ${number(t('start'), 'loop-start', (p.loop?.start ?? 0) + 1, 1, bar - 1)} ${number(t('end'), 'loop-end', p.loop?.end ?? bar - 1, 1, bar - 1)} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
     );
   }
@@ -123,6 +102,13 @@ export function renderEditor(state, t, audio) {
     );
   }
   if (view === 'live') {
+    const liveChannel = '<div class="live-channel">' +
+      select(t('instrument'),'channel',p.tracks.map((tr,i)=>option(i,pad(i+1)+' · '+tr.name,i===channel)).join('')) +
+      '<meter data-meter="peak:'+channel+'" min="0" max="1" value="0" aria-label="'+attr(t('peak'))+'"></meter>'+
+      slider(t('volume'),'track:'+channel+':volume',tr.volume) +
+      act('mute',t('mute'),{pressed:tr.mute,data:data('index',channel)})+
+      act('solo','Solo',{pressed:tr.solo,data:data('index',channel)})+
+      act('track-settings','FX / I/O')+'</div>';
     return (
       head +
       `<div class="bar-tools">${act('protect', t('protectedMode'), { pressed: state.protect })}${act('add-scene', '+ ' + t('scene'))}${act('master-mute', 'Master mute', { pressed: p.master.volume === 0 })}${act('tap', 'Tap tempo')}${act('preflight', t('check'))}${number(t('sceneFade') + ' · ♩', 'crossfade-beats', p.crossfadeBeats ?? 1, 0, 4, 0.25)}</div><div class="scene-pads">${p.scenes.map((s, i) => act('launch', pad(i + 1) + ' / ' + s.name, { classes: 'scene-pad', pressed: state.playScene === i, data: data('index', i) })).join('')}</div><h3>${h(t('instrument'))}</h3><div class="pads">${p.tracks.map((tr, i) => `<button data-pad="${i}" style="--voice:${channelColor(i)}"><small>${pad(i + 1)}</small>${h(tr.name)}</button>`).join('')}</div><div class="instrument-panel"><h3>Live FX</h3><div class="knobs">${[
@@ -140,7 +126,7 @@ export function renderEditor(state, t, audio) {
           );
         })
         .join('')}</div></div>` +
-      masterPanel(state, t)
+      liveChannel + masterPanel(state, t)
     );
   }
   return head;

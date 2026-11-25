@@ -1,4 +1,5 @@
 /** Native FREQUENCY session v1. MIDI pitches, 16th-note time, normalized synth parameters. */
+import { validateAutomation } from './automation.js';
 import { validateRegions } from './regions.js';
 import { additionalSession, EXTRA_DEMOS } from './library.js';
 const specs = [
@@ -598,6 +599,7 @@ export function validateProject(p) {
       throw Error('project.clip');
   }
   validateRegions(p.arrangement, p.tracks);
+  validateAutomation(p.arrangement, p.tracks);
   return p;
 }
 export function totalBars(p) {

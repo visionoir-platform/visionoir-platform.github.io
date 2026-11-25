@@ -630,10 +630,6 @@ select {
 .piano-row.black .piano-cell {
   background: #1c211c;
 }
-.piano-cell.note {
-  color: #1b2416;
-  background: var(--acid) !important;
-}
 .piano-cell.picked {
   outline: 1px solid white;
 }
@@ -1334,5 +1330,186 @@ label[hidden] {
   }
   .clockfields .field {
     min-width: 3.1rem;
+  }
+}
+
+.piano-tools,
+.piano-inspector,
+.live-channel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-block: 0.8rem;
+}
+.piano-tools .field,
+.piano-inspector .field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.piano-inspector {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: linear-gradient(160deg, #232626, #151719);
+}
+.piano-inspector strong {
+  font: 650 1rem var(--mono);
+  min-width: 3ch;
+  color: var(--acid);
+}
+.piano-inspector .field input {
+  width: 5.8em;
+}
+.piano {
+  --material: #cee6cb;
+}
+.piano-cell {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+.piano-cell.sounding {
+  touch-action: none;
+}
+.piano-cell.sounding::before {
+  content: '';
+  position: absolute;
+  inset-block: 20%;
+  inset-inline-start: 0;
+  width: var(--duration);
+  background: linear-gradient(0deg, #5d7a74, var(--material));
+  border-radius: 1px;
+  opacity: calc(0.55 + var(--strength) * 0.45);
+}
+.piano-row .piano-cell.note {
+  background: #222a26;
+  color: inherit;
+}
+.piano-cell.note::before {
+  border-inline-start: 3px solid #f0fff2;
+  border-radius: 3px 1px 1px 3px;
+}
+.piano-cell.picked {
+  outline: 1px solid #e6fbd4;
+  outline-offset: -1px;
+}
+.piano-row.in-scale > button:first-child {
+  border-inline-start: 3px solid #97bb99;
+}
+.piano[data-tool='shift'] .sounding,
+.clip-grip {
+  cursor: grab;
+}
+.piano[data-tool='gate'] .sounding {
+  cursor: ew-resize;
+}
+.piano-cell.drop-target,
+.clip.drop-target {
+  outline: 2px solid var(--acid);
+  outline-offset: -2px;
+}
+.clip-grip {
+  touch-action: none;
+  align-self: stretch;
+  user-select: none;
+  min-width: 3.8rem;
+}
+.live-channel {
+  padding: 0.8rem;
+  background: linear-gradient(155deg, #232727, #17191a);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.live-channel meter {
+  width: 4rem;
+  max-width: 100%;
+}
+.live-channel .fader {
+  min-width: 8rem;
+  flex: 1;
+}
+.scene-pad.queued {
+  outline: 2px dashed var(--acid);
+  outline-offset: 1px;
+}
+
+.curve {
+  position: relative;
+  direction: ltr;
+  margin: 1rem 6px 0.3rem;
+  height: 145px;
+  border: 1px solid #64736b;
+  border-radius: 4px;
+  background-color: #111715;
+  background-image:
+    linear-gradient(90deg, #334338 1px, transparent 1px),
+    linear-gradient(0deg, #2d3931 1px, transparent 1px);
+  background-size: 12.5% 25%;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+.curve svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.curve polyline {
+  fill: none;
+  stroke: #c8f69b;
+  stroke-width: 2.5;
+}
+.curve .point {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #aec29f;
+  border-radius: 50%;
+  background: #1c271f;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+}
+.curve .point.active {
+  border-color: #e2ffb6;
+  background: #68864d;
+}
+.curve-axis {
+  display: flex;
+  justify-content: space-between;
+  font: 500 0.65rem var(--mono);
+  color: var(--muted);
+  margin: 0 0.4rem 1rem;
+}
+
+#studio .case {
+  --acid: var(--scene-light, #d8f993);
+}
+.console-title {
+  position: relative;
+  isolation: isolate;
+}
+.console-title::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: 0.4rem;
+  background: radial-gradient(ellipse at 92% 65%, var(--acid), transparent 43%);
+  opacity: var(--lamp, 0.1);
+  transition: opacity 0.14s ease-out;
+}
+.piano-cell.sounding.picked::before {
+  background: linear-gradient(0deg, var(--material), #f7fff3);
+}
+.piano-inspector:disabled {
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .console-title::after {
+    transition: none;
   }
 }

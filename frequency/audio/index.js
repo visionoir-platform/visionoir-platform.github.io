@@ -3,6 +3,7 @@ export * from './model.js';
 export { createEngine, importSample } from './engine.js';
 export { renderMidi, zipFiles } from './formats.js';
 export { estimateExport, SAMPLE_RATES, BIT_DEPTHS } from './offline.js';
+import { estimateExport } from './offline.js';
 import { projectFile } from './model.js';
 import { midiBundleFiles, zipFiles } from './formats.js';
 function render(project, options) {
@@ -47,6 +48,8 @@ export async function renderZip(project, files = []) {
   ]);
 }
 export async function renderStems(project, options = {}) {
+  const spec = estimateExport(project, {...options,format:'wav'});
+  if (spec.bytes * project.tracks.length >= 0xffffffff) throw Error('export.zipLimit');
   const files = [];
   for (let i = 0; i < project.tracks.length; i++) {
     const stem = await renderWav(project, {

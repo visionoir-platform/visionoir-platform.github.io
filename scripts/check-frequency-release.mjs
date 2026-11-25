@@ -17,7 +17,13 @@ for(const lang of Object.keys(names)){
   assert(html.includes('<html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'"'));
   assert(html.includes('visionoir.platform@gmail.com'));
   assert(!html.includes('undefined'));
-  if (section==='legal') assert(html.includes('id="requests"') && html.includes('Wikidata'));
+  assert(html.includes('rel="canonical" href="https://visionoir-platform.github.io/'+section+'/'+route+'"'));
+  assert.equal((html.match(/rel="alternate" hreflang=/g) || []).length,Object.keys(names).length+1);
+  if (section==='legal') {
+    assert(html.includes('id="requests"') && html.includes('Wikidata'));
+    assert.equal((html.match(/<article id=/g) || []).length,19);
+    assert(html.includes('href="#your-music"'));
+  }
   assert(!html.includes('https://buy.stripe.com/')&&!html.includes('revolut.me/'));
  }
 }

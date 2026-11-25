@@ -32,3 +32,26 @@ export function ecosystemLocale(lang) {
   if(lang==='de-CH')for(const key of Object.keys(fields))fields[key]=fields[key].replaceAll('ß','ss');
   return fields;
 }
+
+// Policy text is used only by the static portal, never in the home page payload.
+function policyTable(name) {
+  const [keys, ...records] = rows(name);
+  const table = new Map();
+  for (const [lang, ...values] of records) {
+    if (table.has(lang) || values.length !== keys.length - 1 || values.some(value => !value.trim())) {
+      throw Error('Invalid ' + name + ' row for ' + lang);
+    }
+    table.set(lang, Object.fromEntries(values.map((value, index) => [keys[index + 1], value])));
+  }
+  return table;
+}
+const sectionNames = policyTable('policy-sections');
+const sectionCopy = policyTable('policy-copy');
+export function policyLocale(lang) {
+  const key = sectionNames.has(lang) ? lang : parents[lang];
+  if (!sectionNames.has(key) || !sectionCopy.has(key)) throw Error('Missing policy locale ' + lang);
+  function regional(fields) {
+    return lang === 'de-CH' ? Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, v.replaceAll('ß', 'ss')])) : fields;
+  }
+  return {titles: regional(sectionNames.get(key)), copy: regional(sectionCopy.get(key))};
+}

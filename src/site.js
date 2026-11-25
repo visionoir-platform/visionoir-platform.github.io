@@ -94,7 +94,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </form></section>
  <section class="section faq-section">${t('faq','h2')}<div>${['idea','remote','ai','delivery'].map(id=>`<details>${t(id+'Q','summary')}${t(id+'A','p')}</details>`).join('')}</div></section>
  <section class="section creator-section" id="creator" aria-labelledby="creator-name">
-   <div class="creator-visual"><div id="creator-stage" role="img" ${a11y('ecoPortrait')}><img src="${base}creator/poster.webp" width="920" height="740" alt="" loading="lazy" decoding="async"></div>
+   <div class="creator-visual"><div id="creator-stage" role="img" ${a11y('ecoPortrait')}><img src="${base}creator/poster.webp" width="894" height="1118" alt="" loading="lazy" decoding="async"></div>
     <div class="creator-looks" hidden><button type="button" data-look="natural" aria-pressed="false">${t('ecoModeNatural')}</button><button type="button" data-look="metal" aria-pressed="true">${t('chrome')}</button><button type="button" data-look="liquid" aria-pressed="false">${t('ecoModeMetal')}</button></div></div>
    <div class="creator-copy"><p class="kicker" lang="en">THE CREATOR</p><h2 id="creator-name">Flavio Giorgio Guarini</h2>
     ${t('ecoCreator','p','class="creator-title"')}<p class="creator-role" lang="en">Creator · Founder · Creative Technologist · Developer</p>

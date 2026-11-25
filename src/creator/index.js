@@ -1,15 +1,5 @@
 import './portrait.css';
-import { defaultVisual } from '../../frequency/chromatic/model.js';
-import { trackAccents } from '../palette.js';
 
-const moods = {
-  chrome: { mode: 'chrome-pulse', refraction: 0.82, reflection: 0.97, warp: 0.36 },
-  acid: { mode: 'acid-mutation', refraction: 0.92, warp: 0.95, turbulence: 0.76 },
-  noir: { mode: 'obsidian-core', refraction: 0.32, light: 0.42, distortion: 0.72 },
-  afterimage: { mode: 'spectral-echo', warp: 0.42, refraction: 0.85 },
-  alloy: { mode: 'industrial-meltdown', warp: 0.74, reflection: 0.95, distortion: 0.61 },
-  aura: { mode: 'atomic-disintegration', warp: 0.37, depth: 0.86, density: 0.92 },
-};
 const base = import.meta.env?.BASE_URL || '/';
 export function mountCreator(
   host,
@@ -21,93 +11,50 @@ export function mountCreator(
     reducedMotion = false,
   } = {},
 ) {
-  let disposed = false,
-    stage,
-    loading = false,
+  const abort = new AbortController();
+  let motion = !reducedMotion,
     look = 'metal',
-    modeId,
-    visual,
-    requestedMotion = !reducedMotion;
+    stage = null,
+    poster = host.querySelector('img'),
+    ownPoster = false;
   host.classList.add('creator-render-surface');
-  const onMotion = (value) => {
-    requestedMotion = !!value;
-    modeId = null;
-    stage?.invalidate();
-  };
-  const getState = () => {
-    const chosen = getMode(),
-      mode = typeof chosen === 'string' && moods[chosen] ? chosen : 'chrome',
-      key = mode + '/' + look + '/' + requestedMotion;
-    if (key !== modeId) {
-      modeId = key;
-      visual = {
-        ...defaultVisual(),
-        ...moods[mode],
-        color: trackAccents[mode],
-        intensity: 0.89,
-        rotation: 0.14,
-        camera: 0.12,
-        density: 0.85,
-        size: 0.49,
-        reduced: !requestedMotion,
-      };
-      if (look === 'liquid') {
-        visual.mode = 'liquid-collapse';
-        visual.warp = 0.95;
-        visual.refraction = 0.95;
-      }
-    }
-    return visual;
-  };
-  function signal() {
-    const a = getSignal() || {};
-    // The studio player exposes recorded spectral envelopes on the original soundtrack.
-    return {
-      ...a,
-      voices: [
-        a.bass,
-        look === 'liquid' ? a.level : 0,
-        getMode() === 'acid' ? a.mid : 0,
-        0,
-        0,
-        0,
-        a.high,
-        0,
-        0,
-        0,
-        0,
-        0,
-        a.mid,
-      ],
-      beat: 0,
-    };
+  host.dataset.render = 'fallback';
+  if (!poster) {
+    poster = document.createElement('img');
+    poster.alt = '';
+    poster.src = posterURL;
+    host.prepend(poster);
+    ownPoster = true;
   }
+  poster.classList.add('creator-poster');
+  function syncPoster() {
+    if (host.dataset.render === 'webgl' || !posterURL.endsWith('/creator/poster.webp')) return;
+    const acid = getMode() === 'acid';
+    const variant = (acid ? '-acid' : '') + (look === 'metal' ? '' : '-' + look);
+    const next = base + 'creator/poster' + variant + '.webp';
+    if (poster.getAttribute('src') !== next) poster.setAttribute('src', next);
+  }
+  function refresh() {
+    syncPoster();
+    stage?.invalidate();
+  }
+  syncPoster();
   async function start() {
-    if (loading || disposed) return;
-    loading = true;
     try {
-      const [{ buildStage }, { loadPortrait }] = await Promise.all([
-        import('../../frequency/chromatic/stage.js'),
-        import('./portrait.js'),
-      ]);
-      if (disposed) return;
-      const preferSmall = window.matchMedia('(max-width: 800px)').matches || navigator.connection?.saveData;
-      const url = modelURL || base + 'creator/creator-' + (preferSmall ? 'mobile' : 'desktop') + '.glb';
-      const mounted = await buildStage(host, {
-        creator: true,
-        getSignal: signal,
-        getState,
-        poster: posterURL,
-        assetLoader: (s) => loadPortrait(url, s),
+      const { createPortraitStage } = await import('./stage.js');
+      if (abort.signal.aborted) return;
+      const mobile = window.matchMedia('(max-width:800px)').matches || navigator.connection?.saveData;
+      stage = await createPortraitStage(host, {
+        url: modelURL || base + 'creator/creator-' + (mobile ? 'mobile' : 'desktop') + '.glb',
+        syncPoster,
+        beat: getSignal,
+        track: getMode,
+        look: () => look,
+        moving: () => motion,
+        signal: abort.signal,
       });
-      if (disposed) {
-        mounted.dispose();
-        return;
-      }
-      stage = mounted;
-      stage.setLook?.(look);
-    } catch {
-      host.dataset.render = 'fallback';
+    } catch (error) {
+      if (!abort.signal.aborted) host.dataset.render = 'fallback';
     }
   }
   const near = new IntersectionObserver(
@@ -120,23 +67,22 @@ export function mountCreator(
     { rootMargin: '160px' },
   );
   near.observe(host);
-  const refresh = () => {
-    modeId = null;
-    stage?.invalidate();
-  };
   window.addEventListener('visionoir:audio', refresh);
   return {
-    setMotion: onMotion,
+    setMotion(value) {
+      motion = !!value;
+      refresh();
+    },
     setLook(value) {
       look = ['metal', 'natural', 'liquid'].includes(value) ? value : 'metal';
-      modeId = null;
-      stage?.setLook?.(look);
+      refresh();
     },
     dispose() {
-      disposed = true;
-      window.removeEventListener('visionoir:audio', refresh);
+      abort.abort();
       near.disconnect();
       stage?.dispose();
+      if (ownPoster) poster.remove();
+      window.removeEventListener('visionoir:audio', refresh);
     },
   };
 }
