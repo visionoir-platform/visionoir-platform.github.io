@@ -10,6 +10,8 @@ import {
   number,
   slider,
   dial,
+  instrumentParamLabel,
+  instrumentParamStep,
   select,
 } from './ui-kit.js';
 const data = (key, n) => `data-${key}="${attr(n)}"`;
@@ -157,6 +159,6 @@ export function masterPanel(state, t) {
 }
 function instrumentPanel(state, t, audio) {
   const tr = state.p.tracks[state.channel],
-    params = Object.entries(tr.params);
-  return `<section class="instrument-panel"><header class="panelhead"><div><small>CH ${pad(state.channel + 1)} / ${h(tr.bus.toUpperCase())}</small><h3>${h(tr.name)}</h3></div><div>${act('preview', '▷', { title: t('play') + ' · ' + tr.name })} ${act('patches', t('presets')) + ' ' + act('track-settings', 'FX / I/O')}</div></header><div class="knobs">${params.map(([key, v]) => dial(key, 'param:' + key, v)).join('')}</div>${tr.instrument === 'sampler' ? `<label class="import-sample">${h(t('importFile'))} <input type="file" id="sample-file" accept="audio/*"></label>` : ''}</section>`;
+    params = Object.entries({ ...audio.PARAMETER_BANK[tr.instrument], ...tr.params });
+  return `<section class="instrument-panel"><header class="panelhead"><div><small>CH ${pad(state.channel + 1)} / ${h(tr.bus.toUpperCase())}</small><h3>${h(tr.name)}</h3></div><div>${act('preview', '▷', { title: t('play') + ' · ' + tr.name })} ${act('patches', t('presets')) + ' ' + act('track-settings', 'FX / I/O')}</div></header><div class="knobs">${params.map(([key, v]) => dial(instrumentParamLabel(tr.instrument, key, t), 'param:' + key, v, instrumentParamStep(tr.instrument, key))).join('')}</div>${tr.instrument === 'sampler' ? `<label class="import-sample">${h(t('importFile'))} <input type="file" id="sample-file" accept="audio/*"></label>` : ''}</section>`;
 }

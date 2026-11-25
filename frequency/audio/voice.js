@@ -22,6 +22,13 @@ const saw = (p, inc) => 2 * p - 1 - blep(p, Math.min(0.49, inc));
 const square = (p, inc) =>
   (p < 0.5 ? 1 : -1) + blep(p, Math.min(0.49, inc)) - blep((p + 0.5) % 1, Math.min(0.49, inc));
 const envelope = (seconds, rate) => Math.exp(-1 / Math.max(1, rate * seconds));
+function rideNoiseCoefficient(amount, rate) {
+  const cutoff = Math.min(5000, 0.35 * rate) * amount * amount;
+  const g = Math.tan(Math.PI * cutoff / rate);
+  return g / (1 + g);
+}
+// Normalized midpoint recalls the original 42 ms filter envelope exactly.
+const acidFilterRate = (value, rate) => envelope(0.042 * 2 ** (8 * (value - 0.5)), rate);
 const SAT = (x) => x / (1 + Math.abs(x));
 const durations = [
   0.17, 0.41, 0.16, 0.14, 0.19, 0.085, 0.035, 0.18, 0.095, 0.29, 0.13, 0.22, 0.74, 0.3, 0.19, 0.23,
@@ -75,11 +82,13 @@ export function factoryGlass() {
   return factorySample;
 }
 const defaults = Object.values(PARAMETER_BANK);
+const heldKinds = new Set([2, 3, 4, 10, 11, 12, 13, 14, 15]);
 export class Voice {
   constructor(rate) {
     this.rate = rate;
     this.active = false;
     this.p = {};
+    this.reader = {};
   }
   start(
     kind,
@@ -97,7 +106,7 @@ export class Voice {
   ) {
     this.token = token;
     const p = this.p;
-    Object.assign(p, defaults[kind], spec, locks || {});
+    Object.assign(p, defaults[kind], spec, locks);
     this.kind = kind;
     this.note = note;
     this.vel = clamp(velocity * (accent ? 1.17 : 1), 0, 1.4);
@@ -112,7 +121,7 @@ export class Voice {
     this.fast = 1;
     this.slow = 1;
     this.fastRate = envelope(0.006, this.rate);
-    this.slowRate = envelope(0.042, this.rate);
+    this.slowRate = kind === 2 ? acidFilterRate(p.filterDecay, this.rate) : envelope(0.042, this.rate);
     this.age = 0;
     this.attack =
       1 /
@@ -128,12 +137,13 @@ export class Voice {
                 : 0.0017),
       );
     this.gate = gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
-    this.held = [2, 3, 4, 10, 11, 12, 13, 14, 15].includes(kind);
+    this.held = heldKinds.has(kind);
     if (kind === 15 && p.oneShot > 0.5 && p.loop <= 0.5) this.gate = this.rate * 95;
     this.release = envelope(
       durations[kind] * (0.24 + 2.2 * (p.decay ?? 0.4)) * (kind === 0 ? 0.74 + p.tail : 1),
       this.rate,
     );
+    if (kind === 9) this.rideCut = rideNoiseCoefficient(p.noiseFilter, this.rate);
     this.noise = seed | 1;
     this.lp = this.bp = this.hp = this.lastNoise = 0;
     this.active = true;
@@ -157,13 +167,18 @@ export class Voice {
         2 ** ((note - 60 + (p.pitch - 0.5) * 24) / 12) *
         (p.reverse > 0.5 ? -1 : 1);
       this.idx = this.step < 0 ? this.hi - 1 : this.lo;
-      this.reader = pcmReader(sample, this.step, this.lo, this.hi);
+      pcmReader(sample, this.step, this.lo, this.hi, this.reader);
     }
     if (kind === 0)
       this.kickInc = ((32 + 39 * p.pitch) * 2 ** ((note - 36 + (p.tuning - 0.5) * 12) / 12)) / this.rate;
   }
   control(key, value) {
     this.p[key] = value;
+    if (this.kind === 9 && key === 'noiseFilter') {
+      this.rideCut = rideNoiseCoefficient(value, this.rate);
+      if (!this.rideCut) this.lp = 0;
+    }
+    if (this.kind === 2 && key === 'filterDecay') this.slowRate = acidFilterRate(value, this.rate);
     if (key === 'cutoff' || key === 'color') {
       this.cut = clamp(
         ((110 + 6500 * (this.p.cutoff ?? this.p.color ?? 0.5) ** 2) * 6.283) / this.rate,
@@ -276,12 +291,21 @@ export class Voice {
           (noise - this.lp) * p.noise * (0.55 + 0.85 * p.clap * clap);
         break;
       }
-      case 9:
+      case 9: {
+        // One-pole high-pass on the hiss alone. Zero preserves the original voice.
+        let hiss = noise;
+        if (this.rideCut) {
+          const delta = (noise - this.lp) * this.rideCut;
+          const low = this.lp + delta;
+          this.lp = low + delta;
+          hiss -= low;
+        }
         x =
           (osc(ph * 2.73) * osc(ph * 7.19) + 0.65 * osc(ph * 4.17) * osc(ph * 8.27)) * 0.33 * p.shimmer +
           osc(ph * 3.23) * p.bell * (0.24 + this.slow * 0.48) +
-          noise * 0.11;
+          hiss * 0.11;
         break;
+      }
       case 10: {
         const raw = (saw(ph, inc) + saw(this.ph2, this.freq1) + saw(this.ph3, this.freq2)) * 0.4;
         this.ph2 = (this.ph2 + this.freq1 * (1 + 0.009 * p.detune)) % 1;

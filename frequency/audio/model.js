@@ -45,7 +45,7 @@ const specs = [
     'acid',
     'Acid 303',
     'bass',
-    { wave: 0.15, cutoff: 0.35, resonance: 0.72, env: 0.68, decay: 0.34, glide: 0.26, drive: 0.42 },
+    { wave: 0.15, cutoff: 0.35, resonance: 0.72, env: 0.68, decay: 0.34, glide: 0.26, drive: 0.42, filterDecay: 0.5 },
   ],
   [
     'industrial',
@@ -58,9 +58,9 @@ const specs = [
   ['closed', 'Closed Hi Hat', 'drums', { color: 0.64, decay: 0.18, metal: 0.32 }],
   ['open', 'Open Hi Hat', 'drums', { color: 0.56, decay: 0.48, metal: 0.57 }],
   ['snare', 'Snare & Clap', 'drums', { body: 0.4, noise: 0.65, clap: 0.65, decay: 0.34 }],
-  ['ride', 'Cymbals & Ride', 'drums', { bell: 0.65, shimmer: 0.61, decay: 0.48 }],
+  ['ride', 'Cymbals & Ride', 'drums', { bell: 0.65, shimmer: 0.61, decay: 0.48, noiseFilter: 0 }],
   ['stab', 'Rave Stab', 'synths', { detune: 0.28, color: 0.47, chord: 0.4, decay: 0.36 }],
-  ['lead', 'Noir Lead', 'synths', { wave: 0.55, cutoff: 0.52, detune: 0.2, decay: 0.44 }],
+  ['lead', 'Noir Lead', 'synths', { wave: 0.55, cutoff: 0.52, detune: 0.2, decay: 0.44, mono: 0 }],
   ['atmos', 'Dark Atmosphere', 'synths', { attack: 0.48, drift: 0.6, color: 0.46, decay: 0.68 }],
   ['noise', 'Noise & FX', 'fx', { sweep: 0.76, color: 0.37, grain: 0.32, decay: 0.65 }],
   ['fm', 'FM Machine', 'synths', { ratio: 0.44, index: 0.62, algorithm: 0.32, decay: 0.38 }],
@@ -125,6 +125,7 @@ export const DEMOS = [
   { id: 'relay', name: 'Relay / Black Current', bpm: 162, root: 31, swing: 0.025, ref: 'ukSiQ34iHvo' },
   { id: 'rift', name: 'Rift Ceremony', bpm: 151, root: 35, swing: 0.08, ref: 'VUFr92i5jkA' },
 ];
+export const MAX_RATCHETS = 8, MAX_CHORD_INTERVALS = 7;
 export const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 export const noteHz = (n) => 440 * Math.pow(2, (n - 69) / 12);
 export function hash(a, b = 0, c = 0) {
@@ -440,7 +441,7 @@ function validNote(n, kind) {
     return false;
   for (const [key, max] of [
     ['condition', 128],
-    ['ratchet', 8],
+    ['ratchet', MAX_RATCHETS],
   ])
     if (n[key] !== undefined && (!Number.isInteger(n[key]) || !finite(n[key], 1, max))) return false;
   if (['flam', 'slide', 'accent'].some((key) => n[key] !== undefined && typeof n[key] !== 'boolean'))
@@ -448,7 +449,7 @@ function validNote(n, kind) {
   return (
     (!n.chord ||
       (Array.isArray(n.chord) &&
-        n.chord.length <= 7 &&
+        n.chord.length <= MAX_CHORD_INTERVALS &&
         n.chord.every((interval) => Number.isInteger(interval) && finite(interval, -48, 48)))) &&
     (!n.locks || instrumentValues(n.locks, kind))
   );

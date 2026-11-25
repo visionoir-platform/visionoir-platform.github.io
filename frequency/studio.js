@@ -21,6 +21,8 @@ import {
   act,
   number,
   slider,
+  instrumentParamLabel,
+  instrumentParamStep,
   select,
   download,
   newNote,
@@ -585,6 +587,7 @@ export async function startStudio() {
     );
   }
   function stepDialog() {
+    const trackParams = { ...audio.PARAMETER_BANK[track().instrument], ...track().params };
     const pat = pattern(),
       pos = Math.min(pat.length - 1, s.step);
     s.step = pos;
@@ -609,10 +612,8 @@ export async function startStudio() {
               ),
             )
             .join(''),
-        )}</div><div class="bar-tools">${['accent', 'slide', 'flam'].map((k) => act('flag', k === 'accent' ? t(k) : k, { data: 'data-id="' + k + '"', pressed: !!ev[k] })).join('')}${act('remove-note', t('deleteStep'))}</div><h3>${h(t('locks'))}</h3><div class="knobs">${Object.keys(
-          track().params,
-        )
-          .map((k) => slider(k, 'lock:' + k, ev.locks?.[k] ?? track().params[k]))
+        )}</div><div class="bar-tools">${['accent', 'slide', 'flam'].map((k) => act('flag', k === 'accent' ? t(k) : k, { data: 'data-id="' + k + '"', pressed: !!ev[k] })).join('')}${act('remove-note', t('deleteStep'))}</div><h3>${h(t('locks'))}</h3><div class="knobs">${Object.entries(trackParams)
+          .map(([key, value]) => slider(instrumentParamLabel(track().instrument, key, t), 'lock:' + key, ev.locks?.[key] ?? value, 0, 1, instrumentParamStep(track().instrument, key)))
           .join('')}</div>${act('clear-locks', t('clear') + ' · ' + t('locks'))}`
       : act('insert-note', t('insert') + ' ' + t('note'));
     open(
@@ -1857,7 +1858,7 @@ export async function startStudio() {
       const [group, idx, prop] = id.split(':');
       if (group === 'm') s.p.master.volume = x;
       else if (group === 'v' && s.p.tracks[idx]) s.p.tracks[idx].volume = x;
-      else if (group === 'p' && Object.hasOwn(s.p.tracks[idx]?.params || {}, prop))
+      else if (group === 'p' && Object.hasOwn(audio.PARAMETER_BANK[s.p.tracks[idx]?.instrument] || {}, prop))
         s.p.tracks[idx].params[prop] = x;
       else return;
       if (engine.control) engine.control(id, x);
