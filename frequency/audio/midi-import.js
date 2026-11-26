@@ -54,6 +54,7 @@ function label(bytes) {
 
 function readTrack(reader, track, result, budget) {
   const channels = new Map(), pending = new Map();
+  const mixer = [];
   let tick = 0, status = 0, name = '', ended = false;
   while (reader.pos < reader.bytes.length) {
     if (++budget.events > maxEvents) tooLarge();
@@ -100,6 +101,10 @@ function readTrack(reader, track, result, budget) {
     const pitch = reader.dataByte();
     if (kind === 0xc || kind === 0xd) continue;
     const velocity = reader.dataByte();
+    if (kind === 11 && tick === 0 && (pitch === 7 || pitch === 10)) {
+      const mix = mixer[channel] ??= {};
+      mix[pitch === 7 ? 'volume' : 'pan'] = velocity;
+    }
     if (kind !== 8 && kind !== 9) continue;
     const key = channel * 128 + pitch;
     let queue = pending.get(key);
@@ -129,6 +134,7 @@ function readTrack(reader, track, result, budget) {
   }
   for (const group of channels.values()) {
     group.name = name;
+    if (mixer[group.channel]) group.mix = mixer[group.channel];
     result.groups.push(group);
   }
   result.endTick = Math.max(result.endTick,tick);

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { MAX_MIDI_FILE_BYTES, parseMidi } from '../midi-import.js';
 import { renderMidi } from '../formats.js';
 import { createProject } from '../model.js';
+import { projectFromMidi } from '../midi-project.js';
 
 const eot = [255,47,0];
 const chunk = (id, data) => {
@@ -55,12 +56,15 @@ test('type 1 merges tempo and marker order across tracks and bounds an open note
   ]);
 });
 
-test('the native MIDI export reopens with flat tempo, track title, marker, pitch, gates and raw velocity', async () => {
+test('the native MIDI export reopens with flat tempo, notes, marker and the initial mixer settings', async () => {
   const p = createProject();
   p.bpm = 120;
   p.arrangement = [{scene:0,bars:1,marker:'Opening'}];
   p.tracks[2].name = 'Pulse';
+  p.tracks[2].volume = 0.33;
+  p.tracks[2].pan = 0.6;
   p.scenes[0].patterns[2].steps[1] = {note:58,velocity:0.5,gate:1.5,chord:[7]};
+  p.arrangement[0].automation = [{track:p.tracks[2].id,target:'pan',points:[{step:2,value:-1}]}];
   const data = parseMidi(new Uint8Array(await renderMidi(p).arrayBuffer()));
   assert.equal(data.ppqn,480);
   assert.equal(data.endTick,1920);
@@ -68,8 +72,27 @@ test('the native MIDI export reopens with flat tempo, track title, marker, pitch
   assert.deepEqual(data.markers,[{tick:0,name:'Opening'}]);
   assert.equal(data.groups.length,1);
   assert.equal(data.groups[0].name,'Pulse');
+  assert.deepEqual(data.groups[0].mix,{volume:42,pan:102});
   assert.deepEqual(data.groups[0].notes,[{tick:120,endTick:300,note:58,velocity:64},
     {tick:120,endTick:300,note:65,velocity:46}]);
+  const restored = projectFromMidi(data, 'mix.mid');
+  assert.equal(restored.tracks.length, 2);
+  for (const track of restored.tracks) {
+    assert.equal(track.volume, 42/127);
+    assert.equal(track.pan, 38/63);
+  }
+});
+
+test('the last matching controller at tick zero wins and a different MIDI channel keeps its own mix', () => {
+  const midi = parseMidi(smf([[
+    0,0xb0,7,90, 0,7,0, 0,10,64,
+    0,0xb1,10,127, 0,0x90,60,96, 0,0x91,63,96,
+    120,0x80,60,0, 0,0x81,63,0, 0,...eot,
+  ]]));
+  const [left, right] = projectFromMidi(midi, 'controls.mid').tracks;
+  assert.equal(left.volume, 0);
+  assert.equal(left.pan, 0);
+  assert.equal(right.pan, 1);
 });
 
 test('unsupported formats, malformed chunks, invalid running status and truncated messages fail distinctly', () => {

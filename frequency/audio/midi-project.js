@@ -24,6 +24,15 @@ function projectTempo(midi) {
 function startLane(lanes, groupLanes, group) {
   if (lanes.length === 32) throw tooLarge();
   const track = createTrack(group.channel === 9 ? 'schranz' : 'lead', lanes.length);
+  const {volume, pan} = group.mix ?? {};
+  if (volume !== undefined) {
+    if (!integer(volume, 0, 127)) throw invalid();
+    track.volume = volume / 127;
+  }
+  if (pan !== undefined) {
+    if (!integer(pan, 0, 127)) throw invalid();
+    track.pan = (pan - 64) / (pan < 64 ? 64 : 63);
+  }
   const name = label(group.name) || 'MIDI ' + (group.channel + 1);
   track.name = groupLanes.length ? name + ' · ' + (groupLanes.length + 1) : name;
   const lane = { track, notes: new Map(), activeEnds: [], last: null };
