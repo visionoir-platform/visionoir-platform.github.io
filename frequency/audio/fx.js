@@ -1,6 +1,7 @@
 import { clamp, macroEq } from './model.js';
 
 const tau = Math.PI * 2;
+const eqKeys = ['b0', 'b1', 'b2', 'a1', 'a2'];
 const soft = (x) => x / (1 + Math.abs(x));
 const comp = (x, k) => Math.sign(x) * (Math.min(Math.abs(x), k) + Math.max(0, Math.abs(x) - k) * 0.22);
 const delayed = new Set([
@@ -40,6 +41,7 @@ export class Effect {
     this.zL = this.zR = this.env = this.wet = this.L = this.R = 0;
     this.write = this.phase = this.head = this.frame = 0;
     this.freezeSize = this.captured = this.freezePos = 0;
+    if (this.eqTarget) this.finishEqRamp();
     if (this.id === 'dj') {
       this.djCut = this.djCutTarget;
       this.djMix = this.djMixTarget;
@@ -65,11 +67,13 @@ export class Effect {
         const A = 10 ** (settings.gain / 40);
         const alpha = Math.sin(w) / (2 * settings.q);
         const a0 = 1 + alpha / A;
-        this.b0 = (1 + alpha * A) / a0;
-        this.b1 = (-2 * Math.cos(w)) / a0;
-        this.b2 = (1 - alpha * A) / a0;
-        this.a1 = this.b1;
-        this.a2 = (1 - alpha / A) / a0;
+        const b1 = (-2 * Math.cos(w)) / a0;
+        this.eqTarget = [(1 + alpha * A) / a0, b1, (1 - alpha * A) / a0, b1, (1 - alpha / A) / a0];
+        if (this.b0 === undefined || (!this.target && this.wet < 0.0001)) this.finishEqRamp();
+        else {
+          this.eqRamp = Math.max(1, Math.round(0.008 * this.rate));
+          this.eqDelta = this.eqTarget.map((value, i) => (value - this[eqKeys[i]]) / this.eqRamp);
+        }
       }
     }
     this.cut = 1 - Math.exp((-tau * (160 + this.amount * this.amount * 12000)) / this.rate);
@@ -77,6 +81,10 @@ export class Effect {
     this.locut = 1 - Math.exp((-tau * 180) / this.rate);
     this.smooth = 1 - Math.exp(-1 / (0.006 * this.rate));
     if (this.id === 'dj') this.configureDjFilter();
+  }
+  finishEqRamp() {
+    for (let i = 0; i < eqKeys.length; i++) this[eqKeys[i]] = this.eqTarget[i];
+    this.eqRamp = 0;
   }
   configureDjFilter() {
     if (this.djAmount === this.amount) return;
@@ -101,6 +109,7 @@ export class Effect {
   step(l, r, detector = 0) {
     this.wet += (this.target - this.wet) * this.smooth;
     if (this.wet < 0.0001 && this.target === 0) {
+      if (this.eqRamp > 0) this.finishEqRamp();
       this.L = l;
       this.R = r;
       return;
@@ -112,6 +121,12 @@ export class Effect {
     this.frame++;
     switch (this.id) {
       case 'eq': {
+        // Change the coefficients from the current response, including when the user
+        // moves the knob again before the previous adjustment has settled.
+        if (this.eqRamp > 0) {
+          if (--this.eqRamp === 0) this.finishEqRamp();
+          else for (let i = 0; i < eqKeys.length; i++) this[eqKeys[i]] += this.eqDelta[i];
+        }
         x = this.b0 * l + this.lowL;
         y = this.b0 * r + this.lowR;
         this.lowL = this.b1 * l - this.a1 * x + this.highL;
