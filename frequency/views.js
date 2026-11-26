@@ -25,6 +25,10 @@ export function renderEditor(state, t, audio, locale = 'it') {
   const head = `<header class="panelhead"><div><small>${h(t(view === 'live' ? 'performance' : 'project'))} / ${h(p.name)}</small><h2>${h(t(view === 'live' ? 'performance' : view))}</h2></div><div class="zone-options">${select(t('scene'), 'scene', p.scenes.map((s, i) => option(i, pad(i + 1) + ' · ' + s.name, i === scene)).join(''))}</div></header>`;
   const rows = state.bank * Math.max(1, state.bankSize),
     cut = p.tracks.slice(rows, rows + state.bankSize);
+  const rowLabel = (track, index, tabIndex) => act('channel', track.name, {
+    classes:'row-label', pressed:index === channel,
+    data:data('index', index) + (tabIndex === undefined ? '' : ' tabindex="' + tabIndex + '"'),
+  });
   const ctrls = `<div class="matrix-commands">${act('bank-prev', '◂', { title: t('previous'), disabled: !state.bank })}<span>${pad(rows + 1)}–${pad(rows + cut.length)}</span>${act('bank-next', '▸', { title: t('next'), disabled: rows + cut.length >= p.tracks.length })}<i></i>${act('page-prev', '‹', { title: t('previous'), disabled: !page })}<span>${pad(page * 16 + 1)}–${pad(page * 16 + 16)}</span>${act('page-next', '›', { title: t('next'), disabled: page >= 7 })}</div>`;
   const stepGrid = () => {
     const start = page * 16;
@@ -41,7 +45,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
     const lines = cut.map((tr,j) => {
       const ci = rows + j, pattern = p.scenes[scene].patterns[ci];
       const tab = pos => ci === activeRow && pos === activePos ? 0 : -1;
-      const label = act('channel', tr.name, { classes:'row-label', data:data('index',ci) + ' tabindex="' + tab(-1) + '"', pressed:ci === channel });
+      const label = rowLabel(tr, ci, tab(-1));
       const cells = Array.from({length:16}, (_, i) => {
         const pos = start + i, outside = pos >= pattern.length;
         const event = outside ? null : pattern.steps[pos];
@@ -99,7 +103,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
     return (
       head +
       timeline + audioRegionList(p, t) + '<div class="bar-tools">'+act('auto-open',t('automation'))+'</div>' +
-      `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('loop', t('loop'), { pressed: !!p.loop?.on })} ${number(t('start'), 'loop-start', (p.loop?.start ?? 0) + 1, 1, bar - 1)} ${number(t('end'), 'loop-end', p.loop?.end ?? bar - 1, 1, bar - 1)} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
+      `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
     );
   }
   if (view === 'mixer') {

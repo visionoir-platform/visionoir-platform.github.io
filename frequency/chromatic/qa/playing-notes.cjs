@@ -64,13 +64,17 @@ async function run(browser, project, buffered) {
     await context.addInitScript(observe, buffered);
     context.on('page', p=>p.on('pageerror',e=>errors.push(e.message)));
     const desk = await context.newPage();
-    await desk.goto(new URL('/frequency/?lang=it',process.env.CHROMATIC_ORIGIN || 'http://127.0.0.1:4271').href);
+    await desk.goto(new URL('/frequency/?lang=it&client=private-fixture#private-fragment',process.env.CHROMATIC_ORIGIN || 'http://127.0.0.1:4271').href);
     await desk.locator('#project-file').setInputFiles({name:'gates.vfreq',mimeType:'application/json',buffer:project});
     await desk.waitForFunction(()=>document.querySelector('#notice')?.textContent.includes('QA · Chromatic'));
     const ready=desk.waitForEvent('popup');
     await desk.getByRole('button',{name:'Finestra proiettore',exact:true}).click();
     const output=await ready;
     await output.waitForFunction(()=>window.gateProof.frames>0);
+    const target = new URL(output.url());
+    assert.deepEqual([...target.searchParams.keys()].sort(), ['lang', 'output', 'view']);
+    assert.equal(target.searchParams.get('lang'), 'it');
+    assert.equal(target.hash, '');
     await desk.locator('[data-action=play]').first().click();
     await output.waitForFunction(()=>{const p=window.gateProof;return p.attack && p.accent && p.release && p.combined && p.shader>.04;},null,{timeout:18000});
     const data = await output.evaluate(()=>window.gateProof);

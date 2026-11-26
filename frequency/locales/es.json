@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "Este archivo incluye los datos del proyecto y las muestras importadas con sus nombres de archivo. Para compartir las notas sin incluir las muestras, elige MIDI.",
   "gridKeys": "Muévete con las flechas. Pulsa Espacio para activar o desactivar el paso y F2 para editar sus valores.",
   "generateTimbre": "Generar timbre",
   "generatePattern": "Generar patrón",

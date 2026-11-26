@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "이 파일에는 프로젝트 데이터와 가져온 샘플의 오디오 및 파일 이름이 포함됩니다. 샘플을 포함하지 않고 음표를 공유하려면 MIDI를 선택하세요.",
   "gridKeys": "방향키로 이동하세요. 스페이스바로 스텝을 켜거나 끄고 F2로 값을 편집할 수 있습니다.",
   "generateTimbre": "음색 생성",
   "generatePattern": "패턴 생성",

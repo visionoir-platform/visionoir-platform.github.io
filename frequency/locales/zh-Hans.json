@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "此文件包含项目数据以及导入的采样音频和文件名。要分享音符而不嵌入采样，请选择 MIDI。",
   "gridKeys": "使用方向键移动。按空格键启用或停用当前步，按 F2 编辑其参数。",
   "generateTimbre": "生成音色",
   "generatePattern": "生成音型",

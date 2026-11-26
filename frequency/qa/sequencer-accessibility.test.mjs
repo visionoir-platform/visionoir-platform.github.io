@@ -42,3 +42,15 @@ test('cursor has a single enabled destination on shortened rows and across pages
   assert.match(later,/data-action="channel" data-index="8" tabindex="0"/);
   assert.equal(later.match(/tabindex="0"/g).length,1);
 });
+
+test('every mixer channel has a named, tabbable selector and only the selected channel is pressed', () => {
+  const html = markup('en',{view:'mixer', channel:2});
+  const buttons = html.match(/<button[^>]+data-action="channel"[^>]*>[^<]*<\/button>/g);
+  assert.equal(buttons.length,16);
+  assert.match(buttons[0],/>A &amp; B<\/button>/);
+  for (const [index, button] of buttons.entries()) {
+    assert.ok(button.includes('data-index="' + index + '"'));
+    assert.ok(button.includes('aria-pressed="' + (index === 2) + '"'));
+    assert.doesNotMatch(button,/tabindex="-1"|disabled/);
+  }
+});

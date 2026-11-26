@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "This file includes project data and any imported samples, along with their file names. To share notes without embedding the samples, choose MIDI.",
   "gridKeys": "Move with the arrow keys. Press Space to toggle a step or F2 to edit its values.",
   "generateTimbre": "Generate timbre",
   "generatePattern": "Generate pattern",

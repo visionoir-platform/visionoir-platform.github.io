@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "Ce fichier contient les données du projet et les éventuels échantillons importés, avec leurs noms de fichier. Pour partager les notes sans les échantillons, choisissez MIDI.",
   "gridKeys": "Déplacez-vous avec les flèches. Appuyez sur Espace pour activer ou désactiver un pas et sur F2 pour modifier ses valeurs.",
   "generateTimbre": "Générer un timbre",
   "generatePattern": "Générer un motif",
