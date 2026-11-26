@@ -22,7 +22,9 @@ export function createShakeDetector() {
     if (lastTime !== null && dt <= 0) return false;
     lastTime = now;
     if (dt > 320) {
-      // A missing interval cannot supply one of the required changes of direction.
+      // Mobile browsers may stop sampling while the phone is still. A long
+      // gap re-arms the detector; three fresh impulses are still required.
+      if (dt >= 1000) locked = false;
       clearPulse(); quietSince = null; gravity = null;
     }
     const input = kind === 'linear' ? event.acceleration : event.accelerationIncludingGravity;
@@ -45,7 +47,7 @@ export function createShakeDetector() {
       return false;
     }
     if (axis && (now - firstTime > 700 || now - pulseTime > 300)) clearPulse();
-    const impulse = kind === 'linear' ? 9 : 9.8; // m/s², excluding gravity
+    const impulse = kind === 'linear' ? 7 : 7.8; // m/s², excluding gravity
     if (magnitude < impulse) return false;
     function startPulse() {
       axis = {x:x/magnitude, y:y/magnitude, z:z/magnitude};
@@ -68,12 +70,14 @@ export function createShakeDetector() {
 }
 
 // Listen from entry. The browser decides when it may deliver motion samples.
-export function mountDeviceShake({onToggle} = {}) {
+export function mountDeviceShake({onToggle, onReading} = {}) {
   const detector = createShakeDetector();
   const supported = window.isSecureContext && ('DeviceMotionEvent' in window || 'ondevicemotion' in window);
   let away = false, listening = false;
   function receive(event) {
-    if (detector.read(event, event.timeStamp)) onToggle?.();
+    const result = detector.read(event, event.timeStamp);
+    if (result !== null) onReading?.();
+    if (result) onToggle?.();
   }
   function refresh() {
     const active = Boolean(supported && !away && !document.hidden);

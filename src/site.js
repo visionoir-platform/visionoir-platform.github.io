@@ -45,13 +45,13 @@ ${t('skip','a','class="skip" href="#contenuto"')}
    <a class="support-link" data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a>
 
   </div>
-  <button type="button" id="logo-scene" ${a11y('ecoDoor')} style="touch-action:manipulation">
+  <button type="button" id="logo-scene" data-motion-permission ${a11y('ecoDoor')} style="touch-action:manipulation">
    <img class="scene-fallback poster" src="${asset('logo.svg')}" alt="" width="660" height="790" fetchpriority="high">
   </button>
  </section>
  <section class="section lab" id="universo">
   <div class="section-copy">${t('experience','p','class="kicker"')}${t('labTitle','h2')}${t('labCopy','p')}
-   <button class="cta cta-secondary js-only" id="immersive">${t('scene')}${arrow}</button>
+   <button class="cta cta-secondary js-only" id="immersive" data-motion-permission>${t('scene')}${arrow}</button>
   </div>
   <div class="track-grid js-only" ${a11y('track')} role="group">
    ${choices.map(track => `<button class="track-card" data-track="${track.id}" aria-pressed="${track.id==='chrome'}"><i aria-hidden="true"></i><span>${trackName(track)}<small>${escape(track.title)} · <bdi>${track.bpm} BPM</bdi></small></span><span aria-hidden="true">▷</span></button>`).join('')}
@@ -115,7 +115,7 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  <div class="footer-sign"><span itemprop="creditText" lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
  <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="#unseen-door">unseen.</a></span>
  <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a>
-    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
+    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" data-motion-permission class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
   <div id="home-preferences" hidden>
    ${t('prefsInfo','p')}
    <div class="prefs-actions">${t('prefsExport','button','type="button" data-prefs="export"')}${t('prefsErase','button','type="button" data-prefs="erase" aria-controls="prefs-review" aria-expanded="false"')}</div>

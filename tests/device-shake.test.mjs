@@ -91,3 +91,47 @@ test('unsupported and insecure contexts do not react to motion',()=>{
     finally{m.dispose();sim.close();}
   }
 });
+
+test('a moderate shake and a second burst after sensor silence each toggle exactly once',()=>{
+  const detector=createShakeDetector();
+  const wave=t=>linear(8.4*Math.sin(2*Math.PI*t/260));
+  assert.equal(stream(detector,0,860,16,wave),1);
+  // Some phones stop reporting at rest, so there need not be any zero samples.
+  assert.equal(stream(detector,2200,690,16,wave),1);
+});
+
+test('motion access uses the accelerometer API from the gesture, tolerates duplicate taps and respects refusal',async()=>{
+  const {createDeviceMotionAccess}=await import('../src/device-motion-access.js');
+  let finish, requests=0;
+  const win={isSecureContext:true,
+    DeviceMotionEvent:{requestPermission(){requests++;return new Promise(resolve=>{finish=resolve;});}},
+    DeviceOrientationEvent:{requestPermission(){throw Error('Wrong API for shake');}}};
+  const access=createDeviceMotionAccess(win);
+  access.observed('orientation');
+  assert.equal(access.state,'ask');
+  assert.equal(requests,0);
+  const pending=access.request();
+  assert.equal(requests,1);
+  await access.request();
+  finish('denied'); await pending;
+  assert.equal(access.state,'unavailable');
+  await access.request(); assert.equal(requests,1);
+  const retry=access.request(true); assert.equal(requests,2);
+  finish('granted'); await retry;
+  assert.equal(access.state,'granted');
+  await access.request(); assert.equal(requests,2);
+  access.observed('motion');
+  assert.equal(access.state,'receiving');
+});
+
+test('automatic motion streams and preauthorized motion do not open a permission prompt',async()=>{
+  const {createDeviceMotionAccess}=await import('../src/device-motion-access.js');
+  let count=0;
+  const win={isSecureContext:true,DeviceMotionEvent:{requestPermission(){count++;return 'granted';}}};
+  const granted=createDeviceMotionAccess(win);
+  granted.observed('motion'); await granted.request(true); assert.equal(count,0);
+  const automatic=createDeviceMotionAccess({isSecureContext:true,DeviceMotionEvent:{}});
+  await automatic.request(); assert.equal(automatic.state,'automatic');
+  const orient=createDeviceMotionAccess({isSecureContext:true,DeviceOrientationEvent:win.DeviceMotionEvent});
+  await orient.request(); assert.equal(orient.state,'granted'); assert.equal(count,1);
+});
