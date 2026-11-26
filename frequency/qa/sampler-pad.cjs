@@ -43,7 +43,8 @@ module.exports = async function checkSamplerPad(browser, origin) {
     await file.setInputFiles({name:'delayed-tone.wav', mimeType:'audio/wav', buffer:delayedTone()});
     await page.waitForFunction(node => !node.isConnected, original);
     await original.dispose();
-    await field('param:decay').fill('0');
+    await field('param:decay').press('Home');
+    assert.equal(await field('param:decay').inputValue(), '0');
     await action('preview').click();
     await page.waitForFunction(() => window.samplerMeter?.context.state === 'running');
     await action('stop').click();
@@ -60,7 +61,8 @@ module.exports = async function checkSamplerPad(browser, origin) {
     await page.waitForFunction(() => window.samplerPeak() < 0.0001);
 
     await tab('mixer').click();
-    await field('param:oneShot').fill('0');
+    await field('param:oneShot').press('Home');
+    assert.equal(await field('param:oneShot').inputValue(), '0');
     await tab('live').click();
     await pad.click({delay:25});
     // Sample the same audible section on the actual audio clock with gate mode active.
