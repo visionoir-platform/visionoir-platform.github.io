@@ -239,6 +239,7 @@ async function inspect(browser, mobile, results) {
       const withMusic = await silhouette('natural');
       const playback = await page.evaluate(() => [...document.querySelectorAll('audio')].find(a => !a.paused).currentTime);
       await wait(t => [...document.querySelectorAll('audio')].some(a => !a.paused && a.currentTime > t + .35), playback);
+      await capture('natural-audio');
       await sound.click();
       await wait(() => [...document.querySelectorAll('audio')].every(a => a.paused));
       const atRest = await silhouette('natural');
@@ -257,7 +258,7 @@ async function inspect(browser, mobile, results) {
         return uLook === 2 && uLiquid > .85 && uScatter > .05 && uAudio.some(n => n > .05) && uEcho > .05;
       });
       assert.deepEqual(report.errors, []);
-      console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade, flakes: report.flakes }));
+      console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade, flakes: report.flakes, natural: report.natural }));
       return;
     }
 
