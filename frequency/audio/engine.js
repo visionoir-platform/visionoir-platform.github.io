@@ -79,6 +79,12 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
               case 'play':
                 dsp?.start(m.options);
                 break;
+              case 'pause':
+                dsp?.pause();
+                break;
+              case 'resume':
+                dsp?.resume();
+                break;
               case 'stop':
                 dsp?.stop();
                 tail = 0;
@@ -144,6 +150,19 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
       post('play', { options });
       playing = true;
       onState('playing');
+    },
+    pause() {
+      version++;
+      post('pause');
+      playing = false;
+    },
+    async resume() {
+      const command = ++version;
+      if (!node || !context) throw Error('audio.processorError');
+      if (context.state !== 'running') await context.resume();
+      if (version !== command) return;
+      post('resume');
+      playing = true;
     },
     update(project) {
       validateProject(project);

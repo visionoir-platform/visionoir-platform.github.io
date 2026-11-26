@@ -56,6 +56,7 @@
   "audioRetry": "Audio unterbrochen. Zum Neustart Wiedergabe drücken.",
   "playing": "Wiedergabe",
   "stopped": "Gestoppt",
+  "paused": "Pausiert",
   "choose": "Auswählen",
   "importFile": "Datei importieren",
   "interfaceTitle": "Oberfläche und Tastatur",

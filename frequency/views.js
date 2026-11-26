@@ -1,5 +1,6 @@
 import { pianoView } from './piano.js';
 import { audioRegionList } from './region-editor.js';
+import { liveEffectRest } from './fx-rack.js';
 import {
   escape as h,
   attr,
@@ -138,7 +139,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
           return slider(
             audio.EFFECTS.find((e) => e.id === id)?.name || id,
             'livefx:' + id,
-            fx && !fx.bypass ? fx.amount : 0,
+            fx && !fx.bypass ? fx.amount : liveEffectRest(id),
           );
         })
         .join('')}</div></div>` +

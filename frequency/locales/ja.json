@@ -56,6 +56,7 @@
   "audioRetry": "音声が中断されました。再生を押して再開してください。",
   "playing": "再生中",
   "stopped": "停止中",
+  "paused": "一時停止中",
   "choose": "選択",
   "importFile": "ファイルを読み込む",
   "interfaceTitle": "画面とキーボード",

@@ -20,6 +20,7 @@ export class LiveRack {
     this.held = new Map();
     this.outgoing = null;
     this.queued = null;
+    this.paused = false;
     this.fade = 0;
     this.fadeLength = 0;
     this.left = new Float32Array(1024);
@@ -45,7 +46,7 @@ export class LiveRack {
     this.mixOverload = false;
   }
   get running() {
-    return this.active.running;
+    return !this.paused && this.active.running;
   }
   update(project) {
     this.project = project;
@@ -68,7 +69,14 @@ export class LiveRack {
     this.masterAnalysis?.reset();
     this.active.start(options);
   }
+  pause() {
+    this.paused = this.active.running;
+  }
+  resume() {
+    this.paused = false;
+  }
   stop() {
+    this.paused = false;
     this.masterAnalysis?.truePeak.flush();
     this.budget.reset();
     this.applyBudget();
@@ -128,6 +136,7 @@ export class LiveRack {
     status.correlation =
       this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : null;
     status.clipped ||= this.mixOverload;
+    status.playing = this.running;
     status.dspLoad = this.budget.load;
     status.meterStride = this.active.meterStride;
     status.queuedScene = this.queued?.scene ?? null;
@@ -141,6 +150,11 @@ export class LiveRack {
     return status;
   }
   render(left, right, length = left.length) {
+    if (this.paused) {
+      left.fill(0, 0, length);
+      right.fill(0, 0, length);
+      return;
+    }
     let offset = 0;
     while (offset < length) {
       let count = length - offset;

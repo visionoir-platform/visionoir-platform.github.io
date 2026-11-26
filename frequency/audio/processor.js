@@ -21,6 +21,13 @@ class FrequencyProcessor extends AudioWorkletProcessor {
             this.dsp.start(m.options);
             this.awake = 1;
             break;
+          case 'pause':
+            this.dsp?.pause();
+            this.report();
+            break;
+          case 'resume':
+            this.dsp?.resume();
+            break;
           case 'stop':
             this.dsp?.stop();
             this.awake = 0;
