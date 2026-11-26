@@ -6,6 +6,8 @@ Il Sampler divide la regione tra `start` ed `end` in sedici porzioni contigue. I
 
 Il parametro `slicePad` memorizza il numero del pad diviso per 16. Zero, oppure l’assenza di `slicePad` nei progetti precedenti, richiama lo spostamento continuo originale regolato da `slice`. Questo valore resta memorizzato anche mentre si usano i pad.
 
+Le sessioni che usano soltanto lo spostamento continuo mantengono la compatibilità con i lettori precedenti. Le sessioni con un pad selezionato o un lock esplicito sul pad richiedono una versione di FREQUENCY che supporti le porzioni.
+
 | Campo | Interpretazione |
 | --- | --- |
 | `version`, `name`, `bpm`, `swing`, `seed` | Il formato nativo attuale è `2`. L’editor e l’esportazione JSON compatibile usano la versione `1`. Il tempo è espresso in battiti al minuto, da 40 a 300. `seed` governa le scelte pseudocasuali del sequencer. |

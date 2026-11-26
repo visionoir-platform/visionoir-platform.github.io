@@ -142,11 +142,13 @@ const gains = [
 export function createTrack(instrumentId, index = 0) {
   const s = INSTRUMENTS.find((i) => i.id === instrumentId);
   if (!s) throw Error('instrument');
+  const params = { ...s.params };
+  if (s.id === 'sampler') delete params.slicePad;
   return {
     id: 'ch-' + (index + 1),
     instrument: s.id,
     name: s.name,
-    params: { ...s.params },
+    params,
     bus: s.bus,
     volume: gains[INSTRUMENTS.indexOf(s)],
     gain: 1,
@@ -641,12 +643,26 @@ function packPattern(pattern) {
   return { ...pattern, steps };
 }
 
+// Older readers reject unknown instrument parameters. A track in continuous offset mode
+// needs no slicePad key. Explicit per-note locks (including zero) remain musical data.
+export function projectForStorage(project) {
+  const neutralPad = track => track.instrument === 'sampler' && track.params.slicePad === 0;
+  if (!project.tracks.some(neutralPad)) return project;
+  const tracks = project.tracks.map(track => {
+    if (!neutralPad(track)) return track;
+    const params = { ...track.params };
+    delete params.slicePad;
+    return { ...track, params };
+  });
+  return { ...project, tracks };
+}
+
 export function projectFile(project, version = NATIVE_FILE_VERSION) {
   validateProject(project);
-  let data = project;
+  let data = projectForStorage(project);
   if (version === 2) {
     const scenes = project.scenes.map(scene => ({ ...scene, patterns: scene.patterns.map(packPattern) }));
-    data = { ...project, version, scenes };
+    data = { ...data, version, scenes };
   } else if (version !== 1) {
     throw Error('project.version');
   }

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { DSP } from '../dsp.js';
-import { createProject, projectFile, readProject } from '../model.js';
+import { createProject, projectFile, projectForStorage, readProject } from '../model.js';
 import { renderOffline } from '../offline.js';
 import { samplerBounds } from '../sampler-slices.js';
 import { samplerPanel, samplerLockMenu } from '../../sampler-panel.js';
@@ -61,6 +61,24 @@ test('old offsets and sub-sixteen-frame trims preserve valid source bounds and u
   assert.match(markup,/data-index="3"[^>]+aria-pressed="true"/);
   assert.doesNotMatch(markup,/data-field="param:slice"/);
   assert.match(samplerLockMenu(track,track.params,key=>key),/data-field="lock:slicePad"/);
+});
+
+test('unselected slice pads stay out of legacy projects, local saves and both export versions', async () => {
+  const p = fixture(), track = p.tracks[15];
+  assert.equal(Object.hasOwn(track.params,'slicePad'),false);
+  // A saved preset or controller can explicitly return a track to continuous offset mode.
+  track.params.slicePad = 0;
+  for (const version of [1,2]) {
+    const saved = await readProject(projectFile(p,version));
+    assert.equal(Object.hasOwn(saved.tracks[15].params,'slicePad'),false);
+    assert.equal(saved.tracks[15].params.slice,0.63);
+  }
+  assert.equal(Object.hasOwn(projectForStorage(p).tracks[15].params,'slicePad'),false);
+  assert.equal(track.params.slicePad,0);
+  track.params.slicePad = 0.5;
+  p.scenes[0].patterns[15].steps[0] = {note:60,velocity:1,locks:{slicePad:0}};
+  for (const version of [1,2]) assert.deepEqual(await readProject(projectFile(p,version)),p);
+  assert.deepEqual(projectForStorage(p),p);
 });
 
 test('saved step locks select different slices in the arrangement WAV and preserve the imported take', async () => {
