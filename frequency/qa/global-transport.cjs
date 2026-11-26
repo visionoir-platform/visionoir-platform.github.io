@@ -33,7 +33,9 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
     await loop.waitFor();
     assert.ok(await undo.isDisabled() && await redo.isDisabled());
     for (const view of ['sequencer','piano','mixer','live','arrangement']) {
-      await page.locator('[data-tab="' + view + '"]').click();
+      const tab = page.locator('[data-tab="' + view + '"]');
+      await tab.click();
+      await page.locator('#editor').getByRole('heading',{level:2,name:await tab.textContent(),exact:true}).waitFor();
       for (const id of ['play','stop','record','save','export','loop','undo','redo'])
         assert.equal(await transport.locator('[data-action="' + id + '"]').count(),1);
       for (const id of ['loop','undo','redo'])
@@ -58,6 +60,7 @@ const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
     await first.fill('8'); await first.press('Tab');
     assert.equal(await first.inputValue(),'2');
     await undo.click(); assert.equal(await last.inputValue(),String(bars));
+    assert.ok(await redo.isEnabled());
     await redo.press('Enter'); assert.equal(await last.inputValue(),'4');
     assert.ok(await redo.isDisabled());
     await undo.click();
