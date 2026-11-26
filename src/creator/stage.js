@@ -105,9 +105,11 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
     const seconds = Math.min(240, Math.max(16,dt)) / 1000;
     const mode = track(),
       value = look();
+    // Natural keeps the source pose while the camera and the music remain independent.
+    const reactive = motion && value !== 'natural';
     u.uLook.value = value === 'natural' ? 0 : value === 'liquid' ? 2 : 1;
     const liquidTarget = Number(value === 'liquid');
-    u.uLiquid.value = motion ? easePortrait(u.uLiquid.value, liquidTarget, seconds, .23) : liquidTarget;
+    u.uLiquid.value = reactive ? easePortrait(u.uLiquid.value, liquidTarget, seconds, .23) : liquidTarget;
     if (theme !== mode) {
       theme = mode;
       u.uProfile.value = portraitProfile(mode);
@@ -116,22 +118,26 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
       u.uNoir.value = Number(mode === 'noir');
       host.style.setProperty('--portrait-light', trackAccents[mode] || trackAccents.chrome);
     }
-    const a = motion ? beat() || {} : {},
-      current = u.uAudio.value;
-    current.x = motion ? easePortrait(current.x, clamp(a.bass), seconds, .11) : 0;
-    current.y = motion ? easePortrait(current.y, clamp(a.mid), seconds, .11) : 0;
-    current.z = motion ? easePortrait(current.z, clamp(a.high), seconds, .11) : 0;
-    current.w = motion ? easePortrait(current.w, clamp(a.level), seconds, .11) : 0;
+    const current = u.uAudio.value;
+    if (reactive) {
+      const a = beat() || {};
+      current.x = easePortrait(current.x, clamp(a.bass), seconds, .11);
+      current.y = easePortrait(current.y, clamp(a.mid), seconds, .11);
+      current.z = easePortrait(current.z, clamp(a.high), seconds, .11);
+      current.w = easePortrait(current.w, clamp(a.level), seconds, .11);
+    } else {
+      current.set(0, 0, 0, 0);
+    }
     const particles = scatterTarget(u.uProfile.value, current.x, current.y, current.z, current.w);
-    u.uScatter.value = motion ? easePortrait(u.uScatter.value, particles, seconds,
+    u.uScatter.value = reactive ? easePortrait(u.uScatter.value, particles, seconds,
       particles > u.uScatter.value ? .13 : .31) : 0;
     dust.visible = u.uScatter.value > 0;
     flakes.visible = dust.visible;
     const trail = Math.min(1, .64 * current.x + .72 * current.w);
-    u.uEcho.value = motion && mode === 'afterimage'
+    u.uEcho.value = reactive && mode === 'afterimage'
       ? easePortrait(u.uEcho.value, trail, seconds, .26) : 0;
     echo.visible = u.uEcho.value > 0;
-    if (motion && (current.w || current.x || current.y || current.z)) elapsed += seconds;
+    if (current.w || current.x || current.y || current.z) elapsed += seconds;
     else if (!u.uScatter.value && !u.uEcho.value) elapsed = 0;
     u.uTime.value = elapsed;
     if (motion && dt > 70) {

@@ -23,7 +23,7 @@ function observeCanvas() {
   const gl = WebGL2RenderingContext.prototype;
   const locations = new WeakMap();
   const qs = window.portraitQA = { current: {}, transitions: [], renderTimes: [], echoes: 0, draws: 0 };
-  const observed = new Set(['uProfile', 'uTime', 'uLiquid', 'uScatter', 'uEcho', 'uAudio']);
+  const observed = new Set(['uLook', 'uProfile', 'uTime', 'uLiquid', 'uScatter', 'uEcho', 'uAudio']);
   const active = new WeakMap(), values = new WeakMap();
   const flakePrograms = new WeakMap();
   let flakeQuery = null;
@@ -67,6 +67,11 @@ function observeCanvas() {
       const state = values.get(active.get(this));
       if (state) qs.draws++;
       if (state?.uEcho > 0) qs.echoes++;
+      if (state && qs.naturalPasses) {
+        const effect = args[0] === this.POINTS || state.uEcho !== undefined ||
+          this.getAttribLocation(active.get(this), 'flakeOrigin') >= 0;
+        qs.naturalPasses[effect ? 'effects' : 'surface']++;
+      }
       if (state && qs.captureMask) {
         const done = qs.captureMask;
         qs.captureMask = null;
@@ -165,11 +170,11 @@ async function inspect(browser, mobile, results) {
     const select = page.locator('#track-select');
     const wait = (predicate, arg) => page.waitForFunction(predicate, arg, { timeout: acidOnly ? 45000 : 20000 });
     const capture = label => stage.screenshot({ path: path.join(output, name + '-' + label + '.png') });
-    async function silhouette() {
+    async function silhouette(look = 'metal') {
       // Re-selecting the current finish is a real invalidation, also when the resting renderer is asleep.
       const [mask] = await Promise.all([
         page.evaluate(() => window.portraitQA.silhouette()),
-        page.locator('[data-look="metal"]').click(),
+        page.locator(`[data-look="${look}"]`).click(),
       ]);
       return mask;
     }
@@ -219,6 +224,38 @@ async function inspect(browser, mobile, results) {
         path.join(__dirname, 'qa-acid-reflections.py'), path.join(output, name + '-acid-audio.png'),
       ], { encoding: 'utf8' });
       report.grade = JSON.parse(metrics);
+
+      // Exercise the transition from a track with a live echo to the original pose.
+      await select.selectOption('afterimage');
+      await stage.scrollIntoViewIfNeeded();
+      await wait(() => window.portraitQA.current.uProfile === 3 && window.portraitQA.echoes > 0 &&
+        [...document.querySelectorAll('audio')].some(a => !a.paused && a.currentSrc.endsWith('/visionoir-acid.mp3')));
+      await page.locator('[data-look="natural"]').click();
+      await wait(() => {
+        const {uLook,uScatter,uAudio,uTime,uLiquid} = window.portraitQA.current;
+        return uLook === 0 && uScatter === 0 && uTime === 0 && uLiquid === 0 && uAudio.every(n => n === 0);
+      });
+      await page.evaluate(() => { window.portraitQA.naturalPasses = {surface:0,effects:0}; });
+      const withMusic = await silhouette('natural');
+      const playback = await page.evaluate(() => [...document.querySelectorAll('audio')].find(a => !a.paused).currentTime);
+      await wait(t => [...document.querySelectorAll('audio')].some(a => !a.paused && a.currentTime > t + .35), playback);
+      await sound.click();
+      await wait(() => [...document.querySelectorAll('audio')].every(a => a.paused));
+      const atRest = await silhouette('natural');
+      const passes = await page.evaluate(() => {
+        const result = window.portraitQA.naturalPasses;
+        window.portraitQA.naturalPasses = null;
+        return result;
+      });
+      report.natural = { passes, silhouette: compareMasks(withMusic, atRest) };
+      assert.ok(passes.surface >= 2 && passes.effects === 0, 'Only the intact mesh should draw in Natural');
+      assert.ok(report.natural.silhouette.overlap > .995, 'Natural should preserve its resting silhouette during playback');
+      await sound.click();
+      await page.locator('[data-look="liquid"]').click();
+      await wait(() => {
+        const {uLook,uLiquid,uScatter,uAudio,uEcho} = window.portraitQA.current;
+        return uLook === 2 && uLiquid > .85 && uScatter > .05 && uAudio.some(n => n > .05) && uEcho > .05;
+      });
       assert.deepEqual(report.errors, []);
       console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade, flakes: report.flakes }));
       return;
