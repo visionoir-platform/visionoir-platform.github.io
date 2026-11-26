@@ -132,7 +132,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
       act('track-settings','FX / I/O')+'</div>';
     return (
       head +
-      `<div class="bar-tools">${act('protect', t('protectedMode'), { pressed: state.protect })}${act('add-scene', '+ ' + t('scene'))}${act('master-mute', t('mute') + ' · ' + t('master'), { pressed: !!p.master.mute })}${act('tap', 'Tap tempo')}${act('preflight', t('check'))}${number(t('sceneFade') + ' · ♩', 'crossfade-beats', p.crossfadeBeats ?? 1, 0, 4, 0.25)}</div><div class="scene-pads">${p.scenes.map((s, i) => act('launch', pad(i + 1) + ' / ' + s.name, { classes: 'scene-pad', pressed: state.playScene === i, data: data('index', i) })).join('')}</div><h3>${h(t('instrument'))}</h3><div class="pads">${p.tracks.map((tr, i) => `<button data-pad="${i}" style="--voice:${channelColor(i)}"><small>${pad(i + 1)}</small>${h(tr.name)}</button>`).join('')}</div><div class="instrument-panel"><h3>Live FX</h3><div class="knobs">${[
+      `<div class="bar-tools">${act('protect', t('protectedMode'), { pressed: state.protect })}${act('add-scene', '+ ' + t('scene'))}${act('master-mute', t('mute') + ' · ' + t('master'), { pressed: !!p.master.mute })}${act('tap', 'Tap tempo')}${act('preflight', t('check'))}${number(t('sceneFade') + ' · ♩', 'crossfade-beats', p.crossfadeBeats ?? 1, 0, 4, 0.25)}</div><div class="scene-pads">${p.scenes.map((s, i) => act('launch', pad(i + 1) + ' / ' + s.name, { classes: 'scene-pad', pressed: state.playScene === i, data: data('index', i) })).join('')}</div><h3>${h(t('instrument'))}</h3><div class="pads">${p.tracks.map((tr, i) => `<button data-pad="${i}" style="--voice:${channelColor(i)}"><small>${pad(i + 1)}</small>${h(tr.name)}</button>`).join('')}</div><div class="live-faders"><div class="instrument-panel"><h3>Live FX</h3><div class="knobs">${[
         'dj',
         'repeat',
         'glitch',
@@ -147,7 +147,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
           );
         })
         .join('')}</div></div>` +
-      liveChannel + masterPanel(state, t)
+      liveChannel + masterPanel(state, t) + '</div>'
     );
   }
   return head;

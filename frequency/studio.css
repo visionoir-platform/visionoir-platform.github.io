@@ -276,7 +276,7 @@ select {
   font-size: 0.73rem;
 }
 .field > span,
-.fader > span {
+.fader label > span {
   color: var(--muted);
   font-size: 0.68rem;
 }
@@ -562,7 +562,11 @@ select {
   background: linear-gradient(150deg, #2a302b, #1e231e);
   padding: 9px;
 }
+.fader label {
+  display: contents;
+}
 .fader output {
+  grid-area: 1 / 2;
   font: 600 0.63rem var(--mono);
   color: #dbe9d3;
 }
@@ -1518,6 +1522,16 @@ label[hidden] {
 .live-channel .fader {
   min-width: 8rem;
   flex: 1;
+}
+@media (any-pointer: coarse) {
+  .live-faders input[type='range'] {
+    min-height: 44px;
+  }
+}
+@media (any-pointer: coarse) and (max-width: 500px) {
+  .live-faders .knobs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .scene-pad.queued {
   outline: 2px dashed var(--acid);
