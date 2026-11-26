@@ -93,7 +93,7 @@ export function mountCreator(
         url: modelURL || base + 'creator/creator-' + (mobile ? 'mobile' : 'desktop') + '.glb',
         syncPoster, yaw, pitch,
         beat: getSignal,
-        playing: () => spin.running || isPlaying(),
+        playing: () => spin.running || (look !== 'natural' && isPlaying()),
         afterDraw: syncReadout,
         track: getMode,
         look: () => look,

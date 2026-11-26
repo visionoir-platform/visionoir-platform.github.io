@@ -6,6 +6,7 @@ import { TessellateModifier } from 'three/examples/jsm/modifiers/TessellateModif
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
 import { vertex, fragment } from './shaders.js';
 import { makeHistory } from './history.js';
+import { LookTransition } from './look-transition.js';
 import { spatialScore } from './spatial.js';
 import { advanceBlend, phraseMode, unseenMode } from './visual-score.js';
 import { applyNoteEdges, defaultVisual, mixVisualVoices, modes, normalizeSignal, unit } from './model.js';
@@ -98,6 +99,7 @@ export async function buildStage(
   {
     getSignal = () => ({}),
     getState = () => defaultVisual(),
+    getLookCue = () => null,
     assetLoader = logoAsset,
     creator = false,
     poster,
@@ -185,6 +187,7 @@ export async function buildStage(
     envelope = new Float32Array(16),
     hits = new Float32Array(16);
   const blend = { from: 0, to: 0, mix: 1 };
+  const look = new LookTransition(), fromTint = new T.Color();
   const tempBands = new T.Vector4(),
     colorA = new T.Color(),
     colorB = new T.Color();
@@ -280,16 +283,17 @@ export async function buildStage(
   function draw(now) {
     raf = 0;
     if (closed || lost || (!visible && !recording) || document.hidden || !solid || failed) return;
-    const state = getState() || defaultVisual(),
-      simple = state.reduced || motion.matches,
-      frozen = state.freeze;
     const interval = last ? now - last : 16.6,
       dt = Math.min(0.08, interval / 1000);
     last = now;
     if (!canDraw()) return;
+    const s = normalizeSignal(getSignal() || {}, currentSignal);
+    // Reading the signal can recall the cue belonging to the current scene.
+    const authored = getState() || defaultVisual(),
+      simple = authored.reduced || motion.matches,
+      frozen = authored.freeze;
     if (!creator) polarity.update(dt, !simple && !frozen);
     else polarity.uniform.value = 0;
-    const s = normalizeSignal(getSignal() || {}, currentSignal);
     const loadChanged = !frozen && audioLimited !== s.audioPressure;
     if (loadChanged) {
       audioLimited = s.audioPressure;
@@ -297,22 +301,24 @@ export async function buildStage(
     }
     const index = Math.max(
       0,
-      modes.findIndex((m) => m[0] === state.mode),
+      modes.findIndex((m) => m[0] === authored.mode),
     );
-    if (host.dataset.visualMode !== state.mode) host.dataset.visualMode = state.mode;
-    const changed = state !== lastState || simple !== reduced || loadChanged;
+    if (host.dataset.visualMode !== authored.mode) host.dataset.visualMode = authored.mode;
+    const changed = authored !== lastState || simple !== reduced || loadChanged;
     if (simple && !changed && now - lastTimeToken < 220) {
       request();
       return;
     }
     lastTimeToken = now;
+    const cue = getLookCue();
+    const state = look.sample(authored, cue, frameWindow.performance.timeOrigin + now, simple);
     if (!frozen || changed) {
       const inScore = !creator && !simple && index === unseenMode;
       const target = inScore ? phraseMode(s.beat, s.scene) : index;
       const transition = 0.45 + (1 - state.rebuild) * 0.85;
       // Phrase changes take up to two beats, even during a quiet passage.
       const duration = inScore ? Math.min(transition, 120 / s.bpm) : transition;
-      advanceBlend(blend, target, simple ? 1 : dt / duration);
+      advanceBlend(blend, target, simple ? 1 : frozen ? 0 : dt / duration);
       const { from: fromMode, to: nextMode, mix } = blend;
       if (!frozen && !simple) elapsed += dt;
       const t = elapsed * (state.sync ? Math.min(2.4, s.bpm / 125) : 1);
@@ -348,8 +354,11 @@ export async function buildStage(
       u.uDepth.value = state.depth;
       colorA.set(modes[fromMode][2]);
       colorB.set(modes[nextMode][2]);
-      u.uTint.value.copy(colorA.lerp(colorB, mix));
-      if (state.color) u.uTint.value.set(state.color);
+      const tint = colorA.lerp(colorB, mix);
+      if (authored.color) tint.set(authored.color);
+      if (look.started) fromTint.copy(u.uTint.value);
+      if (look.mix < 1 && !cue.direct.includes('color')) u.uTint.value.lerpColors(fromTint, tint, look.mix);
+      else u.uTint.value.copy(tint);
       const ghost =
         (Number(fromMode === 9) * (1 - mix) + Number(nextMode === 9) * mix) *
         (!simple && !audioLimited && mood !== 'natural' ? 1 : 0);
@@ -393,7 +402,7 @@ export async function buildStage(
       );
       camera.lookAt(0, creator ? 0.24 : 0, 0);
     }
-    lastState = state;
+    lastState = authored;
     reduced = simple;
     const persistent =
       !creator && !simple && !audioLimited && state.quality !== 'low' && quality > 0.71 && [9, 14, unseenMode].includes(index);

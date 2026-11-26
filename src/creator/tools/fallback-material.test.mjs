@@ -21,9 +21,15 @@ test('each track resolves to its own existing poster and turntable for both meta
     assert.equal(frames.size,6);
   }
 });
-test('photographic finishes retain their original resources, and unknown IDs use Cromo', () => {
+test('Natural uses the same original poster and turntable in every track', async () => {
   for (const track of Object.keys(trackAccents)) {
-    assert.deepEqual(fallbackMaterial(track,'natural'),{poster:track==='acid'?'-acid-natural':'-natural',atlas:'-natural'});
+    assert.deepEqual(fallbackMaterial(track,'natural'),{poster:'-natural',atlas:'-natural'});
   }
+  for (const name of ['poster-natural','turntable-natural']) {
+    const data = await readFile(new URL('../../../public/creator/' + name + '.webp',import.meta.url));
+    assert.equal(data.toString('ascii',8,12),'WEBP');
+  }
+});
+test('unknown IDs use Cromo', () => {
   assert.deepEqual(fallbackMaterial('unknown','liquid'),fallbackMaterial('chrome','liquid'));
 });

@@ -211,7 +211,7 @@ async function verifyRuntime(browser, base, observations) {
           for (const look of ['metal', 'natural', 'liquid']) {
             await page.locator('[data-look="' + look + '"]').click();
             const name =
-              'poster' + (mode === 'acid' ? '-acid' : '') + (look === 'metal' ? '' : '-' + look) + '.webp';
+              'poster' + (mode === 'acid' && look !== 'natural' ? '-acid' : '') + (look === 'metal' ? '' : '-' + look) + '.webp';
             await page.waitForFunction((n) => {
               const s = document.getElementById('creator-stage'),
                 p = s.querySelector('img');

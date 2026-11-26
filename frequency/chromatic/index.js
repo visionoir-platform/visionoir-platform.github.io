@@ -16,6 +16,7 @@ import {
   unit,
 } from './model.js';
 import { labels } from './labels.js';
+import { editLook, lookTime, recallLook } from './look-transition.js';
 import { projectorUrl } from './projector-url.js';
 import './styles.css';
 
@@ -48,6 +49,7 @@ export async function mountChromatic(
   host,
   { getSignal = () => ({}), state, locale = 'it', onChange = () => {} } = {},
 ) {
+  let cueId = 0, lookCue = null;
   let visual = normalizeVisual(state),
     lang = locale,
     cueScene = -1,
@@ -131,7 +133,13 @@ export async function mountChromatic(
     stage?.invalidate();
     if (notify) onChange(projectVisual());
   }
+  function recall(next) {
+    visual = next;
+    lookCue = recallLook(++cueId, visual, lookTime());
+    update();
+  }
   function mutate(change, notify = true) {
+    if (lookCue) editLook(lookCue, change, lookTime());
     visual = { ...visual, ...change };
     update(notify);
   }
@@ -144,7 +152,7 @@ export async function mountChromatic(
       cueScene = scene;
       const cue = visual.automation.find((entry) => entry.scene === scene);
       autoPending = !cue && visual.auto;
-      if (cue) mutate({ ...cue.look, mode: cue.mode });
+      if (cue) recall({ ...visual, ...cue.look, mode: cue.mode });
     }
     if (autoPending && running) {
       autoPending = false;
@@ -169,6 +177,7 @@ export async function mountChromatic(
     // Cues and MIDI mappings are interpreted by the studio; the projector renders the resulting look.
     const { automation, midi, ...renderState } = visual;
     packet.state = renderState;
+    packet.lookCue = lookCue;
     lastSentState = visual;
   }
   function tellOutput(force = false) {
@@ -282,8 +291,7 @@ export async function mountChromatic(
   function restorePreset() {
     const saved = bank.slots[bank.selected];
     if (!saved) return;
-    visual = normalizeVisual(saved);
-    update();
+    recall(normalizeVisual(saved));
   }
   function renderControls() {
     localized = labels(lang);
@@ -348,6 +356,7 @@ export async function mountChromatic(
       auto: () => { cueScene = -1; toggle('auto'); },
       random: randomize,
       reset: () => {
+        lookCue = null;
         visual = defaultVisual();
         update();
       },
@@ -393,7 +402,7 @@ export async function mountChromatic(
     update(false);
   }
   renderControls();
-  stage = await buildStage(surface, { getSignal: getFrame, getState: () => visual });
+  stage = await buildStage(surface, { getSignal: getFrame, getState: () => visual, getLookCue: () => lookCue });
   function handleCC(channel, cc, value) {
     const key = channel + ':' + cc;
     if (learning) {
@@ -412,6 +421,7 @@ export async function mountChromatic(
     getCanvas: () => stage.captureCanvas?.() ?? null,
     startRecording: fps => stage.startRecording(fps),
     setState: (v) => {
+      lookCue = null;
       visual = normalizeVisual(v);
       bank = loadBank(v);
       cueScene = -1;
@@ -451,15 +461,18 @@ export async function mountVJ(host) {
     surface = node('div', 'chromatic-surface');
   add(box, surface);
   host.replaceChildren(box);
-  let state = defaultVisual(),
+  let lookCue = null,
+    state = defaultVisual(),
     frame = normalizeSignal(),
     stage;
   const projectedTilt = { x: 0, y: 0 };
-  function applyState(next) {
-    if (!next) return;
+  function applyState(packet) {
+    if (!packet.state) return;
+    lookCue = packet.lookCue || null;
     const previousQuality = state.quality;
-    state = normalizeVisual(next);
+    state = normalizeVisual(packet.state);
     if (state.quality !== previousQuality) stage?.resize?.();
+    stage?.invalidate();
   }
   const receive = (e) => {
     if (e.origin !== location.origin || e.source !== window.opener || !key || e.data?.id !== key) return;
@@ -471,7 +484,7 @@ export async function mountVJ(host) {
       const { attacks, gates, releases } = e.data;
       if (attacks instanceof Float32Array && attacks.length === instruments.length &&
           gates instanceof Float32Array && gates.length === instruments.length && Number.isInteger(releases)) {
-        applyState(e.data.state);
+        applyState(e.data);
         stage?.noteEdges?.(attacks, gates, releases);
       }
       return;
@@ -479,13 +492,13 @@ export async function mountVJ(host) {
     if (e.data.type === 'visionoir.visual.hit') {
       const { index, value } = e.data;
       if (Number.isInteger(index) && index >= 0 && index < instruments.length && Number.isFinite(value)) {
-        applyState(e.data.state);
+        applyState(e.data);
         stage?.trigger(index, unit(value));
       }
       return;
     }
     if (e.data.type !== 'visionoir.visual.frame') return;
-    applyState(e.data.state);
+    applyState(e.data);
     frame = normalizeSignal(e.data.signal || {}, frame);
     const offset = e.data.viewOffset;
     if (Array.isArray(offset) && offset.length === 2 && offset.every(Number.isFinite)) {
@@ -499,7 +512,7 @@ export async function mountVJ(host) {
     if (!document.fullscreenElement) box.requestFullscreen?.().catch(() => {});
   };
   box.addEventListener('dblclick', full);
-  stage = await buildStage(surface, { getState: () => state, getSignal: () => frame, tilt: projectedTilt });
+  stage = await buildStage(surface, { getState: () => state, getSignal: () => frame, getLookCue: () => lookCue, tilt: projectedTilt });
   const reportVisibility = (type) =>
     window.opener?.postMessage(
       {

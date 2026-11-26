@@ -151,7 +151,9 @@ async function main() {
   try {
     const file = await record(dir,report);
     analyse(file,report);
-    console.log('Verified PCM and moving images in all four phases.');
+    console.log(JSON.stringify({streamCodecs:report.streams.map(stream=>stream.codec_name),
+      decodedVideoFrames:report.decodedVideoFrames, decodedAudioSeconds:report.decodedAudioSeconds,
+      visibleAndOffscreen:report.phases.length}));
   } finally {
     await fs.writeFile(path.join(dir,'av-recording.json'),JSON.stringify(report,null,2)+'\n');
     console.log(dir);
