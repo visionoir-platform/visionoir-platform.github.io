@@ -14,8 +14,9 @@ for (let i = 0; i < pcm.length / 2; i++) {
   pcm.writeInt16LE(Math.round(24000 * burst), i * 2);
 }
 
-function print(id, {pan = 0, invert = false, bypass = false, returns = false} = {}) {
+function print(id, {pan = 0, invert = false, bypass = false, returns = false, legacy = false} = {}) {
   const project = createProject();
+  if (legacy) delete project.master.postFader;
   project.bpm = bpm;
   const track = project.tracks.find(t => t.instrument === 'sampler');
   Object.assign(track, {sample:{name:'Synthetic burst',rate,pcm:pcm.toString('base64')}, volume:1,pan,invert,
@@ -63,8 +64,8 @@ test('dry, bypass and ordinary delay keep their PCM; hard-panned wet repeats mir
   assert.equal(digest(dry),digest(bypass));
   for (let side = 0; side < 2; side++)
     assert.equal(dry[side].subarray(0,repeatFrames).findIndex((x,i) => x !== ping[side][i]),-1);
-  // Stereo PCM printed by ordinary Delay in the preceding 7dd7087 engine.
-  assert.equal(digest(print('delay')), '1bdf5d4d9b2c18e7bb5201adc29900f627a53ef710f038c57248a664ebfae82e');
+  // Compare the original Delay in the legacy signal flow used to create this reference.
+  assert.equal(digest(print('delay',{legacy:true})), '1bdf5d4d9b2c18e7bb5201adc29900f627a53ef710f038c57248a664ebfae82e');
   const hardL = print('pingpong',{pan:-1}), hardR = print('pingpong',{pan:1});
   const inverted = print('pingpong',{invert:true});
   for (let echo = 1; echo <= 4; echo++) {
