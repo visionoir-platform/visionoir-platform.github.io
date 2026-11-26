@@ -20,19 +20,7 @@ export function factorySlotPresets(effectId) {
   return presetsByEffect.get(effectId) || [];
 }
 
-export const liveEffectRest = id => id === 'dj' ? 0.5 : 0;
-
-export function setLiveEffectAmount(rack, id, amount) {
-  const bypass = amount === liveEffectRest(id);
-  const slot = rack.find(effect => effect.id === id);
-  if (slot) {
-    slot.amount = amount;
-    slot.bypass = bypass;
-  } else if (!bypass) {
-    if (rack.length >= 12) throw new RangeError('FX');
-    rack.push({ id, amount, bypass });
-  }
-}
+export {liveEffectRest, setLiveEffectAmount} from './audio/live-effects.js';
 
 export function renderEffectSlot(effect, index, slots, section, t) {
   const name = EFFECTS.find(item => item.id === effect.id)?.name || effect.id;

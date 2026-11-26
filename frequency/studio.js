@@ -36,7 +36,8 @@ import {
 import { renderEditor, masterPanel } from './views.js';
 import { samplerLockMenu, samplerPanel } from './sampler-panel.js';
 import { SAMPLER_PADS } from './audio/sampler-slices.js';
-import { factorySlotPresets, renderEffectSlot, setLiveEffectAmount } from './fx-rack.js';
+import { factorySlotPresets, renderEffectSlot } from './fx-rack.js';
+import {liveEffectIds, liveEffectCC, liveEffectRest, setLiveEffectAmount} from './audio/live-effects.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
 import { collectVisualLevels } from './chromatic/channel-routing.js';
@@ -1854,7 +1855,7 @@ export async function startStudio() {
               ? 'v:' + index
               : group === 'param'
                 ? 'p:' + s.channel + ':' + index
-                : null;
+                : group === 'livefx' ? id : null;
         if (command && engine.control) {
           engine.control(command, v);
           saveSoon();
@@ -1943,6 +1944,12 @@ export async function startStudio() {
       return;
     }
     if (group === 'livefx') {
+      if (learn && pendingMidi === id) {
+        const slot = s.p.master.fx?.find(effect => effect.id === index);
+        node.value = slot && !slot.bypass ? slot.amount : liveEffectRest(index);
+        showFaderValue(node);
+        return;
+      }
       change(() => {
         setLiveEffectAmount(s.p.master.fx ||= [], index, v);
       });
@@ -2121,8 +2128,39 @@ export async function startStudio() {
       },
       stop,
     });
-    const hardwareToField = (id, x) => {
+    const hardwareToField = (id, cc) => {
+      if (typeof id !== 'string' || !Number.isInteger(cc) || cc < 0 || cc > 127) return;
       const [group, idx, prop] = id.split(':');
+      if (group === 'livefx') {
+        if (prop !== undefined || !liveEffectIds.includes(idx)) return;
+        const amount = liveEffectCC(idx, cc);
+        const rack = s.p.master.fx ?? [];
+        let slot;
+        try { slot = setLiveEffectAmount(rack, idx, amount); }
+        catch (error) {
+          if (error instanceof RangeError) say(t('master') + ' FX · 12 / 12');
+          else fail(error);
+          return;
+        }
+        if (slot < 0) return;
+        s.p.master.fx = rack;
+        engine.control(id, amount);
+        saveSoon();
+        if (activeDialog === 'masterfx') {
+          const bypass = el('panel').querySelector('[data-action="fx-bypass"][data-index="' + slot + '"]');
+          if (bypass) bypass.setAttribute('aria-pressed', String(rack[slot].bypass));
+          else fxPane(true);
+        }
+        for (const fieldId of [id, 'masterfx:' + slot]) {
+          const input = targetField(fieldId);
+          if (input) {
+            input.value = amount;
+            showFaderValue(input);
+          }
+        }
+        return;
+      }
+      const x = cc / 127;
       if (group === 'm') s.p.master.volume = x;
       else if (group === 'v' && s.p.tracks[idx]) s.p.tracks[idx].volume = x;
       else if (group === 'p' && Object.hasOwn(audio.PARAMETER_BANK[s.p.tracks[idx]?.instrument] || {}, prop))
@@ -2150,14 +2188,18 @@ export async function startStudio() {
         visual?.handleCC?.(channel, a, b / 127);
         const k = channel + ':' + a;
         if (learn && pendingMidi) {
-          s.p.midiMappings ||= {};
-          mutate(() => (s.p.midiMappings[k] = pendingMidi));
+          if (s.p.midiMappings?.[k] !== pendingMidi) {
+            remember();
+            (s.p.midiMappings ||= {})[k] = pendingMidi;
+            saveSoon();
+            flushSave();
+          }
           learn = false;
           pendingMidi = undefined;
           say('MIDI CC ' + a);
           return;
         }
-        if (s.p.midiMappings?.[k]) hardwareToField(s.p.midiMappings[k], b / 127);
+        if (s.p.midiMappings?.[k]) hardwareToField(s.p.midiMappings[k], b);
       } else if (cmd === 9 && b > 0) {
         void midiNotes.press(inputId, channel, a, s.channel, b / 127);
       } else if (cmd === 8 || (cmd === 9 && b === 0)) midiNotes.release(inputId, channel, a);
@@ -2305,8 +2347,11 @@ export async function startStudio() {
             ? 'v:' + i
             : g === 'master' && i === 'volume'
               ? 'm'
-              : undefined;
-      if (pendingMidi) say('MIDI CC → ' + f.dataset.field);
+              : g === 'livefx' && liveEffectIds.includes(i) ? f.dataset.field : undefined;
+      if (pendingMidi) {
+        e.preventDefault(); // Selecting a Learn target must not move its fader.
+        say('MIDI CC → ' + f.dataset.field);
+      }
     }
   });
   const releasePad = (e) => {
@@ -2318,17 +2363,20 @@ export async function startStudio() {
   };
   root.addEventListener('pointerup', releasePad);
   root.addEventListener('pointercancel', releasePad);
+  function showFaderValue(f) {
+    const label = f.closest('.fader');
+    label?.style.setProperty(
+      '--fill',
+      ((Number(f.value) - Number(f.min)) / (Number(f.max) - Number(f.min))) * 100 + '%',
+    );
+    label?.style.setProperty('--angle', -132 + Number(f.value) * 264 + 'deg');
+    if (label?.querySelector('output')) label.querySelector('output').value = f.value;
+  }
   root.addEventListener('input', (e) => {
     if (e.target.dataset.field === 'region-out' || e.target.dataset.field === 'region-in') targetField('region-out')?.setCustomValidity('');
     const f = e.target;
     if (f.type === 'range' && f.dataset.field) {
-      const label = f.closest('.fader');
-      label?.style.setProperty(
-        '--fill',
-        ((Number(f.value) - Number(f.min)) / (Number(f.max) - Number(f.min))) * 100 + '%',
-      );
-      label?.style.setProperty('--angle', -132 + Number(f.value) * 264 + 'deg');
-      if (label?.querySelector('output')) label.querySelector('output').value = f.value;
+      showFaderValue(f);
       void field(f, true).catch(fail);
     }
   });

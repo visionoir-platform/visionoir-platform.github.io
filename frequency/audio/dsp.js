@@ -2,6 +2,7 @@ import { INSTRUMENTS, BUSSES, clamp, noteHz, totalBars, MAX_RATCHETS, MAX_CHORD_
 import { arrangementAt, visitStepNotes } from './sequencer.js';
 import { ScheduledEvents } from './event-queue.js';
 import { Effect } from './fx.js';
+import { liveEffectIds, setLiveEffectAmount } from './live-effects.js';
 import { MasterLimiter } from './limiter.js';
 import { setSegment } from './automation.js';
 import { regionPlayer, mixRegion } from './regions.js';
@@ -164,6 +165,16 @@ export class DSP {
       return;
     }
     const [family, index, key] = id.split(':');
+    if (family === 'livefx' && key === undefined && liveEffectIds.includes(index)) {
+      const specs = this.p.master.fx ?? [];
+      const slot = setLiveEffectAmount(specs, index, clamp(value, 0, 1));
+      if (slot < 0) return;
+      this.p.master.fx = specs;
+      const spec = specs[slot];
+      if (this.masterFx[slot]?.id === index) this.masterFx[slot].configure(spec, this.p.bpm);
+      else this.masterFx[slot] = new Effect(spec, this.rate, this.p.bpm);
+      return;
+    }
     if (family === 'm') {
       this.volume = this.p.master.volume = clamp(value, 0, 2);
       return;

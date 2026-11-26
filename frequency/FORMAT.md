@@ -18,6 +18,8 @@ Le sessioni che usano soltanto lo spostamento continuo mantengono la compatibili
 | `master`, `buses` | Comprendono i livelli e le impostazioni di uscita. Negli inserti `fx`, `id` seleziona l’effetto e `amount` la regolazione della macro. L’inserto `eq` può conservare `eq.frequency` in Hz, `eq.gain` in dB e `eq.q`. |
 | `midiMappings`, `visual`, `workspace`, `exportInfo` | Conservano rispettivamente associazioni MIDI, stato del Visual Rack con memorie e cambi scena, scena aperta e metadati di esportazione. I vecchi progetti che precedono questi campi continuano ad aprirsi. |
 
+Le chiavi di `midiMappings` sono `canale:CC` (canale da 0 a 15). Le destinazioni dei quattro effetti Live sono `livefx:dj`, `livefx:repeat`, `livefx:glitch` e `livefx:freeze`. Posizione e bypass restano negli insert di `master.fx`.
+
 Il lettore accetta un documento fino a 80.000.000 byte e controlla le strutture musicali prima di sostituire la sessione. La specifica eseguibile è [model.js](audio/model.js). La lettura di un archivio cerca `project.vfreq` alla radice e ne verifica dimensione e CRC. Supporta i membri ZIP32 memorizzati senza compressione e, nei browser con decoder `deflate-raw`, quelli ricompressi con Deflate. I WAV degli stem sono disponibili anche per il montaggio in un’altra DAW.
 
 ## Passare da una versione all’altra
