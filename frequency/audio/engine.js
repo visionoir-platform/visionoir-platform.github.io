@@ -111,7 +111,7 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
             const start = renderClock.now();
             dsp.render(o.getChannelData(0), o.getChannelData(1));
             dsp.observeBudget(renderClock.now() - start, o.length);
-            tail = dsp.running || dsp.hasHeldNotes ? target.sampleRate * 9 : Math.max(0, tail - o.length);
+            tail = dsp.needsAudioRender ? target.sampleRate * 9 : Math.max(0, tail - o.length);
             count += o.length;
             if (count > target.sampleRate / 24) {
               count = 0;

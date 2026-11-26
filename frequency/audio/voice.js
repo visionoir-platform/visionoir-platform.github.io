@@ -136,9 +136,10 @@ export class Voice {
                 ? 0.001 + p.attack * 0.4
                 : 0.0017),
       );
-    this.gate = gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
+    // A triggered one-shot belongs to its PCM trim, including when per-note locks choose this mode.
+    this.oneShot = kind === 15 && sample != null && p.oneShot > 0.5 && p.loop <= 0.5;
+    this.gate = this.oneShot || gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
     this.held = heldKinds.has(kind);
-    if (kind === 15 && p.oneShot > 0.5 && p.loop <= 0.5) this.gate = this.rate * 95;
     this.release = envelope(
       durations[kind] * (0.24 + 2.2 * (p.decay ?? 0.4)) * (kind === 0 ? 0.74 + p.tail : 1),
       this.rate,
@@ -218,7 +219,7 @@ export class Voice {
         this.rate;
   }
   stopGate() {
-    this.gate = Math.min(this.gate, this.age);
+    if (!this.oneShot) this.gate = Math.min(this.gate, this.age);
   }
   choke() {
     this.gate = 0;
@@ -382,7 +383,7 @@ export class Voice {
       case 15: {
         if (this.sample) {
           if (this.idx < this.lo || this.idx >= this.hi) {
-            if (p.loop > 0.5) {
+            if (!this.oneShot && p.loop > 0.5) {
               const length = this.hi - this.lo;
               this.idx = this.lo + (((this.idx-this.lo) % length) + length) % length;
             }
