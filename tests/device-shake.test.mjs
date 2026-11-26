@@ -135,3 +135,14 @@ test('automatic motion streams and preauthorized motion do not open a permission
   const orient=createDeviceMotionAccess({isSecureContext:true,DeviceOrientationEvent:win.DeviceMotionEvent});
   await orient.request(); assert.equal(orient.state,'granted'); assert.equal(count,1);
 });
+
+test('zero-filled accelerometer placeholders neither mask gravity nor acknowledge permission',()=>{
+  const sim=fakeDevice(); let n=0;
+  const m=mountDeviceShake({onReading:()=>n++});
+  try { sim.send(0,12); assert.equal(n,0);sim.send(1,24);assert.equal(n,1); }
+  finally{m.dispose();sim.close();}
+  const d=createShakeDetector();
+  const sample=x=>({acceleration:{x:0,y:0,z:0},accelerationIncludingGravity:{x,y:0,z:9.81}});
+  assert.equal(stream(d,0,700,16,()=>sample(0)),0);
+  assert.equal(stream(d,700,1000,16,t=>sample(14*Math.sin(t*2*Math.PI/230))),1);
+});

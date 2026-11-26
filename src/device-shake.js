@@ -1,5 +1,7 @@
 // A material change is an intentional gesture. All measurements are ephemeral.
 const hasXYZ = a => a && Number.isFinite(a.x) && Number.isFinite(a.y) && Number.isFinite(a.z);
+const strength = a => Math.hypot(a.x, a.y, a.z);
+const hasSignal = a => hasXYZ(a) && strength(a) > .1;
 const deltaGravity = 2.2; // m/s² away from 1 g, for gravity-inclusive readings
 
 export function createShakeDetector() {
@@ -12,7 +14,12 @@ export function createShakeDetector() {
   reset();
   function read(event, now) {
     if (!Number.isFinite(now)) return null;
-    const kind = hasXYZ(event.acceleration) ? 'linear' : hasXYZ(event.accelerationIncludingGravity) ? 'gravity' : null;
+    const linear = hasXYZ(event.acceleration);
+    const gravityReading = hasXYZ(event.accelerationIncludingGravity);
+    // Some embedded browsers fill the linear axes with zeros while reporting
+    // usable acceleration including gravity. Warm the gravity estimate at rest.
+    const useLinear = linear && (!gravityReading || strength(event.acceleration) > .015);
+    const kind = useLinear ? 'linear' : gravityReading ? 'gravity' : null;
     if (!kind) return null;
     if (kind !== source) {
       // Switching sensor representation within one burst must not release the latch.
@@ -76,7 +83,7 @@ export function mountDeviceShake({onToggle, onReading} = {}) {
   let away = false, listening = false;
   function receive(event) {
     const result = detector.read(event, event.timeStamp);
-    if (result !== null) onReading?.();
+    if (result !== null && (hasSignal(event.acceleration) || hasSignal(event.accelerationIncludingGravity))) onReading?.();
     if (result) onToggle?.();
   }
   function refresh() {
