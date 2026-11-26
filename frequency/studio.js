@@ -41,6 +41,7 @@ import {liveEffectIds, liveEffectCC, liveEffectRest, setLiveEffectAmount} from '
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
 import { collectVisualLevels } from './chromatic/channel-routing.js';
+import { createLiveRecording } from './live-recording.js';
 
 export async function startStudio() {
   let lang = getInitialLocale(),
@@ -82,9 +83,7 @@ export async function startStudio() {
     playing = false,
     starting = false,
     paused = false,
-    tick = { step: 0, scene: 0, bar: 0, levels: [], peaks: [] },
-    recorder,
-    recUnclosed = false;
+    tick = { step: 0, scene: 0, bar: 0, levels: [], peaks: [] };
   let undo = [],
     redo = [],
     clipboard,
@@ -106,11 +105,21 @@ export async function startStudio() {
   const pattern = () => s.p.scenes[s.scene].patterns[s.channel];
   const event = () => pattern().steps[s.step];
   let noticeTimer;
-  const off = () => !(recorder && recorder.state === 'recording');
   const engineReady = async () => {
     if (!engine.context || engine.context.state !== 'running' || engine.mode === 'failed') await engine.prepare(s.p);
     return engine;
   };
+  const recording = createLiveRecording({
+    prepare: async () => (await engineReady()).stream,
+    captureVideo: () => visual?.startRecording(24),
+    changed: updateTransport,
+    saved(blob, name, partial) {
+      download(blob, name);
+      if (!partial) say(t('ready'));
+    },
+    failed: fail,
+  });
+  const off = () => recording.phase === 'idle';
   const outputRoute = createOutputRoute({
     devices: navigator.mediaDevices, getContext: () => engine.context,
     prepare: engineReady, apply: id => engine.setOutput(id),
@@ -221,10 +230,11 @@ export async function startStudio() {
     const p = s.p;
     const transport = el('transport');
     const focus = transport.contains(document.activeElement) && focusSelector(document.activeElement);
+    const recordingNow = recording.phase === 'recording';
     const loopLabel = t('loop') + ' · ' + t('arrangement');
     const {total, start, end, on} = loopRegion();
     transport.innerHTML =
-      `<div class="transport-group">${act('play', t('play'), { icon: '▶', classes: 'play', pressed: playing })}${act('stop', t('stop'), { icon: '■' })}${act('record', t(off() ? 'record' : 'recordEnd'), { icon: '●', classes: 'record', pressed: !off() })}</div><div class="transport-group clockfields">${number('BPM', 'bpm', p.bpm, 40, 300, 0.1)}${act('tap', 'TAP', { title: 'Tap tempo' })} ${act('metro', '♩', { title: t('metronome'), pressed: !!p.metronome })}${number('Swing %', 'swing', Math.round(p.swing * 100), 0, 50)}</div><div class="transport-group filebar">${act('library', t('library'), { icon: '▤' })}${act('save', t('save'))}${act('export', t('export'), { icon: '↗' })}${act('settings', '⚙', { title: t('settings') })}</div><div class="transport-group safety">${act('panic', 'PANIC', { classes: 'panic', title: 'Panic / ' + t('stop') })}</div>` +
+      `<div class="transport-group">${act('play', t('play'), { icon: '▶', classes: 'play', pressed: playing })}${act('stop', t('stop'), { icon: '■' })}${act('record', t(recordingNow ? 'recordEnd' : 'record'), { icon: '●', classes: 'record', pressed: recordingNow, disabled: !recordingNow && !off() })}</div><div class="transport-group clockfields">${number('BPM', 'bpm', p.bpm, 40, 300, 0.1)}${act('tap', 'TAP', { title: 'Tap tempo' })} ${act('metro', '♩', { title: t('metronome'), pressed: !!p.metronome })}${number('Swing %', 'swing', Math.round(p.swing * 100), 0, 50)}</div><div class="transport-group filebar">${act('library', t('library'), { icon: '▤' })}${act('save', t('save'))}${act('export', t('export'), { icon: '↗' })}${act('settings', '⚙', { title: t('settings') })}</div><div class="transport-group safety">${act('panic', 'PANIC', { classes: 'panic', title: 'Panic / ' + t('stop') })}</div>` +
       `<div class="transport-group editbar"><div class="loop-range" role="group" aria-label="${attr(t('arrangement') + ' · ' + t('loopRegion'))}">${act('loop', loopLabel, { pressed:on })}${number(t('start'), 'loop-start', start + 1, 1, end)}${number(t('end'), 'loop-end', end, start + 1, total)}</div><div class="history">${act('undo', '↶', { title:t('undo'), disabled:!undo.length })}${act('redo', '↷', { title:t('redo'), disabled:!redo.length })}</div></div>`;
     if (focus) transport.querySelector(focus)?.focus({preventScroll:true});
   }
@@ -1051,56 +1061,6 @@ export async function startStudio() {
       }
     }
   }
-  async function toggleRecord() {
-    if (!off()) {
-      recorder.stop();
-      return;
-    }
-    if (!window.MediaRecorder) throw new Error('MediaRecorder');
-    await engineReady();
-    const audioStream = engine.stream;
-    if (!audioStream) throw new Error('MediaStream');
-    const video = s.recordMode === 'video';
-    let picture;
-    try {
-      if (video) {
-        picture = visual?.startRecording(24);
-        if (!picture) throw Error('Video');
-      }
-      const stream = video
-        ? new MediaStream([...audioStream.getAudioTracks(), ...picture.stream.getVideoTracks()])
-        : audioStream;
-      const formats = video
-        ? ['video/webm;codecs=vp8,opus', 'video/mp4', 'video/webm']
-        : ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'];
-      const type = formats.find((v) => MediaRecorder.isTypeSupported(v));
-      const current = new MediaRecorder(stream, type ? { mimeType: type } : undefined),
-        chunks = [];
-      recorder = current;
-      current.ondataavailable = (e) => {
-        if (e.data.size) chunks.push(e.data);
-      };
-      current.onstop = () => {
-        picture?.stop();
-        const mime = current.mimeType;
-        if (chunks.length)
-          download(
-            new Blob(chunks, { type: mime }),
-            'Frequency-live.' + (mime.includes('mp4') ? (video ? 'mp4' : 'm4a') : 'webm'),
-          );
-        recUnclosed = false;
-        updateTransport();
-        say(t('ready'));
-      };
-      current.onerror = (e) => fail(e.error);
-      current.start(1000);
-      recUnclosed = true;
-      updateTransport();
-    } catch (err) {
-      picture?.stop();
-      throw err;
-    }
-  }
   function clearDialog() {
     if (el('panel')?.open) close();
   }
@@ -1226,7 +1186,7 @@ export async function startStudio() {
         return;
       case 'panic':
         stop();
-        if (!off()) recorder.stop();
+        recording.stop();
         say('Panic');
         return;
       case 'play-song':
@@ -1234,7 +1194,7 @@ export async function startStudio() {
         await play(true);
         return;
       case 'record':
-        await toggleRecord();
+        await recording.toggle(s.recordMode === 'video');
         return;
       case 'metro':
         mutate(() => (s.p.metronome = !s.p.metronome), false);
@@ -2444,16 +2404,13 @@ export async function startStudio() {
     clearTimeout(saveTimer);
     saveTimer = undefined;
     exportController?.abort();
-    recUnclosed = false;
-    if (recorder && recorder.state !== 'inactive') {
-      recorder.onstop = null;
-      recorder.stop();
-    }
+    recording.cancel();
     performanceKeys.clear();
     stop();
     location.reload();
   }, {once:true});
   window.addEventListener('pagehide', event => {
+    recording.cancel();
     performanceKeys.clear();
     flushSave();
     stop();
@@ -2465,7 +2422,7 @@ export async function startStudio() {
     }
   });
   window.addEventListener('beforeunload', (e) => {
-    if (!erasedSession && (recUnclosed || exportController)) {
+    if (!erasedSession && (!off() || exportController)) {
       e.preventDefault();
       e.returnValue = '';
     }

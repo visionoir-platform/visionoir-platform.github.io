@@ -53,6 +53,7 @@ jobs:
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/native-transport.cjs http://127.0.0.1:4173
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/global-transport.cjs http://127.0.0.1:4173
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/midi-live-fx.cjs http://127.0.0.1:4173
+          PLAYWRIGHT_MODULE=playwright-core FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" FREQUENCY_URL=http://127.0.0.1:4173 FREQUENCY_PROOF="$RUNNER_TEMP/frequency-av" node frequency/qa/av-recording.cjs
           MOTION_PROOF="$RUNNER_TEMP/ios-shake-webkit.json" node src/qa/ios-shake.cjs http://127.0.0.1:4173
           MOTION_BROWSER_ENGINE=chromium MOTION_BROWSER_BIN="$(command -v google-chrome)" MOTION_PROOF="$RUNNER_TEMP/ios-shake-chromium.json" node src/qa/ios-shake.cjs http://127.0.0.1:4173
           QA_ENGINE=Chromium PLAYWRIGHT_MODULE=playwright-core CHROME_PATH="$(command -v google-chrome)" VISIONOIR_QA_URL=http://127.0.0.1:4173 node scripts/qa-ecosystem.cjs
