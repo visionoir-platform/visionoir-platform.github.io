@@ -65,7 +65,7 @@ class FrequencyProcessor extends AudioWorkletProcessor {
     const started = renderClock.now();
     this.dsp.render(channels[0], channels[1] || channels[0]);
     this.dsp.observeBudget(renderClock.now() - started, channels[0].length);
-    if (this.dsp.running || this.dsp.hasHeldNotes) this.awake = sampleRate * 9;
+    if (this.dsp.needsAudioRender) this.awake = sampleRate * 9;
     else this.awake = Math.max(0, this.awake - channels[0].length);
     this.meterCount += channels[0].length;
     if (this.meterCount >= sampleRate / 24) {

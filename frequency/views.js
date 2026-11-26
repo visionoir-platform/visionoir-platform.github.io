@@ -1,6 +1,7 @@
 import { pianoView } from './piano.js';
 import { audioRegionList } from './region-editor.js';
 import { liveEffectRest } from './fx-rack.js';
+import { samplerPanel } from './sampler-panel.js';
 import {
   escape as h,
   attr,
@@ -132,7 +133,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
       act('track-settings','FX / I/O')+'</div>';
     return (
       head +
-      `<div class="bar-tools">${act('protect', t('protectedMode'), { pressed: state.protect })}${act('add-scene', '+ ' + t('scene'))}${act('master-mute', 'Master mute', { pressed: p.master.volume === 0 })}${act('tap', 'Tap tempo')}${act('preflight', t('check'))}${number(t('sceneFade') + ' · ♩', 'crossfade-beats', p.crossfadeBeats ?? 1, 0, 4, 0.25)}</div><div class="scene-pads">${p.scenes.map((s, i) => act('launch', pad(i + 1) + ' / ' + s.name, { classes: 'scene-pad', pressed: state.playScene === i, data: data('index', i) })).join('')}</div><h3>${h(t('instrument'))}</h3><div class="pads">${p.tracks.map((tr, i) => `<button data-pad="${i}" style="--voice:${channelColor(i)}"><small>${pad(i + 1)}</small>${h(tr.name)}</button>`).join('')}</div><div class="instrument-panel"><h3>Live FX</h3><div class="knobs">${[
+      `<div class="bar-tools">${act('protect', t('protectedMode'), { pressed: state.protect })}${act('add-scene', '+ ' + t('scene'))}${act('master-mute', t('mute') + ' · ' + t('master'), { pressed: !!p.master.mute })}${act('tap', 'Tap tempo')}${act('preflight', t('check'))}${number(t('sceneFade') + ' · ♩', 'crossfade-beats', p.crossfadeBeats ?? 1, 0, 4, 0.25)}</div><div class="scene-pads">${p.scenes.map((s, i) => act('launch', pad(i + 1) + ' / ' + s.name, { classes: 'scene-pad', pressed: state.playScene === i, data: data('index', i) })).join('')}</div><h3>${h(t('instrument'))}</h3><div class="pads">${p.tracks.map((tr, i) => `<button data-pad="${i}" style="--voice:${channelColor(i)}"><small>${pad(i + 1)}</small>${h(tr.name)}</button>`).join('')}</div><div class="live-faders"><div class="instrument-panel"><h3>Live FX</h3><div class="knobs">${[
         'dj',
         'repeat',
         'glitch',
@@ -147,7 +148,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
           );
         })
         .join('')}</div></div>` +
-      liveChannel + masterPanel(state, t)
+      liveChannel + masterPanel(state, t) + '</div>'
     );
   }
   return head;
@@ -178,6 +179,7 @@ export function masterPanel(state, t, showRackButton = true) {
 }
 function instrumentPanel(state, t, audio) {
   const tr = state.p.tracks[state.channel],
-    params = Object.entries({ ...audio.PARAMETER_BANK[tr.instrument], ...tr.params });
-  return `<section class="instrument-panel"><header class="panelhead"><div><small>CH ${pad(state.channel + 1)} / ${h(tr.bus.toUpperCase())}</small><h3>${h(tr.name)}</h3></div><div>${act('preview', '▷', { title: t('play') + ' · ' + tr.name })} ${act('patches', t('presets')) + ' ' + act('track-settings', 'FX / I/O')}</div></header><div class="knobs">${params.map(([key, v]) => dial(instrumentParamLabel(tr.instrument, key, t), 'param:' + key, v, instrumentParamStep(tr.instrument, key))).join('')}</div>${tr.instrument === 'sampler' ? `<label class="import-sample">${h(t('importFile'))} <input type="file" id="sample-file" accept="audio/*"></label>` : ''}</section>`;
+    params = Object.entries({ ...audio.PARAMETER_BANK[tr.instrument], ...tr.params })
+      .filter(([key]) => tr.instrument !== 'sampler' || (key !== 'slice' && key !== 'slicePad'));
+  return `<section class="instrument-panel"><header class="panelhead"><div><small>CH ${pad(state.channel + 1)} / ${h(tr.bus.toUpperCase())}</small><h3>${h(tr.name)}</h3></div><div>${act('preview', '▷', { title: t('play') + ' · ' + tr.name })} ${act('patches', t('presets')) + ' ' + act('track-settings', 'FX / I/O')}</div></header><div class="knobs">${params.map(([key, v]) => dial(instrumentParamLabel(tr.instrument, key, t), 'param:' + key, v, instrumentParamStep(tr.instrument, key))).join('')}</div>${tr.instrument === 'sampler' ? `<div data-sampler-panel>${samplerPanel(tr,t)}</div><label class="import-sample">${h(t('importFile'))} <input type="file" id="sample-file" accept="audio/*"></label>` : ''}</section>`;
 }

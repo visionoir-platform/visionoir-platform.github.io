@@ -14,6 +14,8 @@
   "eqFrequency": "Masafa ya katikati",
   "param_rumble_bassEq": "Usawazishaji wa besi (100 Hz)",
   "param_lead_mono": "Hali ya noti moja",
+  "param_sampler_slicePad": "Kipande cha sampuli",
+  "param_sampler_slice": "Kusogeza mwanzo bila hatua",
   "param_ride_noiseFilter": "Kichujio cha masafa ya juu cha kelele",
   "play": "Cheza",
   "stop": "Simamisha",

@@ -14,6 +14,8 @@
   "eqFrequency": "중심 주파수",
   "param_rumble_bassEq": "저역 EQ (100 Hz)",
   "param_lead_mono": "단음 모드",
+  "param_sampler_slicePad": "샘플 슬라이스",
+  "param_sampler_slice": "연속 시작 오프셋",
   "param_ride_noiseFilter": "노이즈 하이패스 필터",
   "play": "재생",
   "stop": "정지",

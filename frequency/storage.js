@@ -1,3 +1,5 @@
+import { projectForStorage } from './audio/model.js';
+
 const DATABASE = 'visionoir-frequency-v1';
 const CURRENT = 'active';
 const PENDING = 'pending-edit';
@@ -75,6 +77,7 @@ export function loadNamed(id) {
   return read('save:' + id);
 }
 export async function save(project, { named = false } = {}) {
+  project = projectForStorage(project);
   const db = await database();
   return new Promise((resolve, reject) => {
     // A tab can unload before the backup read below fires. Commit the recoverable

@@ -1,4 +1,5 @@
 import { preparePCM, pcmReader, readPCM } from './resample.js';
+import { FACTORY_SAMPLE_RATE, FACTORY_SAMPLE_FRAMES, samplerBounds } from './sampler-slices.js';
 import { clamp, noteHz, PARAMETER_BANK } from './model.js';
 const TABLE = new Float32Array(8193);
 for (let i = 0; i < TABLE.length; i++) TABLE[i] = Math.sin((2 * Math.PI * i) / 8192);
@@ -66,8 +67,8 @@ export function decodePCM(sample) {
 let factorySample;
 export function factoryGlass() {
   if (factorySample) return factorySample;
-  const rate = 24000,
-    pcm = new Float32Array(Math.floor(rate * 0.51));
+  const rate = FACTORY_SAMPLE_RATE,
+    pcm = new Float32Array(FACTORY_SAMPLE_FRAMES);
   let rnd = 41295514;
   for (let i = 0; i < pcm.length; i++) {
     const t = i / rate;
@@ -136,9 +137,10 @@ export class Voice {
                 ? 0.001 + p.attack * 0.4
                 : 0.0017),
       );
-    this.gate = gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
+    // A triggered one-shot belongs to its PCM trim, including when per-note locks choose this mode.
+    this.oneShot = kind === 15 && sample != null && p.oneShot > 0.5 && p.loop <= 0.5;
+    this.gate = this.oneShot || gate === null ? Infinity : Math.max(1, Math.round(gate * this.rate));
     this.held = heldKinds.has(kind);
-    if (kind === 15 && p.oneShot > 0.5 && p.loop <= 0.5) this.gate = this.rate * 95;
     this.release = envelope(
       durations[kind] * (0.24 + 2.2 * (p.decay ?? 0.4)) * (kind === 0 ? 0.74 + p.tail : 1),
       this.rate,
@@ -165,9 +167,7 @@ export class Voice {
     this.idx = 0;
     this.step = 1;
     if (kind === 15 && sample) {
-      const len = sample.pcm.length;
-      this.lo = clamp(Math.floor(len * (p.start + (p.slice || 0) * 0.35)), 0, Math.max(0, len - 2));
-      this.hi = clamp(Math.floor(len * p.end), this.lo + 1, len);
+      samplerBounds(sample.pcm.length, p, this);
       this.updatePlaybackRate();
       this.idx = this.step < 0 ? this.hi - 1 : this.lo;
     }
@@ -218,7 +218,7 @@ export class Voice {
         this.rate;
   }
   stopGate() {
-    this.gate = Math.min(this.gate, this.age);
+    if (!this.oneShot) this.gate = Math.min(this.gate, this.age);
   }
   choke() {
     this.gate = 0;
@@ -382,7 +382,7 @@ export class Voice {
       case 15: {
         if (this.sample) {
           if (this.idx < this.lo || this.idx >= this.hi) {
-            if (p.loop > 0.5) {
+            if (!this.oneShot && p.loop > 0.5) {
               const length = this.hi - this.lo;
               this.idx = this.lo + (((this.idx-this.lo) % length) + length) % length;
             }

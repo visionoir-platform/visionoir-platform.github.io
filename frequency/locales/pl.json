@@ -14,6 +14,8 @@
   "eqFrequency": "Częstotliwość środkowa",
   "param_rumble_bassEq": "Korekcja basu (100 Hz)",
   "param_lead_mono": "Tryb monofoniczny",
+  "param_sampler_slicePad": "Wycinek próbki",
+  "param_sampler_slice": "Płynne przesunięcie początku",
   "param_ride_noiseFilter": "Filtr górnoprzepustowy szumu",
   "play": "Odtwórz",
   "stop": "Zatrzymaj",

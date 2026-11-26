@@ -1,7 +1,7 @@
 import { studioMediaSession } from './studio-media-session.js';
 import { createOutputRoute } from './audio-output.js';
 import { offlineStatus, prepareOffline, offlineError } from './offline-studio.js';
-import { createSpectrumMeter } from './visual-spectrum.js';
+import { createSpectrumMeter, visualLimitDeadline } from './visual-spectrum.js';
 import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
 import {createAutomationEditor} from './automation-editor.js';
@@ -34,6 +34,8 @@ import {
   seededVariation,
 } from './ui-kit.js';
 import { renderEditor, masterPanel } from './views.js';
+import { samplerLockMenu, samplerPanel } from './sampler-panel.js';
+import { SAMPLER_PADS } from './audio/sampler-slices.js';
 import { factorySlotPresets, renderEffectSlot, setLiveEffectAmount } from './fx-rack.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
@@ -95,7 +97,6 @@ export async function startStudio() {
   let activeDialog,
     dialogTrigger,
     renderTask,
-    restoreVolume = 0.85,
     audioState = 'audioOff',
     pendingMidi,
     exportController;
@@ -420,6 +421,7 @@ export async function startStudio() {
   const wave = new Uint8Array(512);
   let meterSource, spectrum, spectralData = false;
   let lastSpectrum = -Infinity, lastAudioTick = -Infinity;
+  let limitVisualsUntil = -Infinity;
   const visibleScope = { element: null, visible: false };
   const scopeObserver = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -431,6 +433,7 @@ export async function startStudio() {
     signal.scene = playing ? tick.scene : s.scene;
     const analyser = engine.analyser;
     const now = performance.now();
+    signal.audioPressure = now < limitVisualsUntil;
     const audibleTail = now - lastAudioTick < 1000 && tick.masterPeak?.some(peak => peak > 0.0001);
     if (!analyser || engine.context?.state !== 'running' || !(playing || !off() || audibleTail)) {
       if (spectralData) spectrum.bins.fill(0);
@@ -527,6 +530,7 @@ export async function startStudio() {
     onTick: (next) => {
       tick = next;
       lastAudioTick = performance.now();
+      limitVisualsUntil = visualLimitDeadline(limitVisualsUntil, next.dspLoad, lastAudioTick);
       const rms = next.masterRms;
       if (rms?.length) signal.level = Math.min(1, Math.hypot(...rms) / Math.sqrt(rms.length));
       s.playScene = next.scene;
@@ -709,7 +713,9 @@ export async function startStudio() {
             )
             .join(''),
         )}</div><div class="bar-tools">${['accent', 'slide', 'flam'].map((k) => act('flag', k === 'accent' ? t(k) : k, { data: 'data-id="' + k + '"', pressed: !!ev[k] })).join('')}${act('remove-note', t('deleteStep'))}</div><h3>${h(t('locks'))}</h3><div class="knobs">${Object.entries(trackParams)
-          .map(([key, value]) => slider(instrumentParamLabel(track().instrument, key, t), 'lock:' + key, ev.locks?.[key] ?? value, 0, 1, instrumentParamStep(track().instrument, key)))
+          .map(([key, value]) => key === 'slicePad'
+            ? samplerLockMenu(track(), {...trackParams, ...ev.locks}, t)
+            : slider(instrumentParamLabel(track().instrument, key, t), 'lock:' + key, ev.locks?.[key] ?? value, 0, 1, instrumentParamStep(track().instrument, key)))
           .join('')}</div>${act('clear-locks', t('clear') + ' · ' + t('locks'))}`
       : act('insert-note', t('insert') + ' ' + t('note'));
     open(
@@ -1114,6 +1120,10 @@ export async function startStudio() {
     s.page = Math.min(s.page, Math.floor((pattern().length - 1) / 16));
     editor();
   }
+  function refreshSamplerPanel() {
+    const panel = root.querySelector('[data-sampler-panel]');
+    if (panel && track().instrument === 'sampler') panel.innerHTML = samplerPanel(track(), t);
+  }
   function chooseScene(i) {
     s.scene = i;
     saveSoon();
@@ -1373,6 +1383,17 @@ export async function startStudio() {
       case 'preview':
         await audition(s.channel, noteBase());
         return;
+      case 'sample-slice': {
+        if (track().instrument !== 'sampler' || !Number.isInteger(i) || i < 1 || i > SAMPLER_PADS) return;
+        const position = i / SAMPLER_PADS;
+        if (track().params.slicePad !== position) {
+          mutate(() => { track().params.slicePad = position; }, false);
+          refreshSamplerPanel();
+          root.querySelector('[data-action="sample-slice"][data-index="' + i + '"]')?.focus({preventScroll:true});
+        }
+        await audition(s.channel, noteBase());
+        return;
+      }
       case 'audition':
         await audition(s.channel, Number(btn.dataset.note));
         return;
@@ -1642,12 +1663,12 @@ export async function startStudio() {
         mutate(() => (s.p.tracks[i][id] = !s.p.tracks[i][id]));
         return;
       case 'master-mute':
-        mutate(() => {
-          if (s.p.master.volume) {
-            restoreVolume = s.p.master.volume;
-            s.p.master.volume = 0;
-          } else s.p.master.volume = restoreVolume;
-        });
+        remember();
+        s.p.master.mute = !s.p.master.mute;
+        engine.control('master-mute', Number(s.p.master.mute));
+        btn.setAttribute('aria-pressed', String(s.p.master.mute));
+        saveSoon();
+        flushSave();
         return;
       case 'patches':
         presets();
@@ -1980,6 +2001,10 @@ export async function startStudio() {
     }
     if (group === 'param') {
       change(() => (track().params[index] = v));
+      if (index === 'slicePad') {
+        refreshSamplerPanel();
+        targetField('param:slicePad')?.focus({preventScroll:true});
+      }
       return;
     }
     if (group === 'note') {
@@ -2336,6 +2361,7 @@ export async function startStudio() {
       }
       if (rangeEditing === node) rangeEditing = undefined;
       else if (node.dataset.field) await field(node);
+      if (node.dataset.field === 'param:start' || node.dataset.field === 'param:end') refreshSamplerPanel();
     } catch (err) {
       fail(err);
     }

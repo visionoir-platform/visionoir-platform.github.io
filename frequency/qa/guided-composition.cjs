@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
+const checkSamplerPad = require('./sampler-pad.cjs');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
 const origin = process.argv[2] || 'http://127.0.0.1:4270';
 
@@ -103,7 +104,8 @@ async function check(browser) {
 (async()=>{
   const browser = await chromium.launch({executablePath:process.env.FREQUENCY_BROWSER_EXEC});
   try {
-    const result = JSON.stringify(await check(browser),null,2);
+    const composition = await check(browser);
+    const result = JSON.stringify({...composition, samplerPad:await checkSamplerPad(browser, origin)},null,2);
     if (process.env.FREQUENCY_PROOF) await fs.writeFile(process.env.FREQUENCY_PROOF,result+'\n');
     console.log(result);
   } finally {await browser.close();}

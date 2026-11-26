@@ -27,11 +27,26 @@ function observe(buffered) {
   };
   if (window.AudioWorkletNode) {
     const orig = window.AudioWorkletNode;
-    window.AudioWorkletNode = new Proxy(orig,{construct(t,a,n) { report.worklets++; return Reflect.construct(t,a,n); }});
+    window.AudioWorkletNode = new Proxy(orig,{construct(t,a,n) {
+      report.worklets++;
+      const node = Reflect.construct(t,a,n);
+      node.port.addEventListener('message', event => {
+        if (Number.isFinite(report.testLoad) && event.data?.type === 'tick') event.data.data.dspLoad = report.testLoad;
+      });
+      return node;
+    }});
   }
   if (buffered && window.AudioWorklet) AudioWorklet.prototype.addModule = async () => { throw Error('QA buffered fallback'); };
   window.AudioContext = new Proxy(window.AudioContext,{construct(t,a,n) { report.contexts++; return Reflect.construct(t,a,n); }});
   const gl = WebGL2RenderingContext.prototype;
+  const draw = gl.drawArrays;
+  gl.drawArrays = function(mode, first, count) {
+    if (report.inspectQuality && mode === this.POINTS) {
+      report.visual = { width: this.drawingBufferWidth, points: count,
+        history: Boolean(this.getParameter(this.DRAW_FRAMEBUFFER_BINDING)) };
+    }
+    return draw.call(this, mode, first, count);
+  };
   const slots = new WeakSet(), get = gl.getUniformLocation, set = gl.uniform1fv;
   gl.getUniformLocation = function(program,name) {
     const loc = get.call(this,program,name);
@@ -45,7 +60,10 @@ function observe(buffered) {
   addEventListener('message', e => {
     if (!window.opener || e.source !== window.opener || e.origin !== location.origin ||
         e.data?.id !== new URL(location.href).searchParams.get('output')) return;
-    if (e.data.type === 'visionoir.visual.frame') report.frames++;
+    if (e.data.type === 'visionoir.visual.frame') {
+      report.frames++;
+      report.limited = e.data.signal.audioPressure;
+    }
     if (e.data.type !== 'visionoir.visual.notes') return;
     const { attacks, gates, releases, accents } = e.data;
     report.packets++;
@@ -55,6 +73,31 @@ function observe(buffered) {
     if (releases & 4) report.release++;
     if (attacks[2] && !gates[2] && (releases & 4)) report.combined++;
   });
+}
+
+async function verifyAudioPriority(desk, output) {
+  await desk.evaluate(() => { window.gateProof.testLoad = .2; });
+  await desk.locator('.chromatic-rack summary').click();
+  await desk.getByLabel('Qualità', {exact:true}).selectOption('high');
+  await desk.getByLabel('Scena visiva', {exact:true}).selectOption('spectral-echo');
+  await output.bringToFront();
+  await output.evaluate(() => { window.gateProof.inspectQuality = true; });
+  await output.waitForFunction(() => !window.gateProof.limited && window.gateProof.visual?.history);
+  const full = await output.evaluate(() => window.gateProof.visual);
+  await desk.evaluate(() => { window.gateProof.testLoad = .85; });
+  await output.waitForFunction(base => {
+    const {limited, visual} = window.gateProof;
+    return limited && !visual.history && visual.width < base.width * .7 && visual.points < base.points * .5;
+  }, full);
+  const limited = await output.evaluate(() => ({ ...window.gateProof.visual, notes: window.gateProof.packets }));
+  await desk.evaluate(() => { window.gateProof.testLoad = .2; });
+  await output.waitForFunction(base => {
+    const {limited, visual} = window.gateProof;
+    return !limited && visual.history && visual.width === base.width && visual.points === base.points;
+  }, full);
+  assert.ok(await output.evaluate(n => window.gateProof.packets > n, limited.notes));
+  assert.equal(await desk.getByLabel('Qualità', {exact:true}).inputValue(), 'high');
+  return { full, limited, recovered: await output.evaluate(() => window.gateProof.visual) };
 }
 
 async function run(browser, project, buffered) {
@@ -77,6 +120,7 @@ async function run(browser, project, buffered) {
     assert.equal(target.hash, '');
     await desk.locator('[data-action=play]').first().click();
     await output.waitForFunction(()=>{const p=window.gateProof;return p.attack && p.accent && p.release && p.combined && p.shader>.04;},null,{timeout:18000});
+    const audioPriority = buffered ? null : await verifyAudioPriority(desk, output);
     const data = await output.evaluate(()=>window.gateProof);
     const engine = await desk.evaluate(()=>({worklets:window.gateProof.worklets,buffers:window.gateProof.buffers}));
     await desk.locator('[data-action=stop]').first().click();
@@ -85,7 +129,7 @@ async function run(browser, project, buffered) {
     assert.equal(data.other, 0);
     assert.ok(Math.abs(data.accent/data.attack-1.17)<.001);
     assert.deepEqual(errors,[]);
-    return { buffered, engine, data, errors };
+    return { buffered, engine, data, audioPriority, errors };
   } finally { await context.close(); }
 }
 

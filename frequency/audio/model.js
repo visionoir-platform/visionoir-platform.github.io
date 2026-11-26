@@ -81,6 +81,7 @@ const specs = [
       cutoff: 0.88,
       gain: 0.64,
       slice: 0,
+      slicePad: 0,
     },
   ],
 ];
@@ -141,11 +142,13 @@ const gains = [
 export function createTrack(instrumentId, index = 0) {
   const s = INSTRUMENTS.find((i) => i.id === instrumentId);
   if (!s) throw Error('instrument');
+  const params = { ...s.params };
+  if (s.id === 'sampler') delete params.slicePad;
   return {
     id: 'ch-' + (index + 1),
     instrument: s.id,
     name: s.name,
-    params: { ...s.params },
+    params,
     bus: s.bus,
     volume: gains[INSTRUMENTS.indexOf(s)],
     gain: 1,
@@ -545,6 +548,7 @@ export function validateProject(p) {
     totalPCM > 64e6 ||
     !plain(p.master) ||
     !finite(p.master.volume, 0, 2) ||
+    (p.master.mute !== undefined && typeof p.master.mute !== 'boolean') ||
     !finite(p.master.ceiling, 0.1, 0.999) ||
     !validRack(p.master.fx)
   )
@@ -639,12 +643,26 @@ function packPattern(pattern) {
   return { ...pattern, steps };
 }
 
+// Older readers reject unknown instrument parameters. A track in continuous offset mode
+// needs no slicePad key. Explicit per-note locks (including zero) remain musical data.
+export function projectForStorage(project) {
+  const neutralPad = track => track.instrument === 'sampler' && track.params.slicePad === 0;
+  if (!project.tracks.some(neutralPad)) return project;
+  const tracks = project.tracks.map(track => {
+    if (!neutralPad(track)) return track;
+    const params = { ...track.params };
+    delete params.slicePad;
+    return { ...track, params };
+  });
+  return { ...project, tracks };
+}
+
 export function projectFile(project, version = NATIVE_FILE_VERSION) {
   validateProject(project);
-  let data = project;
+  let data = projectForStorage(project);
   if (version === 2) {
     const scenes = project.scenes.map(scene => ({ ...scene, patterns: scene.patterns.map(packPattern) }));
-    data = { ...project, version, scenes };
+    data = { ...data, version, scenes };
   } else if (version !== 1) {
     throw Error('project.version');
   }

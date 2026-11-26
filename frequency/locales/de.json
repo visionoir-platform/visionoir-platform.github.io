@@ -14,6 +14,8 @@
   "eqFrequency": "Mittenfrequenz",
   "param_rumble_bassEq": "Bass-EQ (100 Hz)",
   "param_lead_mono": "Monophoner Modus",
+  "param_sampler_slicePad": "Sample-Segment",
+  "param_sampler_slice": "Stufenloser Startversatz",
   "param_ride_noiseFilter": "Hochpass für den Rauschanteil",
   "play": "Abspielen",
   "stop": "Stopp",

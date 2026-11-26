@@ -14,6 +14,8 @@
   "eqFrequency": "中心频率",
   "param_rumble_bassEq": "低频均衡 (100 Hz)",
   "param_lead_mono": "单音模式",
+  "param_sampler_slicePad": "采样切片",
+  "param_sampler_slice": "连续起点偏移",
   "param_ride_noiseFilter": "噪声高通滤波器",
   "play": "播放",
   "stop": "停止",

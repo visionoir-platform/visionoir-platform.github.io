@@ -28,10 +28,10 @@ export function number(label, id, value, min, max, step = 1, required = false) {
 }
 export function slider(label, id, value, min = 0, max = 1, step = 0.01) {
   const pos = ((value - min) / (max - min)) * 100;
-  return `<label class="fader" style="--fill:${pos}%"><span>${escape(label)}</span><output>${Math.round(value * 100) / 100}</output><input type="range" data-field="${attr(id)}" min="${min}" max="${max}" step="${step}" value="${attr(value)}"></label>`;
+  return `<div class="fader" style="--fill:${pos}%"><label><span>${escape(label)}</span><input type="range" data-field="${attr(id)}" min="${min}" max="${max}" step="${step}" value="${attr(value)}"></label><output aria-hidden="true">${Math.round(value * 100) / 100}</output></div>`;
 }
 export function dial(label, id, value, step = 0.01) {
-  return `<label class="fader dial" style="--fill:${Math.round(value * 100)}%;--angle:${-132 + value * 264}deg"><span>${escape(label)}</span><output>${Math.round(value * 100) / 100}</output><i aria-hidden="true"></i><input type="range" data-field="${attr(id)}" min="0" max="1" step="${step}" value="${attr(value)}"></label>`;
+  return `<div class="fader dial" style="--fill:${Math.round(value * 100)}%;--angle:${-132 + value * 264}deg"><label><span>${escape(label)}</span><i aria-hidden="true"></i><input type="range" data-field="${attr(id)}" min="0" max="1" step="${step}" value="${attr(value)}"></label><output aria-hidden="true">${Math.round(value * 100) / 100}</output></div>`;
 }
 export function select(label, id, options) {
   return `<label class="field"><span>${escape(label)}</span><select data-field="${attr(id)}">${options}</select></label>`;

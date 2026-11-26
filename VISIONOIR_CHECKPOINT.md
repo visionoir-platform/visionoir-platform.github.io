@@ -140,3 +140,9 @@ Il trasporto conserva la posizione dei due deck durante la pausa e riprende dal 
 ## FREQUENCY · Loop, proiezione ed esportazione
 
 Da ogni vista della workstation si possono impostare la prima e l’ultima battuta del loop e annullare o ripetere una modifica durante il set. La finestra VJ apre un indirizzo nuovo con la lingua e l’uscita selezionate. Nel pannello Esporta i formati progetto e i due archivi ZIP segnalano che includono anche i campioni importati e i loro nomi di file. Per condividere le sole note è disponibile il MIDI.
+
+## FREQUENCY · Controlli di palco
+
+Master mute silenzia anche il metronomo. Il fader conserva la propria posizione e si può regolare durante il mute. Nella vista Live i fader touch hanno un’area di presa più ampia. Il sampler one-shot riproduce il segmento selezionato anche dopo aver rilasciato il pad. Se l’elaborazione audio si avvicina al tempo massimo disponibile per blocco, il proiettore riduce la risoluzione e le particelle. Il dettaglio grafico ritorna quando il carico scende.
+
+Il sampler divide la regione selezionata in un massimo di sedici pad. Ogni passo del sequencer può richiamare il proprio pad. I progetti esistenti continuano a usare il loro spostamento di inizio. I test confrontano il PCM di ogni pad con un ritaglio manuale, anche in reverse e in loop.

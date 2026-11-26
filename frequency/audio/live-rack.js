@@ -53,6 +53,12 @@ export class LiveRack {
   get hasHeldNotes() {
     return (this.paused ? this.previewHeld : this.held).size > 0;
   }
+  get needsAudioRender() {
+    if (this.running || this.hasHeldNotes) return true;
+    const deck = this.paused ? this.preview : this.active;
+    return deck?.channels.some(channel => channel.kind === 15 &&
+      channel.voices.some(voice => voice.active && voice.oneShot)) ?? false;
+  }
   update(project) {
     this.project = project;
     this.active.update(project);

@@ -14,6 +14,8 @@
   "eqFrequency": "Frequência central",
   "param_rumble_bassEq": "EQ de graves (100 Hz)",
   "param_lead_mono": "Modo monofônico",
+  "param_sampler_slicePad": "Fatia da amostra",
+  "param_sampler_slice": "Deslocamento contínuo do início",
   "param_ride_noiseFilter": "Filtro passa-altas do ruído",
   "play": "Reproduzir",
   "stop": "Parar",
