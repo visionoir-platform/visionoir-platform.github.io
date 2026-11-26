@@ -1,5 +1,6 @@
-import { localePath, names, site } from './locales.js';
+import { localePath, names, portalPath, site } from './locales.js';
 import { tracks } from './tracks.js';
+import { instagramUsername } from './instagram.js';
 
 export const contact = 'visionoir.platform@gmail.com';
 export const servicePrices = { brand:450, content:350, sound:250, retainer:600, experience:1200, packX:null };
@@ -24,7 +25,7 @@ export function renderSite({ lang, dict, available, enabledTracks, base }) {
   return `
 ${t('skip','a','class="skip" href="#contenuto"')}
 <header class="topbar">
- <a href="#inizio" class="identity"><img src="${asset('logo.svg')}" width="28" height="28" alt=""><b>VISIONOIR</b></a>
+ <a href="#inizio" class="identity" data-motion-permission><img src="${asset('logo.svg')}" width="28" height="28" alt=""><b>VISIONOIR</b></a>
  <nav id="navigation" ${a11y('nav')}>
   ${t('experience','a','href="#universo"')}${t('services','a','href="#servizi"')}${t('studio','a','href="#studio"')}${t('contact','a','href="#contatto"')}
  </nav>
@@ -42,16 +43,16 @@ ${t('skip','a','class="skip" href="#contenuto"')}
    <h1>${t('heroFirst')} ${t('heroAccent','em')}</h1>
    ${t('heroCopy','p')}
    <a class="cta" href="#contatto">${t('start')}${arrow}</a>
-   <a class="support-link" data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a>
+   <a class="support-link" data-portal="support" href="${portalPath('support',lang,base)}">${t('ecoSupport')}</a>
 
   </div>
-  <button type="button" id="logo-scene" ${a11y('ecoDoor')} style="touch-action:manipulation">
+  <button type="button" id="logo-scene" data-motion-permission ${a11y('ecoDoor')} style="touch-action:manipulation">
    <img class="scene-fallback poster" src="${asset('logo.svg')}" alt="" width="660" height="790" fetchpriority="high">
   </button>
  </section>
  <section class="section lab" id="universo">
   <div class="section-copy">${t('experience','p','class="kicker"')}${t('labTitle','h2')}${t('labCopy','p')}
-   <button class="cta cta-secondary js-only" id="immersive">${t('scene')}${arrow}</button>
+   <button class="cta cta-secondary js-only" id="immersive" data-motion-permission>${t('scene')}${arrow}</button>
   </div>
   <div class="track-grid js-only" ${a11y('track')} role="group">
    ${choices.map(track => `<button class="track-card" data-track="${track.id}" aria-pressed="${track.id==='chrome'}"><i aria-hidden="true"></i><span>${trackName(track)}<small>${escape(track.title)} · <bdi>${track.bpm} BPM</bdi></small></span><span aria-hidden="true">▷</span></button>`).join('')}
@@ -74,10 +75,12 @@ ${t('skip','a','class="skip" href="#contenuto"')}
   <div class="section-copy">${t('studio','p','class="kicker"')}${t('studioTitle','h2')}${t('studioCopy','p')}</div>
   <div class="people"><div><h3 lang="en" dir="ltr"><small>Created, designed and developed by </small>Flavio Giorgio Guarini.</h3>${t('flavio','p')}</div><div><h3>Maria Bellini</h3>${t('maria','p')}</div></div>
   <div class="method" id="metodo">${t('method','h3')}${t('methodCopy','p')}</div>
-  <a class="social" href="https://www.instagram.com/visionoir_/" target="_blank" rel="noopener noreferrer">
+  <div class="studio-instagram"><a class="social" href="https://www.instagram.com/${instagramUsername}/" rel="external noreferrer">
     <span class="social-mark" aria-hidden="true">↗</span>
-    <span>${t('instagram')}<small dir="ltr">@visionoir_</small></span>${arrow}
-  </a>
+    ${t('instagram')}${arrow}
+  </a><div class="instagram-handle"><input id="instagram-username" aria-label="Instagram" dir="ltr" value="@${instagramUsername}" readonly inputmode="none" spellcheck="false">
+    ${t('instagramCopy','button','type="button" class="js-only" id="copy-instagram"')}</div>
+  <p class="fine" id="instagram-status" role="status"></p></div>
  </section>
  <section class="section contact-section" id="contatto"><div class="section-copy">
   ${t('contact','p','class="kicker"')}${t('contactTitle','h2')}${t('contactCopy','p')}
@@ -112,10 +115,10 @@ ${t('skip','a','class="skip" href="#contenuto"')}
  </section>
 </main>
 <footer class="footer">
- <div class="footer-sign"><span itemprop="creditText" lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${base}support/?lang=${lang}">${t('ecoSupport')}</a><a data-portal="legal" href="${base}legal/?lang=${lang}">${t('ecoLegal')}</a></div>
+ <div class="footer-sign"><span itemprop="creditText" lang="en" dir="ltr">Created, designed and developed by Flavio Giorgio Guarini.</span><a data-portal="support" href="${portalPath('support',lang,base)}">${t('ecoSupport')}</a><a data-portal="legal" href="${portalPath('legal',lang,base)}">${t('ecoLegal')}</a></div>
  <b>VISIONOIR</b><span>© 2026</span><span class="unseen-signature" lang="en" dir="ltr">We design the <a id="unseen-door" href="#unseen-door">unseen.</a></span>
  <details>${t('privacy','summary')}${t('req_tools','p')}<p id="geo-disclosure" hidden>${t('privacyGeo')}</p><a href="mailto:${contact}" dir="ltr">${contact}</a>
-    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
+    <div class="tilt-opt-in" hidden><button type="button" id="device-tilt-enable" data-motion-permission class="underlink">${t('tiltEnable')}</button><span aria-live="polite" id="device-tilt-status"></span></div>
   <div id="home-preferences" hidden>
    ${t('prefsInfo','p')}
    <div class="prefs-actions">${t('prefsExport','button','type="button" data-prefs="export"')}${t('prefsErase','button','type="button" data-prefs="erase" aria-controls="prefs-review" aria-expanded="false"')}</div>

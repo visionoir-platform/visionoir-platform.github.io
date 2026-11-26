@@ -61,6 +61,9 @@ studioCopy|A VISIONOIR é o projeto criativo independente de Flavio Giorgio Guar
 flavio|Estratégia criativa, identidade sonora e fluxos de trabalho com IA
 maria|Direção artística, design gráfico e identidade visual
 instagram|Segue-nos no Instagram
+instagramCopy|Copiar nome de utilizador
+instagramCopied|Nome de utilizador copiado. Procura-o no Instagram.
+instagramManual|Seleciona e copia o nome de utilizador e procura-o no Instagram.
 contactTitle|Qual é a tua próxima ideia?
 contactCopy|Conta-nos o que tens em mente. Encontramos juntos o ponto de partida.
 name|O teu nome

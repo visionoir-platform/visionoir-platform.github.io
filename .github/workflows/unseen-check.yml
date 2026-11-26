@@ -39,6 +39,8 @@ jobs:
           VISIONOIR_ALL_LOCALES: '1'
       - run: node game/qa/release.mjs
       - run: node scripts/check-frequency-release.mjs
+      - name: Install WebKit for the mobile sensor regression
+        run: ./node_modules/.bin/playwright-core install --with-deps webkit
       - name: Play, edit, meter and reopen a project in Chrome
         run: |
           python -m http.server 4173 --bind 127.0.0.1 --directory dist >"${RUNNER_TEMP}/studio-http.log" 2>&1 &
@@ -48,6 +50,9 @@ jobs:
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/guided-composition.cjs http://127.0.0.1:4173
           PLAYWRIGHT_MODULE=playwright-core BROWSER_BIN="$(command -v google-chrome)" CHROMATIC_ORIGIN=http://127.0.0.1:4173 node frequency/chromatic/qa/playing-notes.cjs
           FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/accessible-sequencer.cjs http://127.0.0.1:4173
+          MOTION_PROOF="$RUNNER_TEMP/ios-shake-webkit.json" node src/qa/ios-shake.cjs http://127.0.0.1:4173
+          MOTION_BROWSER_ENGINE=chromium MOTION_BROWSER_BIN="$(command -v google-chrome)" MOTION_PROOF="$RUNNER_TEMP/ios-shake-chromium.json" node src/qa/ios-shake.cjs http://127.0.0.1:4173
+          QA_ENGINE=Chromium PLAYWRIGHT_MODULE=playwright-core CHROME_PATH="$(command -v google-chrome)" VISIONOIR_QA_URL=http://127.0.0.1:4173 node scripts/qa-ecosystem.cjs
           BROWSER_BIN="$(command -v google-chrome)" CREATOR_PROOF="$RUNNER_TEMP/creator-acid" node src/creator/tools/qa-material-phases.cjs --acid
       - name: Repair the studio and reopen a saved project offline
         run: FREQUENCY_BROWSER_EXEC="$(command -v google-chrome)" node frequency/qa/offline-repair.cjs dist

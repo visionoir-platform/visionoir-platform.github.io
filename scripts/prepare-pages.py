@@ -10,7 +10,7 @@ target.mkdir(parents=True, exist_ok=False)
 paths = [
     "index.html", "package.json", "package-lock.json", "vite.config.js",
     ".gitignore", "README.md", "AUDIO-PREMIUM.md", "ASSETS.md",
-    ".github/workflows/pages.yml", "tests/locales.test.mjs", "tests/device-tilt.test.mjs", "tests/device-shake.test.mjs",
+    ".github/workflows/pages.yml", "tests/locales.test.mjs", "tests/device-tilt.test.mjs", "tests/device-shake.test.mjs", "tests/instagram.test.mjs",
     "scripts/prepare-player-artwork.py", "scripts/localize.mjs", "scripts/deploy-pages.py", "scripts/analyze-studio-audio.py", "scripts/synthesize-modes.py", "scripts/synthesize-soundtrack.py",
     "scripts/synthesize-premium.py", "scripts/audio-premium-requirements.txt",
     "public/favicon.svg", "public/favicon.ico", "tools/editor-visionoir.html",

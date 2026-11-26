@@ -61,6 +61,9 @@ studioCopy|VISIONOIR to niezależny projekt kreatywny, który tworzą Flavio Gio
 flavio|Strategia kreatywna, tożsamość dźwiękowa i procesy pracy z AI
 maria|Kierunek artystyczny, projektowanie graficzne i identyfikacja wizualna
 instagram|Obserwuj nas na Instagramie
+instagramCopy|Kopiuj nazwę użytkownika
+instagramCopied|Skopiowano nazwę użytkownika. Wyszukaj ją na Instagramie.
+instagramManual|Zaznacz i skopiuj nazwę użytkownika, a następnie wyszukaj ją na Instagramie.
 contactTitle|Jaki jest Twój kolejny pomysł?
 contactCopy|Opowiedz, co masz na myśli. Wspólnie znajdziemy punkt wyjścia.
 name|Twoje imię

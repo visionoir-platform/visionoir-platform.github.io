@@ -45,22 +45,16 @@ export function createPoseTracker() {
 let activeController;
 export function recenterDeviceTilt() { activeController?.recenter(); }
 
-export function mountDeviceTilt(onStatus = () => {}) {
+export function mountDeviceTilt(onReading = () => {}) {
   const api = window.DeviceOrientationEvent;
   const validOrigin = window.isSecureContext && !!api;
-  const needsGesture = validOrigin && typeof api.requestPermission === 'function';
   const preference = matchMedia('(prefers-reduced-motion: reduce)');
   const tracker = createPoseTracker();
   let enabled = false, listening = false, away = false, closed = false;
-  let status = needsGesture ? 'ask' : 'automatic', requestId = 0, timeout, frame = 0, lastTime = 0;
+  let frame = 0, lastTime = 0;
   let target = { x: 0, y: 0, yaw: 0 };
   const rootStyle = document.documentElement.style;
   const allowed = () => validOrigin && enabled && !preference.matches && !away && !document.hidden && !closed;
-  function statusChange(value) {
-    if (status === value) return;
-    status = value;
-    onStatus();
-  }
   function publish() {
     rootStyle.setProperty('--device-tilt-x', deviceTilt.x.toFixed(4));
     rootStyle.setProperty('--device-tilt-y', deviceTilt.y.toFixed(4));
@@ -95,8 +89,7 @@ export function mountDeviceTilt(onStatus = () => {}) {
     if (!allowed()) return;
     const reading = tracker.read(event, window.screen?.orientation?.angle ?? window.orientation ?? 0);
     if (!reading) return;
-    clearTimeout(timeout);
-    statusChange('receiving');
+    onReading();
     target = reading;
     if (!frame && ['x','y','yaw'].some(k => Math.abs(target[k]-deviceTilt[k]) > .0001)) frame = requestAnimationFrame(advance);
   }
@@ -107,13 +100,9 @@ export function mountDeviceTilt(onStatus = () => {}) {
       if (next) window.addEventListener('deviceorientation', accept, { passive: true });
       else {
         window.removeEventListener('deviceorientation', accept);
-        clearTimeout(timeout);
-        ++requestId;
         recenter();
-        if (status === 'waiting' || status === 'receiving') status = needsGesture ? 'ask' : 'automatic';
       }
     }
-    onStatus();
   }
   const hide = () => { away = true; refresh(); };
   const show = () => { away = false; refresh(); };
@@ -125,22 +114,8 @@ export function mountDeviceTilt(onStatus = () => {}) {
   display?.addEventListener?.('change', recenter);
   preference.addEventListener?.('change', refresh);
   const controller = {
-    get status() { return status; },
-    get showControl() { return allowed() && needsGesture && status !== 'receiving'; },
     setEnabled(value) { if (enabled !== !!value) { enabled = !!value; refresh(); } },
     recenter,
-    async request() {
-      if (!allowed() || !needsGesture || status === 'waiting' || status === 'receiving') return;
-      const id = ++requestId;
-      statusChange('waiting');
-      try {
-        // Called synchronously from the dedicated button's real activation.
-        const result = await api.requestPermission();
-        if (!allowed() || id !== requestId || status === 'receiving') return;
-        if (result !== 'granted') { statusChange('unavailable'); return; }
-        timeout = setTimeout(() => { if (status === 'waiting') statusChange('unavailable'); }, 2400);
-      } catch { if (allowed() && id === requestId) statusChange('unavailable'); }
-    },
     dispose() {
       closed = true;
       refresh();

@@ -20,6 +20,19 @@ async function run([name, engine, executablePath]) {
   }
   try {
     const context = await browser.newContext({hasTouch:name!=='Firefox', viewport:{width:390,height:844},reducedMotion:'reduce'});
+    // A controlled destination lets CI check the browser target without
+    // contacting Instagram or claiming to verify the account's public status.
+    const social = await context.newPage();
+    const profile = 'https://www.instagram.com/visionoir_/';
+    await context.route(profile, route => route.fulfill({status:200,contentType:'text/plain',body:'QA navigation'}));
+    await social.goto(new URL('/it/',url).href);
+    const instagram = social.getByRole('link',{name:/Instagram/i}).first();
+    assert.equal(await instagram.getAttribute('href'),profile);
+    await instagram.click();
+    await social.waitForURL(profile);
+    assert.equal(context.pages().length,1);
+    await social.close();
+    await context.unroute(profile);
     const page = await context.newPage();
     const external = new Set(), errors = [], outlineRequests = [];
     page.on('request',request=>{
@@ -53,7 +66,14 @@ async function run([name, engine, executablePath]) {
     await page.waitForURL('**/support/it/**');
     await page.locator('input[value="custom"] + span').click();
     await page.locator('#custom-amount').fill('12,50');
-    assert.equal(await page.locator('a[href^="mailto:visionoir.platform"]').count(),1);
+    const inquiry = page.locator('#support-inquiry');
+    const draft = new URL(await inquiry.getAttribute('href'));
+    assert.equal(draft.protocol,'mailto:');
+    assert.equal(draft.pathname,'visionoir.platform@gmail.com');
+    assert.equal(draft.searchParams.get('subject'),'Sostieni VISIONOIR');
+    assert.match(draft.searchParams.get('body'),/12,50/);
+    await page.locator('input[name="amount"][value=""] + span').click();
+    assert.equal(new URL(await inquiry.getAttribute('href')).searchParams.has('body'),false);
     await page.locator('footer a[href*="/legal/"]').first().click();
     await page.waitForURL('**/legal/it/**');
     for(const width of [360,390,768,1024,1440,1920]){

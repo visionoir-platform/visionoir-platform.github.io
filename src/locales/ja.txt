@@ -61,6 +61,9 @@ studioCopy|VISIONOIRは、Flavio Giorgio GuariniとMaria Belliniによる独立�
 flavio|クリエイティブ戦略、サウンドアイデンティティ、AIワークフロー
 maria|アートディレクション、グラフィックデザイン、ビジュアルアイデンティティ
 instagram|Instagramをフォロー
+instagramCopy|ユーザーネームをコピー
+instagramCopied|コピーしました。Instagramで検索できます。
+instagramManual|ユーザーネームを選択してコピーし、Instagramで検索してください。
 contactTitle|次にかたちにしたいアイデアは？
 contactCopy|思い描いていることを聞かせてください。どこから始めるか、一緒に考えましょう。
 name|お名前

@@ -126,3 +126,9 @@ Le sedici voci del Chromatic Engine pilotano risposte visive dedicate. Un attacc
 In Impostazioni e nel controllo prima del live, lo studio verifica quali risorse sono nella copia offline. La riparazione richiede i soli file mancanti e controlla la firma SHA-256 di ogni risposta. I progetti salvati sono conservati separatamente. Se il browser segnala spazio insufficiente, lo studio lo indica prima del download.
 
 La griglia del sequencer si raggiunge con Tab. Le frecce spostano il focus tra tracce e passi, Spazio modifica un passo e F2 apre i suoi parametri. Il materiale Acid del ritratto concentra la luce verde sulle pieghe della giacca.
+
+## Gesti su iOS, profilo Instagram e sostegno
+
+Su iOS, toccare il logo o entrare nella scena immersiva permette di concedere l’accesso al movimento. Uno scuotimento cambia il materiale del marchio, il successivo ripristina la finitura. Anche il marchio nella testata segue lo stato quando si scorre la pagina.
+
+Il profilo Instagram si apre nella stessa scheda. Accanto al collegamento è possibile copiare il nome utente @visionoir_. La home, il gioco e FREQUENCY collegano direttamente al portale di sostegno nella lingua attiva. Il portale prepara una richiesta allo studio con importo facoltativo. I pagamenti online sono sospesi.

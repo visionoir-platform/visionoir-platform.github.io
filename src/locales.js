@@ -8,6 +8,7 @@ export const names = {
 export const parents = { 'de-CH':'de', 'fr-CH':'fr', 'it-CH':'it', 'pt-BR':'pt-PT' };
 export const site = 'https://visionoir-platform.github.io/';
 export const localePath = (lang) => `/${lang.toLowerCase()}/`;
+export const portalPath = (portal, lang, base = '/') => base + portal + localePath(lang);
 
 export function parseCatalogue(source) {
   const parsed = {};

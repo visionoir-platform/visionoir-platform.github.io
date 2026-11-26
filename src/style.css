@@ -29,6 +29,8 @@ button{color:inherit}
 .topbar{position:sticky;inset-block-start:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:1rem;min-block-size:4.5rem;padding:0.55rem var(--space);border-block-end:1px solid var(--line);background:#0b0b0bf5}
 .identity,.top-tools,nav{display:flex;align-items:center}
 .identity{gap:.65rem;font-size:1.02rem;letter-spacing:.12em;flex-shrink:0;direction:ltr}
+.logo-negative .identity img{background:#000;filter:invert(1);border-radius:4px}
+
 nav{gap:clamp(.6rem,2vw,2rem);flex-wrap:wrap}
 nav a,summary,#menu-toggle{display:flex;align-items:center;gap:.5rem;min-block-size:44px}
 nav a:hover,.underlink:hover{color:var(--highlight)}
@@ -93,6 +95,11 @@ h3{font-size:clamp(1.2rem,1.65vw,1.6rem);line-height:1.22}
 .people>div,.method{border-block-start:1px solid var(--line);padding-block-start:1rem}
 .social{display:flex;align-items:center;gap:1rem;padding:.9rem;background:linear-gradient(120deg,#2c2c2c,#181818);border:1px solid #494949;border-radius:.4rem;perspective:420px;min-block-size:72px}
 .social .arrow{margin-inline-start:auto;color:var(--highlight)}
+.studio-instagram{min-inline-size:0}
+.instagram-handle{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.15rem .75rem;margin-block-start:.35rem}
+.instagram-handle input{min-inline-size:0;inline-size:11ch;max-inline-size:100%;padding:.25rem 0;background:transparent;color:var(--paper);border:0;font:inherit;user-select:all}
+.instagram-handle button{min-block-size:44px;padding:.35rem 0;background:transparent;color:inherit;border:0;text-decoration:underline;text-underline-offset:.2em}
+#instagram-status:empty{display:none}
 .social-mark{display:grid;place-items:center;inline-size:44px;block-size:44px;flex-shrink:0;background:linear-gradient(150deg,#e0e0e0,#353535 58%,#979797);border:1px solid #cfcfcf;border-radius:.6rem;color:#090909;font:800 .9rem var(--mono);box-shadow:3px 4px 0 #090909,0 5px 20px #0005;transition:transform .3s var(--ease)}
 @media(prefers-reduced-motion:no-preference){
  html:not(.reduced-motion) .social-mark{

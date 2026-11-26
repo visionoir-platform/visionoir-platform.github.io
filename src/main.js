@@ -1,11 +1,13 @@
 import './style.css';
 import './ecosystem/style.css';
 import { bindHomePreferences } from './home-preferences.js';
+import { createDeviceMotionAccess } from './device-motion-access.js';
+import { copyInstagramUsername } from './instagram.js';
 import { mountDeviceShake } from './device-shake.js';
 import { setLogoNegative } from './logo-polarity.js';
 import { mountDeviceTilt } from './device-tilt.js';
 import { bindFrequencyDoor } from './frequency-door.js';
-import { localePath, names, resolveLocale } from './locales.js';
+import { localePath, names, portalPath, resolveLocale } from './locales.js';
 import { money, updateMetadata } from './site.js';
 import { bindInquiry } from './inquiry.js';
 import { approximateCountry, storageValue } from './geo.js';
@@ -49,6 +51,12 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   const countryLookup = new AbortController();
   let idleTimer;
   const t = key => dictionary[key] || q(`[data-text="${key}"]`)?.textContent || '';
+  q('#copy-instagram').onclick = async () => {
+    const status = q('#instagram-status');
+    const message = await copyInstagramUsername(q('#instagram-username'));
+    status.dataset.text = message;
+    status.textContent = t(message);
+  };
   const preferences = bindHomePreferences({t,onErase() {
     manualRevision++;
     countryLookup.abort();
@@ -75,14 +83,25 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   }
   const setText = (selector,key) => { q(selector).textContent = t(key); };
   const tiltButton = q('#device-tilt-enable');
-  const tilt = mountDeviceTilt(updateTiltControl);
-  mountDeviceShake({onToggle: () => setLogoNegative(!html.classList.contains('logo-negative'))});
+  const access = createDeviceMotionAccess(window, updateTiltControl);
+  const tilt = mountDeviceTilt(() => access.observed('orientation'));
+  mountDeviceShake({
+    onReading: () => access.observed('motion'),
+    onToggle: () => setLogoNegative(!html.classList.contains('logo-negative')),
+  });
   function updateTiltControl() {
-    tiltButton.parentElement.hidden = !tilt.showControl;
-    tiltButton.setAttribute('aria-busy', String(tilt.status === 'waiting'));
-    q('#device-tilt-status').textContent = tilt.showControl && tilt.status === 'unavailable' ? t('tiltUnavailable') : '';
+    const state = access.state;
+    tiltButton.parentElement.hidden = !['ask','waiting','unavailable'].includes(state);
+    tiltButton.setAttribute('aria-busy', String(state === 'waiting'));
+    q('#device-tilt-status').textContent = state === 'unavailable' ? t('tiltUnavailable') : '';
   }
-  tiltButton.onclick = () => { void tilt.request(); };
+  // These are existing visual interactions. Other navigation and audio controls
+  // never prompt. A declined request can be retried deliberately in preferences.
+  for (const target of document.querySelectorAll('[data-motion-permission]')) {
+    target.addEventListener('click', event => {
+      if (event.isTrusted) void access.request(target === tiltButton);
+    });
+  }
   function syncControls() {
     tilt.setEnabled(motion);
     updateTiltControl();
@@ -114,7 +133,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
     lang = next;
     dictionary = dict;
     updateMetadata(lang,dict,explicit);
-    document.querySelectorAll('[data-portal]').forEach(link=>link.href=base+link.dataset.portal+'/?lang='+encodeURIComponent(lang));
+    document.querySelectorAll('[data-portal]').forEach(link=>link.href=portalPath(link.dataset.portal,lang,base));
     for (const node of document.querySelectorAll('[data-text]')) node.textContent=dict[node.dataset.text];
     for (const node of document.querySelectorAll('[data-label]')) node.setAttribute('aria-label',dict[node.dataset.label]);
     for (const node of document.querySelectorAll('[data-alt]')) node.alt=dict[node.dataset.alt];

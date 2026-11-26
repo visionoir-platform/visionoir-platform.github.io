@@ -61,6 +61,9 @@ studioCopy|VISIONOIR est le projet créatif indépendant de Flavio Giorgio Guari
 flavio|Stratégie créative, identité sonore et processus de travail avec l’IA
 maria|Direction artistique, design graphique et identité visuelle
 instagram|Suivez-nous sur Instagram
+instagramCopy|Copier le nom d’utilisateur
+instagramCopied|Nom d’utilisateur copié. Recherche-le sur Instagram.
+instagramManual|Sélectionne et copie le nom d’utilisateur, puis recherche-le sur Instagram.
 contactTitle|Quelle est votre prochaine idée ?
 contactCopy|Racontez-nous ce que vous avez en tête. Trouvons ensemble le point de départ.
 name|Votre nom
