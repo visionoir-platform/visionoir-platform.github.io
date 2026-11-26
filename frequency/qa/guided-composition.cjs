@@ -95,9 +95,42 @@ async function check(browser) {
     await page.waitForFunction(name=>document.querySelector('#notice').textContent.includes(name),imported.name);
     await page.reload();
     assert.deepEqual(await snapshot(), imported);
+
+    const midiEvents = Buffer.from([
+      0, 255, 81, 3, 7, 161, 32,
+      0, 144, 48, 96,
+      0, 144, 55, 96,
+      129, 112, 128, 48, 0,
+      0, 128, 55, 0,
+      129, 112, 144, 60, 101,
+      120, 128, 60, 0,
+      0, 255, 47, 0,
+    ]);
+    const header = Buffer.from('4d546864000000060000000101e04d54726b00000000', 'hex');
+    header.writeUInt32BE(midiEvents.length, header.length - 4);
+    const fileInput = page.locator('#project-file');
+    await fileInput.setInputFiles({
+      name:'rientro.mid', mimeType:'audio/midi', buffer:Buffer.concat([header, midiEvents]),
+    });
+    await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('rientro'));
+    assert.equal(await page.locator('[data-tab="arrangement"]').getAttribute('aria-pressed'), 'true');
+    const fromMidi = await snapshot();
+    assert.equal(fromMidi.bpm, 120);
+    assert.deepEqual(fromMidi.scenes[0].patterns.flatMap(pattern=>pattern.steps.filter(Boolean))
+      .flatMap(note=>[note.note,...(note.chord ?? []).map(interval=>note.note+interval)])
+      .sort((a,b)=>a-b), [48,55,60]);
+    await button('undo').click();
+    assert.deepEqual(await snapshot(), imported);
+    await button('redo').click();
+    assert.deepEqual(await snapshot(), fromMidi);
+    await fileInput.setInputFiles({name:'incompleto.mid',mimeType:'audio/midi',buffer:header});
+    await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('MIDI è danneggiato'));
+    await page.reload();
+    assert.deepEqual(await snapshot(), fromMidi);
     assert.deepEqual(errors, []);
     return {origin,browser:browser.version(),channel:before.tracks[channel].name,scene,seed:134,meter,master,
-      editedPatternOnly:true,editedTimbreOnly:true,editedSceneOnly:true,undo:true,reopened:true,reopenedImport:true,errors};
+      editedPatternOnly:true,editedTimbreOnly:true,editedSceneOnly:true,undo:true,reopened:true,reopenedImport:true,
+      midiImport:{bpm:fromMidi.bpm,tracks:fromMidi.tracks.length,undoRedo:true,invalidPreservesProject:true},errors};
   } finally { await context.close(); }
 }
 

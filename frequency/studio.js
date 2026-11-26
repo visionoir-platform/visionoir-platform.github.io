@@ -145,7 +145,8 @@ export async function startStudio() {
   }
   function fail(err) {
     console.warn('[FREQUENCY]', err?.name || 'Operation');
-    const key = err?.message === 'audio.outputDenied' ? 'outputDenied' :
+    const key = ['midiImportInvalid', 'midiImportUnsupported', 'midiImportTooLarge', 'midiImportNoNotes'].includes(err?.message) ? err.message :
+      err?.message === 'audio.outputDenied' ? 'outputDenied' :
       err?.message === 'audio.outputFailed' ? 'outputFailed' :
       err?.message === 'audio.processorError' ? 'audioRetry' : err?.message === 'storage.exportInUse' ? 'eraseBlocked' :
       err?.message?.startsWith('project.') || err?.name === 'SyntaxError'
@@ -194,7 +195,7 @@ export async function startStudio() {
   const href = (portal) => portalPath(portal,lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('support')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('legal')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel" aria-labelledby="panel-heading"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('support')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('legal')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel" aria-labelledby="panel-heading"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,.mid,.midi,application/json,application/zip,audio/midi,audio/x-midi">`;
     const panel = el('master-analysis');
     panel.addEventListener('toggle', () => {
       tick.lufsMomentary = tick.lufsShort = tick.truePeakMax = null;
@@ -300,6 +301,7 @@ export async function startStudio() {
     updateTransport();
   }
   function remember() {
+    latestImport++;
     undo.push(snapshot());
     if (undo.length > 24) undo.shift();
     redo = [];
@@ -667,7 +669,7 @@ export async function startStudio() {
     open(
       'library',
       t('library'),
-      `<label class="field wide"><span>${h(t('title'))}</span><input data-field="name" maxlength="160" value="${attr(p.name)}"></label><div class="bar-tools">${act('blank', t('newProject'), { icon: '+' })}${act('generator', t('generate'))}${act('import', t('importFile'))}${act('backup', '.vfreq ↓')}${act('save-as', t('save') + ' +')} ${act('recover-backup', t('recovery'))}</div><h3>${h(t('demo'))}</h3><div class="project-grid">${[...audio.DEMOS, ...(audio.EXTRA_DEMOS || [])].map((d, i) => act('demo', d.name + ' · ' + d.bpm + ' BPM', { data: 'data-id="' + attr(d.id) + '"', icon: pad(i + 1) })).join('')}</div><h3>${h(t('storage'))}</h3><div class="project-grid">${saved.map((x) => act('saved', x.name + ' · ' + new Date(x.date).toLocaleDateString(lang), { data: 'data-id="' + attr(x.id) + '"' })).join('')}</div>`,
+      `<label class="field wide"><span>${h(t('title'))}</span><input data-field="name" maxlength="160" value="${attr(p.name)}"></label><div class="bar-tools">${act('blank', t('newProject'), { icon: '+' })}${act('generator', t('generate'))}${act('import', t('importFile') + ' · MIDI')}${act('backup', '.vfreq ↓')}${act('save-as', t('save') + ' +')} ${act('recover-backup', t('recovery'))}</div><h3>${h(t('demo'))}</h3><div class="project-grid">${[...audio.DEMOS, ...(audio.EXTRA_DEMOS || [])].map((d, i) => act('demo', d.name + ' · ' + d.bpm + ' BPM', { data: 'data-id="' + attr(d.id) + '"', icon: pad(i + 1) })).join('')}</div><h3>${h(t('storage'))}</h3><div class="project-grid">${saved.map((x) => act('saved', x.name + ' · ' + new Date(x.date).toLocaleDateString(lang), { data: 'data-id="' + attr(x.id) + '"' })).join('')}</div>`,
     );
   }
   function generator(target = 'session') {
@@ -1101,9 +1103,13 @@ export async function startStudio() {
   function clearDialog() {
     if (el('panel')?.open) close();
   }
-  async function replace(p) {
+  async function replace(p, view) {
     audio.validateProject(p);
     remember();
+    if (view) {
+      s.view = view;
+      renderTabs();
+    }
     restoreSnapshot(p);
     clearDialog();
     say(t('open') + ' · ' + p.name);
@@ -2336,7 +2342,9 @@ export async function startStudio() {
         const request = ++latestImport, original = s.p, transport = commandCount;
         try {
           const loaded = await audio.readProject(file);
-          if (request === latestImport && original === s.p && transport === commandCount && guardLive()) await replace(loaded);
+          if (request === latestImport && original === s.p && transport === commandCount && guardLive()) {
+            await replace(loaded, audio.isMidiFile(file) ? 'arrangement' : undefined);
+          }
         } catch (error) {
           if (request === latestImport && original === s.p) fail(error);
         }
