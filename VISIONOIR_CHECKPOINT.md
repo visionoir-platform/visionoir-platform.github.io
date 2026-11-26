@@ -132,3 +132,7 @@ La griglia del sequencer si raggiunge con Tab. Le frecce spostano il focus tra t
 Su iOS, toccare il logo o entrare nella scena immersiva permette di concedere l’accesso al movimento. Uno scuotimento cambia il materiale del marchio, il successivo ripristina la finitura. Anche il marchio nella testata segue lo stato quando si scorre la pagina.
 
 Il profilo Instagram si apre nella stessa scheda. Accanto al collegamento è possibile copiare il nome utente @visionoir_. La home, il gioco e FREQUENCY collegano direttamente al portale di sostegno nella lingua attiva. Il portale prepara una richiesta allo studio con importo facoltativo. I pagamenti online sono sospesi.
+
+## FREQUENCY · Continuità del set e ritratto
+
+Il trasporto conserva la posizione dei due deck durante la pausa e riprende dal campione successivo. Il filtro DJ ha il centro neutro e due direzioni di taglio. La scultura del creatore usa porzioni triangolari del modello statico originale per le scaglie della manica. La CI verifica il trasporto, i campioni audio e le superfici visibili nel rendering. La prova con i comandi fisici delle cuffie e con lo schermo bloccato resta da eseguire.
