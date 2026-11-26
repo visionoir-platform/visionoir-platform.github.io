@@ -95,7 +95,6 @@ export async function startStudio() {
   let activeDialog,
     dialogTrigger,
     renderTask,
-    restoreVolume = 0.85,
     audioState = 'audioOff',
     pendingMidi,
     exportController;
@@ -1642,12 +1641,12 @@ export async function startStudio() {
         mutate(() => (s.p.tracks[i][id] = !s.p.tracks[i][id]));
         return;
       case 'master-mute':
-        mutate(() => {
-          if (s.p.master.volume) {
-            restoreVolume = s.p.master.volume;
-            s.p.master.volume = 0;
-          } else s.p.master.volume = restoreVolume;
-        });
+        remember();
+        s.p.master.mute = !s.p.master.mute;
+        engine.control('master-mute', Number(s.p.master.mute));
+        btn.setAttribute('aria-pressed', String(s.p.master.mute));
+        saveSoon();
+        flushSave();
         return;
       case 'patches':
         presets();

@@ -545,6 +545,7 @@ export function validateProject(p) {
     totalPCM > 64e6 ||
     !plain(p.master) ||
     !finite(p.master.volume, 0, 2) ||
+    (p.master.mute !== undefined && typeof p.master.mute !== 'boolean') ||
     !finite(p.master.ceiling, 0.1, 0.999) ||
     !validRack(p.master.fx)
   )

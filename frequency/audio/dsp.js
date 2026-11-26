@@ -61,7 +61,9 @@ export class DSP {
     this.busLv = new Float32Array(BUSSES.length);
     this.meterBusL = new Float64Array(BUSSES.length);
     this.meterBusR = new Float64Array(BUSSES.length);
+    this.muteRampLength = Math.max(1, Math.round(rate * 0.005));
     this.update(project);
+    this.muteFrames = this.masterMuted ? this.muteRampLength : 0;
   }
   update(p) {
     this.p = p;
@@ -132,6 +134,7 @@ export class DSP {
     this.masterFx = rack(p.master?.fx, this.masterFx, this.rate, p.bpm);
     this.ceil = clamp(p.master?.ceiling ?? 0.91, 0.1, 0.999);
     this.volume = clamp(p.master?.volume ?? 0.88, 0, 2);
+    this.masterMuted = p.master?.mute === true;
     this.gSmooth = 1 - Math.exp(-1 / (0.005 * this.rate));
     this.delay.configure({ amount: 0.43 }, p.bpm);
     this.reverb.configure({ amount: 0.47 }, p.bpm);
@@ -142,6 +145,10 @@ export class DSP {
   }
   control(id, value) {
     if (!Number.isFinite(value) || typeof id !== 'string') return;
+    if (id === 'master-mute') {
+      this.p.master.mute = this.masterMuted = value !== 0;
+      return;
+    }
     if (id === 'tempo') {
       if (value < 40 || value > 300) return;
       this.reserveEvents();
@@ -208,6 +215,7 @@ export class DSP {
   }
   stop() {
     this.running = false;
+    this.muteFrames = this.masterMuted ? this.muteRampLength : 0;
     this.clickFrames = 0;
     this.setAutomation(null, 0);
     this.limiter.reset();
@@ -570,6 +578,15 @@ export class DSP {
         this.clickFrames--;
         l = clamp(l + click, -this.ceil, this.ceil);
         r = clamp(r + click, -this.ceil, this.ceil);
+      }
+      // Gate the complete stream, including the metronome and limiter tail.
+      if (this.masterMuted || this.muteFrames) {
+        this.muteFrames = this.masterMuted
+          ? Math.min(this.muteRampLength, this.muteFrames + 1)
+          : this.muteFrames - 1;
+        const gain = (this.muteRampLength - this.muteFrames) / this.muteRampLength;
+        l *= gain;
+        r *= gain;
       }
       left[j] = l;
       right[j] = r;
