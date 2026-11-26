@@ -71,6 +71,7 @@ export class DSP {
     this.reserveEvents();
     this.setTempo(p.bpm);
     this.total = totalBars(p) * 16;
+    this.postFader = p.master?.postFader === true;
     const solo = p.tracks.some((t) => t.solo);
     this.channels = p.tracks.map((t, i) => {
       let c = this.channels[i];
@@ -86,7 +87,8 @@ export class DSP {
           energy: 0,
           prevHz: 0,
           voice: 0,
-          g: 0,
+          inputGain: this.postFader ? (t.gain ?? 1) : 0,
+          fader: this.postFader ? 0 : 1,
           fx: [],
         };
       }
@@ -113,8 +115,11 @@ export class DSP {
         c.echoOffset = Math.max(4, Math.round((0.03 + 0.19 * c.params.delay) * this.rate));
         c.verbOffset = Math.max(4, Math.round(0.04721 * this.rate));
       }
-      c.mixGain = t.mute || (solo && !t.solo) ? 0 : (t.gain ?? 1);
-      c.to = t.volume * c.mixGain;
+      c.trim = t.gain ?? 1;
+      const audible = !t.mute && (!solo || t.solo === true);
+      c.mixGain = audible ? c.trim : 0;
+      c.levelScale = this.postFader ? Number(audible) : c.mixGain;
+      c.to = t.volume * c.levelScale;
       c.lp = Math.cos(((t.pan + 1) * Math.PI) / 4);
       c.rp = Math.sin(((t.pan + 1) * Math.PI) / 4);
       c.fx = rack(t.fx, c.fx, this.rate, p.bpm);
@@ -183,10 +188,7 @@ export class DSP {
     if (!Number.isInteger(Number(index)) || !c) return;
     if (family === 'v') {
       c.t.volume = clamp(value, 0, 1);
-      c.to =
-        c.t.mute || (this.channels.some((row) => row.t.solo) && !c.t.solo)
-          ? 0
-          : c.t.volume * (c.t.gain ?? 1);
+      c.to = c.t.volume * c.levelScale;
       return;
     }
     if (family === 'p' && Object.hasOwn(INSTRUMENTS[c.kind].params, key)) {
@@ -238,7 +240,9 @@ export class DSP {
       for (const v of c.voices) v.active = false;
       c.peak = 0;
       c.energy = 0;
-      c.prevHz = c.voice = c.g = 0;
+      c.prevHz = c.voice = 0;
+      c.inputGain = this.postFader ? c.trim : 0;
+      c.fader = this.postFader ? 0 : 1;
       if (c.rumble) {
         c.rumble.buffer.fill(0);
         c.rumble.low = c.rumble.head = 0;
@@ -435,7 +439,8 @@ export class DSP {
   }
   render(left, right, n = left.length) {
     const selected = this.options.track,
-      busFilter = this.options.bus;
+      busFilter = this.options.bus,
+      postFader = this.postFader;
     for (let j = 0; j < n; j++, this.frame++) {
       if (this.running && this.frame >= this.nextBoundary) this.boundary();
       while (this.events.length && this.events.slots[0].at <= this.frame) {
@@ -469,9 +474,15 @@ export class DSP {
         const detector = this.previousBusInput[c.sidechain];
         if (c.kind === 1 || c.kind === 4) signal /= 1 + detector * (c.params.sidechain || 0) * 7;
         const level = c.volumeLane;
-        const target = level.value === null ? c.to : level.value * c.mixGain;
+        const target = level.value === null ? c.to : level.value * c.levelScale;
         if (level.increment) level.value += level.increment;
-        c.g += (target - c.g) * this.gSmooth;
+        // Legacy sessions combine trim and fader before inserts. Smooth both stages on a live mode change.
+        c.inputGain += ((postFader ? c.trim : target) - c.inputGain) * this.gSmooth;
+        if (postFader) c.fader += (target - c.fader) * this.gSmooth;
+        else if (c.fader !== 1) {
+          c.fader += (1 - c.fader) * this.gSmooth;
+          if (1 - c.fader < 1e-12) c.fader = 1;
+        }
         if (!meterFrame && signal === 0 && !c.rumble && c.fx.length === 0) {
           // No signal or insert tail can reach a send or detector; keep the automation cursor moving.
           if (c.panLane.value !== null) c.panLane.value += c.panLane.increment;
@@ -488,10 +499,10 @@ export class DSP {
           b.buffer[pos] = clamp(signal + tail, -1.6, 1.6);
           b.head = (pos + 1) % m;
           b.low += (room - b.low) * this.gSmooth;
-          stereoReturn = (room - b.low) * c.params.width * 0.25 * c.g;
+          stereoReturn = (room - b.low) * c.params.width * 0.25 * c.inputGain;
           signal += tail;
         }
-        const dry = signal * c.g;
+        const dry = signal * c.inputGain;
         let leftPan = c.lp, rightPan = c.rp;
         const balance = c.panLane;
         if (balance.value !== null) {
@@ -508,6 +519,10 @@ export class DSP {
           fx.step(x, y, detector);
           x = fx.L;
           y = fx.R;
+        }
+        if (c.fader !== 1) {
+          x *= c.fader;
+          y *= c.fader;
         }
         const width = t.width ?? 1;
         if (width !== 1) {

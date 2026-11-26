@@ -1619,6 +1619,9 @@ export async function startStudio() {
       case 'clip-delete':
         if (s.p.arrangement.length > 1) mutate(() => s.p.arrangement.splice(i, 1));
         return;
+      case 'post-fader':
+        mutate(() => { s.p.master.postFader = !s.p.master.postFader; });
+        return;
       case 'bus-mute':
         mutate(() => {
           const bus = busSettings(key);

@@ -18,6 +18,8 @@ Durante un set, i controlli multimediali dei dispositivi compatibili mostrano il
 
 Nel Rumble Engine, **EQ bassi (100 Hz)** regola i bassi dopo la distorsione, da −9 a +9 dB. Il centro della manopola mantiene il timbro originale.
 
+Nel **Mixer**, il pulsante **Fader dopo gli inserti** vale per tutti i canali del progetto. Nei nuovi progetti vuoti è attivo. Il Gain regola il segnale che entra negli effetti. Il fader Volume e la sua automazione regolano il segnale in uscita dagli inserti, comprese le code, prima di meter, mandate e bus. Le demo e i progetti salvati prima di questa modalità conservano il percorso originale, con Gain e Volume prima degli inserti. Puoi cambiare modalità, annullare la modifica e salvarla nel file del progetto.
+
 Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master.
 
 Apri **Misure del master · LUFS / dBTP** per misurare l’uscita stereo. La lettura M copre gli ultimi 400 ms, la lettura S gli ultimi 3 secondi. Il trattino indica che manca ancora una finestra completa. Il picco reale massimo resta visibile dopo Stop. Riparti con Play oppure chiudi e riapri il pannello per iniziare una nuova misura. Se il motore entra in protezione per il carico audio, le letture si sospendono e ricominciano al recupero.

@@ -360,8 +360,6 @@ function demoPattern(t, i, s, d) {
   return { length, steps };
 }
 export function createProject(demoId = 'blank') {
-  if (EXTRA_DEMOS.some((item) => item.id === demoId))
-    return additionalSession(createProject('blank'), demoId);
   const d = DEMOS.findIndex((i) => i.id === demoId),
     demo = DEMOS[d];
   const tracks = INSTRUMENTS.map((s, i) => createTrack(s.id, i));
@@ -379,7 +377,7 @@ export function createProject(demoId = 'blank') {
       { id: d === 2 ? 'bitcrusher' : 'overdrive', amount: 0.19 + 0.04 * d, bypass: false },
     ];
   }
-  return {
+  const project = {
     version: 1,
     name: demo?.name ?? 'Untitled',
     bpm: demo?.bpm ?? 155,
@@ -401,6 +399,8 @@ export function createProject(demoId = 'blank') {
     midiMappings: {},
     buses: Object.fromEntries(BUSSES.map((bus) => [bus, { volume: 1, mute: false }])),
   };
+  if (demoId === 'blank') project.master.postFader = true;
+  return EXTRA_DEMOS.some((item) => item.id === demoId) ? additionalSession(project, demoId) : project;
 }
 const finite = (n, l, h) => Number.isFinite(n) && n >= l && n <= h;
 const effectNames = new Set(EFFECTS.map((f) => f.id));
@@ -549,6 +549,7 @@ export function validateProject(p) {
     !plain(p.master) ||
     !finite(p.master.volume, 0, 2) ||
     (p.master.mute !== undefined && typeof p.master.mute !== 'boolean') ||
+    (p.master.postFader !== undefined && typeof p.master.postFader !== 'boolean') ||
     !finite(p.master.ceiling, 0.1, 0.999) ||
     !validRack(p.master.fx)
   )

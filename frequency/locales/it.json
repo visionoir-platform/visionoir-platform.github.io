@@ -205,5 +205,6 @@
   "regionBounds": "La fine deve seguire l’inizio.",
   "regionProtect": "Questo campione è usato nella timeline. Importa la nuova registrazione dalla sezione Regioni audio.",
   "automation": "Automazione",
-  "point": "Punto"
+  "point": "Punto",
+  "postFader": "Fader dopo gli inserti"
 }

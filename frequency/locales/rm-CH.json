@@ -205,5 +205,6 @@
   "regionBounds": "La fin sto suandar il cumenzament.",
   "regionProtect": "Questa prova da tun vegn duvrada en l’arranschament. Importescha la nova registraziun en Regiun audio.",
   "automation": "Automatisaziun",
-  "point": "Punct"
+  "point": "Punct",
+  "postFader": "Faders suenter ils effects dad insert"
 }

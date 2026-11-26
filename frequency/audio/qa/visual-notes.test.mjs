@@ -56,6 +56,8 @@ test('queued, probability-zero, muted, excluded, or pre-seek notes never produce
   p.scenes[0].patterns[3].steps[0] = note();
   p.arrangement[0].trackScenes = [null, null, null, -1];
   p.scenes[0].patterns[4].steps[1] = note();
+  p.scenes[0].patterns[5].steps[0] = note();
+  p.tracks[5].gain = 0;
   const rack = new LiveRack(p, rate);
   rack.start({arrangement:true});
   render(rack, 500);
