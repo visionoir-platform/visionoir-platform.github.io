@@ -332,6 +332,7 @@ export async function startStudio() {
   let latestImport = 0;
   function stop() {
     commandCount++;
+    starting = false;
     midiNotes.reset();
     engine.stop();
     paused = false;
@@ -343,11 +344,11 @@ export async function startStudio() {
     }
   }
   function pause() {
-    if (!playing) {
-      if (starting) stop();
-      return;
-    }
+    if (!playing && !starting) return;
+    // A first start has no saved cursor. An interrupted resume still does.
+    if (starting && !paused && !playing) return stop();
     commandCount++;
+    starting = false;
     engine.pause();
     playing = false;
     paused = true;
@@ -361,9 +362,10 @@ export async function startStudio() {
     starting = true;
     try {
       const continuing = paused;
-      if (continuing) await engine.resume();
-      else await engine.play(s.p, { scene: s.scene, arrangement: song });
+      const started = continuing ? await engine.resume()
+        : await engine.play(s.p, { scene: s.scene, arrangement: song });
       if (command !== commandCount) return;
+      if (!started) return pause();
       paused = false;
       playing = true;
       if (!continuing) s.playScene = s.scene;
@@ -372,7 +374,7 @@ export async function startStudio() {
     } catch (e) {
       fail(e);
     } finally {
-      starting = false;
+      if (command === commandCount) starting = false;
     }
   }
   async function audition(ch, pitch, velocity = 0.85, token) {
@@ -532,13 +534,14 @@ export async function startStudio() {
     onState: (state) => {
       outputRoute.observe();
       if (state === 'interrupted' || state === 'suspended') {
-        if (playing) pause();
+        if (playing || starting) pause();
         say(t('audioOff'));
       }
     },
     onError(error) {
       if (error.message === 'audio.processorError') {
         commandCount++;
+        starting = false;
         playing = false;
         paused = false;
         audioState = 'audioRetry';
@@ -1531,6 +1534,7 @@ export async function startStudio() {
       case 'launch':
         s.scene = i;
         say(t('waiting') + ' · ' + sceneName(i));
+        if (paused) stop();
         if (!playing) await play();
         else engine.queueScene(i);
         editor();

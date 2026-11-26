@@ -31,8 +31,6 @@ test('dense swung ratchets preserve stable same-frame voice stealing, seeds and 
   dsp.start();
   for (let block = 0; block < 247; block++) {
     if (block === 126) dsp.queueScene(1);
-    if (block === 152) dsp.control('tempo', 40);
-    if (block === 164) dsp.control('tempo', 300);
     dsp.render(l, r);
     for (let i = 0; i < 128; i++) {
       buffer.writeInt16LE(Math.round(l[i] * 32767), i * 4);
@@ -41,9 +39,9 @@ test('dense swung ratchets preserve stable same-frame voice stealing, seeds and 
     stereo.update(buffer);
   }
   const result = [notes.length, createHash('sha256').update(JSON.stringify(notes)).digest('hex'), stereo.digest('hex')];
-  // Captured from 028cfbf before introducing the event pool.
-  assert.deepEqual(result, [1650, 'eff7d089b9191df468253038827e8815d27a51a8b4b53095e2ba78e6cf1adb8b',
-    '0f04310091df15c72c00527f703688f4ba1566407d5b666651f7a1f30889b736']);
+  // Captured at constant tempo before retiming was implemented. Tempo edits have independent timing fixtures.
+  assert.deepEqual(result, [1268, 'edb788ce15cf8d7fa11db4f6517debf6fc3f9758c9badd941ff694b63523ae8e',
+    '74d647590b925c76ea1197dcb9f900dfecf5ec9b0182ad38d272a3786ab0e83d']);
 });
 
 test('public scheduler callbacks retain independently readable chord pitches', () => {

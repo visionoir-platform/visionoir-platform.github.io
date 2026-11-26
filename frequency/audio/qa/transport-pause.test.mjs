@@ -38,3 +38,41 @@ test('pausing halfway through a live crossfade preserves both decks down to the 
   rack.resume();
   assert.equal(rack.running, false);
 });
+
+test('paused pads and held MIDI notes sound immediately without entering the resumed mix', () => {
+  const project = createProject('blank');
+  const rack = new LiveRack(project, 8000);
+  const reference = new LiveRack(structuredClone(project), 8000);
+  const l = new Float32Array(512), r = l.slice(), expectedL = l.slice(), expectedR = r.slice();
+  for (const deck of [rack, reference]) {
+    deck.start();
+    deck.render(l, r);
+  }
+  const frame = rack.active.frame;
+  rack.pause();
+  assert.ok(rack.status().levels.every(value => value === 0));
+  rack.control('master-analysis', 1);
+  rack.trigger(0, 36, .9, .2);
+  rack.render(l, r);
+  assert.ok(l.some(x => Math.abs(x) > .01));
+  const preview = rack.status();
+  assert.equal(preview.masterPeak[0], Math.max(...l.map(Math.abs)));
+  assert.ok(preview.levels[0] > 0 && preview.visualNotes.attacks[0] > 0);
+  assert.ok(preview.buses.some(value => value > 0));
+  assert.ok(Number.isFinite(preview.truePeakMax));
+  assert.equal(preview.absoluteStep, reference.active.step);
+  rack.noteOn(11, 61, .8, 1);
+  rack.noteOn(11, 64, .8, 2);
+  rack.release(11, 61, 1);
+  assert.ok(rack.hasHeldNotes);
+  rack.render(l, r);
+  assert.equal(rack.active.frame, frame);
+  rack.resume();
+  assert.equal(rack.hasHeldNotes, false);
+  assert.equal(rack.status().truePeakMax, null);
+  rack.release(11, 64, 2);
+  rack.render(l, r);
+  reference.render(expectedL, expectedR);
+  assert.deepEqual(l, expectedL);
+  assert.deepEqual(r, expectedR);
+});
