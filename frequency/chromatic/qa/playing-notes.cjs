@@ -9,6 +9,10 @@ async function fixture() {
   p.name = 'QA · Chromatic note gates';
   p.bpm = 150;
   p.metronome = false;
+  const dark = { mode:'spectral-echo', quality:'low', warp:.1, light:.2, color:'#000000', rebuild:0 };
+  const bright = { ...dark, warp:.9, light:.8, color:'#ffffff' };
+  const automation = [{ scene:1, mode:dark.mode, look:dark }];
+  p.visual = { presetBank:{ selected:0, slots:[dark, { ...bright, automation }] } };
   const note = { note: 45, velocity: .6, gate: .035 };
   p.scenes[0].patterns[2].steps[0] = note;
   p.scenes[0].patterns[2].steps[2] = { ...note, accent: true };
@@ -39,11 +43,18 @@ function observe(buffered) {
   if (buffered && window.AudioWorklet) AudioWorklet.prototype.addModule = async () => { throw Error('QA buffered fallback'); };
   window.AudioContext = new Proxy(window.AudioContext,{construct(t,a,n) { report.contexts++; return Reflect.construct(t,a,n); }});
   const gl = WebGL2RenderingContext.prototype;
-  const draw = gl.drawArrays;
+  const draw = gl.drawArrays, lookUniforms = new WeakMap();
   gl.drawArrays = function(mode, first, count) {
     if (report.inspectQuality && mode === this.POINTS) {
       report.visual = { width: this.drawingBufferWidth, points: count,
         history: Boolean(this.getParameter(this.DRAW_FRAMEBUFFER_BINDING)) };
+    }
+    if (report.lookFrames && mode === this.POINTS && report.lookFrames.length < 200) {
+      const program = this.getParameter(this.CURRENT_PROGRAM);
+      if (!lookUniforms.has(program)) lookUniforms.set(program,
+        ['uWarp','uLight','uTint'].map(name => this.getUniformLocation(program, name)));
+      const [warp, light, tint] = lookUniforms.get(program).map(loc => this.getUniform(program, loc));
+      report.lookFrames.push([warp, light, ...tint]);
     }
     return draw.call(this, mode, first, count);
   };
@@ -100,6 +111,43 @@ async function verifyAudioPriority(desk, output) {
   return { full, limited, recovered: await output.evaluate(() => window.gateProof.visual) };
 }
 
+async function verifyLookTransitions(desk, output) {
+  const slot = desk.getByLabel('Memoria preset', {exact:true});
+  const recall = desk.getByRole('button', {name:'Richiama preset', exact:true});
+  const scene = desk.locator('[data-field=scene]').first();
+  await scene.selectOption('0');
+  await slot.selectOption('0');
+  await output.bringToFront();
+  const reset = () => output.evaluate(() => { window.gateProof.lookFrames = []; });
+  const waitForWarp = value => output.waitForFunction(warp =>
+    window.gateProof.lookFrames?.some(frame => Math.abs(frame[0] - warp) < .0001), value);
+  await reset();
+  await recall.evaluate(button => button.click());
+  await waitForWarp(.1);
+  async function transition(action, target) {
+    await reset();
+    await action();
+    await waitForWarp(target);
+    const frames = await output.evaluate(() => window.gateProof.lookFrames.splice(0));
+    // For these two presets warp, light and linear RGB all follow the same mix.
+    const intermediate = frames.find(([warp, light, r, g, b]) => {
+      const mix = (warp - .1) / .8;
+      return mix > .01 && mix < .99 && Math.abs(light - (.2 + .6 * mix)) < .001 &&
+        [r,g,b].every(channel => Math.abs(channel - mix) < .001);
+    });
+    assert.ok(intermediate, 'missing intermediate WebGL draw: ' + JSON.stringify(frames));
+    const final = frames.find(frame => Math.abs(frame[0] - target) < .0001);
+    const expected = target === .9 ? [.9,.8,1,1,1] : [.1,.2,0,0,0];
+    assert.ok(final.every((v,i) => Math.abs(v-expected[i]) < .001));
+    return { intermediate, final };
+  }
+  await slot.selectOption('1');
+  const preset = await transition(() => recall.evaluate(button => button.click()), .9);
+  const sceneCue = await transition(() => scene.selectOption('1'), .1);
+  await output.evaluate(() => { delete window.gateProof.lookFrames; });
+  return { preset, sceneCue };
+}
+
 async function run(browser, project, buffered) {
   const context = await browser.newContext({viewport:{width:1000,height:750},serviceWorkers:'block'});
   const errors = [];
@@ -121,15 +169,16 @@ async function run(browser, project, buffered) {
     await desk.locator('[data-action=play]').first().click();
     await output.waitForFunction(()=>{const p=window.gateProof;return p.attack && p.accent && p.release && p.combined && p.shader>.04;},null,{timeout:18000});
     const audioPriority = buffered ? null : await verifyAudioPriority(desk, output);
+    await desk.locator('[data-action=stop]').first().click();
+    const lookTransitions = buffered ? null : await verifyLookTransitions(desk, output);
     const data = await output.evaluate(()=>window.gateProof);
     const engine = await desk.evaluate(()=>({worklets:window.gateProof.worklets,buffers:window.gateProof.buffers}));
-    await desk.locator('[data-action=stop]').first().click();
     assert.ok(buffered ? engine.buffers > 0 : engine.worklets > 0);
     assert.equal(data.contexts, 0);
     assert.equal(data.other, 0);
     assert.ok(Math.abs(data.accent/data.attack-1.17)<.001);
     assert.deepEqual(errors,[]);
-    return { buffered, engine, data, audioPriority, errors };
+    return { buffered, engine, data, audioPriority, lookTransitions, errors };
   } finally { await context.close(); }
 }
 
