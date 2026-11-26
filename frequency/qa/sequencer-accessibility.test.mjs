@@ -14,7 +14,8 @@ function markup(code = 'en', overrides = {}) {
   p.scenes[0].patterns[0] = {length:2, steps:[null, {note:61, velocity:.625, accent:true}, {note:87, velocity:1}]};
   const dict = {...catalog(regional[code] || code), ...catalog(code)};
   const s = {p, scene:0, channel:0, page:0, step:1, bank:0, bankSize:8, view:'sequencer', ...overrides};
-  return renderEditor(s, key => dict[key] ?? key, audio, code).split('<div class="bar-tools">')[0];
+  const html = renderEditor(s, key => dict[key] ?? key, audio, code);
+  return s.view === 'sequencer' ? html.split('<div class="bar-tools">')[0] : html;
 }
 
 test('the matrix exposes actual positions, pressed state and localized pitch and velocity in every language', () => {
