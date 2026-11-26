@@ -16,6 +16,7 @@ import {
   unit,
 } from './model.js';
 import { labels } from './labels.js';
+import { projectorUrl } from './projector-url.js';
 import './styles.css';
 
 import {chromaticPresetKey as presetKey} from '../storage.js';
@@ -201,13 +202,9 @@ export async function mountChromatic(
       outputWin.focus();
       return;
     }
-    const id = crypto.randomUUID?.() || String(Date.now());
-    const url = new URL(location.href);
-    url.searchParams.set('view', 'vj');
-    url.searchParams.set('output', id);
-    url.hash = '';
+    const id = crypto.randomUUID?.() || crypto.getRandomValues(new Uint32Array(4)).join('-');
     outputKey = id;
-    outputWin = window.open(url.href, 'visionoir-vj-' + id, 'popup,width=1024,height=640');
+    outputWin = window.open(projectorUrl(location, lang, id), 'visionoir-vj-' + id, 'popup,width=1024,height=640');
     if (!outputWin) {
       message.textContent = localized.blocked;
       return;
