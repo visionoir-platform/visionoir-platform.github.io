@@ -43,6 +43,7 @@ export class DSP {
     this.arranging = false;
     this.queue = null;
     this.events = new ScheduledEvents();
+    this.regionStartFrames = new Map();
     this.emitStepNote = this.enqueueNote.bind(this);
     this.stepPosition = { scene: 0, local: 0, clip: null };
     this.masterFx = [];
@@ -63,15 +64,10 @@ export class DSP {
     this.update(project);
   }
   update(p) {
-    const previousStep = this.stepSamples;
     this.p = p;
     this.reserveEvents();
-    this.stepSamples = (this.rate * 15) / p.bpm;
+    this.setTempo(p.bpm);
     this.total = totalBars(p) * 16;
-    if (this.running && previousStep && previousStep !== this.stepSamples) {
-      this.nextBoundary =
-        this.frame + (Math.max(0, this.nextBoundary - this.frame) * this.stepSamples) / previousStep;
-    }
     const solo = p.tracks.some((t) => t.solo);
     this.channels = p.tracks.map((t, i) => {
       let c = this.channels[i];
@@ -150,14 +146,7 @@ export class DSP {
       if (value < 40 || value > 300) return;
       this.reserveEvents();
       this.p.bpm = value;
-      const old = this.stepSamples;
-      this.stepSamples = (this.rate * 15) / value;
-      if (this.running && old) {
-        this.nextBoundary =
-          this.frame + (Math.max(0, this.nextBoundary - this.frame) * this.stepSamples) / old;
-        if (this.regionEndFrame > this.frame)
-          this.regionEndFrame = this.frame + (this.regionEndFrame - this.frame) * this.stepSamples / old;
-      }
+      this.setTempo(value);
       this.refreshAutomation();
       this.delay.configure({ amount: 0.43 }, value);
       this.reverb.configure({ amount: 0.47 }, value);
@@ -223,6 +212,8 @@ export class DSP {
     this.setAutomation(null, 0);
     this.limiter.reset();
     this.events.clear();
+    this.regionStartFrames.clear();
+    this.lastRegionPart = null;
     for (const c of this.channels) {
       c.regions.length = 0;
       for (const v of c.voices) v.active = false;
@@ -321,10 +312,20 @@ export class DSP {
     const hitsPerTrack = MAX_RATCHETS * (MAX_CHORD_INTERVALS + 1) + 1; // one extra flam
     this.events.reserve(this.events.length + 3 * this.p.tracks.length * hitsPerTrack);
   }
+  setTempo(bpm) {
+    const previous = this.stepSamples;
+    this.stepSamples = (this.rate * 15) / bpm;
+    if (!this.running || previous === this.stepSamples) return;
+    const remainingSteps = (this.nextBoundary - this.frame) / previous;
+    this.nextBoundary = this.frame + remainingSteps * this.stepSamples;
+    this.events.retime(this.frame, this.step + 1, this.nextBoundary, this.stepSamples);
+    if (this.regionEndFrame > this.frame)
+      this.regionEndFrame = Math.ceil(this.nextBoundary + (this.regionEndStep - this.step - 1) * this.stepSamples);
+  }
   enqueueNote(track, source, offset, gate, velocity, step, variation, pitch) {
     const at = Math.max(this.frame, Math.round(this.scheduleBoundary + offset * this.stepSamples));
     const seed = Math.imul(step + 1, 8191) + Math.imul(track + 1, 65537) + variation + (this.p.seed | 0);
-    this.events.add(at, step, track, source, pitch, velocity, gate * this.stepSamples / this.rate, seed);
+    this.events.add(at, step, offset, track, source, pitch, velocity, gate, seed);
   }
   schedule(step, boundary) {
     if (step < 0 || step <= this.planned) return;
@@ -360,16 +361,27 @@ export class DSP {
   }
   updateRegions(part, local) {
     const resync = this.lastRegionPart !== part || local !== this.lastRegionStep + 1;
+    const partStartStep = this.step - local;
+    if (partStartStep !== this.regionPartStartStep || local !== this.lastRegionStep + 1)
+      this.regionStartFrames.clear();
+    this.regionPartStartStep = partStartStep;
     if (resync || !this.hasRegions || !part) for (const c of this.channels) c.regions.length = 0;
     this.lastRegionPart = part;
     this.lastRegionStep = local;
     if (!part?.audioRegions) return;
+    this.regionEndStep = this.step + part.bars * 16 - local;
     this.regionEndFrame = this.frame + Math.round((part.bars * 16 - local) * this.stepSamples);
     for (const region of part.audioRegions) {
       if (region.step > local || (!resync && region.step !== local)) continue;
       const channel = this.regionChannels.get(region.track);
       if (!channel?.sample) continue;
-      const elapsed = Math.round((local - region.step) * this.stepSamples);
+      // A project snapshot may recreate a player. Keep an already launched take on its PCM clock.
+      let startFrame = this.regionStartFrames.get(region.step);
+      if (startFrame === undefined) {
+        startFrame = this.frame - Math.round((local - region.step) * this.stepSamples);
+        this.regionStartFrames.set(region.step, startFrame);
+      }
+      const elapsed = this.frame - startFrame;
       const player = regionPlayer(region, channel.sample, elapsed, this.rate);
       if (player) channel.regions.push(player);
     }
@@ -409,7 +421,7 @@ export class DSP {
       if (this.running && this.frame >= this.nextBoundary) this.boundary();
       while (this.events.length && this.events.slots[0].at <= this.frame) {
         const e = this.events.pop();
-        this.trigger(e.track, e.pitch, e.velocity, e.gate, e.source, e.seed);
+        this.trigger(e.track, e.pitch, e.velocity, (e.gate * this.stepSamples) / this.rate, e.source, e.seed);
         e.source = null;
       }
       this.busInput.fill(0);
@@ -571,7 +583,7 @@ export class DSP {
       }
     }
   }
-  status(out = { masterPeak: [0, 0], masterRms: [0, 0], levels: [], peaks: [], buses: [] }) {
+  status(out = { masterPeak: [0, 0], masterRms: [0, 0], levels: [], peaks: [], buses: [] }, transport = this) {
     const n = Math.max(1, this.meterN);
     out.masterPeak[0] = this.masterPeak[0];
     out.masterPeak[1] = this.masterPeak[1];
@@ -580,11 +592,11 @@ export class DSP {
     out.correlation = this.squareL && this.squareR
       ? clamp(this.dot / Math.sqrt(this.squareL * this.squareR), -1, 1) : null;
     out.clipped = this.clipped;
-    out.playing = this.running;
-    out.step = this.local ?? 0;
-    out.absoluteStep = this.step;
-    out.scene = this.scene;
-    out.bar = this.bar;
+    out.playing = transport.running;
+    out.step = transport.local ?? 0;
+    out.absoluteStep = transport.step;
+    out.scene = transport.scene;
+    out.bar = transport.bar;
     out.bpm = this.p.bpm;
     out.levels.length = out.peaks.length = this.channels.length;
     for (let i = 0; i < this.channels.length; i++) {
@@ -593,8 +605,8 @@ export class DSP {
     }
     out.buses.length = this.busLv.length;
     for (let i = 0; i < this.busLv.length; i++) out.buses[i] = this.busLv[i];
-    out.queuedScene = this.queue;
-    out.ended = !!this.ended;
+    out.queuedScene = transport.queue;
+    out.ended = !!transport.ended;
     this.masterPeak[0] = this.masterPeak[1] = 0;
     this.squareL = this.squareR = this.dot = this.meterN = 0;
     this.clipped = false;

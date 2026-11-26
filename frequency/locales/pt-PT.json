@@ -56,6 +56,7 @@
   "audioRetry": "Áudio interrompido. Prima Reproduzir para reiniciar.",
   "playing": "Em reprodução",
   "stopped": "Parado",
+  "paused": "Em pausa",
   "choose": "Escolher",
   "importFile": "Importar ficheiro",
   "interfaceTitle": "Interface e teclado",

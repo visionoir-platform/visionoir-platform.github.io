@@ -79,6 +79,12 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
               case 'play':
                 dsp?.start(m.options);
                 break;
+              case 'pause':
+                dsp?.pause();
+                break;
+              case 'resume':
+                dsp?.resume();
+                break;
               case 'stop':
                 dsp?.stop();
                 tail = 0;
@@ -101,11 +107,11 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
             }
           };
           node.onaudioprocess = ({ outputBuffer: o }) => {
-            if (!dsp || (!dsp.running && !tail && !dsp.held.size)) return;
+            if (!dsp || (!dsp.running && !tail && !dsp.hasHeldNotes)) return;
             const start = renderClock.now();
             dsp.render(o.getChannelData(0), o.getChannelData(1));
             dsp.observeBudget(renderClock.now() - start, o.length);
-            tail = dsp.running || dsp.held.size ? target.sampleRate * 9 : Math.max(0, tail - o.length);
+            tail = dsp.running || dsp.hasHeldNotes ? target.sampleRate * 9 : Math.max(0, tail - o.length);
             count += o.length;
             if (count > target.sampleRate / 24) {
               count = 0;
@@ -140,10 +146,25 @@ export function createEngine({ onState = () => {}, onTick = () => {}, onError = 
     async play(project, options = {}) {
       const command = ++version;
       await prepare(project);
-      if (command !== version) return;
+      if (command !== version || context?.state !== 'running') return false;
       post('play', { options });
       playing = true;
       onState('playing');
+      return true;
+    },
+    pause() {
+      version++;
+      post('pause');
+      playing = false;
+    },
+    async resume() {
+      const command = ++version;
+      if (!node || !context) throw Error('audio.processorError');
+      if (context.state !== 'running') await context.resume();
+      if (version !== command || context?.state !== 'running') return false;
+      post('resume');
+      playing = true;
+      return true;
     },
     update(project) {
       validateProject(project);

@@ -1,6 +1,6 @@
 import * as T from 'three';
 import { loadPortrait } from './portrait.js';
-import { makeEcho, makeFinish, makeShards } from './finish.js';
+import { makeEcho, makeFinish, makeFlakes, makeShards } from './finish.js';
 import { portraitProfile, easePortrait, scatterTarget } from './material-motion.js';
 import { trackAccents } from '../palette.js';
 
@@ -50,8 +50,9 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
   group.add(solid);
   const mobile = window.matchMedia('(max-width:800px)').matches;
   const dust = makeShards(asset.geometry, u, mobile);
+  const flakes = makeFlakes(asset, u, mobile);
   const echo = makeEcho(asset.geometry, u);
-  group.add(dust, echo);
+  group.add(flakes, dust, echo);
   let visible = true,
     closed = false,
     lost = false,
@@ -125,6 +126,7 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
     u.uScatter.value = motion ? easePortrait(u.uScatter.value, particles, seconds,
       particles > u.uScatter.value ? .13 : .31) : 0;
     dust.visible = u.uScatter.value > 0;
+    flakes.visible = dust.visible;
     const trail = Math.min(1, .64 * current.x + .72 * current.w);
     u.uEcho.value = motion && mode === 'afterimage'
       ? easePortrait(u.uEcho.value, trail, seconds, .26) : 0;
@@ -188,6 +190,8 @@ export async function createPortraitStage(host, { url, beat, playing, track, loo
       canvas.removeEventListener('webglcontextlost', onLoss);
       canvas.removeEventListener('webglcontextrestored', onRestore);
       echo.material.dispose();
+      flakes.geometry.dispose();
+      flakes.material.dispose();
       dust.geometry.dispose();
       dust.material.dispose();
       finish.dispose();

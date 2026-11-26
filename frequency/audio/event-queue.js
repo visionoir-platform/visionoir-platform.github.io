@@ -7,12 +7,12 @@ export class ScheduledEvents {
   }
   reserve(capacity) {
     while (this.slots.length < capacity)
-      this.slots.push({ at: 0, serial: 0, step: 0, track: 0, source: null, pitch: 0, velocity: 0, gate: 0, seed: 0 });
+      this.slots.push({ at: 0, serial: 0, step: 0, offset: 0, track: 0, source: null, pitch: 0, velocity: 0, gate: 0, seed: 0 });
   }
-  add(at, step, track, source, pitch, velocity, gate, seed) {
+  add(at, step, offset, track, source, pitch, velocity, gate, seed) {
     let i = this.length++;
     const e = this.slots[i];
-    e.at = at; e.step = step; e.track = track; e.source = source; e.pitch = pitch;
+    e.at = at; e.step = step; e.offset = offset; e.track = track; e.source = source; e.pitch = pitch;
     e.velocity = velocity; e.gate = gate; e.seed = seed; e.serial = ++this.serial;
     while (i) {
       const parent = (i - 1) >>> 1;
@@ -49,7 +49,20 @@ export class ScheduledEvents {
       this.slots[keep++] = e;
     }
     this.length = keep;
-    for (let i = (keep >>> 1)-1; i >= 0; i--) this.sink(i);
+    this.heapify();
+  }
+  retime(frame, nextStep, nextBoundary, stepSamples) {
+    for (let i = 0; i < this.length; i++) {
+      const e = this.slots[i];
+      // Preserve musical position across edits, including hits from the previous step.
+      const stepsFromBoundary = (e.step - nextStep) + e.offset;
+      e.at = Math.max(frame, Math.round(nextBoundary + stepsFromBoundary * stepSamples));
+    }
+    // Different hits can now round to the same sample, or split across adjacent samples.
+    this.heapify();
+  }
+  heapify() {
+    for (let i = (this.length >>> 1) - 1; i >= 0; i--) this.sink(i);
   }
   clear() {
     for (let i = 0; i < this.length; i++) this.slots[i].source = null;

@@ -1,3 +1,4 @@
+import { studioMediaSession } from './studio-media-session.js';
 import { createOutputRoute } from './audio-output.js';
 import { offlineStatus, prepareOffline, offlineError } from './offline-studio.js';
 import { createSpectrumMeter } from './visual-spectrum.js';
@@ -33,7 +34,7 @@ import {
   seededVariation,
 } from './ui-kit.js';
 import { renderEditor, masterPanel } from './views.js';
-import { factorySlotPresets, renderEffectSlot } from './fx-rack.js';
+import { factorySlotPresets, renderEffectSlot, setLiveEffectAmount } from './fx-rack.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
 import { collectVisualLevels } from './chromatic/channel-routing.js';
@@ -77,6 +78,7 @@ export async function startStudio() {
     visual,
     playing = false,
     starting = false,
+    paused = false,
     tick = { step: 0, scene: 0, bar: 0, levels: [], peaks: [] },
     recorder,
     recUnclosed = false;
@@ -204,7 +206,11 @@ export async function startStudio() {
     editor();
     setState();
   }
+  function mediaState() {
+    systemMedia.sync(playing ? 'playing' : paused ? 'paused' : 'none', s.p.name);
+  }
   function setState() {
+    mediaState();
     el('state').textContent = t(playing ? 'playing' : audioState);
     document.documentElement.dataset.play = playing ? 'on' : 'off';
   }
@@ -317,12 +323,19 @@ export async function startStudio() {
     updateTransport();
     setState();
   }
+  const systemMedia = studioMediaSession(navigator.mediaSession, window.MediaMetadata, location.origin, {
+    play: () => { if (!playing) void play(s.view === 'arrangement'); },
+    pause,
+    stop,
+  });
   let commandCount = 0;
   let latestImport = 0;
   function stop() {
     commandCount++;
+    starting = false;
     midiNotes.reset();
     engine.stop();
+    paused = false;
     playing = false;
     audioState = 'stopped';
     if (el('transport')) {
@@ -330,21 +343,38 @@ export async function startStudio() {
       setState();
     }
   }
+  function pause() {
+    if (!playing && !starting) return;
+    // A first start has no saved cursor. An interrupted resume still does.
+    if (starting && !paused && !playing) return stop();
+    commandCount++;
+    starting = false;
+    engine.pause();
+    playing = false;
+    paused = true;
+    audioState = 'paused';
+    updateTransport();
+    setState();
+  }
   async function play(song = false) {
     if (starting) return;
     const command = ++commandCount;
     starting = true;
     try {
-      await engine.play(s.p, { scene: s.scene, arrangement: song });
+      const continuing = paused;
+      const started = continuing ? await engine.resume()
+        : await engine.play(s.p, { scene: s.scene, arrangement: song });
       if (command !== commandCount) return;
+      if (!started) return pause();
+      paused = false;
       playing = true;
-      s.playScene = s.scene;
+      if (!continuing) s.playScene = s.scene;
       updateTransport();
       setState();
     } catch (e) {
       fail(e);
     } finally {
-      starting = false;
+      if (command === commandCount) starting = false;
     }
   }
   async function audition(ch, pitch, velocity = 0.85, token) {
@@ -504,14 +534,16 @@ export async function startStudio() {
     onState: (state) => {
       outputRoute.observe();
       if (state === 'interrupted' || state === 'suspended') {
-        audioState = 'stopped';
+        if (playing || starting) pause();
         say(t('audioOff'));
       }
     },
     onError(error) {
       if (error.message === 'audio.processorError') {
         commandCount++;
+        starting = false;
         playing = false;
+        paused = false;
         audioState = 'audioRetry';
         midiNotes.reset();
         lastAudioTick = -Infinity;
@@ -1502,6 +1534,7 @@ export async function startStudio() {
       case 'launch':
         s.scene = i;
         say(t('waiting') + ' · ' + sceneName(i));
+        if (paused) stop();
         if (!playing) await play();
         else engine.queueScene(i);
         editor();
@@ -1643,9 +1676,10 @@ export async function startStudio() {
           subject = master ? s.p.master : track(),
           fx = (subject.fx ||= []);
         mutate(() => {
-          if (id === 'add-fx' && fx.length < 12)
-            fx.push({ id: fieldValue('fx-new'), amount: 0.4, bypass: false });
-          else if (id === 'fx-up' || id === 'fx-down') {
+          if (id === 'add-fx' && fx.length < 12) {
+            const effectId = fieldValue('fx-new');
+            fx.push({ id: effectId, amount: effectId === 'dj' ? 0.5 : 0.4, bypass: false });
+          } else if (id === 'fx-up' || id === 'fx-down') {
             const next = i + (id === 'fx-up' ? -1 : 1);
             if (fx[next]) [fx[i], fx[next]] = [fx[next], fx[i]];
           } else if (id === 'fx-bypass') fx[i].bypass = !fx[i].bypass;
@@ -1847,15 +1881,7 @@ export async function startStudio() {
     }
     if (group === 'livefx') {
       change(() => {
-        s.p.master.fx ||= [];
-        let fx = s.p.master.fx.find((e) => e.id === index);
-        if (!fx) {
-          fx = { id: index, amount: 0, bypass: true };
-          if (s.p.master.fx.length >= 12) throw new RangeError('FX');
-          s.p.master.fx.push(fx);
-        }
-        fx.amount = v;
-        fx.bypass = v === 0;
+        setLiveEffectAmount(s.p.master.fx ||= [], index, v);
       });
       return;
     }
@@ -1888,6 +1914,7 @@ export async function startStudio() {
     }
     if (id === 'name') {
       change(() => (s.p.name = raw.trim().slice(0, 160) || 'FREQUENCY'));
+      mediaState();
       editor();
       return;
     }
@@ -2023,7 +2050,10 @@ export async function startStudio() {
         else engine.update(s.p);
         updateTransport();
       },
-      start: () => { void play(s.view === 'arrangement'); },
+      start: () => {
+        if (paused) stop(); // MIDI Start begins at the downbeat.
+        void play(s.view === 'arrangement');
+      },
       stop,
     });
     const hardwareToField = (id, x) => {
@@ -2306,14 +2336,15 @@ export async function startStudio() {
     location.reload();
   }, {once:true});
   window.addEventListener('pagehide', event => {
-    if (!event.persisted) outputRoute.dispose();
     performanceKeys.clear();
     flushSave();
-    scopeObserver.disconnect();
-    midiPorts?.close();
-    midiNotes.reset();
-    engine.stop();
-    visual?.dispose();
+    stop();
+    if (!event.persisted) {
+      outputRoute.dispose();
+      scopeObserver.disconnect();
+      midiPorts?.close();
+      visual?.dispose();
+    }
   });
   window.addEventListener('beforeunload', (e) => {
     if (!erasedSession && (recUnclosed || exportController)) {

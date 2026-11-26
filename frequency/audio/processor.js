@@ -21,6 +21,13 @@ class FrequencyProcessor extends AudioWorkletProcessor {
             this.dsp.start(m.options);
             this.awake = 1;
             break;
+          case 'pause':
+            this.dsp?.pause();
+            this.report();
+            break;
+          case 'resume':
+            this.dsp?.resume();
+            break;
           case 'stop':
             this.dsp?.stop();
             this.awake = 0;
@@ -54,11 +61,11 @@ class FrequencyProcessor extends AudioWorkletProcessor {
   }
   process(_ins, outs) {
     const channels = outs[0];
-    if (!channels.length || !this.dsp || (!this.awake && !this.dsp.running && !this.dsp.held.size)) return true;
+    if (!channels.length || !this.dsp || (!this.awake && !this.dsp.running && !this.dsp.hasHeldNotes)) return true;
     const started = renderClock.now();
     this.dsp.render(channels[0], channels[1] || channels[0]);
     this.dsp.observeBudget(renderClock.now() - started, channels[0].length);
-    if (this.dsp.running || this.dsp.held.size) this.awake = sampleRate * 9;
+    if (this.dsp.running || this.dsp.hasHeldNotes) this.awake = sampleRate * 9;
     else this.awake = Math.max(0, this.awake - channels[0].length);
     this.meterCount += channels[0].length;
     if (this.meterCount >= sampleRate / 24) {

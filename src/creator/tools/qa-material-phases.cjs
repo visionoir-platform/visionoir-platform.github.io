@@ -25,6 +25,8 @@ function observeCanvas() {
   const qs = window.portraitQA = { current: {}, transitions: [], renderTimes: [], echoes: 0, draws: 0 };
   const observed = new Set(['uProfile', 'uTime', 'uLiquid', 'uScatter', 'uEcho', 'uAudio']);
   const active = new WeakMap(), values = new WeakMap();
+  const flakePrograms = new WeakMap();
+  let flakeQuery = null;
   // Take a small binary silhouette from one complete rendered frame, only on explicit request.
   qs.silhouette = () => new Promise((resolve, reject) => {
     const timer = setTimeout(() => { qs.captureMask = null; reject(Error('Portrait did not draw a frame for readback')); }, 7000);
@@ -79,6 +81,39 @@ function observeCanvas() {
           }
           done(mask);
         });
+      }
+      // Ask the GPU whether any detached source triangle passed the cloth's
+      // discard and depth tests, independently of the already-visible point dust.
+      if (qs.probeFlakes && state?.uScatter > .2 && args[0] === this.TRIANGLES) {
+        const program = active.get(this);
+        if (!flakePrograms.has(program)) flakePrograms.set(program, this.getAttribLocation(program, 'flakeOrigin') >= 0);
+        if (flakePrograms.get(program)) {
+          if (flakeQuery && this.getQueryParameter(flakeQuery.id, this.QUERY_RESULT_AVAILABLE)) {
+            if (this.getQueryParameter(flakeQuery.id, this.QUERY_RESULT)) {
+              qs.flakeProof = { triangles: flakeQuery.triangles, scatter: flakeQuery.scatter };
+              qs.flakeFrame = flakeQuery.frame;
+              qs.probeFlakes = false;
+            }
+            this.deleteQuery(flakeQuery.id);
+            flakeQuery = null;
+          }
+          if (!flakeQuery && qs.probeFlakes) {
+            const count = method === 'drawArrays' ? args[2] : args[1];
+            const query = flakeQuery = { id: this.createQuery(), triangles: count / 3, scatter: state.uScatter };
+            this.beginQuery(this.ANY_SAMPLES_PASSED, flakeQuery.id);
+            draw.apply(this, args);
+            this.endQuery(this.ANY_SAMPLES_PASSED);
+            // Keep this same complete frame until the asynchronous query returns.
+            queueMicrotask(() => {
+              const frame = document.createElement('canvas');
+              frame.width = this.drawingBufferWidth;
+              frame.height = this.drawingBufferHeight;
+              frame.getContext('2d').drawImage(this.canvas, 0, 0);
+              query.frame = frame;
+            });
+            return;
+          }
+        }
       }
       return draw.apply(this, args);
     };
@@ -148,7 +183,8 @@ async function inspect(browser, mobile, results) {
 
     if (acidOnly) {
       await select.selectOption('acid');
-      await wait(() => window.portraitQA.current.uProfile === 1);
+      await wait(() => window.portraitQA.current.uProfile === 1 && window.portraitQA.current.uScatter === 0);
+      await capture('acid-rest');
       await sound.click();
       await stage.scrollIntoViewIfNeeded();
       const frame = await page.waitForFunction(file => {
@@ -162,13 +198,29 @@ async function inspect(browser, mobile, results) {
       }, tracks[1][1], { timeout: 45000 });
       report.tracks.push(await frame.jsonValue());
       await frame.dispose();
+      await page.evaluate(() => { window.portraitQA.probeFlakes = true; });
+      await wait(() => Boolean(window.portraitQA.flakeProof));
+      report.flakes = await page.evaluate(() => window.portraitQA.flakeProof);
+      assert.ok(report.flakes.triangles > 0 && report.flakes.triangles <= 3500);
+      // Keep the live stage backdrop and controls around the GPU-confirmed frame.
+      await stage.evaluate(host => {
+        const live = host.querySelector('.chromatic-canvas');
+        const frame = window.portraitQA.flakeFrame;
+        live.style.visibility = 'hidden';
+        frame.className = live.className;
+        live.after(frame);
+      });
       await capture('acid-audio');
+      await stage.evaluate(host => {
+        window.portraitQA.flakeFrame.remove();
+        host.querySelector('.chromatic-canvas').style.removeProperty('visibility');
+      });
       const metrics = execFileSync(process.env.PYTHON || 'python3', [
         path.join(__dirname, 'qa-acid-reflections.py'), path.join(output, name + '-acid-audio.png'),
       ], { encoding: 'utf8' });
       report.grade = JSON.parse(metrics);
       assert.deepEqual(report.errors, []);
-      console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade }));
+      console.log(JSON.stringify({ source: report.models, track: report.tracks[0], grade: report.grade, flakes: report.flakes }));
       return;
     }
 

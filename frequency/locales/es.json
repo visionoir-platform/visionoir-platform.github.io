@@ -56,6 +56,7 @@
   "audioRetry": "Audio interrumpido. Pulsa Reproducir para reiniciarlo.",
   "playing": "Reproduciendo",
   "stopped": "Detenido",
+  "paused": "En pausa",
   "choose": "Elegir",
   "importFile": "Importar archivo",
   "interfaceTitle": "Interfaz y teclado",

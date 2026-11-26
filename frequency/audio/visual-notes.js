@@ -50,7 +50,7 @@ export class VisualNotes {
   read(active, outgoing, out = { attacks: slots(), gates: slots(), levels: slots() }) {
     out.gates.fill(0);
     out.levels.fill(0);
-    this.sampleDeck(active, out);
+    if (active) this.sampleDeck(active, out);
     if (outgoing) this.sampleDeck(outgoing, out);
     out.attacks.set(this.attacks);
     out.accents = this.accents;

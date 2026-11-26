@@ -18,8 +18,11 @@ export class LiveRack {
     this.active = new DSP(project, rate, {visualNotes: this.visualNotes});
     this.spare = null;
     this.held = new Map();
+    this.preview = null;
+    this.previewHeld = new Map();
     this.outgoing = null;
     this.queued = null;
+    this.paused = false;
     this.fade = 0;
     this.fadeLength = 0;
     this.left = new Float32Array(1024);
@@ -36,7 +39,7 @@ export class LiveRack {
     }
   }
   applyBudget() {
-    for (const dsp of [this.active, this.outgoing, this.spare]) {
+    for (const dsp of [this.active, this.outgoing, this.spare, this.preview]) {
       if (dsp) dsp.meterStride = this.budget.protected ? 4 : 1;
     }
   }
@@ -45,13 +48,17 @@ export class LiveRack {
     this.mixOverload = false;
   }
   get running() {
-    return this.active.running;
+    return !this.paused && this.active.running;
+  }
+  get hasHeldNotes() {
+    return (this.paused ? this.previewHeld : this.held).size > 0;
   }
   update(project) {
     this.project = project;
     this.active.update(project);
     this.spare?.update(project);
     this.outgoing?.update(project);
+    this.preview?.update(project);
   }
   control(id, value) {
     if (id === 'master-analysis') {
@@ -62,13 +69,31 @@ export class LiveRack {
     this.active.control(id, value);
     this.outgoing?.control(id, value);
     this.spare?.control(id, value);
+    this.preview?.control(id, value);
   }
   start(options = {}) {
     this.stop();
     this.masterAnalysis?.reset();
     this.active.start(options);
   }
+  pause() {
+    this.paused = this.active.running;
+    this.clearMeters();
+    this.visualNotes.reset();
+  }
+  resume() {
+    if (this.preview) {
+      this.visualNotes.reset();
+      this.visualNotes.endDeck(this.preview);
+      this.clearMeters();
+      this.masterAnalysis?.reset();
+    }
+    this.preview = null;
+    this.previewHeld.clear();
+    this.paused = false;
+  }
   stop() {
+    this.resume();
     this.masterAnalysis?.truePeak.flush();
     this.budget.reset();
     this.applyBudget();
@@ -84,26 +109,41 @@ export class LiveRack {
     this.queued = null;
   }
   trigger(...args) {
-    this.active.trigger(...args);
+    this.auditionDeck().trigger(...args);
+  }
+  auditionDeck() {
+    if (!this.paused) return this.active;
+    // A stopped DSP can render pad voices without advancing either frozen live deck.
+    if (!this.preview) {
+      this.preview = new DSP(this.project, this.rate, {visualNotes:this.visualNotes});
+      this.preview.meterStride = this.active.meterStride;
+      this.masterAnalysis?.reset();
+    }
+    return this.preview;
   }
   noteOn(track, pitch, velocity, token) {
     if (!Number.isSafeInteger(token) || token < 1) return;
-    this.held.set(token, {track, pitch, velocity});
-    this.active.trigger(track, pitch, velocity, null, {voiceToken: token});
+    const notes = this.paused ? this.previewHeld : this.held;
+    notes.set(token, {track, pitch, velocity});
+    this.auditionDeck().trigger(track, pitch, velocity, null, {voiceToken: token});
   }
   release(track, pitch, token) {
-    const held = this.held.get(token);
-    if (held && held.track === track && held.pitch === pitch) this.held.delete(token);
-    const activeLead = this.active.release(track, pitch, token);
-    const outgoingLead = this.outgoing?.release(track, pitch, token);
+    const isPreview = this.paused && (token === undefined || this.previewHeld.has(token));
+    const notes = isPreview ? this.previewHeld : this.held;
+    const active = isPreview ? this.preview : this.active;
+    const outgoing = isPreview ? null : this.outgoing;
+    const held = notes.get(token);
+    if (held && held.track === track && held.pitch === pitch) notes.delete(token);
+    const activeLead = active?.release(track, pitch, token);
+    const outgoingLead = outgoing?.release(track, pitch, token);
     if (!activeLead && !outgoingLead) return;
     // MIDI tokens are insertion-ordered, including identical pitches from different inputs.
     let last;
-    for (const entry of this.held) if (entry[1].track === track) last = entry;
+    for (const entry of notes) if (entry[1].track === track) last = entry;
     if (!last) return;
     const [key, note] = last;
-    if (activeLead) this.active.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
-    if (outgoingLead) this.outgoing.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
+    if (activeLead) active.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
+    if (outgoingLead) outgoing.trigger(track, note.pitch, note.velocity, null, {voiceToken:key});
   }
   queueScene(scene) {
     if (!Number.isInteger(scene) || !this.project.scenes[scene]) return;
@@ -119,8 +159,15 @@ export class LiveRack {
     this.spare.start({ scene: this.queued.scene, absoluteStep: this.queued.step });
   }
   status(out) {
-    const status = this.active.status(out),
+    const audible = this.paused ? this.preview : this.active;
+    const status = (audible || this.active).status(out, this.active),
       n = Math.max(1, this.count);
+    if (!audible) {
+      status.levels.fill(0);
+      status.peaks.fill(0);
+      status.buses.fill(0);
+      status.clipped = false;
+    }
     status.masterPeak[0] = this.peakL;
     status.masterPeak[1] = this.peakR;
     status.masterRms[0] = Math.sqrt(this.powerL / n);
@@ -128,23 +175,31 @@ export class LiveRack {
     status.correlation =
       this.powerL && this.powerR ? clamp(this.cross / Math.sqrt(this.powerL * this.powerR), -1, 1) : null;
     status.clipped ||= this.mixOverload;
+    status.playing = this.running;
     status.dspLoad = this.budget.load;
     status.meterStride = this.active.meterStride;
     status.queuedScene = this.queued?.scene ?? null;
-    const analysis = this.budget.protected ? null : this.masterAnalysis;
+    const analysis = this.budget.protected || !audible ? null : this.masterAnalysis;
     status.lufsMomentary = analysis?.momentary ?? null;
     status.lufsShort = analysis?.shortTerm ?? null;
     status.truePeakMax = analysis && analysis.frames ? 20 * Math.log10(analysis.truePeak.maximum) : null;
     status.analysisPaused = Boolean(this.masterAnalysis && this.budget.protected);
-    status.visualNotes = this.visualNotes.read(this.active, this.outgoing, status.visualNotes);
+    status.visualNotes = this.visualNotes.read(audible, this.paused ? null : this.outgoing, status.visualNotes);
     this.clearMeters();
     return status;
   }
   render(left, right, length = left.length) {
+    if (this.paused && !this.preview) {
+      left.fill(0, 0, length);
+      right.fill(0, 0, length);
+      return;
+    }
     let offset = 0;
     while (offset < length) {
       let count = length - offset;
-      if (this.outgoing) {
+      if (this.paused) {
+        this.preview.render(left, right, count);
+      } else if (this.outgoing) {
         count = Math.min(count, this.fadeLength - this.fade, this.left.length);
         this.outgoing.render(this.left, this.right, count);
         if (this.outgoing.clipped) {

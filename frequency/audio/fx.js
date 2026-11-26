@@ -40,6 +40,11 @@ export class Effect {
     this.zL = this.zR = this.env = this.wet = this.L = this.R = 0;
     this.write = this.phase = this.head = this.frame = 0;
     this.freezeSize = this.captured = this.freezePos = 0;
+    if (this.id === 'dj') {
+      this.djCut = this.djCutTarget;
+      this.djMix = this.djMixTarget;
+      this.djRamp = 0;
+    }
   }
   configure(spec, bpm) {
     if (this.id === 'freeze' && this.target === 0 && !spec.bypass) {
@@ -71,6 +76,27 @@ export class Effect {
     this.hicut = 1 - Math.exp((-tau * 2800) / this.rate);
     this.locut = 1 - Math.exp((-tau * 180) / this.rate);
     this.smooth = 1 - Math.exp(-1 / (0.006 * this.rate));
+    if (this.id === 'dj') this.configureDjFilter();
+  }
+  configureDjFilter() {
+    if (this.djAmount === this.amount) return;
+    this.djAmount = this.amount;
+    const position = 2 * this.amount - 1;
+    const upperHz = Math.min(16000, this.rate * 0.45);
+    const octavePosition = position < 0 ? 1 + position : position;
+    const hz = 30 * (upperHz / 30) ** octavePosition;
+    const g = Math.tan(Math.PI * hz / this.rate);
+    this.djCutTarget = g / (1 + g);
+    // Within five percent of the centre, blend either filter continuously to dry.
+    this.djMixTarget = clamp(position * 10, -1, 1);
+    if (this.djCut === undefined) {
+      this.djCut = this.djCutTarget;
+      this.djMix = this.djMixTarget;
+      return;
+    }
+    this.djRamp = Math.max(1, Math.round(0.006 * this.rate));
+    this.djCutStep = (this.djCutTarget - this.djCut) / this.djRamp;
+    this.djMixStep = (this.djMixTarget - this.djMix) / this.djRamp;
   }
   step(l, r, detector = 0) {
     this.wet += (this.target - this.wet) * this.smooth;
@@ -185,12 +211,28 @@ export class Effect {
         x = this.lowL;
         y = this.lowR;
         break;
-      case 'dj':
-        this.lowL += this.cut * (l - this.lowL);
-        this.lowR += this.cut * (r - this.lowR);
-        x = a < 0.5 ? this.lowL : l - this.lowL;
-        y = a < 0.5 ? this.lowR : r - this.lowR;
+      case 'dj': {
+        if (this.djRamp > 0) {
+          this.djRamp--;
+          this.djCut = this.djRamp ? this.djCut + this.djCutStep : this.djCutTarget;
+          this.djMix = this.djRamp ? this.djMix + this.djMixStep : this.djMixTarget;
+        }
+        // One trapezoidal integrator gives complementary low/high responses per channel.
+        const deltaL = (l - this.lowL) * this.djCut;
+        const deltaR = (r - this.lowR) * this.djCut;
+        const lowL = this.lowL + deltaL;
+        const lowR = this.lowR + deltaR;
+        this.lowL = lowL + deltaL;
+        this.lowR = lowR + deltaR;
+        if (this.djMix < 0) {
+          x += (l - lowL) * this.djMix;
+          y += (r - lowR) * this.djMix;
+        } else {
+          x -= lowL * this.djMix;
+          y -= lowR * this.djMix;
+        }
         break;
+      }
       case 'resonant': {
         const g = Math.min(0.7, this.cut);
         this.lowL += g * this.highL;
