@@ -13,8 +13,9 @@ export async function readProject(file) {
   if (isMidiFile(file)) {
     const { MAX_MIDI_FILE_BYTES, parseMidi } = await import('./midi-import.js');
     if (file.size > MAX_MIDI_FILE_BYTES) throw Error('midiImportTooLarge');
+    const midi = parseMidi(new Uint8Array(await file.arrayBuffer()));
     const { projectFromMidi } = await import('./midi-project.js');
-    return projectFromMidi(parseMidi(new Uint8Array(await file.arrayBuffer())), file.name);
+    return projectFromMidi(midi, file.name);
   }
   const { readProjectFile } = await import('./project-archive.js');
   return readProjectFile(file);

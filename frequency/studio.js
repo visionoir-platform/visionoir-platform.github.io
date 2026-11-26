@@ -2338,15 +2338,17 @@ export async function startStudio() {
       if (node.id === 'project-file') {
         const file = node.files[0];
         node.value = '';
-        if (!file || !guardLive()) return;
+        if (!file || exportController || !guardLive()) return;
         const request = ++latestImport, original = s.p, transport = commandCount;
+        let loaded;
         try {
-          const loaded = await audio.readProject(file);
-          if (request === latestImport && original === s.p && transport === commandCount && guardLive()) {
-            await replace(loaded, audio.isMidiFile(file) ? 'arrangement' : undefined);
-          }
+          loaded = await audio.readProject(file);
         } catch (error) {
           if (request === latestImport && original === s.p) fail(error);
+          return;
+        }
+        if (request === latestImport && original === s.p && transport === commandCount && !exportController && guardLive()) {
+          await replace(loaded, audio.isMidiFile(file) ? 'arrangement' : undefined);
         }
         return;
       }
