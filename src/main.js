@@ -2,11 +2,12 @@ import './style.css';
 import './ecosystem/style.css';
 import { bindHomePreferences } from './home-preferences.js';
 import { createDeviceMotionAccess } from './device-motion-access.js';
+import { copyInstagramUsername } from './instagram.js';
 import { mountDeviceShake } from './device-shake.js';
 import { setLogoNegative } from './logo-polarity.js';
 import { mountDeviceTilt } from './device-tilt.js';
 import { bindFrequencyDoor } from './frequency-door.js';
-import { localePath, names, resolveLocale } from './locales.js';
+import { localePath, names, portalPath, resolveLocale } from './locales.js';
 import { money, updateMetadata } from './site.js';
 import { bindInquiry } from './inquiry.js';
 import { approximateCountry, storageValue } from './geo.js';
@@ -50,6 +51,12 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
   const countryLookup = new AbortController();
   let idleTimer;
   const t = key => dictionary[key] || q(`[data-text="${key}"]`)?.textContent || '';
+  q('#copy-instagram').onclick = async () => {
+    const status = q('#instagram-status');
+    const message = await copyInstagramUsername(q('#instagram-username'));
+    status.dataset.text = message;
+    status.textContent = t(message);
+  };
   const preferences = bindHomePreferences({t,onErase() {
     manualRevision++;
     countryLookup.abort();
@@ -126,7 +133,7 @@ function initialize({ lang, available, enabledTracks, geoEndpoint, contactEndpoi
     lang = next;
     dictionary = dict;
     updateMetadata(lang,dict,explicit);
-    document.querySelectorAll('[data-portal]').forEach(link=>link.href=base+link.dataset.portal+'/?lang='+encodeURIComponent(lang));
+    document.querySelectorAll('[data-portal]').forEach(link=>link.href=portalPath(link.dataset.portal,lang,base));
     for (const node of document.querySelectorAll('[data-text]')) node.textContent=dict[node.dataset.text];
     for (const node of document.querySelectorAll('[data-label]')) node.setAttribute('aria-label',dict[node.dataset.label]);
     for (const node of document.querySelectorAll('[data-alt]')) node.alt=dict[node.dataset.alt];

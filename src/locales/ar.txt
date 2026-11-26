@@ -61,6 +61,9 @@ studioCopy|VISIONOIR مشروع إبداعي مستقل لـ Flavio Giorgio Guar
 flavio|استراتيجية إبداعية وهوية صوتية وسير عمل بالذكاء الاصطناعي
 maria|إخراج فني وتصميم غرافيكي وهوية بصرية
 instagram|تابعنا على Instagram
+instagramCopy|نسخ اسم المستخدم
+instagramCopied|نُسخ اسم المستخدم. ابحث عنه في Instagram.
+instagramManual|حدّد اسم المستخدم وانسخه، ثم ابحث عنه في Instagram.
 contactTitle|ما فكرتك المقبلة؟
 contactCopy|أخبرنا بما يدور في ذهنك. سنختار نقطة البداية معًا.
 name|اسمك

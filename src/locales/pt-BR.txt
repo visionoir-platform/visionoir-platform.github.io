@@ -14,6 +14,9 @@ prices|Preços de referência em EUR. O escopo, os prazos, as revisões e o trat
 methodCopy|Ouvimos o contexto, definimos a direção, criamos os elementos e entregamos os materiais com orientações de uso.
 studioCopy|A VISIONOIR é o projeto criativo independente de Flavio Giorgio Guarini e Maria Bellini. Trabalhamos a partir da Apúlia e remotamente, em contato direto com artistas, criadores de conteúdo e pequenas marcas.
 instagram|Siga-nos no Instagram
+instagramCopy|Copiar nome de usuário
+instagramCopied|Nome de usuário copiado. Procure por ele no Instagram.
+instagramManual|Selecione e copie o nome de usuário e procure por ele no Instagram.
 contactTitle|Qual é a sua próxima ideia?
 contactCopy|Conte o que você tem em mente. Encontramos juntos o ponto de partida.
 name|Seu nome

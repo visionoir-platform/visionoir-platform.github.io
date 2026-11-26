@@ -61,6 +61,9 @@ studioCopy|VISIONOIR ni mradi huru wa ubunifu wa Flavio Giorgio Guarini na Maria
 flavio|Mkakati wa ubunifu, utambulisho wa sauti na mifumo ya kazi inayotumia AI
 maria|Uongozi wa kisanii, usanifu wa picha na utambulisho wa kuona
 instagram|Tufuate kwenye Instagram
+instagramCopy|Nakili jina la mtumiaji
+instagramCopied|Jina la mtumiaji limenakiliwa. Litafute kwenye Instagram.
+instagramManual|Chagua na unakili jina la mtumiaji, kisha ulitafute kwenye Instagram.
 contactTitle|Wazo lako linalofuata ni lipi?
 contactCopy|Tuambie unachofikiria. Tutapata pa kuanzia pamoja.
 name|Jina lako

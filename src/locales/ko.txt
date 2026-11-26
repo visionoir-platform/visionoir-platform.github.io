@@ -61,6 +61,9 @@ studioCopy|VISIONOIR는 Flavio Giorgio Guarini와 Maria Bellini의 독립 크리
 flavio|크리에이티브 전략, 사운드 아이덴티티, AI 워크플로
 maria|아트 디렉션, 그래픽 디자인, 비주얼 아이덴티티
 instagram|Instagram 팔로우
+instagramCopy|사용자 이름 복사
+instagramCopied|사용자 이름을 복사했어요. Instagram에서 검색해 보세요.
+instagramManual|사용자 이름을 선택해 복사한 후 Instagram에서 검색해 보세요.
 contactTitle|다음으로 실현하고 싶은 아이디어는 무엇인가요?
 contactCopy|생각하고 있는 것을 들려주세요. 어디서부터 시작할지 함께 찾아보겠습니다.
 name|이름

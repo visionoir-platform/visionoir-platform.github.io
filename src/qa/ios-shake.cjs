@@ -97,6 +97,9 @@ async function check(browser, origin, {permission, control, channel}) {
           await page.evaluate(({channel,afterSensorPause}) =>
             window.motionProbe.burst(channel,afterSensorPause), {channel,afterSensorPause});
           assert.equal(await marker(),negative,views[i] + ': the gesture did not change material as expected');
+          const invertedMark = await page.locator('.identity img').evaluate(el =>
+            getComputedStyle(el).filter.includes('invert(1)'));
+          assert.equal(invertedMark,negative,'The small logo must show the gesture after scrolling past the hero');
         }
       }
       assert.deepEqual(await page.evaluate(() => window.motionProbe.changes),[true,false,true,false]);

@@ -15,3 +15,16 @@ export function supportAction(mode,input,reviewThreshold=100000) {
   if(cents>=reviewThreshold)return {state:'contact'};
   return {state:'sandbox-preview',cents,currency:'EUR'};
 }
+
+// Opens a draft in the visitor's email app. Sending remains a separate action.
+export function supportInquiryHref(address, subject, amountLabel, lang, cents = null) {
+  const href = 'mailto:' + address + '?subject=' + encodeURIComponent(subject);
+  if (!Number.isSafeInteger(cents) || cents <= 0) return href;
+  const amount = new Intl.NumberFormat(lang, {style:'currency', currency:'EUR'}).format(cents / 100);
+  return href + '&body=' + encodeURIComponent(amountLabel + ' · ' + amount);
+}
+
+export function parseSupportEstimate(value) {
+  const digits = value.normalize('NFKC').replace(/[٠-٩۰-۹]/g, digit => String(digit.codePointAt(0) & 15));
+  return parseEuro(digits.replace('٫', '.'));
+}

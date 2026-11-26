@@ -61,6 +61,9 @@ studioCopy|VISIONOIR è il project creativ independent da Flavio Giorgio Guarini
 flavio|Strategia creativa, identitad sonora e process da lavur cun IA
 maria|Direcziun artistica, design grafic ed identitad visuala
 instagram|Suonda nus sin Instagram
+instagramCopy|Copiar il num d’utilisader
+instagramCopied|Il num d’utilisader è copià. Tschertga el sin Instagram.
+instagramManual|Selecziunescha e copiescha il num d’utilisader e tschertga el sin Instagram.
 contactTitle|Tge è tia proxima idea?
 contactCopy|Raquinta a nus tge che ti has en senn. Nus chattain ensemen nua cumenzar.
 name|Tes num

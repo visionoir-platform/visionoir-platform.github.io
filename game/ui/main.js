@@ -1,5 +1,5 @@
 import './style.css';
-import { names,matchLocale } from '../../src/locales.js';
+import { names,matchLocale,portalPath } from '../../src/locales.js';
 import { acceptFooterEntry } from '../../src/unseen-door.js';
 import { STAGES,HEROES,BOSSES,createRun,step,groundAt,canEnter,sanitizeProgress,finishRun,rankOf } from '../engine/index.js';
 import { playCinematic } from '../art/cinematic.js';
@@ -125,7 +125,7 @@ function resumeRun(){
 }
 function newStory(){loadMark=false;mode='story';target=0;hero=progress.lastHero;portalReturn=null;go('heroes',{track:3,from:'story'});}
 const creatorSignature='<small itemprop="creditText" lang="en" dir="ltr" class="creator-signature">Created, designed and developed by Flavio Giorgio Guarini.</small>';
-function projectLinks(){return '<div class="project-links"><a href="/support/?lang='+encodeURIComponent(lang)+'">'+safe(t('supportPortal'))+'</a><a href="/legal/?lang='+encodeURIComponent(lang)+'">'+safe(t('legalPortal'))+'</a></div>';}
+function projectLinks(){return '<div class="project-links"><a href="'+portalPath('support',lang)+'">'+safe(t('supportPortal'))+'</a><a href="'+portalPath('legal',lang)+'">'+safe(t('legalPortal'))+'</a></div>';}
 function footerReturn(){return '<a class="back-site" href="/'+lang.toLowerCase()+'/#unseen-door">↗ VISIONOIR</a>';}
 function title(){
   return '<section class="title-screen"><div class="cover-art"></div><div class="cover-type"><p class="over" dir="ltr">VISIONOIR / NOIR CITY</p><h1 lang="en" dir="ltr">'+(fan?'<span class="fan-title">SONIC: VISIONOIR</span>':'')+'<span>THE UNSEEN</span><span>PROTOCOL<i>.</i></span></h1><p class="synopsis">'+safe(t('synopsis'))+'</p>'+button('start',t('start')+' <span aria-hidden="true">↗</span>','class="primary start"')+creatorSignature+projectLinks()+'</div></section>';
