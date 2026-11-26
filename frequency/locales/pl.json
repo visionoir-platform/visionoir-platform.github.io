@@ -205,5 +205,6 @@
   "regionBounds": "Koniec musi następować po początku.",
   "regionProtect": "Ta próbka jest używana na osi czasu. Zaimportuj nowe nagranie przez opcję Region audio.",
   "automation": "Automatyka",
-  "point": "Punkt"
+  "point": "Punkt",
+  "postFader": "Tłumiki po efektach insertowych"
 }

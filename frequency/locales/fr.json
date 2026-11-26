@@ -205,5 +205,6 @@
   "regionBounds": "La fin doit suivre le début.",
   "regionProtect": "Cet échantillon figure dans le montage. Importe le nouvel enregistrement depuis Région audio.",
   "automation": "Automation",
-  "point": "Point"
+  "point": "Point",
+  "postFader": "Faders après les effets d’insertion"
 }

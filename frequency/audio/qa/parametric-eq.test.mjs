@@ -39,6 +39,32 @@ test('independent centre, gain and bandwidth and dry bypass at 48 kHz', () => {
   assert.equal(response(narrow, 1000, true), 0);
 });
 
+test('a drastic live gain change blends the response and a reset applies the final settings', () => {
+  const settings = gain => ({ ...preset, eq: { frequency: 1000, gain, q: 1 } });
+  const eq = new Effect(settings(-18), rate, 120);
+  const tick = (effect, frame) => {
+    const input = 0.06 * Math.sin((frame + 12) * Math.PI / 24);
+    effect.step(input, -input);
+    return effect.L;
+  };
+  let before;
+  for (let i = 0; i < rate; i++) before = tick(eq, i);
+  eq.configure(settings(18), 120);
+  assert.ok(Math.abs(tick(eq, rate) - before) < 0.001, 'the live adjustment must not snap');
+  let onsetPeak = 0;
+  for (let i = rate + 1; i < rate + 128; i++) onsetPeak = Math.max(onsetPeak, Math.abs(tick(eq, i)));
+  assert.ok(onsetPeak < 0.05, 'the old instant change creates a transient peak above 0.44');
+
+  const newSettings = { ...preset, eq: { frequency: 3600, gain: 6, q: 3.2 } };
+  const oldB0 = eq.b0;
+  eq.configure(newSettings, 120);
+  assert.equal(eq.b0, oldB0, 'interrupt a ramp without jumping away from its current coefficients');
+  tick(eq, rate + 128);
+  eq.reset();
+  const initial = new Effect(newSettings, rate, 120);
+  for (let i = 0; i < 480; i++) assert.equal(tick(eq, i), tick(initial, i));
+});
+
 test('the legacy macro and manual takeover reproduce the pre-upgrade PCM', () => {
   // Golden PCM from the preceding engine at two real factory chain settings.
   const fixture = [

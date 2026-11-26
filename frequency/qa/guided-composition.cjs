@@ -98,6 +98,8 @@ async function check(browser) {
 
     const midiEvents = Buffer.from([
       0, 255, 81, 3, 7, 161, 32,
+      0, 176, 7, 80,
+      0, 176, 10, 96,
       0, 144, 48, 96,
       0, 144, 55, 96,
       129, 112, 128, 48, 0,
@@ -116,6 +118,7 @@ async function check(browser) {
     assert.equal(await page.locator('[data-tab="arrangement"]').getAttribute('aria-pressed'), 'true');
     const fromMidi = await snapshot();
     assert.equal(fromMidi.bpm, 120);
+    assert.ok(fromMidi.tracks.every(track=>track.volume === 80/127 && track.pan === 32/63));
     assert.deepEqual(fromMidi.scenes[0].patterns.flatMap(pattern=>pattern.steps.filter(Boolean))
       .flatMap(note=>[note.note,...(note.chord ?? []).map(interval=>note.note+interval)])
       .sort((a,b)=>a-b), [48,55,60]);

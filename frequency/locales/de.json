@@ -205,5 +205,6 @@
   "regionBounds": "Das Ende muss hinter dem Anfang liegen.",
   "regionProtect": "Dieses Sample wird im Arrangement verwendet. Importiere die neue Aufnahme über Audioregion.",
   "automation": "Automation",
-  "point": "Punkt"
+  "point": "Punkt",
+  "postFader": "Fader nach den Insert-Effekten"
 }

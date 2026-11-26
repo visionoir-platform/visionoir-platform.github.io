@@ -205,5 +205,6 @@
   "regionBounds": "O fim deve vir depois do início.",
   "regionProtect": "Este sample está na linha do tempo. Importe a nova gravação por Região de áudio.",
   "automation": "Automação",
-  "point": "Ponto"
+  "point": "Ponto",
+  "postFader": "Faders após os efeitos de inserção"
 }

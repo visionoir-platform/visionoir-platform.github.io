@@ -108,6 +108,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
     );
   }
   if (view === 'mixer') {
+    const faderMode = act('post-fader', t('postFader'), { pressed: p.master.postFader === true });
     const buses = `<section class="instrument-panel"><h3>Bus</h3><div class="buses">${audio.BUSSES.map(
       (bus, i) => {
         const b = p.buses?.[bus] || { volume: 1, mute: false };
@@ -115,7 +116,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
       },
     ).join('')}</div></section>`;
     return (
-      head +
+      head + '<div class="bar-tools">' + faderMode + '</div>' +
       scroller(
         `<div class="mixer">${p.tracks.map((tr, i) => `<article class="channel" style="--voice:${channelColor(i)}"><header><small>CH ${pad(i + 1)}</small>${rowLabel(tr, i)}</header><div class="meters"><meter data-meter="peak:${i}" min="0" max="1" value="0" title="Peak"></meter><meter data-meter="rms:${i}" min="0" max="1" value="0" title="RMS"></meter></div>${slider(t('gain'), 'track:' + i + ':gain', tr.gain ?? 1, 0, 2)}${slider(t('volume'), 'track:' + i + ':volume', tr.volume)}${slider('Pan', 'track:' + i + ':pan', tr.pan, -1, 1)}<div class="pair">${act('mute', 'M', { title: t('mute') + ' · ' + tr.name, pressed: tr.mute, data: data('index', i) })}${act('solo', 'S', { title: 'Solo · ' + tr.name, pressed: tr.solo, data: data('index', i) })}</div></article>`).join('')}</div>`,
       ) +
