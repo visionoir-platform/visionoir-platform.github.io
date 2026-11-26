@@ -36,7 +36,8 @@ import {
 import { renderEditor, masterPanel } from './views.js';
 import { samplerLockMenu, samplerPanel } from './sampler-panel.js';
 import { SAMPLER_PADS } from './audio/sampler-slices.js';
-import { factorySlotPresets, renderEffectSlot, setLiveEffectAmount } from './fx-rack.js';
+import { factorySlotPresets, renderEffectSlot } from './fx-rack.js';
+import {liveEffectIds, liveEffectCC, liveEffectRest, setLiveEffectAmount} from './audio/live-effects.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
 import { collectVisualLevels } from './chromatic/channel-routing.js';
@@ -145,7 +146,8 @@ export async function startStudio() {
   }
   function fail(err) {
     console.warn('[FREQUENCY]', err?.name || 'Operation');
-    const key = err?.message === 'audio.outputDenied' ? 'outputDenied' :
+    const key = ['midiImportInvalid', 'midiImportUnsupported', 'midiImportTooLarge', 'midiImportNoNotes'].includes(err?.message) ? err.message :
+      err?.message === 'audio.outputDenied' ? 'outputDenied' :
       err?.message === 'audio.outputFailed' ? 'outputFailed' :
       err?.message === 'audio.processorError' ? 'audioRetry' : err?.message === 'storage.exportInUse' ? 'eraseBlocked' :
       err?.message?.startsWith('project.') || err?.name === 'SyntaxError'
@@ -194,7 +196,7 @@ export async function startStudio() {
   const href = (portal) => portalPath(portal,lang);
   function shell() {
     el('studio').innerHTML =
-      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('support')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('legal')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel" aria-labelledby="panel-heading"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,application/json,application/zip">`;
+      `<div class="case"><header class="topbar"><a class="brand" href="/${encodeURIComponent(lang.toLowerCase())}/"><img src="/assets/logo.svg" alt="">VISIONOIR</a><span class="unit-name">FREQUENCY</span><div class="topright">${act('about', t('quickHelp'))} <a href="${href('support')}">${h(t('support'))} ↗</a></div></header><div class="console-title"><div><h1 dir="ltr">FREQUENCY<span>.</span></h1><p>DESIGN THE SOUND OF THE UNSEEN.</p><small itemprop="creditText" class="byline" dir="ltr" lang="en">Created, designed and developed by Flavio Giorgio Guarini.</small></div><div class="session-id"><span class="status-led"></span><span id="state"></span><strong id="clock" dir="ltr">001.01.01</strong></div></div><div class="transport" id="transport"></div><nav class="tabs" aria-label="${attr(t('tools'))}" id="tabs"></nav><div class="deck"><section class="editor" id="editor"></section><aside class="right-rack"><div id="chromatic"></div><section class="master-screen"><header>${act('master-fx', t('master') + ' FX')}${select(t('output'), 'analyser', ['fft', 'scope', 'history'].map((k) => option(k, t(k), k === (s.analyser || 'fft'))).join(''))}<output id="db" aria-live="off">−∞ dBFS</output></header><canvas id="scope" width="320" height="82" aria-label="Master"></canvas><div class="readings" aria-live="off"><span>L/R <output id="rms" aria-live="off">−∞</output></span><span>φ <output id="corr" aria-live="off">—</output></span><span id="clip-light" role="meter" aria-label="CLIP" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">CLIP</span></div><details class="master-analysis" id="master-analysis"><summary><span id="analysis-caption">${h(t('masterAnalysis'))}</span> · LUFS / dBTP</summary><dl><div><dt>LUFS M · 400 ms</dt><dd id="lufs-m">—</dd></div><div><dt>LUFS S · 3 s</dt><dd id="lufs-s">—</dd></div><div><dt><span id="tp-caption">${h(t('truePeakMax'))}</span> · dBTP</dt><dd id="tp-max">—</dd></div></dl><small id="analysis-status"></small></details></section></aside></div><footer><span>VISIONOIR: FREQUENCY</span><p>Created, designed and developed by Flavio Giorgio Guarini.</p><a href="${href('legal')}">© VISIONOIR</a></footer><div id="notice" role="status" aria-live="polite"></div></div><dialog id="panel" aria-labelledby="panel-heading"></dialog><input type="file" id="project-file" hidden accept=".vfreq,.json,.zip,.mid,.midi,application/json,application/zip,audio/midi,audio/x-midi">`;
     const panel = el('master-analysis');
     panel.addEventListener('toggle', () => {
       tick.lufsMomentary = tick.lufsShort = tick.truePeakMax = null;
@@ -300,6 +302,7 @@ export async function startStudio() {
     updateTransport();
   }
   function remember() {
+    latestImport++;
     undo.push(snapshot());
     if (undo.length > 24) undo.shift();
     redo = [];
@@ -667,7 +670,7 @@ export async function startStudio() {
     open(
       'library',
       t('library'),
-      `<label class="field wide"><span>${h(t('title'))}</span><input data-field="name" maxlength="160" value="${attr(p.name)}"></label><div class="bar-tools">${act('blank', t('newProject'), { icon: '+' })}${act('generator', t('generate'))}${act('import', t('importFile'))}${act('backup', '.vfreq ↓')}${act('save-as', t('save') + ' +')} ${act('recover-backup', t('recovery'))}</div><h3>${h(t('demo'))}</h3><div class="project-grid">${[...audio.DEMOS, ...(audio.EXTRA_DEMOS || [])].map((d, i) => act('demo', d.name + ' · ' + d.bpm + ' BPM', { data: 'data-id="' + attr(d.id) + '"', icon: pad(i + 1) })).join('')}</div><h3>${h(t('storage'))}</h3><div class="project-grid">${saved.map((x) => act('saved', x.name + ' · ' + new Date(x.date).toLocaleDateString(lang), { data: 'data-id="' + attr(x.id) + '"' })).join('')}</div>`,
+      `<label class="field wide"><span>${h(t('title'))}</span><input data-field="name" maxlength="160" value="${attr(p.name)}"></label><div class="bar-tools">${act('blank', t('newProject'), { icon: '+' })}${act('generator', t('generate'))}${act('import', t('importFile') + ' · MIDI')}${act('backup', '.vfreq ↓')}${act('save-as', t('save') + ' +')} ${act('recover-backup', t('recovery'))}</div><h3>${h(t('demo'))}</h3><div class="project-grid">${[...audio.DEMOS, ...(audio.EXTRA_DEMOS || [])].map((d, i) => act('demo', d.name + ' · ' + d.bpm + ' BPM', { data: 'data-id="' + attr(d.id) + '"', icon: pad(i + 1) })).join('')}</div><h3>${h(t('storage'))}</h3><div class="project-grid">${saved.map((x) => act('saved', x.name + ' · ' + new Date(x.date).toLocaleDateString(lang), { data: 'data-id="' + attr(x.id) + '"' })).join('')}</div>`,
     );
   }
   function generator(target = 'session') {
@@ -1101,9 +1104,13 @@ export async function startStudio() {
   function clearDialog() {
     if (el('panel')?.open) close();
   }
-  async function replace(p) {
+  async function replace(p, view) {
     audio.validateProject(p);
     remember();
+    if (view) {
+      s.view = view;
+      renderTabs();
+    }
     restoreSnapshot(p);
     clearDialog();
     say(t('open') + ' · ' + p.name);
@@ -1848,7 +1855,7 @@ export async function startStudio() {
               ? 'v:' + index
               : group === 'param'
                 ? 'p:' + s.channel + ':' + index
-                : null;
+                : group === 'livefx' ? id : null;
         if (command && engine.control) {
           engine.control(command, v);
           saveSoon();
@@ -1937,6 +1944,12 @@ export async function startStudio() {
       return;
     }
     if (group === 'livefx') {
+      if (learn && pendingMidi === id) {
+        const slot = s.p.master.fx?.find(effect => effect.id === index);
+        node.value = slot && !slot.bypass ? slot.amount : liveEffectRest(index);
+        showFaderValue(node);
+        return;
+      }
       change(() => {
         setLiveEffectAmount(s.p.master.fx ||= [], index, v);
       });
@@ -2115,8 +2128,39 @@ export async function startStudio() {
       },
       stop,
     });
-    const hardwareToField = (id, x) => {
+    const hardwareToField = (id, cc) => {
+      if (typeof id !== 'string' || !Number.isInteger(cc) || cc < 0 || cc > 127) return;
       const [group, idx, prop] = id.split(':');
+      if (group === 'livefx') {
+        if (prop !== undefined || !liveEffectIds.includes(idx)) return;
+        const amount = liveEffectCC(idx, cc);
+        const rack = s.p.master.fx ?? [];
+        let slot;
+        try { slot = setLiveEffectAmount(rack, idx, amount); }
+        catch (error) {
+          if (error instanceof RangeError) say(t('master') + ' FX · 12 / 12');
+          else fail(error);
+          return;
+        }
+        if (slot < 0) return;
+        s.p.master.fx = rack;
+        engine.control(id, amount);
+        saveSoon();
+        if (activeDialog === 'masterfx') {
+          const bypass = el('panel').querySelector('[data-action="fx-bypass"][data-index="' + slot + '"]');
+          if (bypass) bypass.setAttribute('aria-pressed', String(rack[slot].bypass));
+          else fxPane(true);
+        }
+        for (const fieldId of [id, 'masterfx:' + slot]) {
+          const input = targetField(fieldId);
+          if (input) {
+            input.value = amount;
+            showFaderValue(input);
+          }
+        }
+        return;
+      }
+      const x = cc / 127;
       if (group === 'm') s.p.master.volume = x;
       else if (group === 'v' && s.p.tracks[idx]) s.p.tracks[idx].volume = x;
       else if (group === 'p' && Object.hasOwn(audio.PARAMETER_BANK[s.p.tracks[idx]?.instrument] || {}, prop))
@@ -2144,14 +2188,18 @@ export async function startStudio() {
         visual?.handleCC?.(channel, a, b / 127);
         const k = channel + ':' + a;
         if (learn && pendingMidi) {
-          s.p.midiMappings ||= {};
-          mutate(() => (s.p.midiMappings[k] = pendingMidi));
+          if (s.p.midiMappings?.[k] !== pendingMidi) {
+            remember();
+            (s.p.midiMappings ||= {})[k] = pendingMidi;
+            saveSoon();
+            flushSave();
+          }
           learn = false;
           pendingMidi = undefined;
           say('MIDI CC ' + a);
           return;
         }
-        if (s.p.midiMappings?.[k]) hardwareToField(s.p.midiMappings[k], b / 127);
+        if (s.p.midiMappings?.[k]) hardwareToField(s.p.midiMappings[k], b);
       } else if (cmd === 9 && b > 0) {
         void midiNotes.press(inputId, channel, a, s.channel, b / 127);
       } else if (cmd === 8 || (cmd === 9 && b === 0)) midiNotes.release(inputId, channel, a);
@@ -2299,8 +2347,11 @@ export async function startStudio() {
             ? 'v:' + i
             : g === 'master' && i === 'volume'
               ? 'm'
-              : undefined;
-      if (pendingMidi) say('MIDI CC → ' + f.dataset.field);
+              : g === 'livefx' && liveEffectIds.includes(i) ? f.dataset.field : undefined;
+      if (pendingMidi) {
+        e.preventDefault(); // Selecting a Learn target must not move its fader.
+        say('MIDI CC → ' + f.dataset.field);
+      }
     }
   });
   const releasePad = (e) => {
@@ -2312,17 +2363,20 @@ export async function startStudio() {
   };
   root.addEventListener('pointerup', releasePad);
   root.addEventListener('pointercancel', releasePad);
+  function showFaderValue(f) {
+    const label = f.closest('.fader');
+    label?.style.setProperty(
+      '--fill',
+      ((Number(f.value) - Number(f.min)) / (Number(f.max) - Number(f.min))) * 100 + '%',
+    );
+    label?.style.setProperty('--angle', -132 + Number(f.value) * 264 + 'deg');
+    if (label?.querySelector('output')) label.querySelector('output').value = f.value;
+  }
   root.addEventListener('input', (e) => {
     if (e.target.dataset.field === 'region-out' || e.target.dataset.field === 'region-in') targetField('region-out')?.setCustomValidity('');
     const f = e.target;
     if (f.type === 'range' && f.dataset.field) {
-      const label = f.closest('.fader');
-      label?.style.setProperty(
-        '--fill',
-        ((Number(f.value) - Number(f.min)) / (Number(f.max) - Number(f.min))) * 100 + '%',
-      );
-      label?.style.setProperty('--angle', -132 + Number(f.value) * 264 + 'deg');
-      if (label?.querySelector('output')) label.querySelector('output').value = f.value;
+      showFaderValue(f);
       void field(f, true).catch(fail);
     }
   });
@@ -2332,13 +2386,17 @@ export async function startStudio() {
       if (node.id === 'project-file') {
         const file = node.files[0];
         node.value = '';
-        if (!file || !guardLive()) return;
+        if (!file || exportController || !guardLive()) return;
         const request = ++latestImport, original = s.p, transport = commandCount;
+        let loaded;
         try {
-          const loaded = await audio.readProject(file);
-          if (request === latestImport && original === s.p && transport === commandCount && guardLive()) await replace(loaded);
+          loaded = await audio.readProject(file);
         } catch (error) {
           if (request === latestImport && original === s.p) fail(error);
+          return;
+        }
+        if (request === latestImport && original === s.p && transport === commandCount && !exportController && guardLive()) {
+          await replace(loaded, audio.isMidiFile(file) ? 'arrangement' : undefined);
         }
         return;
       }

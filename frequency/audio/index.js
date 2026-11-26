@@ -6,7 +6,17 @@ export { estimateExport, exportLoop, SAMPLE_RATES, BIT_DEPTHS } from './offline.
 import { estimateExport } from './offline.js';
 import { projectFile } from './model.js';
 import { midiBundleFiles, zipFiles } from './formats.js';
+export const isMidiFile = (file) =>
+  /\.midi?$/i.test(file.name ?? '') || /^audio\/(?:x-)?midi$/i.test(file.type ?? '');
+
 export async function readProject(file) {
+  if (isMidiFile(file)) {
+    const { MAX_MIDI_FILE_BYTES, parseMidi } = await import('./midi-import.js');
+    if (file.size > MAX_MIDI_FILE_BYTES) throw Error('midiImportTooLarge');
+    const midi = parseMidi(new Uint8Array(await file.arrayBuffer()));
+    const { projectFromMidi } = await import('./midi-project.js');
+    return projectFromMidi(midi, file.name);
+  }
   const { readProjectFile } = await import('./project-archive.js');
   return readProjectFile(file);
 }

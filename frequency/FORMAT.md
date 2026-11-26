@@ -2,6 +2,12 @@
 
 Un file `.vfreq` è un documento JSON UTF-8. Contiene i dati necessari a riaprire e modificare il brano. Nel menu **Libreria** si possono importare il documento, la sua copia con estensione `.json` o l’archivio `.zip` esportato dallo studio.
 
+## Importare un arrangiamento MIDI
+
+**Libreria → Importa file** apre anche i file `.mid` e `.midi`. FREQUENCY apre l’arrangiamento importato e conserva le note, comprese quelle simultanee, le velocity, le durate e i marker all’inizio di una battuta. Ogni traccia riceve un timbro FREQUENCY modificabile. Annulla ripristina il progetto precedente.
+
+L’importazione supporta SMF di tipo 0 e 1, divisione PPQN, tempo costante da 40 a 300 BPM e file fino a 4 MiB. Il progetto usa battute di quattro quarti e completa con una pausa l’ultima battuta parziale. Si possono usare fino a 32 tracce. I programmi General MIDI, i controller del file e i marker interni alla battuta rimangono nella sorgente originale. Se il tempo varia o le durate non entrano nei limiti del sequencer, FREQUENCY mostra un errore e mantiene il progetto aperto.
+
 Il Sampler divide la regione tra `start` ed `end` in sedici porzioni contigue. Il pad 1 inizia al primo campione del trim e il pad 16 termina al suo ultimo campione. Per regioni più brevi di sedici campioni viene mostrato un pad per campione. Ciascun pad seleziona e suona la propria porzione. Si può assegnare una porzione diversa a ciascuna nota dal menu dei parametri per step. Pitch, reverse e loop operano dentro i limiti della porzione.
 
 Il parametro `slicePad` memorizza il numero del pad diviso per 16. Zero, oppure l’assenza di `slicePad` nei progetti precedenti, richiama lo spostamento continuo originale regolato da `slice`. Questo valore resta memorizzato anche mentre si usano i pad.
@@ -17,6 +23,8 @@ Le sessioni che usano soltanto lo spostamento continuo mantengono la compatibili
 | `tracks[].sample` | Il campione incorporato porta nome, frequenza del PCM incluso (`rate`) e dati `pcm` in Base64. Il lettore usa valori mono PCM a 16 bit, little endian. I dati viaggiano nel progetto. |
 | `master`, `buses` | Comprendono i livelli e le impostazioni di uscita. Negli inserti `fx`, `id` seleziona l’effetto e `amount` la regolazione della macro. L’inserto `eq` può conservare `eq.frequency` in Hz, `eq.gain` in dB e `eq.q`. |
 | `midiMappings`, `visual`, `workspace`, `exportInfo` | Conservano rispettivamente associazioni MIDI, stato del Visual Rack con memorie e cambi scena, scena aperta e metadati di esportazione. I vecchi progetti che precedono questi campi continuano ad aprirsi. |
+
+Le chiavi di `midiMappings` sono `canale:CC` (canale da 0 a 15). Le destinazioni dei quattro effetti Live sono `livefx:dj`, `livefx:repeat`, `livefx:glitch` e `livefx:freeze`. Posizione e bypass restano negli insert di `master.fx`.
 
 Il lettore accetta un documento fino a 80.000.000 byte e controlla le strutture musicali prima di sostituire la sessione. La specifica eseguibile è [model.js](audio/model.js). La lettura di un archivio cerca `project.vfreq` alla radice e ne verifica dimensione e CRC. Supporta i membri ZIP32 memorizzati senza compressione e, nei browser con decoder `deflate-raw`, quelli ricompressi con Deflate. I WAV degli stem sono disponibili anche per il montaggio in un’altra DAW.
 
