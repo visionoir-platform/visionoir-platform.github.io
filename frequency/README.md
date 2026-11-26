@@ -14,6 +14,8 @@ In **Arrangiamento**, aggiungi una scena, scegli la durata in battute e spostala
 
 ## Suono, performance e registrazione
 
+Durante un set, i controlli multimediali dei dispositivi compatibili mostrano il titolo del progetto e il logo VISIONOIR. **Pausa** conserva la posizione della sequenza e l’avanzamento delle dissolvenze fra scene. Per riprendere dopo un’interruzione del sistema puoi usare **Avvia** nello studio. **Stop** termina il trasporto. Nel mixer live il filtro DJ passa dal passa-basso, a sinistra, al passa-alto, a destra. La posizione centrale lascia intatto il segnale.
+
 Nel Rumble Engine, **EQ bassi (100 Hz)** regola i bassi dopo la distorsione, da −9 a +9 dB. Il centro della manopola mantiene il timbro originale.
 
 Nel **Mixer**, apri **FX / I/O** su un canale per inserti, mandate, ampiezza stereo, fase e bus. Il master mostra picchi e RMS digitali in dBFS, correlazione stereo e clipping prima del limiter. Lo spettro, l’oscilloscopio e lo spettrogramma leggono lo stesso master.

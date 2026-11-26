@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { makeFlakeGeometry } from './flakes.js';
 
 // All fragment and particle decisions use original, unwarped model coordinates.
 // The mask leaves the face, glasses and hair intact through the entire effect.
@@ -59,12 +60,34 @@ vec3 displaced(vec3 p) {
 export const sculptureVertex = /* glsl */ `
 varying vec3 vPos, vNorm, vEye;
 varying vec2 vUv;
+#ifdef PORTRAIT_FLAKE
+attribute vec4 flakeOrigin;
+varying float vRelease;
+#endif
 ${shell}
 ${deformation}
 void main(){
   vUv=uv;
-  vec4 view=modelViewMatrix*vec4(displaced(position),1.);
-  vPos=position; vNorm=normalize(normalMatrix*normal);vEye=-view.xyz;
+  vec3 p=displaced(position), n=normal;
+  #ifdef PORTRAIT_FLAKE
+    vec3 pivot=flakeOrigin.xyz;
+    float seed=flakeOrigin.w;
+    float travel=max(0.,-fractureMargin(pivot));
+    vRelease=travel;
+    // The source patch peels from the same sleeve front as the dust. A shared
+    // rotation across the patch keeps its shape and turns its specular highlight.
+    float angle=travel*(2.+4.*seed);
+    mat2 turn=mat2(cos(angle),sin(angle),-sin(angle),cos(angle));
+    vec3 center=displaced(pivot);
+    vec3 local=p-center;
+    local.xz=turn*local.xz;
+    n.xz=turn*n.xz;
+    vec3 drift=vec3(.62+.52*seed,.15+.3*sin(23.*seed+uTime*.9),.15+.11*seed);
+    if (uProfile>4.5) drift.y+=.75;
+    p=center+local*(1.-.6*smoothstep(.08,.65,travel))+drift*travel;
+  #endif
+  vec4 view=modelViewMatrix*vec4(p,1.);
+  vPos=position; vNorm=normalize(normalMatrix*n);vEye=-view.xyz;
   gl_Position=projectionMatrix*view;
 }`;
 
@@ -72,12 +95,22 @@ export const sculptureFragment = /* glsl */ `
 uniform sampler2D uSkin; uniform vec3 uAccent; uniform vec4 uAudio;
 uniform float uTime,uLook,uAcid,uNoir;
 varying vec3 vPos,vNorm,vEye; varying vec2 vUv;
+#ifdef PORTRAIT_FLAKE
+varying float vRelease;
+#endif
 ${shell}
 float stripe(float x,float center,float width){float d=(x-center)/width;return exp(-d*d);}
 void main(){
  float margin=fractureMargin(vPos);
- if(margin<0.)discard;
+ #ifdef PORTRAIT_FLAKE
+   if(vRelease<=0. || margin>=0.)discard;
+ #else
+   if(margin<0.)discard;
+ #endif
  vec3 N=normalize(vNorm), V=normalize(vEye), K=normalize(vec3(-.58,.76,.6));
+ #ifdef PORTRAIT_FLAKE
+   if(!gl_FrontFacing)N=-N;
+ #endif
  vec3 albedo=texture2D(uSkin,vUv).rgb;
  float tone=dot(albedo,vec3(.2126,.7152,.0722));
  float face=smoothstep(.55,.79,vPos.y);
@@ -170,7 +203,7 @@ void main(){
  editorial+=vec3(.12,.15,.17)*smoothstep(.65,1.,edge)*(1.-face);
  vec3 color=mix(coated,editorial,natural);
  // A narrow molten lip follows the surviving material and cools on release.
- float lip=(1.-smoothstep(0.,.045+.015*liquid,margin))*smoothstep(.035,.30,uScatter);
+ float lip=(1.-smoothstep(0.,.045+.015*liquid,abs(margin)))*smoothstep(.035,.30,uScatter);
  vec3 lipColor=mix(mix(uAccent,vec3(1.,.94,.85),.52),vec3(.85,.89,.91),natural);
  color=mix(color,lipColor,lip*(.53-.32*natural))+lipColor*lip*(.28-.21*natural);
  gl_FragColor=vec4(color,1.);
@@ -184,6 +217,15 @@ export function makeFinish(asset, uniforms) {
     vertexShader: sculptureVertex,
     fragmentShader: sculptureFragment,
   });
+}
+
+export function makeFlakes(asset, uniforms, mobile) {
+  const material = makeFinish(asset, uniforms);
+  material.defines = { PORTRAIT_FLAKE: 1 };
+  material.side = T.DoubleSide;
+  const flakes = new T.Mesh(makeFlakeGeometry(asset.geometry, mobile), material);
+  flakes.frustumCulled = false; // Displaced patches may extend beyond the sleeve bounds.
+  return flakes;
 }
 
 export function makeShards(geometry, uniforms, mobile) {
