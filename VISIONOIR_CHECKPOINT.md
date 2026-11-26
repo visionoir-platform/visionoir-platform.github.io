@@ -136,3 +136,7 @@ Il profilo Instagram si apre nella stessa scheda. Accanto al collegamento è pos
 ## FREQUENCY · Continuità del set e ritratto
 
 Il trasporto conserva la posizione dei due deck durante la pausa e riprende dal campione successivo. Il filtro DJ ha il centro neutro e due direzioni di taglio. La scultura del creatore usa porzioni triangolari del modello statico originale per le scaglie della manica. La CI verifica il trasporto, i campioni audio e le superfici visibili nel rendering. La prova con i comandi fisici delle cuffie e con lo schermo bloccato resta da eseguire.
+
+## FREQUENCY · Loop, proiezione ed esportazione
+
+Da ogni vista della workstation si possono impostare la prima e l’ultima battuta del loop e annullare o ripetere una modifica durante il set. La finestra VJ apre un indirizzo nuovo con la lingua e l’uscita selezionate. Nel pannello Esporta i formati progetto e i due archivi ZIP segnalano che includono anche i campioni importati e i loro nomi di file. Per condividere le sole note è disponibile il MIDI.
