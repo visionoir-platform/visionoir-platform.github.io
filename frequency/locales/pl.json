@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "Plik zawiera dane projektu oraz zaimportowane próbki dźwiękowe wraz z nazwami plików. Aby udostępnić nuty bez próbek, wybierz MIDI.",
   "gridKeys": "Poruszaj się strzałkami. Spacja włącza lub wyłącza krok, a F2 pozwala zmienić jego parametry.",
   "generateTimbre": "Generuj barwę",
   "generatePattern": "Generuj sekwencję",

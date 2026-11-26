@@ -780,8 +780,14 @@ export async function startStudio() {
       ...(dest?.startsWith('b') ? {bus:dest.slice(1)} : {}),
     };
   }
+  let exportFormat = 'wav';
   function exportFields() {
     const fmt = fieldValue('format');
+    exportFormat = fmt;
+    const note = el('export-contents');
+    const containsProject = ['vfreq', 'json', 'zip', 'stems'].includes(fmt);
+    const disclosure = containsProject ? t('exportProjectContents') : '';
+    if (note.textContent !== disclosure) note.textContent = disclosure;
     const wav = ['wav', 'flac', 'aiff', 'stems'].includes(fmt),
       audioFmt = wav || fmt === 'mp3';
     const regionField = targetField('render-region');
@@ -857,8 +863,9 @@ export async function startStudio() {
     open(
       'export',
       t('export'),
-      `<div class="field-grid">${credits}${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq · v2'], ['json', 'JSON · v1'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')) + option('loop', loopLabel))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number(t('fxTail') + ' · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
+      `<div class="field-grid">${credits}${select(t('export'), 'format', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC'], ['midi', 'MIDI'], ['vfreq', '.vfreq · v2'], ['json', 'JSON · v1'], ['zip', 'ZIP · .vfreq + MIDI'], ['stems', 'ZIP · stems WAV'], ...(audio.renderMp3 ? [['mp3', 'MP3']] : [])].map(([k, n]) => option(k, n, k === exportFormat)).join(''))}${select('kbps', 'bitrate', [128, 192, 256, 320].map((v) => option(v, v, v === 320)).join(''))} ${select('Hz', 'sample-rate', audio.SAMPLE_RATES.map((v) => option(v, v, v === 48000)).join(''))}${select('Bit', 'bits', [16, 24, 32].map((v) => option(v, v === 32 ? '32 float' : v, v === 24)).join(''))}${select(t('output'), 'channel-count', [option(2, 'Stereo', true), option(1, 'Mono')].join(''))}${select(t('instrument'), 'render-track', option('mix', t('master'), true) + s.p.tracks.map((tr, i) => option('t' + i, tr.name)).join('') + (audio.BUSSES || []).map((b) => option('b' + b, 'Bus ' + b)).join(''))}${select(t('source'), 'render-region', option('song', t('arrangement'), true) + option('scene', t('scene')) + option('loop', loopLabel))}${select(t('master'), 'render-mastering', option('1', t('master'), true) + option('0', t('bypass')))}${select('Peak −0.54 dBFS', 'render-normalize', option('0', t('bypass'), true) + option('1', t('peak')))}${number(t('fxTail') + ' · s', 'render-tail', 0.35, 0, 30, 0.05)}${number(t('start') + ' · ' + t('bars'), 'start-bar', 1, 1, bars)}${number(t('length') + ' · ' + t('bars'), 'render-bars', bars, 1, bars)}</div><div id="export-contents" role="status" aria-atomic="true"></div><div class="bar-tools">${act('render', t('download'), { classes: 'play' })}${act('cancel-render', t('cancel'), { disabled: true })}</div><output id="render-estimate"></output><progress id="render-progress" max="1" value="0"></progress><output id="render-status" role="status"></output>`,
     );
+    targetField('format').setAttribute('aria-describedby', 'export-contents');
     exportFields();
   }
   let installOffer, offlineJob, offlineRevision = 0;

@@ -832,9 +832,13 @@ dialog::backdrop {
   margin: 10px 0;
 }
 .dialog-inner p,
+.dialog-inner #export-contents,
 .dialog-inner li {
   font-size: 0.85rem;
   line-height: 1.6;
+}
+#export-contents:not(:empty) {
+  margin-block: .75rem;
 }
 .dialog-inner .about-brand {
   font:

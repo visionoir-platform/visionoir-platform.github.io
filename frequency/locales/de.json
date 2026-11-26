@@ -1,4 +1,5 @@
 {
+  "exportProjectContents": "Die Datei enthält die Projektdaten und alle importierten Samples samt Dateinamen. Wähle MIDI, um die Noten ohne Samples zu teilen.",
   "gridKeys": "Mit den Pfeiltasten navigieren. Die Leertaste schaltet den Schritt ein oder aus. Mit F2 lassen sich seine Werte bearbeiten.",
   "generateTimbre": "Klang erzeugen",
   "generatePattern": "Pattern erzeugen",

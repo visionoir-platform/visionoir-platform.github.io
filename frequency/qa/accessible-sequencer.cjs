@@ -66,6 +66,26 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright-core')
     await press('Home');
     assert.equal(await page.evaluate(() => document.activeElement.dataset.action),'channel');
     await press('ArrowRight'); await focusIs(0,0);
+    const action = id => page.locator('[data-action="' + id + '"]').first();
+    const format = page.locator('dialog [data-field="format"]');
+    const note = page.locator('dialog #export-contents');
+    const italian = require('../locales/it.json').exportProjectContents;
+    await action('export').click();
+    assert.equal(await format.getAttribute('aria-describedby'), 'export-contents');
+    assert.equal(await note.innerText(), '');
+    for (const choice of ['vfreq', 'json', 'zip', 'stems', 'midi', 'wav']) {
+      await format.selectOption(choice);
+      assert.equal(await note.innerText(), ['midi', 'wav'].includes(choice) ? '' : italian);
+    }
+    await format.selectOption('stems');
+    await press('Escape');
+    await action('settings').click();
+    await page.locator('dialog [data-field="lang"]').selectOption('fr-CH');
+    await page.waitForFunction(() => document.documentElement.lang === 'fr-CH');
+    await press('Escape');
+    await action('export').click();
+    assert.equal(await format.inputValue(), 'stems');
+    assert.equal(await note.innerText(), require('../locales/fr.json').exportProjectContents);
     assert.deepEqual(errors,[]);
     console.log(JSON.stringify({browser:browser.version(), tabStops:1, nativePress:true, pitch:'C4 → E4',
       velocity:.64, accentPreserved:true, shortPatternNavigation:true, exitAndReentry:true, accessibleRoles:true, errors}));
