@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createSpectrumMeter } from '../../visual-spectrum.js';
+import { createSpectrumMeter, visualLimitDeadline } from '../../visual-spectrum.js';
+import { normalizeSignal } from '../model.js';
 
 function source(rate, fftSize) {
   const spectrum = new Uint8Array(fftSize / 2);
@@ -60,3 +61,18 @@ for (const rate of [44100, 48000, 96000])
       },
     );
   }
+test('measured audio load limits both displays and a quiet interval restores the chosen graphics quality', () => {
+  let until = -Infinity;
+  for (const sample of [undefined, NaN, Infinity, .69]) until = visualLimitDeadline(until, sample, 100);
+  assert.equal(until, -Infinity);
+  until = visualLimitDeadline(until, .70, 500);
+  assert.equal(until, 3500);
+  until = visualLimitDeadline(until, 1.1, 2100);
+  assert.equal(until, 5100);
+  assert.equal(visualLimitDeadline(until, .35, 3500), 5100);
+  const fromStudio = normalizeSignal({ beat: 16, audioPressure: true });
+  const inProjector = normalizeSignal(structuredClone(fromStudio));
+  assert.equal(inProjector.audioPressure, true);
+  assert.equal(inProjector.beat, 16);
+  assert.equal(normalizeSignal({}, inProjector).audioPressure, false);
+});

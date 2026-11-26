@@ -1,3 +1,9 @@
+// The audio meter averages half a second of callback timings. Leave headroom
+// before its deadline, and keep the visual reduction through brief load dips.
+export function visualLimitDeadline(previous, dspLoad, now) {
+  return Number.isFinite(dspLoad) && dspLoad >= .70 ? now + 3000 : previous;
+}
+
 // Normalized visual intensity from the browser analyser's display-scale dB values.
 // No values returned here are calibrated loudness measurements.
 export function createSpectrumMeter(analyser) {

@@ -1,7 +1,7 @@
 import { studioMediaSession } from './studio-media-session.js';
 import { createOutputRoute } from './audio-output.js';
 import { offlineStatus, prepareOffline, offlineError } from './offline-studio.js';
-import { createSpectrumMeter } from './visual-spectrum.js';
+import { createSpectrumMeter, visualLimitDeadline } from './visual-spectrum.js';
 import {assignKey, bindPerformanceKeys, controlsForm, defaultControls, keysHelp, persistControls, readControls, scales as interfaceScales} from './performance-keys.js';
 import {validateAutomation} from './audio/automation.js';
 import {createAutomationEditor} from './automation-editor.js';
@@ -419,6 +419,7 @@ export async function startStudio() {
   const wave = new Uint8Array(512);
   let meterSource, spectrum, spectralData = false;
   let lastSpectrum = -Infinity, lastAudioTick = -Infinity;
+  let limitVisualsUntil = -Infinity;
   const visibleScope = { element: null, visible: false };
   const scopeObserver = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -430,6 +431,7 @@ export async function startStudio() {
     signal.scene = playing ? tick.scene : s.scene;
     const analyser = engine.analyser;
     const now = performance.now();
+    signal.audioPressure = now < limitVisualsUntil;
     const audibleTail = now - lastAudioTick < 1000 && tick.masterPeak?.some(peak => peak > 0.0001);
     if (!analyser || engine.context?.state !== 'running' || !(playing || !off() || audibleTail)) {
       if (spectralData) spectrum.bins.fill(0);
@@ -526,6 +528,7 @@ export async function startStudio() {
     onTick: (next) => {
       tick = next;
       lastAudioTick = performance.now();
+      limitVisualsUntil = visualLimitDeadline(limitVisualsUntil, next.dspLoad, lastAudioTick);
       const rms = next.masterRms;
       if (rms?.length) signal.level = Math.min(1, Math.hypot(...rms) / Math.sqrt(rms.length));
       s.playScene = next.scene;

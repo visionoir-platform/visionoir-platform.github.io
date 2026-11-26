@@ -167,6 +167,7 @@ export function normalizeSignal(
   target.mid = unit(raw.mid);
   target.high = unit(raw.high);
   target.level = unit(raw.level);
+  target.audioPressure = raw.audioPressure === true;
   target.bpm = Number.isFinite(raw.bpm) ? Math.max(20, Math.min(360, raw.bpm)) : 140;
   target.beat = Number.isFinite(raw.beat) ? Math.max(0, raw.beat) : 0;
   target.scene = Number.isInteger(raw.scene) ? Math.max(0, raw.scene) : 0;

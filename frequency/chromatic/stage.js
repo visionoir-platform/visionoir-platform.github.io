@@ -166,6 +166,8 @@ export async function buildStage(
     drawnTiltY = 0,
     lastState = null,
     quality = 1,
+    qualitySetting,
+    audioLimited = false,
     slowFrames = 0,
     reduced = false;
   let geometry,
@@ -207,8 +209,13 @@ export async function buildStage(
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     const state = getState() || {};
+    if (state.quality !== qualitySetting) {
+      qualitySetting = state.quality;
+      quality = 1;
+      slowFrames = 0;
+    }
     const cap = state.quality === 'low' ? 0.85 : state.quality === 'high' ? 1.8 : 1.38;
-    gpu.setPixelRatio(Math.min(devicePixelRatio || 1, cap) * quality);
+    gpu.setPixelRatio(Math.min(devicePixelRatio || 1, cap) * quality * (audioLimited ? .65 : 1));
     gpu.setSize(box.width, box.height, false);
     request();
   }
@@ -283,12 +290,17 @@ export async function buildStage(
     if (!creator) polarity.update(dt, !simple && !frozen);
     else polarity.uniform.value = 0;
     const s = normalizeSignal(getSignal() || {}, currentSignal);
+    const loadChanged = !frozen && audioLimited !== s.audioPressure;
+    if (loadChanged) {
+      audioLimited = s.audioPressure;
+      resize();
+    }
     const index = Math.max(
       0,
       modes.findIndex((m) => m[0] === state.mode),
     );
     if (host.dataset.visualMode !== state.mode) host.dataset.visualMode = state.mode;
-    const changed = state !== lastState || simple !== reduced;
+    const changed = state !== lastState || simple !== reduced || loadChanged;
     if (simple && !changed && now - lastTimeToken < 220) {
       request();
       return;
@@ -340,13 +352,13 @@ export async function buildStage(
       if (state.color) u.uTint.value.set(state.color);
       const ghost =
         (Number(fromMode === 9) * (1 - mix) + Number(nextMode === 9) * mix) *
-        (!simple && mood !== 'natural' ? 1 : 0);
+        (!simple && !audioLimited && mood !== 'natural' ? 1 : 0);
       for (let i = 0; i < echoes.length; i++) echoes[i].visible = ghost > (i + 1) * 0.18;
       points.setDrawRange(
         0,
         Math.max(
           0,
-          Math.round(points.attributes.position.count * state.density * quality * (simple ? 0.18 : 1)),
+          Math.round(points.attributes.position.count * state.density * quality * (simple ? 0.18 : 1) * (audioLimited ? .45 : 1)),
         ),
       );
       if (!creator) {
@@ -384,7 +396,7 @@ export async function buildStage(
     lastState = state;
     reduced = simple;
     const persistent =
-      !creator && !simple && state.quality !== 'low' && quality > 0.71 && [9, 14, unseenMode].includes(index);
+      !creator && !simple && !audioLimited && state.quality !== 'low' && quality > 0.71 && [9, 14, unseenMode].includes(index);
     if (persistent) {
       history.render(scene, camera, box.width, box.height, 0.65 + 0.17 * state.decay);
       historyOn = true;
