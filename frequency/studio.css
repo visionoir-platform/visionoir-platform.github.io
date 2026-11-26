@@ -311,13 +311,32 @@ select {
   color: var(--acid);
   border-color: var(--acid);
 }
+.transport .editbar {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.loop-range,
 .history {
   display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.loop-range {
+  flex-wrap: wrap;
+}
+.loop-range input {
+  width: 6.5ch;
+}
+.loop-range button[aria-pressed='true'] {
+  color: var(--acid);
+  border-color: var(--acid);
+}
+.history {
   margin-inline-start: auto;
 }
 .history button {
+  min-width: 44px;
   font-size: 1.15rem;
-  padding: 4px 12px;
 }
 .deck {
   display: grid;
@@ -1098,11 +1117,14 @@ dialog::backdrop {
   .scene-pad {
     font-size: 0.64rem;
   }
-  .tabs .history {
-    margin-inline-start: 0;
+  .transport .editbar {
+    grid-column: 1 / -1;
+    align-items: end;
   }
-  .history button {
-    min-width: 30px;
+  .loop-range input {
+    min-height: 44px;
+    font-size: 1rem;
+    padding-inline: 4px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

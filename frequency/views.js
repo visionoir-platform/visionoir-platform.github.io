@@ -99,7 +99,7 @@ export function renderEditor(state, t, audio, locale = 'it') {
     return (
       head +
       timeline + audioRegionList(p, t) + '<div class="bar-tools">'+act('auto-open',t('automation'))+'</div>' +
-      `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('loop', t('loop'), { pressed: !!p.loop?.on })} ${number(t('start'), 'loop-start', (p.loop?.start ?? 0) + 1, 1, bar - 1)} ${number(t('end'), 'loop-end', p.loop?.end ?? bar - 1, 1, bar - 1)} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
+      `<div class="bar-tools">${act('play-song', t('play') + ' · ' + t('arrangement'), { icon: '▶' })}${act('add-clip', '+ ' + t('scene'))} ${act('rename-scene', t('edit') + ' · ' + t('scene'))}<span>${bar - 1} ${h(t('bars'))}</span></div><ol class="clips">${clips}</ol>`
     );
   }
   if (view === 'mixer') {

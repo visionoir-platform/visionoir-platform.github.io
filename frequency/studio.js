@@ -216,8 +216,35 @@ export async function startStudio() {
   }
   function updateTransport() {
     const p = s.p;
-    el('transport').innerHTML =
-      `<div class="transport-group">${act('play', t('play'), { icon: '▶', classes: 'play', pressed: playing })}${act('stop', t('stop'), { icon: '■' })}${act('record', t(off() ? 'record' : 'recordEnd'), { icon: '●', classes: 'record', pressed: !off() })}</div><div class="transport-group clockfields">${number('BPM', 'bpm', p.bpm, 40, 300, 0.1)}${act('tap', 'TAP', { title: 'Tap tempo' })} ${act('metro', '♩', { title: t('metronome'), pressed: !!p.metronome })}${number('Swing %', 'swing', Math.round(p.swing * 100), 0, 50)}</div><div class="transport-group filebar">${act('library', t('library'), { icon: '▤' })}${act('save', t('save'))}${act('export', t('export'), { icon: '↗' })}${act('settings', '⚙', { title: t('settings') })}</div><div class="transport-group safety">${act('panic', 'PANIC', { classes: 'panic', title: 'Panic / ' + t('stop') })}</div>`;
+    const transport = el('transport');
+    const focus = transport.contains(document.activeElement) && focusSelector(document.activeElement);
+    const loopLabel = t('loop') + ' · ' + t('arrangement');
+    const {total, start, end, on} = loopRegion();
+    transport.innerHTML =
+      `<div class="transport-group">${act('play', t('play'), { icon: '▶', classes: 'play', pressed: playing })}${act('stop', t('stop'), { icon: '■' })}${act('record', t(off() ? 'record' : 'recordEnd'), { icon: '●', classes: 'record', pressed: !off() })}</div><div class="transport-group clockfields">${number('BPM', 'bpm', p.bpm, 40, 300, 0.1)}${act('tap', 'TAP', { title: 'Tap tempo' })} ${act('metro', '♩', { title: t('metronome'), pressed: !!p.metronome })}${number('Swing %', 'swing', Math.round(p.swing * 100), 0, 50)}</div><div class="transport-group filebar">${act('library', t('library'), { icon: '▤' })}${act('save', t('save'))}${act('export', t('export'), { icon: '↗' })}${act('settings', '⚙', { title: t('settings') })}</div><div class="transport-group safety">${act('panic', 'PANIC', { classes: 'panic', title: 'Panic / ' + t('stop') })}</div>` +
+      `<div class="transport-group editbar"><div class="loop-range" role="group" aria-label="${attr(t('arrangement') + ' · ' + t('loopRegion'))}">${act('loop', loopLabel, { pressed:on })}${number(t('start'), 'loop-start', start + 1, 1, end)}${number(t('end'), 'loop-end', end, start + 1, total)}</div><div class="history">${act('undo', '↶', { title:t('undo'), disabled:!undo.length })}${act('redo', '↷', { title:t('redo'), disabled:!redo.length })}</div></div>`;
+    if (focus) transport.querySelector(focus)?.focus({preventScroll:true});
+  }
+  function loopRegion() {
+    const total = audio.totalBars(s.p);
+    const end = Math.min(total, s.p.loop?.end ?? total);
+    const start = Math.min(end - 1, s.p.loop?.start ?? 0);
+    return {total, start, end, on: Boolean(s.p.loop?.on && s.p.loop.end <= total)};
+  }
+  function syncLoop() {
+    const {total, start, end, on} = loopRegion();
+    el('transport').querySelector('[data-action="loop"]').setAttribute('aria-pressed', String(on));
+    const first = targetField('loop-start'), last = targetField('loop-end');
+    first.max = end;
+    last.min = start + 1;
+    last.max = total;
+    if (first.defaultValue !== String(start + 1)) first.value = first.defaultValue = start + 1;
+    if (last.defaultValue !== String(end)) last.value = last.defaultValue = end;
+  }
+  function syncHistory() {
+    const transport = el('transport');
+    transport.querySelector('[data-action="undo"]').disabled = !undo.length;
+    transport.querySelector('[data-action="redo"]').disabled = !redo.length;
   }
   function renderTabs() {
     el('tabs').innerHTML =
@@ -228,8 +255,7 @@ export async function startStudio() {
             pressed: id === s.view,
           }),
         )
-        .join('') +
-      `<div class="history">${act('undo', '↶', { title: t('undo'), disabled: !undo.length })}${act('redo', '↷', { title: t('redo'), disabled: !redo.length })}</div>`;
+        .join('');
   }
   function focusSelector(node) {
     if (!node?.dataset) return '';
@@ -276,6 +302,7 @@ export async function startStudio() {
     undo.push(snapshot());
     if (undo.length > 24) undo.shift();
     redo = [];
+    syncHistory();
   }
   function saveSoon() {
     s.p.workspace = { ...s.p.workspace, scene: s.scene };
@@ -292,7 +319,7 @@ export async function startStudio() {
   function changed({ draw = true } = {}) {
     if (playing || engine.analyser) engine.update(s.p);
     saveSoon();
-    renderTabs();
+    syncLoop();
     if (draw) editor();
   }
   function mutate(fn, draw = true) {
@@ -1191,9 +1218,9 @@ export async function startStudio() {
         return;
       case 'loop':
         mutate(() => {
-          s.p.loop ||= { start: 0, end: s.p.arrangement.reduce((a, b) => a + b.bars, 0) };
-          s.p.loop.on = !s.p.loop.on;
-        });
+          const {start, end, on} = loopRegion();
+          s.p.loop = {...s.p.loop, start, end, on: !on};
+        }, false);
         return;
       case 'tap': {
         const now = performance.now();
@@ -1775,7 +1802,10 @@ export async function startStudio() {
       raw = node.value,
       v = Number(raw),
       [group, index, prop] = id.split(':');
-    if (node.type === 'number' && (!node.validity.valid || !raw)) return;
+    if (node.type === 'number' && (!node.validity.valid || !raw)) {
+      if (id === 'loop-start' || id === 'loop-end') node.value = node.defaultValue;
+      return;
+    }
     const change = (fn) => {
       if (live) {
         if (rangeEditing !== node) {
@@ -1794,7 +1824,6 @@ export async function startStudio() {
         if (command && engine.control) {
           engine.control(command, v);
           saveSoon();
-          renderTabs();
         } else changed({ draw: false });
       } else mutate(fn, false);
     };
@@ -2017,12 +2046,10 @@ export async function startStudio() {
       return;
     }
     if (id === 'loop-start' || id === 'loop-end') {
-      const total = s.p.arrangement.reduce((sum, v) => sum + v.bars, 0);
+      const {start, end, on} = loopRegion();
       mutate(() => {
-        s.p.loop ||= { on: false, start: 0, end: total };
-        if (id === 'loop-start') s.p.loop.start = Math.max(0, Math.min(s.p.loop.end - 1, v - 1));
-        else s.p.loop.end = Math.min(total, Math.max(s.p.loop.start + 1, v));
-      });
+        s.p.loop = {...s.p.loop, on, start: id === 'loop-start' ? v - 1 : start, end: id === 'loop-end' ? v : end};
+      }, false);
       return;
     }
     if (id === 'scene-name') {
