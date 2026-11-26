@@ -336,11 +336,23 @@ export class Effect {
           }
           const dl = this.bufL[(w - Math.min(n - 1, Math.max(1, Math.round(offL))) + n) % n],
             dr = this.bufR[(w - Math.min(n - 1, Math.max(1, Math.round(offR))) + n) % n];
-          const cross = ['pingpong', 'reverb', 'industrialverb'].includes(this.id);
+          const pingPong = this.id === 'pingpong';
+          let inputL = l, inputR = r;
+          if (pingPong && l * r > 0) {
+            // Send the common in-phase signal to the left first. Keep its stereo power
+            // and leave already separated or opposite-polarity inputs in their channels.
+            const common = Math.sign(l) * Math.min(Math.abs(l), Math.abs(r));
+            inputL += common;
+            inputR -= common;
+            const gain = Math.sqrt((l*l + r*r) / (inputL*inputL + inputR*inputR));
+            inputL *= gain;
+            inputR *= gain;
+          }
+          const cross = pingPong || this.id === 'reverb' || this.id === 'industrialverb';
           const backL = cross ? dr : dl,
             backR = cross ? dl : dr;
-          this.bufL[w] = clamp(l + fb * backL, -2, 2);
-          this.bufR[w] = clamp(r + fb * backR, -2, 2);
+          this.bufL[w] = clamp(inputL + fb * backL, -2, 2);
+          this.bufR[w] = clamp(inputR + fb * backR, -2, 2);
           this.write = (w + 1) % n;
           x = l + dl * wet;
           y = r + dr * wet;
