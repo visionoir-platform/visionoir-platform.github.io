@@ -146,3 +146,7 @@ Da ogni vista della workstation si possono impostare la prima e l’ultima battu
 Master mute silenzia anche il metronomo. Il fader conserva la propria posizione e si può regolare durante il mute. Nella vista Live i fader touch hanno un’area di presa più ampia. Il sampler one-shot riproduce il segmento selezionato anche dopo aver rilasciato il pad. Se l’elaborazione audio si avvicina al tempo massimo disponibile per blocco, il proiettore riduce la risoluzione e le particelle. Il dettaglio grafico ritorna quando il carico scende.
 
 Il sampler divide la regione selezionata in un massimo di sedici pad. Ogni passo del sequencer può richiamare il proprio pad. I progetti esistenti continuano a usare il loro spostamento di inizio. I test confrontano il PCM di ogni pad con un ritaglio manuale, anche in reverse e in loop.
+
+## FREQUENCY · Importazione MIDI e controlli Live
+
+La Libreria apre file MIDI di tipo 0 e 1 con tempo costante. Il brano si apre in Arrangiamento con note, velocity, pause e marker a inizio battuta. I file che superano i limiti del formato sono segnalati prima di sostituire il progetto. MIDI Learn associa anche i quattro effetti Live. Il primo CC salva l’associazione. I successivi regolano l’effetto sul canale assegnato.
