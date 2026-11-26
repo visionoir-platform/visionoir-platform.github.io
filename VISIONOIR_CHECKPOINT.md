@@ -150,3 +150,9 @@ Il sampler divide la regione selezionata in un massimo di sedici pad. Ogni passo
 ## FREQUENCY · Importazione MIDI e controlli Live
 
 La Libreria apre file MIDI di tipo 0 e 1 con tempo costante. Il brano si apre in Arrangiamento con note, velocity, pause e marker a inizio battuta. I file che superano i limiti del formato sono segnalati prima di sostituire il progetto. MIDI Learn associa anche i quattro effetti Live. Il primo CC salva l’associazione. I successivi regolano l’effetto sul canale assegnato.
+
+## FREQUENCY · Passaggi visivi e registrazione
+
+I richiami dei preset e delle scene sfumano anche i parametri e la tinta nel proiettore. Se arriva un secondo richiamo, la sfumatura riparte dal fotogramma mostrato. Con movimento ridotto la scena di destinazione viene applicata direttamente.
+
+La finitura Naturale mostra la figura originale mantenendo l’ascolto e la rotazione. Cromo e Metallo liquido seguono il segnale audio. FREQUENCY attende la chiusura della ripresa e l’ultimo blocco registrato prima di avviarne un’altra.
