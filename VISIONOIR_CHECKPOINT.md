@@ -156,3 +156,9 @@ La Libreria apre file MIDI di tipo 0 e 1 con tempo costante. Il brano si apre in
 I richiami dei preset e delle scene sfumano anche i parametri e la tinta nel proiettore. Se arriva un secondo richiamo, la sfumatura riparte dal fotogramma mostrato. Con movimento ridotto la scena di destinazione viene applicata direttamente.
 
 La finitura Naturale mostra la figura originale mantenendo l’ascolto e la rotazione. Cromo e Metallo liquido seguono il segnale audio. FREQUENCY attende la chiusura della ripresa e l’ultimo blocco registrato prima di avviarne un’altra.
+
+## FREQUENCY · Gain, fader ed effetti stereo
+
+Il Gain regola il segnale prima degli inserti nei nuovi progetti vuoti. Volume e automazione regolano l’uscita, incluse le code. Le demo e i progetti precedenti possono mantenere il percorso storico o attivare quello nuovo dal Mixer.
+
+Il delay ping-pong alterna gli echi sulle sorgenti centrate. L’EQ sfuma le modifiche in otto millisecondi. I file MIDI riportano nel mixer i valori iniziali di volume e panorama quando sono presenti nella traccia MIDI.
