@@ -14,6 +14,8 @@
   "eqFrequency": "Centre frequency",
   "param_rumble_bassEq": "Bass EQ (100 Hz)",
   "param_lead_mono": "Monophonic mode",
+  "param_sampler_slicePad": "Sample slice",
+  "param_sampler_slice": "Continuous start offset",
   "param_ride_noiseFilter": "Noise high-pass filter",
   "play": "Play",
   "stop": "Stop",

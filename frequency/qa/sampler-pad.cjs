@@ -78,7 +78,31 @@ module.exports = async function checkSamplerPad(browser, origin) {
       return maximum;
     });
     assert.ok(gatedPeak < 0.001, 'released gate leaked the delayed tone: ' + gatedPeak);
-    return { oneShotPeak:peak, gatedPeak };
+    await action('stop').click();
+    await tab('mixer').click();
+    await field('param:oneShot').press('End');
+    const slices = page.locator('[data-action="sample-slice"]');
+    assert.equal(await slices.count(),16);
+    await slices.first().click();
+    assert.equal(await field('param:slicePad').inputValue(), String(1/16));
+    // The first 187.5 ms slice contains only silence; the sixteenth contains the tone.
+    const silentSlicePeak = await page.evaluate(async () => {
+      let peak = 0;
+      for (let i = 0; i < 15; i++) {
+        peak = Math.max(peak, window.samplerPeak());
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      return peak;
+    });
+    assert.ok(silentSlicePeak < 0.001);
+    await slices.last().click();
+    const sliceSignal = await page.waitForFunction(() => {
+      const peak = window.samplerPeak();
+      return peak > 0.02 && peak;
+    }, undefined, {polling:10,timeout:2000});
+    assert.equal(await field('param:slicePad').inputValue(),'1');
+    assert.equal(await slices.last().getAttribute('aria-pressed'),'true');
+    return { oneShotPeak:peak, gatedPeak, silentSlicePeak, lastSlicePeak:await sliceSignal.jsonValue() };
   } finally {
     await page.close();
   }

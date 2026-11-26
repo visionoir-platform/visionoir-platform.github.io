@@ -81,6 +81,7 @@ const specs = [
       cutoff: 0.88,
       gain: 0.64,
       slice: 0,
+      slicePad: 0,
     },
   ],
 ];

@@ -2,6 +2,10 @@
 
 Un file `.vfreq` è un documento JSON UTF-8. Contiene i dati necessari a riaprire e modificare il brano. Nel menu **Libreria** si possono importare il documento, la sua copia con estensione `.json` o l’archivio `.zip` esportato dallo studio.
 
+Il Sampler divide la regione tra `start` ed `end` in sedici porzioni contigue. Il pad 1 inizia al primo campione del trim e il pad 16 termina al suo ultimo campione. Per regioni più brevi di sedici campioni viene mostrato un pad per campione. Ciascun pad seleziona e suona la propria porzione. Si può assegnare una porzione diversa a ciascuna nota dal menu dei parametri per step. Pitch, reverse e loop operano dentro i limiti della porzione.
+
+Il parametro `slicePad` memorizza il numero del pad diviso per 16. Zero, oppure l’assenza di `slicePad` nei progetti precedenti, richiama lo spostamento continuo originale regolato da `slice`. Questo valore resta memorizzato anche mentre si usano i pad.
+
 | Campo | Interpretazione |
 | --- | --- |
 | `version`, `name`, `bpm`, `swing`, `seed` | Il formato nativo attuale è `2`. L’editor e l’esportazione JSON compatibile usano la versione `1`. Il tempo è espresso in battiti al minuto, da 40 a 300. `seed` governa le scelte pseudocasuali del sequencer. |

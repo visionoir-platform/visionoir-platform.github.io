@@ -34,6 +34,8 @@ import {
   seededVariation,
 } from './ui-kit.js';
 import { renderEditor, masterPanel } from './views.js';
+import { samplerLockMenu, samplerPanel } from './sampler-panel.js';
+import { SAMPLER_PADS } from './audio/sampler-slices.js';
 import { factorySlotPresets, renderEffectSlot, setLiveEffectAmount } from './fx-rack.js';
 import { EQ_LIMITS, macroEq } from './audio/model.js';
 
@@ -711,7 +713,9 @@ export async function startStudio() {
             )
             .join(''),
         )}</div><div class="bar-tools">${['accent', 'slide', 'flam'].map((k) => act('flag', k === 'accent' ? t(k) : k, { data: 'data-id="' + k + '"', pressed: !!ev[k] })).join('')}${act('remove-note', t('deleteStep'))}</div><h3>${h(t('locks'))}</h3><div class="knobs">${Object.entries(trackParams)
-          .map(([key, value]) => slider(instrumentParamLabel(track().instrument, key, t), 'lock:' + key, ev.locks?.[key] ?? value, 0, 1, instrumentParamStep(track().instrument, key)))
+          .map(([key, value]) => key === 'slicePad'
+            ? samplerLockMenu(track(), {...trackParams, ...ev.locks}, t)
+            : slider(instrumentParamLabel(track().instrument, key, t), 'lock:' + key, ev.locks?.[key] ?? value, 0, 1, instrumentParamStep(track().instrument, key)))
           .join('')}</div>${act('clear-locks', t('clear') + ' · ' + t('locks'))}`
       : act('insert-note', t('insert') + ' ' + t('note'));
     open(
@@ -1116,6 +1120,10 @@ export async function startStudio() {
     s.page = Math.min(s.page, Math.floor((pattern().length - 1) / 16));
     editor();
   }
+  function refreshSamplerPanel() {
+    const panel = root.querySelector('[data-sampler-panel]');
+    if (panel && track().instrument === 'sampler') panel.innerHTML = samplerPanel(track(), t);
+  }
   function chooseScene(i) {
     s.scene = i;
     saveSoon();
@@ -1375,6 +1383,17 @@ export async function startStudio() {
       case 'preview':
         await audition(s.channel, noteBase());
         return;
+      case 'sample-slice': {
+        if (track().instrument !== 'sampler' || !Number.isInteger(i) || i < 1 || i > SAMPLER_PADS) return;
+        const position = i / SAMPLER_PADS;
+        if (track().params.slicePad !== position) {
+          mutate(() => { track().params.slicePad = position; }, false);
+          refreshSamplerPanel();
+          root.querySelector('[data-action="sample-slice"][data-index="' + i + '"]')?.focus({preventScroll:true});
+        }
+        await audition(s.channel, noteBase());
+        return;
+      }
       case 'audition':
         await audition(s.channel, Number(btn.dataset.note));
         return;
@@ -1982,6 +2001,10 @@ export async function startStudio() {
     }
     if (group === 'param') {
       change(() => (track().params[index] = v));
+      if (index === 'slicePad') {
+        refreshSamplerPanel();
+        targetField('param:slicePad')?.focus({preventScroll:true});
+      }
       return;
     }
     if (group === 'note') {
@@ -2338,6 +2361,7 @@ export async function startStudio() {
       }
       if (rangeEditing === node) rangeEditing = undefined;
       else if (node.dataset.field) await field(node);
+      if (node.dataset.field === 'param:start' || node.dataset.field === 'param:end') refreshSamplerPanel();
     } catch (err) {
       fail(err);
     }
